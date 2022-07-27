@@ -2906,41 +2906,41 @@ class JsonText(UserDict, JsonHolder):
     def __str__(self):
         return json.dumps(self, cls=_JsonEncoder)
 
-    @staticmethod
-    def text(txt: str) -> JsonText:
+    @classmethod
+    def text(cls, txt: str) -> JsonText:
         """Returns a JSON text node."""
-        return JsonText({'text': txt})
+        return cls({'text': txt})
 
-    @staticmethod
-    def html_text(txt: str) -> JsonText:
+    @classmethod
+    def html_text(cls, txt: str) -> JsonText:
         """Returns a JSON text node populated from some HTML."""
         parser = _ToMinecraftText()
         parser.feed(txt)
         parser.close()
-        return JsonText({'text': parser.json()})
+        return cls({'text': parser.json()})
 
-    @staticmethod
-    def translate(translation_id: str, *texts: str) -> JsonText:
+    @classmethod
+    def translate(cls, translation_id: str, *texts: str) -> JsonText:
         """Returns a JSON text translation node."""
         if not isinstance(texts, list):
             texts = list(texts)
         else:
             texts = texts[:]
-        return JsonText({'translate': translation_id, 'with': texts})
+        return cls({'translate': translation_id, 'with': texts})
 
-    @staticmethod
-    def score(score: ScoreName, value=None) -> JsonText:
+    @classmethod
+    def score(cls, score: ScoreName, value=None) -> JsonText:
         """Returns a JSON text score node."""
         score = good_score(score)
-        jt = JsonText({'score': {'name': str(score.target), 'objective': score.objective, }})
+        jt = cls({'score': {'name': str(score.target), 'objective': score.objective, }})
         if value:
             jt['score']['value'] = value
         return jt
 
-    @staticmethod
-    def entity(selector: Selector, sep_color: str = None, sep_text: str = None) -> JsonText:
+    @classmethod
+    def entity(cls, selector: Selector, sep_color: str = None, sep_text: str = None) -> JsonText:
         """Returns a JSON text entity node."""
-        jt = JsonText()
+        jt = cls()
         jt['selector'] = str(selector)
         if sep_color:
             jt.setdefault('separator', {}).update({'color': _in_group(COLORS, sep_color)})
@@ -2948,10 +2948,10 @@ class JsonText(UserDict, JsonHolder):
             jt.setdefault('separator', {}).update({'text': sep_text})
         return jt
 
-    @staticmethod
-    def keybind(keybind_id: str) -> JsonText:
+    @classmethod
+    def keybind(cls, keybind_id: str) -> JsonText:
         """Returns a JSON text keybinding node."""
-        return JsonText({'keybind': keybind_id})
+        return cls({'keybind': keybind_id})
 
     @classmethod
     def nbt(cls, resource_path: str, data_target: DataTarget, interpret: bool = None,
@@ -3026,13 +3026,13 @@ class JsonText(UserDict, JsonHolder):
         self['hoverEvent'] = ev
         return _JsonTextHoverAction(self, ev)
 
-    @staticmethod
-    def as_json(map: Mapping):
+    @classmethod
+    def as_json(cls, map: Mapping):
         """Returns a JsonText object built from the given mapped values."""
         if map is None or isinstance(map, JsonText):
             return map
         elif isinstance(map, Mapping):
-            return JsonText(map)
+            return cls(map)
         else:
             raise ValueError(f'{map}: Not a dictionary')
 

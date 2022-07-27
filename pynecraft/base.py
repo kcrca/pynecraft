@@ -27,8 +27,6 @@ _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
 _backslash_map = {'\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
 
-_float_precision = 3
-
 NORTH = 'north'
 EAST = 'east'
 SOUTH = 'south'
@@ -170,7 +168,7 @@ def _bool(value: bool | None) -> str | None:
 
 
 def _float(value: float) -> str:
-    return str(round(value, _float_precision))
+    return str(round(value, Parameters.float_precision()))
 
 
 def _not_ify(value: str | Iterable[str]) -> str | Iterable[str]:
@@ -536,33 +534,32 @@ class _ToMinecraftText(HTMLParser):
 class Parameters:
     """Manage general parameters."""
 
-    @staticmethod
-    def float_precision():
+    _float_precision = 3
+
+    @classmethod
+    def float_precision(cls):
         """Returns how many decimal places will be shown for floats."""
-        global _float_precision
-        return _float_precision
+        return cls._float_precision
 
     @staticmethod
-    def set_float_precision(precision: int):
-        """Sets how many decimal places will be shown for floats.
-
-        Must be at least one."""
+    def set_float_precision(cls, precision: int):
+        """Sets how many decimal places will be shown for floats. Must be at least one."""
         if precision < 1:
             raise ValueError(f'{precision}: Precision cannot be negative')
-        global _float_precision
-        _float_precision = precision
+        cls._float_precision = precision
 
 
 NbtDef = Union[Nbt, Mapping]
 
 
 def to_id(name: str) -> str:
-    """Returns an ID from the passed-in name. If it's already an ID, it is just returned."""
+    """Returns an ID from the passed-in name. If it's already an ID, it is just returned. Otherwise it lower-cases the
+    name, and replaces both ' ' and '| with '_'."""
     return re.sub(r'\s{2,}', ' ', name.strip().lower()).replace(' ', '_').replace('|', '_')
 
 
 def to_name(id: str) -> str:
-    """Returns a user-friendly name from the passed-in ID."""
+    """Returns a user-friendly name from the passed-in ID. It just replaces '_' with spaces and title-cases the result."""
     return id.replace('_', ' ').title()
 
 
@@ -682,19 +679,19 @@ def d(v: float, *others: float) -> RelCoord | Tuple[RelCoord, RelCoord, RelCoord
     return _rel_coord('^', d, v, *others)
 
 
-def days(num: float) -> Duration:
+def days(num: float) -> TimeSpec:
     """Return a specification for the given number of days."""
-    return Duration(f'{num}d')
+    return TimeSpec(f'{num}d')
 
 
-def seconds(num: float) -> Duration:
+def seconds(num: float) -> TimeSpec:
     """Return a specification for the given number of seconds."""
-    return Duration(f'{num}s')
+    return TimeSpec(f'{num}s')
 
 
-def ticks(num: float) -> Duration:
+def ticks(num: float) -> TimeSpec:
     """Return a specification for the given number of ticks."""
-    return Duration(num)
+    return TimeSpec(num)
 
 
 def _int_or_float(value: int | float) -> int | float:
@@ -703,26 +700,33 @@ def _int_or_float(value: int | float) -> int | float:
     return value
 
 
-class Duration:
-    SCALES = {'d': 24_000, 'm': 1_200, 's': 20, 't': 1}
+class TimeSpec:
+    """Represents a time using in-game ticks. Minecraft is sloppy about the distinction between a duration and a
+    time(stamp). Both `/time set` and `time add` take this same kind of value as an argument. This class preserves
+    that confusion. """
+
+    SCALES = {'d': 24_000, 's': 20, 't': 1}
 
     def __init__(self, value: float | str):
+        """Creates a new TimeSpec. The value is either a float value (which is rounded to the next highest game tick),
+        or a string that is a float followed by a scaling suffix, one of 't' (ticks), 's' (seconds), or 'd' (days).
+
+         :param value: A float or a string that is a float with a valid scale suffix.
+        """
         self._units = None  # gets set by the 'ticks' property
         self._as_units = None
         self._ticks = None
 
         if isinstance(value, (int, float)):
-            self.ticks = value
+            self.ticks = _int_or_float(value)
         else:
             m = _time_re.fullmatch(value)
             if not m:
-                raise ValueError(f'{value}: Invalid time spec')
+                raise ValueError(f'{value}: Invalid time specification')
+            value = _int_or_float(float(m.group(1)))
             if not m.group(2):
-                self.ticks = int(value)
+                self.ticks = int(math.ceil(value))
             else:
-                value = float(m.group(1))
-                if value.is_integer():
-                    value = int(value)
                 suffix = m.group(2).lower()
                 if suffix == 't':
                     self.ticks = value
@@ -741,31 +745,34 @@ class Duration:
 
     @property
     def ticks(self) -> int:
+        """The number of ticks this TimeSpec represents."""
         return self._ticks
 
     @ticks.setter
     def ticks(self, value: float | int):
-        self._ticks = math.ceil(value)
+        self._ticks = math.ceil(_int_or_float(value))
         self._units = 't'
         self._as_units = self._ticks
 
     @property
     def seconds(self) -> float:
-        return self.ticks / Duration.SCALES['s']
+        """The number of seconds this TimeSpec represents."""
+        return self.ticks / TimeSpec.SCALES['s']
 
     @seconds.setter
     def seconds(self, value: float):
-        self.ticks = value * Duration.SCALES['s']
+        self.ticks = value * TimeSpec.SCALES['s']
         self._units = 's'
         self._as_units = _int_or_float(value)
 
     @property
     def days(self) -> float:
-        return self.ticks / Duration.SCALES['d']
+        """The number of days this TimeSpec represents."""
+        return self.ticks / TimeSpec.SCALES['d']
 
     @days.setter
     def days(self, value: float):
-        self.ticks = value * Duration.SCALES['d']
+        self.ticks = value * TimeSpec.SCALES['d']
         self._units = 'd'
         self._as_units = _int_or_float(value)
 
@@ -883,7 +890,7 @@ def good_facing(facing: FacingDef) -> Facing:
 
 
 FacingDef = Union[int, str, Facing]
-DurationDef = Union[str, int, Duration]
+DurationDef = Union[str, int, TimeSpec]
 Coord = Union[float, RelCoord]
 IntCoord = Union[int, IntRelCoord]
 Position = Tuple[Coord, Coord, Coord]
@@ -892,14 +899,14 @@ ColumnPosition = Tuple[Coord, Coord]
 IntColumnPosition = Tuple[IntCoord, IntCoord]
 
 
-def good_duration(duration: DurationDef) -> Duration | None:
+def good_duration(duration: DurationDef) -> TimeSpec | None:
     """Checks if the argument is a valid duration specification, or None.
 
     If the input is None, it is returned. Otherwise, this returns Duration(duration).
     """
-    if duration is None or isinstance(duration, Duration):
+    if duration is None or isinstance(duration, TimeSpec):
         return duration
-    return Duration(duration)
+    return TimeSpec(duration)
 
 
 Range = Union[float, Tuple[Optional[float], Optional[float]]]
