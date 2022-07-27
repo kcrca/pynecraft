@@ -432,14 +432,6 @@ RAIN = 'rain'
 THUNDER = 'thunder'
 WEATHER_TYPES = [CLEAR, RAIN, THUNDER]
 
-BOOTS = 'boots'
-LEGGINGS = 'leggings'
-CHESTPLATE = 'chestplate'
-HELMET = 'helmet'
-LEFT = 'left'
-RIGHT = 'right'
-ENTITY_PLACES = [BOOTS, LEGGINGS, CHESTPLATE, HELMET, LEFT, RIGHT]
-
 GIVE = 'give'
 GIVE_CLEAR = [GIVE, CLEAR]
 
@@ -2772,23 +2764,6 @@ class Entity(NbtHolder):
         e_nbt = entity.nbt
         e_nbt['id'] = entity.id
         passengers.append(e_nbt)
-        return self
-
-    def put(self, place: str, item: Nbt) -> Entity:
-        """'Puts' for specialized places. ``RIGHT`` or ``LEFT`` mean right or left hand, while ``BOOTS``, LEGGINGS``,
-        ``CHESTPLATE``, and ``HELMET`` refer to armor items. This allows you not to remember which index in the
-        respective NBT lists is for each kind of thing. """
-        place = _in_group(ENTITY_PLACES, place)
-        try:
-            index = (RIGHT, LEFT).index(place)
-            key = 'HandItems'
-            size = 2
-        except ValueError:
-            index = ENTITY_PLACES.index(place)
-            key = 'ArmorItems'
-            size = 4
-        items = _ensure_size(self.nbt.get_list(key), size, Nbt())
-        items[index] = Nbt.as_nbt(item)
         return self
 
     def summon(self, pos: Position, nbt=None, facing: str = None) -> str:
