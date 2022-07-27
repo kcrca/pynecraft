@@ -23,16 +23,16 @@ class TestFunctions(unittest.TestCase):
         shutil.rmtree(self.tmp_path)
 
     def test_lines(self):
-        self.assertEqual((list(lines())), [])
-        self.assertEqual((list(lines('a'))), ['a'])
-        self.assertEqual((list(lines('  a'))), ['  a'])
-        self.assertEqual((list(lines('a\n'))), ['a'])
-        self.assertEqual((list(lines('  a\n'))), ['  a'])
-        self.assertEqual((list(lines('a\nb'))), ['a', 'b'])
-        self.assertEqual((list(lines('  a\n  b'))), ['  a', '  b'])
-        self.assertEqual((list(lines((), 'a'))), ['a'])
-        self.assertEqual((list(lines(('a', 'b'), 'c'))), ['a', 'b', 'c'])
-        self.assertEqual((list(lines(([['a', 'b']]), 'c'))), ['a', 'b', 'c'])
+        self.assertEqual([], (list(lines())))
+        self.assertEqual(['a'], (list(lines('a'))))
+        self.assertEqual(['  a'], (list(lines('  a'))))
+        self.assertEqual(['a'], (list(lines('a\n'))))
+        self.assertEqual(['  a'], (list(lines('  a\n'))))
+        self.assertEqual(['a', 'b'], (list(lines('a\nb'))))
+        self.assertEqual(['  a', '  b'], (list(lines('  a\n  b'))))
+        self.assertEqual(['a'], (list(lines((), 'a'))))
+        self.assertEqual(['a', 'b', 'c'], (list(lines(('a', 'b'), 'c'))))
+        self.assertEqual(['a', 'b', 'c'], (list(lines(([['a', 'b']]), 'c'))))
 
     def test_loop(self):
         try:
@@ -80,10 +80,10 @@ class TestFunctions(unittest.TestCase):
             Loop.test_controls().set_setup_override(None)
 
     def check_loop(self, loop, setup, before, body, after, looped=True):
-        self.assertEqual(loop.looped, looped)
+        self.assertEqual(looped, loop.looped)
         # Do this in one compare so we can see easily if a line is moved from one group to another.
-        self.assertEqual((loop.setup, loop.before, loop.body, loop.after), (tuple(setup), before, tuple(body), after))
-        self.assertEqual(loop.commands(), setup + before + body + after)
+        self.assertEqual((tuple(setup), before, tuple(body), after), (loop.setup, loop.before, loop.body, loop.after))
+        self.assertEqual(setup + before + body + after, loop.commands())
 
     def test_loop_cur(self):
         loop = Loop(('foo', 'obj')).loop(loop_func, range(1, 4))
@@ -99,7 +99,7 @@ class TestFunctions(unittest.TestCase):
         return save_dir
 
     def test_function(self):
-        self.assertEqual(tuple(Function('foo').add(say('hi')).commands()), ('say hi',))
+        self.assertEqual(('say hi',), tuple(Function('foo').add(say('hi')).commands()))
 
     def test_function_save(self):
         os.chdir(self.tmp_path)
@@ -127,15 +127,15 @@ class TestFunctions(unittest.TestCase):
             loop = Loop(('foo', 'obj')).add('before').loop(loop_func, COLORS).add('after')
             loop.save(self.tmp_path)
             foo = (self.tmp_path / 'foo.mcfunction').read_text().rstrip().split('\n')
-            self.assertEqual(len([x for x in filter(lambda x: x.find('if score foo obj matches') > 0, foo)]),
-                              len(COLORS))
+            self.assertEqual(len(COLORS),
+                             len([x for x in filter(lambda x: x.find('if score foo obj matches') > 0, foo)]))
             for i, c in enumerate(COLORS):
                 iter = (self.tmp_path / f'foo__{i:02d}.mcfunction').read_text().rstrip().split('\n')
-                self.assertEqual(len(iter), 2 + 1)  # The +1 is for the trailing info
+                self.assertEqual(2 + 1, len(iter))  # The +1 is for the trailing info
                 self.assertGreater(iter[1].find(c), 0)
 
             loaded = Function.load('foo')
-            self.assertEqual(loaded.commands(), loop.commands())
+            self.assertEqual(loop.commands(), loaded.commands())
 
         finally:
             Loop.iterate_at = orig
@@ -145,9 +145,9 @@ class TestFunctions(unittest.TestCase):
         saved = Function('foo', 'f').add('line1', 'line2')
         saved.save('foo')
         loaded = Function.load('foo')
-        self.assertEqual(loaded.name, saved.name)
-        self.assertEqual(loaded.base_name, saved.base_name)
-        self.assertEqual(loaded.commands(), saved.commands())
+        self.assertEqual(saved.name, loaded.name)
+        self.assertEqual(saved.base_name, loaded.base_name)
+        self.assertEqual(saved.commands(), loaded.commands())
 
     def test_loop_load(self):
         os.chdir(self.tmp_path)
@@ -161,9 +161,9 @@ class TestFunctions(unittest.TestCase):
             saved = Loop(score, 'f')
             saved.save('foo')
             loaded = Function.load('foo')
-            self.assertEqual(loaded.name, saved.name)
-            self.assertEqual(loaded.base_name, saved.base_name)
-            self.assertEqual(loaded.commands(), saved.commands())
+            self.assertEqual(saved.name, loaded.name)
+            self.assertEqual(saved.base_name, loaded.base_name)
+            self.assertEqual(saved.commands(), loaded.commands())
 
             saved = Loop(score).add('before').loop(loop_func, range(0, 3)).add('after')
             saved.save('foo')
@@ -188,7 +188,7 @@ class TestFunctions(unittest.TestCase):
         expected = expected if isinstance(expected, Path) else Path(expected)
         path = Function(func_name).add('say hi').save(save_path)
         self.assertTrue(path.exists())
-        self.assertEqual(path, expected)
+        self.assertEqual(expected, path)
         text = path.read_text()
         self.assertGreaterEqual(text.find('say hi'), 0)
 
@@ -245,12 +245,7 @@ class TestFunctions(unittest.TestCase):
             self.assertIn('packer', fp.read())
 
         blocks = pack.tags('blocks')
-        blocks['air'] = {
-            'values': [
-                'air',
-                'cave_air'
-            ]
-        }
+        blocks['air'] = { 'values': [ 'air', 'cave_air' ] }
         pack.save(self.tmp_path)
         tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'tags' / 'blocks'
         self.assertTrue(tags_dir.exists())
@@ -258,20 +253,20 @@ class TestFunctions(unittest.TestCase):
 
         pack1 = pack
         pack2 = DataPack.load(self.tmp_path, 'packer')
-        self.assertEqual(pack2.name, pack1.name)
-        self.assertEqual(pack2.mcmeta, pack1.mcmeta)
-        self.assertEqual(tuple(x.name for x in pack2.function_set.children),
-                          tuple(x.name for x in pack1.function_set.children))
+        self.assertEqual(pack1.name, pack2.name)
+        self.assertEqual(pack1.mcmeta, pack2.mcmeta)
+        self.assertEqual(tuple(x.name for x in pack1.function_set.children),
+                         tuple(x.name for x in pack2.function_set.children))
         sub1 = pack1.function_set.child('sub')
         sub2 = pack2.function_set.child('sub')
-        self.assertEqual(sorted(sub2.functions.keys()), sorted(sub1.functions.keys()))
+        self.assertEqual(sorted(sub1.functions.keys()), sorted(sub2.functions.keys()))
         for func_name in sub2.functions:
             f1 = sub1.functions[func_name]
             f2 = sub2.functions[func_name]
-            self.assertEqual(f1.name, f2.name)
-            self.assertEqual(f1.commands()[:-1], f2.commands()[:-1])
+            self.assertEqual(f2.name, f1.name)
+            self.assertEqual(f2.commands()[:-1], f1.commands()[:-1])
 
     def test_datapack_filter(self):
         pack = DataPack('packer')
         pack.add_filter('f1', r'.*')
-        self.assertEqual(pack.filter, [{'namespace': 'f1', 'path': r'.*'}])
+        self.assertEqual([{'namespace': 'f1', 'path': r'.*'}], pack.filter)
