@@ -547,9 +547,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('get entity @a', str(_DataMod().get(a())))
         self.assertEqual('merge entity @a {}', str(_DataMod().merge(a(), {})))
         self.assertEqual('modify entity @a a.b', str(_DataMod().modify(a(), 'a.b')))
-        self.assertEqual(
-            'modify entity @a a.b append from storage m:b Name',
-            str(_DataMod().modify(a(), 'a.b').append().from_('m:b', 'Name')))
+        self.assertEqual('modify entity @a a.b append from storage m:b name',
+                         str(_DataMod().modify(a(), 'a.b').append().from_('m:b', 'name')))
         self.assertEqual('modify entity @a a.b insert 3 value "hi there"',
                          str(_DataMod().modify(a(), 'a.b').insert(3).value('hi there')))
         self.assertEqual('modify entity @a x merge value "hi there"',

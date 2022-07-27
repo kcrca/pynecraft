@@ -20,7 +20,12 @@ from io import StringIO
 from json import JSONEncoder
 from typing import Any, Iterable, Mapping, Optional, Tuple, TypeVar, Union
 
-_resource_re = re.compile(r'#?[\w.]+(\[[\w,=\d]*])?')
+_jed_resource = r'a-z0-9_.-'
+_resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
+                               ([{_jed_resource}]+:)?         # an optional namespace
+                               ([/{_jed_resource}]+)          # the resource path
+                               (\[[,=\s{_jed_resource}]*])?   # an optional state, such as "[facing=south]"
+                            ''', re.X)
 _name_re = re.compile(r'[\w+.-]+')
 _nbt_key_re = re.compile(r'\w+')
 _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
