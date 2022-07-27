@@ -9,6 +9,8 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
+WIKI = 'https://minecraft.fandom.com/wiki/'
+
 
 class EnumDesc(ABC):
     def __init__(self, name: str):
@@ -39,7 +41,7 @@ class PageEnumDesc(EnumDesc):
                         html = f.read()
                 except IOError as e:
                     cache.unlink()
-                    raise e
+                    raise
             else:
                 cache.unlink()
         if not cache.exists():
@@ -97,7 +99,9 @@ class PageEnumDesc(EnumDesc):
 def clean(cell) -> str:
     if not isinstance(cell, str):
         cell = cell.text
-    return re.sub(r'\[.*', '', re.sub(r'\s{2,}', ' ', cell.strip()).replace(u'\u200c', ''), flags=re.DOTALL).strip()
+    s = re.sub(r'\s{2,}', ' ', cell.strip())
+    s = s.replace(u'\u200c', '')
+    return re.sub(r'\[.*', '', s, flags=re.DOTALL).strip()
 
 
 def to_desc(text):
@@ -109,8 +113,7 @@ def to_desc(text):
 
 class Advancement(PageEnumDesc):
     def __init__(self):
-        super().__init__('Advancement', 'https://minecraft.fandom.com/wiki/Advancement#List_of_advancements',
-                         'advancements')
+        super().__init__('Advancement', WIKI + 'Advancement#List_of_advancements', 'advancements')
         self.value_col = None
         self.desc_col = None
         self.name_col = None
@@ -134,7 +137,7 @@ class Advancement(PageEnumDesc):
 
 class Effect(PageEnumDesc):
     def __init__(self):
-        super().__init__('Effect', 'https://minecraft.fandom.com/wiki/Effect?so=search#Effect_list', 'Effects')
+        super().__init__('Effect', WIKI + 'Effect?so=search#Effect_list', 'Effects')
         self.filter_col = None
         self.desc_col = None
         self.value_col = None
@@ -170,7 +173,7 @@ class Effect(PageEnumDesc):
 
 class Enchantment(PageEnumDesc):
     def __init__(self):
-        super().__init__('Enchantment', 'https://minecraft.fandom.com/wiki/Enchanting#Summary_of_enchantments',
+        super().__init__('Enchantment', WIKI + 'Enchanting#Summary_of_enchantments',
                          'Summary of enchantments')
         self.max_col = None
         self.name_col = None
@@ -202,7 +205,7 @@ class Enchantment(PageEnumDesc):
 
 class GameRule(PageEnumDesc):
     def __init__(self):
-        super().__init__('GameRule', 'https://minecraft.fandom.com/wiki/Game_rule?so=search#List_of_game_rules', None)
+        super().__init__('GameRule', WIKI + 'Game_rule?so=search#List_of_game_rules', None)
         self.types = {}
         self.filter_col = None
         self.type_col = None
@@ -251,7 +254,7 @@ def camel_to_name(camel):
 
 class Particle(PageEnumDesc):
     def __init__(self):
-        super().__init__('Particle', 'https://minecraft.fandom.com/wiki/Particles#Types_of_particles', 'Particles')
+        super().__init__('Particle', WIKI + 'Particles#Types_of_particles', 'Particles')
         self.value_col = None
         self.desc_col = None
 
@@ -276,7 +279,7 @@ class Particle(PageEnumDesc):
 
 class ScoreCriteria(PageEnumDesc):
     def __init__(self):
-        super().__init__('ScoreCriteria', 'https://minecraft.fandom.com/wiki/Scoreboard#Criteria', 'Criteria')
+        super().__init__('ScoreCriteria', WIKI + 'Scoreboard#Criteria', 'Criteria')
         self.desc_col = None
         self.value_col = None
 
@@ -318,7 +321,8 @@ if __name__ == '__main__':
             for tab in (
                     Advancement(), Effect(), Enchantment(), GameRule(), ScoreCriteria(), Particle()):
                 fields = tab.generate()
-                print('\n')
+                print()
+                print()
                 print('# noinspection SpellCheckingInspection')
                 print('@enum.unique')
                 print(f'class {tab.name}(ValueEnum):')
@@ -331,6 +335,7 @@ if __name__ == '__main__':
                 print()
                 print('    @staticmethod')
                 print('    def display_name(elem) -> str:')
-                print('        return {' + (', '.join('%s.%s: "%s"' % (tab.name, k, v.replace('"', r'\"')) for k, v in
-                                                      names.items())) + '}[elem]')
+                print('        return {' + (', '.join(
+                    '{tab.name}.{k}: "%s"' % v.replace('"', r'\"') for k, v in names.items()))
+                      + '}[elem]')
                 tab.supplement_class()

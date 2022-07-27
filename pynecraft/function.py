@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import dataclasses
-import json
 import math
 import os
 import shutil
@@ -13,7 +12,7 @@ from typing import Any
 from .base import _JsonEncoder, _ensure_size, _in_group, _to_list, _to_tuple
 from .commands import *
 
-_function_re = re.compile(r'(\w+:)?(\w+/)?(\w+)$')
+_function_re = re.compile(r'(\w+:)?(\w+/)?(\w+)')
 
 BLOCKS = 'blocks'
 FLUIDS = 'fluids'
@@ -61,9 +60,9 @@ def good_function_name(name: str):
     :param name: The (probable) function name.
     :return: the input value.
     """
-    m = _function_re.match(name)
+    m = _function_re.fullmatch(name)
     if not m:
-        raise ValueError('%s: Invalid function name' % name)
+        raise ValueError(f'{name}: Invalid function name')
     return name
 
 
@@ -155,7 +154,7 @@ class Function:
             path = path / self.name
         if path.suffix:
             if path.suffix != Function._FUNC_SUFFIX:
-                raise ValueError("%s: Suffix must be absent or '%s'" % (path.suffix, Function._FUNC_SUFFIX))
+                raise ValueError(f'{path.suffix}: Suffix must be absent or "{Function._FUNC_SUFFIX}"')
         else:
             path = path.with_suffix(Function._FUNC_SUFFIX)
         return path
@@ -199,7 +198,7 @@ class Loop(Function):
     As an example, you could have the following:
 
     ```
-    Loop(('foo', 'funcs')).loop(lambda step: say(f'{step.i:d}: {step.elem}, ('Red', 'Green', 'Blue'))
+    Loop(('foo', 'funcs')).loop(lambda step: say(f'{step.i}: {step.elem}, ('Red', 'Green', 'Blue'))
     ```
 
     The lambda will be invoked three times. The ``step`` argument defines the data for the specific iteration; ``i``
@@ -282,7 +281,7 @@ class Loop(Function):
         self.score = score
         self.looped = False
         self._to_incr = Score('_to_incr', score.objective)
-        self.max_score = Score(self.score.target, '%s_max' % self.score.objective)
+        self.max_score = Score(self.score.target, f'{self.score.objective}_max')
         self.setup = ()
         self.before = []
         self.body = ()
@@ -379,7 +378,7 @@ class Loop(Function):
             return _to_tuple(Loop._setup_override())
         return (
             execute().unless().score(self.score).matches((0, None)).run(function(
-                '%s_init' % self.score.target)),
+                f'{self.score.target}_init')),
             execute().if_().score(self._to_incr).matches((1, None)).run(literal(self.score.add(1))),
             self.max_score.set(loop_size),
             self.score.operation(MOD, self.max_score),
@@ -683,7 +682,7 @@ class FunctionSet:
             self.parent.add_child(self)
             self.full_name = pack_or_parent.full_name + ':' + self.name
             if self.parent.parent:
-                raise ValueError('Only two levels of groups (sigh): %s has a parent' % pack_or_parent.name)
+                raise ValueError(f'Only two levels of groups (sigh): {pack_or_parent.name} has a parent')
         elif isinstance(pack_or_parent, DataPack):
             self.pack = pack_or_parent
             self.full_name = self.pack.name
@@ -756,7 +755,7 @@ class FunctionSet:
         """Adds a function to this set."""
         for f in functions:
             if f.name in self._functions:
-                raise ValueError('%s: duplicate function in %s' % (f.name, self.name))
+                raise ValueError(f'{f.name}: duplicate function in {self.name}')
             self._functions[f.name] = f
         return self
 

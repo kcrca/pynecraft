@@ -594,25 +594,18 @@ class TestCommands(unittest.TestCase):
                          'item replace entity @s a.17 with a{b}')
         self.assertEqual(str(
             item().replace().entity(s(), 'a.17').with_('a{b}', 2)), 'item replace entity @s a.17 with a{b} 2')
-        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().block((1, r(2), d(3)),
-                                                                                'a.17')),
+        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().block((1, r(2), d(3)), 'a.17')),
                          'item replace entity @s a.17 from block 1 ~2 ^3 a.17')
-        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().block((1, r(2), d(3)), 'a.17',
-                                                                                'm:a')),
+        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().block((1, r(2), d(3)), 'a.17', 'm:a')),
                          'item replace entity @s a.17 from block 1 ~2 ^3 a.17 m:a')
-        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().entity(p(),
-                                                                                 'a.17')),
+        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().entity(p(), 'a.17')),
                          'item replace entity @s a.17 from entity @p a.17')
-        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().entity(p(), 'a.17',
-                                                                                 'm:a')),
+        self.assertEqual(str(item().replace().entity(s(), 'a.17').from_().entity(p(), 'a.17', 'm:a')),
                          'item replace entity @s a.17 from entity @p a.17 m:a')
-        self.assertEqual(str(item().replace().block((1, r(2), d(3)), 'a:b')), 'item replace block 1 ~2 ^3 a:b')
-        self.assertEqual(str(
-            item().replace().block((1, r(2), d(3)), 'a:b').with_('air')), 'item replace block 1 ~2 ^3 a:b with air')
-        self.assertEqual(str(item().replace().block
-                             ((1, r(2), d(3)), 'a:b').from_().entity(s(),
-                                                                     'b')),
-                         'item replace block 1 ~2 ^3 a:b from entity @s b')
+        self.assertEqual(str(item().replace().block((1, r(2), d(3)), 'hotbar.0').with_('air')),
+                         'item replace block 1 ~2 ^3 hotbar.0 with air')
+        self.assertEqual(str(item().replace().block((1, r(2), d(3)), 'hotbar.0').from_().entity(s(), 'b')),
+                         'item replace block 1 ~2 ^3 hotbar.0 from entity @s b')
         with self.assertRaises(ValueError):
             item().replace().block((1, r(2), d(3)), 'a.17', 'm:a')
             item().replace().entity(s(), 'a.17', 'm:a')

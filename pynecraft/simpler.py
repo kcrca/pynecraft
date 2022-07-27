@@ -44,7 +44,7 @@ class Sign(Block):
         commands = _to_list(commands)
         max_count = max(len(text), len(commands))
         if max_count > 4:
-            raise ValueError('%d: Too many values for text and/or commands' % max_count)
+            raise ValueError(f'{max_count}: Too many values for text and/or commands')
         text = _ensure_size(text, 4)
         commands = _ensure_size(commands, 4)
 
@@ -55,7 +55,7 @@ class Sign(Block):
             txt, cmd = entry
             if txt is None:
                 txt = ''
-            key = 'Text%d' % (i + 1)
+            key = f'Text{i + 1}'
             if isinstance(txt, str):
                 if not cmd:
                     nbt[key] = txt
@@ -300,7 +300,7 @@ class Volume:
     axes_states = tuple(Nbt({'axis': x}) for x in ('x', 'y', 'z'))
     """X, y, and z. Pillars and logs use this, for example."""
     rail_states = tuple(Nbt({'shape': x}) for x in ('east_west', 'north_south') + tuple(
-        'ascending_%s' % x for x in ('east', 'west', 'north', 'south')))
+        f'ascending_{x}' for x in ('east', 'west', 'north', 'south')))
     """The block states that rails can have related to its placements."""
     curved_rail_states = tuple(Nbt({'shape': x}) for x in ('north_east', 'north_west', 'south_east', 'south_west'))
     """The block states that curved rails can have related to its placements."""

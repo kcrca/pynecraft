@@ -25,9 +25,9 @@ from .base import BLUE, COLORS, ColumnPosition, DIMENSION, DurationDef, GREEN, I
     good_name, good_names, good_range, good_resource, good_resource_path, good_resources, to_id, to_name
 from .enums import Advancement, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
-_user_re = re.compile(r'\w+$')
-_uuid_re = re.compile(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+$')
-_team_re = re.compile(r'[\w+.-]{1,16}$')
+_user_re = re.compile(r'\w+')
+_uuid_re = re.compile(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+')
+_team_re = re.compile(r'[\w+.-]{1,16}')
 _display_name_re = re.compile('[A-Z |]')
 _slot_re = re.compile(r'\w+(\.\d+)?')
 _axes_re = re.compile(r'^[xyz]+')
@@ -122,7 +122,7 @@ def good_user(name: str) -> str:
     :param name: The (probable) user name.
     :return: The input value.
     """
-    if not _user_re.match(name):
+    if not _user_re.fullmatch(name):
         raise ValueError(f'{name}: Invalid user name')
     return name
 
@@ -133,7 +133,7 @@ def good_uuid(uuid: str) -> str:
     :param uuid: The (probable) uuid.
     :return: the input value.
     """
-    if not _uuid_re.match(uuid):
+    if not _uuid_re.fullmatch(uuid):
         raise ValueError(f'{uuid}: Invalid UUID string')
     return uuid
 
@@ -146,7 +146,7 @@ def good_team(team: str) -> str | None:
     """
     if team is None:
         return team
-    if not _team_re.match(team):
+    if not _team_re.fullmatch(team):
         raise ValueError(f'{team}: Invalid team name')
     return team
 
@@ -248,7 +248,7 @@ def good_slot(slot: str | None) -> str | None:
     """
     if slot is None:
         return None
-    if not _slot_re.match(slot):
+    if not _slot_re.fullmatch(slot):
         raise ValueError(f'{slot}: Bad slot specification')
     return slot
 
@@ -821,7 +821,7 @@ class Selector(TargetSpec):
     @_fluent
     def pos(self, pos: Position) -> Selector:
         """Add an x,y,z position to the selector."""
-        return self._unique_arg('pos', 'x=%s,y=%s,z=%s' % pos)
+        return self._unique_arg('pos', f'x={pos[0]},y={pos[1]},z={pos[2]}')
 
     @_fluent
     def distance(self, distance: Range) -> Selector:
@@ -1009,7 +1009,7 @@ class _StoreClause(Command):
 class _ExecuteMod(Command):
     @_fluent
     def align(self, axes: str) -> _ExecuteMod:
-        if not _axes_re.match(axes):
+        if not _axes_re.fullmatch(axes):
             raise ValueError(f'{axes}: Must be combination of x, y, and/or z')
         self._add('align', axes)
         return self
@@ -1421,7 +1421,7 @@ class _EffectAction(Command):
             raise ValueError('must give amplifier to use hide_particles')
         seconds_range = range(0, MAX_EFFECT_SECONDS + 1)
         if duration is not None and duration not in seconds_range:
-            raise ValueError(f'{duration:d}: Not in range {seconds_range}')
+            raise ValueError(f'{duration}: Not in range {seconds_range}')
         self._add('give', good_target(target), Effect(effect))
         self._add_opt(duration, amplifier, _bool(hide_particles))
         return str(self)
@@ -1737,7 +1737,7 @@ class _ScoreboardPlayersMod(Command):
                     self._add(good_target(score[0]))
                 else:
                     # An invalid argument to good_score will be most descriptive
-                    raise e
+                    raise
         return str(self)
 
     @_fluent
@@ -1888,7 +1888,7 @@ class _TeleportMod(Command):
         except ValueError as e:
             # Check if the error was from the entity or the anchor
             if is_entity:
-                raise e
+                raise
             self._add(*good_position(facing))
             if anchor is not None:
                 raise ValueError('anchor not allowed when facing coordinates')
@@ -2181,7 +2181,7 @@ def enchant(target: Target, enchantment: Enchantment | str | int, level: int = N
         if type(enchantment) == Enchantment:
             max_level = Enchantment.max_level(enchantment)
             if level not in range(0, max_level + 1):
-                raise ValueError('Level not in range [0..%elem]', max_level)
+                raise ValueError(f'Level not in range [0..{max_level}]')
         cmd._add_opt(level)
     return str(cmd)
 
@@ -2666,7 +2666,7 @@ class NbtHolder(Command):
         if name:
             name = name.strip()
         if id and not name:
-            if _display_name_re.match(id):
+            if _display_name_re.search(id):
                 name = id
                 id = None
             else:
@@ -2698,7 +2698,7 @@ class NbtHolder(Command):
         """Returns the NBT you would use in a sign describing this entity, based on ``full_text``."""
         nbt = Nbt()
         for i in range(0, 4):
-            nbt[f'Text{i + 1:d}'] = self.full_text[i]
+            nbt[f'Text{i + 1}'] = self.full_text[i]
         return nbt
 
     def __str__(self):

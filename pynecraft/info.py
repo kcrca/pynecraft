@@ -103,10 +103,10 @@ class Horse(Entity):
     def __init__(self, name: str, variant=None):
         if variant is None:
             super().__init__(name)
-            self.tag = '%ss' % self.id
+            self.tag = f'{self.id}s'
         else:
             super().__init__('horse', name=name)
-            self.tag = '%s_horses' % to_id(name)
+            self.tag = f'{to_id(name)}_horses'
         self.variant = variant
 
 

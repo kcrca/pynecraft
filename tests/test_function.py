@@ -7,7 +7,7 @@ from pynecraft.function import *
 
 
 def loop_func(step):
-    return f'{step.loop.score.target}[{step.i:d}] = {str(step.elem)}'
+    return f'{step.loop.score.target}[{step.i}] = {str(step.elem)}'
 
 
 class TestFunctions(unittest.TestCase):
@@ -37,7 +37,7 @@ class TestFunctions(unittest.TestCase):
     def test_loop(self):
         try:
             # Reduces the length of matching strings
-            Loop.test_controls().set_prefix_override(lambda i: f'{i:d}:')
+            Loop.test_controls().set_prefix_override(lambda i: f'{i}:')
             Loop.test_controls().set_setup_override(lambda: 'setup')
 
             score = Score('foo', 'obj')
@@ -155,7 +155,7 @@ class TestFunctions(unittest.TestCase):
 
         try:
             # Reduces the length of matching strings
-            Loop.test_controls().set_prefix_override(lambda i: f'{i:d}:')
+            Loop.test_controls().set_prefix_override(lambda i: f'{i}:')
             Loop.test_controls().set_setup_override(lambda: 'setup')
 
             saved = Loop(score, 'f')

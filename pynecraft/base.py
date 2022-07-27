@@ -20,12 +20,12 @@ from io import StringIO
 from json import JSONEncoder
 from typing import Any, Iterable, Mapping, Optional, Tuple, TypeVar, Union
 
-_resource_re = re.compile(r'#?[\w.]+(\[[\w,=\d]*])?$')
-_name_re = re.compile(r'[\w+.-]+$')
+_resource_re = re.compile(r'#?[\w.]+(\[[\w,=\d]*])?')
+_name_re = re.compile(r'[\w+.-]+')
+_nbt_key_re = re.compile(r'\w+')
+_time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
 _backslash_map = {'\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
-_nbt_key_re = re.compile(r'\w+$')
-_time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?$', re.IGNORECASE)
 
 _float_precision = 3
 
@@ -119,7 +119,7 @@ TIME_SPEC = [DAY, NIGHT, NOON, MIDNIGHT, SUNRISE, SUNSET]
 
 def _quote(value):
     if isinstance(value, str):
-        if not re.match(r'\A\w+\Z', value):
+        if not re.fullmatch(r'\w+', value):
             value = _backslash_re.sub(lambda x: '\\' + _backslash_map[x.group(0)], value)
             singles = value.count("'")
             doubles = value.count('"')
@@ -197,7 +197,7 @@ def good_nbt_key(key: str) -> str:
     :param key: The (probable) key.
     :return: the original input string.
     """
-    if not _nbt_key_re.match(key):
+    if not _nbt_key_re.fullmatch(key):
         raise KeyError(f'{key}: Invalid NBT key')
     return key
 
@@ -217,7 +217,7 @@ def good_resource(name: str | None, allow_namespace=True, allow_not=False) -> st
         eval_name = _strip_not(eval_name)
     if allow_namespace:
         eval_name = _strip_namespace(eval_name)
-    if not _resource_re.match(eval_name):
+    if not _resource_re.fullmatch(eval_name):
         raise ValueError(f'{eval_name}: Invalid resource')
     return name
 
@@ -282,7 +282,7 @@ def good_name(name: str | None, allow_not=False) -> str | None:
     orig = name
     if allow_not:
         name = _strip_not(name)
-    if not _name_re.match(name):
+    if not _name_re.fullmatch(name):
         raise ValueError(f'{name}: Invalid name')
     return orig
 
@@ -335,7 +335,7 @@ class Nbt(UserDict):
     sort_keys = True
     """Whether to output keys in sorted order."""
 
-    _json_tags = tuple(['Text%d' % x for x in range(1, 5)] + ['CustomName', 'Pages'])
+    _json_tags = tuple([f'Text{x}' for x in range(1, 5)] + ['CustomName', 'Pages'])
     _float_tags = ('Rotation', 'LeftArm', 'RightArm')
 
     def __init__(self, *args, **kwargs) -> None:
@@ -548,7 +548,7 @@ class Parameters:
 
         Must be at least one."""
         if precision < 1:
-            raise ValueError('%d: Precision cannot be negative' % precision)
+            raise ValueError(f'{precision}: Precision cannot be negative')
         global _float_precision
         _float_precision = precision
 
@@ -714,7 +714,7 @@ class Duration:
         if isinstance(value, (int, float)):
             self.ticks = value
         else:
-            m = _time_re.match(value)
+            m = _time_re.fullmatch(value)
             if not m:
                 raise ValueError(f'{value}: Invalid time spec')
             if not m.group(2):
