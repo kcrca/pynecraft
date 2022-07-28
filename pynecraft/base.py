@@ -20,7 +20,7 @@ from io import StringIO
 from json import JSONEncoder
 from typing import Any, Iterable, Mapping, Optional, Tuple, TypeVar, Union
 
-_jed_resource = r'a-z0-9_.-'
+_jed_resource = r'a-zA-Z0-9_.-'
 _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
                                ([{_jed_resource}]+:)?         # an optional namespace
                                ([/{_jed_resource}]+)          # the resource path
@@ -238,7 +238,7 @@ def good_resources(*names: str, allow_not=False) -> tuple[str, ...]:
 
 
 def good_resource_path(path: str | None, allow_not=False) -> str | None:
-    """Checks if the argument is a vali resource path, or None.
+    """Checks if the argument is a valid resource path, or None.
 
     :param path: The (probable) path.
     :param allow_not: Whether to allow a '!' before any names.
@@ -300,6 +300,75 @@ def good_names(*names: str, allow_not=False) -> tuple[str, ...]:
     for t in names:
         good_name(t, allow_not)
     return names
+
+
+def good_column(col: IntColumn) -> IntColumn:
+    """Checks if the argument is a valid column position.
+
+    A valid column position is a tuple or list of two ints and/or IntRelCoords.
+
+    :param col: The (probable) column position.
+    :return: The input value.
+    """
+    if isinstance(col, (tuple, list)):
+        if len(col) != 2:
+            raise ValueError(f'{col}: Column must have 2 values')
+        for c in col:
+            if not isinstance(c, (int, IntRelCoord)):
+                raise ValueError(f'{c}: not a coordinate')
+        return col
+    raise ValueError(f'{str(col)}: Invalid column position')
+
+
+def good_angle(angle: Angle) -> Angle:
+    """Checks if the angle is a valid one. "Valid" means a float or a tilde relative coordinate (such as ``~45``).
+
+    :param angle: The (probable) angle.
+    :return: The input value.
+    """
+    if isinstance(angle, (int, float)):
+        return angle
+    elif isinstance(angle, RelCoord):
+        if angle.prefix != '~':
+            raise ValueError(f'{angle.prefix}: Invalid angle prefix')
+    else:
+        raise ValueError(f'{angle}: Invalid angle')
+
+
+def good_yaw(yaw: Angle | str | None) -> Angle | None:
+    """Checks if the angle is a valid yaw value, or None.
+
+     "Valid" means a value that good_facing() or good_angle() accepts. If it is a number or RelCoord, it must be in
+     the range [-180, 180).
+
+    :param angle: The (probable) yaw angle.
+    :return: The input value.
+    """
+    if yaw is not None:
+        if isinstance(yaw, str):
+            yaw = good_facing(yaw).rotation[0]
+        else:
+            yaw = good_angle(yaw)
+            yv = yaw.value if isinstance(yaw, RelCoord) else yaw
+            if not -180 <= yv < 180:
+                raise ValueError(f'{yv}: must be in range [-180.0, 180.0)')
+    return yaw
+
+
+def good_pitch(pitch: Angle | None) -> Angle | None:
+    """Checks if the angle is a valid pitch value, or None.
+
+     "Valid" means a value that good_angle() accepts, and that is the range [-90, 90).
+
+    :param angle: The (probable) pitch angle.
+    :return: The input value.
+    """
+    if pitch is not None:
+        pitch = good_angle(pitch)
+        yv = pitch.value if isinstance(pitch, RelCoord) else pitch
+        if not -90 <= yv < 90:
+            raise ValueError(f'{yv}: must be in range [-90.0, 90.0)')
+    return pitch
 
 
 class JsonHolder(ABC):
@@ -570,10 +639,7 @@ def to_name(id: str) -> str:
 
 @functools.total_ordering
 class RelCoord:
-    """A relative coordinate.
-
-    These are shown in minecraft commands with special annotation, such as '~1' or '^2'.
-    """
+    """A relative coordinate. These are shown in minecraft commands with special annotation, such as '~1' or '^2'."""
 
     def __init__(self, prefix: str, v: float):
         self.prefix = prefix
@@ -897,11 +963,12 @@ def good_facing(facing: FacingDef) -> Facing:
 FacingDef = Union[int, str, Facing]
 DurationDef = Union[str, int, TimeSpec]
 Coord = Union[float, RelCoord]
+Angle = Union[float, RelCoord]
 IntCoord = Union[int, IntRelCoord]
 Position = Tuple[Coord, Coord, Coord]
 XYZ = Tuple[float, float, float]
-ColumnPosition = Tuple[Coord, Coord]
-IntColumnPosition = Tuple[IntCoord, IntCoord]
+Column = Tuple[Coord, Coord]
+IntColumn = Tuple[IntCoord, IntCoord]
 
 
 def good_duration(duration: DurationDef) -> TimeSpec | None:

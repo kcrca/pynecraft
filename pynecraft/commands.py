@@ -18,19 +18,21 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
-from .base import BLUE, COLORS, ColumnPosition, DIMENSION, DurationDef, GREEN, IntColumnPosition, JSON_COLORS, \
+from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, GREEN, IntColumn, JSON_COLORS, \
     JsonHolder, Nbt, NbtDef, PINK, PURPLE, Position, RED, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
-    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_duration, \
+    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_column, \
+    good_duration, \
     good_facing, \
-    good_name, good_names, good_range, good_resource, good_resource_path, good_resources, to_id, to_name
+    good_name, good_names, good_pitch, good_range, good_resource, good_resource_path, good_resources, good_yaw, to_id, \
+    to_name
 from .enums import Advancement, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 _user_re = re.compile(r'\w+')
 _uuid_re = re.compile(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+')
 _team_re = re.compile(r'[\w+.-]{1,16}')
 _display_name_re = re.compile('[A-Z |]')
-_slot_re = re.compile(r'\w+(\.\d+)?')
-_axes_re = re.compile(r'^[xyz]+')
+_slot_re = re.compile(r'[a-z]+(\.[a-z0-9]+)?')
+_axes_re = re.compile(r'[xyz]+')
 
 
 def _fluent(method):
@@ -509,7 +511,7 @@ class Command:
             if o is not None:
                 self._add(o)
 
-    def _add_opt_pos(self, pos: Position = None):
+    def _add_opt_pos(self, pos: Position | Column = None):
         if pos is not None:
             self._add_opt(*pos)
 
@@ -1047,8 +1049,8 @@ class _ExecuteMod(Command):
         return self
 
     @_fluent
-    def rotated(self, yaw: float, pitch: float) -> _ExecuteMod:
-        self._add('rotated', yaw, pitch)
+    def rotated(self, yaw: Angle, pitch: float) -> _ExecuteMod:
+        self._add('rotated', good_yaw(yaw), good_pitch(pitch))
         return self
 
     @_fluent
@@ -1475,18 +1477,18 @@ class _FilterClause(Command):
 
 
 class _ForceloadMod(Command):
-    def _from_to(self, action: str, start, end):
+    def _from_to(self, action: str, start: IntColumn, end: IntColumn) -> str:
         self._add(action, *start)
         if end:
             self._add(*end)
         return str(self)
 
     @_fluent
-    def add(self, start: IntColumnPosition, end: IntColumnPosition = None) -> str:
+    def add(self, start: IntColumn, end: IntColumn = None) -> str:
         return self._from_to('add', start, end)
 
     @_fluent
-    def remove(self, start: IntColumnPosition, end: IntColumnPosition = None) -> str:
+    def remove(self, start: IntColumn, end: IntColumn = None) -> str:
         return self._from_to('remove', start, end)
 
     @_fluent
@@ -1495,7 +1497,7 @@ class _ForceloadMod(Command):
         return str(self)
 
     @_fluent
-    def query(self, pos: IntColumnPosition = None) -> str:
+    def query(self, pos: IntColumn = None) -> str:
         self._add('query')
         if pos:
             self._add(*pos)
@@ -1992,8 +1994,8 @@ class _WorldBorderMod(Command):
         return str(self)
 
     @_fluent
-    def center(self, pos: ColumnPosition) -> str:
-        self._add('center', *pos)
+    def center(self, pos: IntColumn) -> str:
+        self._add('center', *good_column(pos))
         return str(self)
 
     @_fluent
@@ -2420,31 +2422,22 @@ def setidletimeout(minutes: int) -> str:
     return str(cmd)
 
 
-def _good_yaw(yaw):
-    if yaw is not None:
-        if isinstance(yaw, str):
-            yaw = good_facing(yaw).rotation[0]
-        elif not -180 < yaw < 180:
-            raise ValueError(f'{yaw}: must be in range -180.0 to 180.0')
-    return yaw
-
-
 def setworldspawn(pos: Position = None, yaw: float | str = None) -> str:
     """Sets the dir spawn."""
     cmd = Command()
     cmd._add('setworldspawn')
     cmd._add_opt_pos(pos)
-    cmd._add_opt(_good_yaw(yaw))
+    cmd._add_opt(good_yaw(yaw))
     return str(cmd)
 
 
-def spawnpoint(target: Target = None, pos: Position = None, yaw: float | str = None) -> str:
+def spawnpoint(target: Target = None, pos: Position = None, yaw: Angle | str = None) -> str:
     """Sets the spawn point for a player."""
     cmd = Command()
     cmd._add('spawnpoint')
     cmd._add_opt(good_target(target))
     cmd._add_opt_pos(pos)
-    cmd._add_opt(_good_yaw(yaw))
+    cmd._add_opt(good_yaw(yaw))
     return str(cmd)
 
 
