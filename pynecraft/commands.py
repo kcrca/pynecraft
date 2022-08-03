@@ -27,13 +27,6 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, GREEN, In
     to_name
 from .enums import Advancement, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
-_user_re = re.compile(r'\w+')
-_uuid_re = re.compile(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+')
-_team_re = re.compile(r'[\w+.-]{1,16}')
-_display_name_re = re.compile('[A-Z |]')
-_slot_re = re.compile(r'[a-z]+(\.[a-z0-9]+)?')
-_axes_re = re.compile(r'[xyz]+')
-
 
 def _fluent(method):
     @wraps(method)
@@ -124,7 +117,7 @@ def good_user(name: str) -> str:
     :param name: The (probable) user name.
     :return: The input value.
     """
-    if not _user_re.fullmatch(name):
+    if not re.fullmatch(r'\w+', name):
         raise ValueError(f'{name}: Invalid user name')
     return name
 
@@ -135,7 +128,7 @@ def good_uuid(uuid: str) -> str:
     :param uuid: The (probable) uuid.
     :return: the input value.
     """
-    if not _uuid_re.fullmatch(uuid):
+    if not re.fullmatch(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+', uuid):
         raise ValueError(f'{uuid}: Invalid UUID string')
     return uuid
 
@@ -148,7 +141,7 @@ def good_team(team: str) -> str | None:
     """
     if team is None:
         return team
-    if not _team_re.fullmatch(team):
+    if not re.fullmatch(r'[\w+.-]{1,16}', team):
         raise ValueError(f'{team}: Invalid team name')
     return team
 
@@ -196,7 +189,7 @@ def good_score(score: ScoreName | None) -> Score | None:
     :return: a Score object, or None.
     """
     if score is None:
-        return score
+        return None
     if isinstance(score, Score):
         return score
     if not isinstance(score, str):
@@ -214,13 +207,13 @@ def good_color_num(color: int | str | None) -> int | None:
     :return:
     """
     if color is None:
-        return color
+        return None
     if isinstance(color, str):
         color_num = COLORS.index(color)
         if color_num < 0:
             raise ValueError(f'{color}: Unknown color')
         return color_num
-    if color not in range(0, len(COLORS)):
+    if color not in range(len(COLORS)):
         raise ValueError(f'{color}: Unknown color')
     return color
 
@@ -235,7 +228,7 @@ def good_color(color: int | str | None) -> str | None:
     :return: the color name, in lower case.
     """
     if color is None:
-        return color
+        return None
     color_num = good_color_num(color)
     return COLORS[color_num]
 
@@ -250,7 +243,7 @@ def good_slot(slot: str | None) -> str | None:
     """
     if slot is None:
         return None
-    if not _slot_re.fullmatch(slot):
+    if not re.fullmatch(r'[a-z]+(\.[a-z0-9]+)?', slot):
         raise ValueError(f'{slot}: Bad slot specification')
     return slot
 
@@ -710,6 +703,10 @@ def p():
     return Selector(Selector._create_key, '@p')
 
 
+player = p
+"""Equivalent to p()."""
+
+
 # noinspection PyProtectedMember
 def random():
     """A target selector for ``@r``. [No single-character version of this exists because it interferes with the r()
@@ -723,10 +720,18 @@ def a():
     return Selector(Selector._create_key, '@a')
 
 
+all_ = a
+"""Equivalent to a()."""
+
+
 # noinspection PyProtectedMember
 def e():
     """A target selector for ``@e``."""
     return Selector(Selector._create_key, '@e')
+
+
+entity = e
+"""Equivalent to e()."""
 
 
 # noinspection PyProtectedMember
@@ -735,19 +740,8 @@ def s():
     return Selector(Selector._create_key, '@s')
 
 
-def entity():
-    """Equivalent to e()."""
-    return e()
-
-
-def player():
-    """Equivalent to p()."""
-    return p()
-
-
-def all_():
-    """Equivalent to a()."""
-    return a()
+self = s
+"""Equivalent to s()."""
 
 
 class Selector(TargetSpec):
@@ -920,10 +914,11 @@ class Selector(TargetSpec):
     @_fluent
     def advancements(self, advancement: _AdvancementCriteria, *advancements: _AdvancementCriteria) -> Selector:
         """Add advancements to the selector."""
-        adv = [advancement, ]
+        adv = [advancement]
         for a in advancements:
             adv.append(a)
-        return self._unique_arg('advancements', '{' + ','.join(str(x) for x in adv) + '}')
+        values = (str(x) for x in adv)
+        return self._unique_arg('advancements', '{' + ','.join(values) + '}')
 
     @_fluent
     def predicate(self, predicate: str, *predicates: str) -> Selector:
@@ -1003,7 +998,7 @@ class _StoreClause(Command):
 class _ExecuteMod(Command):
     @_fluent
     def align(self, axes: str) -> _ExecuteMod:
-        if not _axes_re.fullmatch(axes):
+        if not re.fullmatch(r'[xyz]+', axes):
             raise ValueError(f'{axes}: Must be combination of x, y, and/or z')
         self._add('align', axes)
         return self
@@ -1413,7 +1408,7 @@ class _EffectAction(Command):
             raise ValueError('must give seconds to use amplifier')
         if hide_particles is not None and amplifier is None:
             raise ValueError('must give amplifier to use hide_particles')
-        seconds_range = range(0, MAX_EFFECT_SECONDS + 1)
+        seconds_range = range(MAX_EFFECT_SECONDS + 1)
         if duration is not None and duration not in seconds_range:
             raise ValueError(f'{duration}: Not in range {seconds_range}')
         self._add('give', good_target(target), Effect(effect))
@@ -2174,7 +2169,7 @@ def enchant(target: Target, enchantment: Enchantment | str | int, level: int = N
     if level is not None:
         if type(enchantment) == Enchantment:
             max_level = Enchantment.max_level(enchantment)
-            if level not in range(0, max_level + 1):
+            if level not in range(max_level + 1):
                 raise ValueError(f'Level not in range [0..{max_level}]')
         cmd._add_opt(level)
     return str(cmd)
@@ -2549,11 +2544,11 @@ def tellraw(target: Target, *message: JsonDef) -> str:
     cmd = Command()
     cmd._add('tellraw', target)
     jl = JsonList()
-    for i in range(0, len(message)):
-        if isinstance(message[i], str):
-            jl.append(JsonText.text(message[i]))
+    for m in message:
+        if isinstance(m, str):
+            jl.append(JsonText.text(m))
         else:
-            jl.append(JsonText.as_json(message[i]))
+            jl.append(JsonText.as_json(m))
     if len(jl) == 1:
         jl = jl[0]
     cmd._add(jl)
@@ -2651,12 +2646,12 @@ class NbtHolder(Command):
         if name:
             name = name.strip()
         if id and not name:
-            if _display_name_re.search(id):
+            if re.search('[A-Z |]', id):
                 name = id
                 id = None
             else:
                 name = to_name(id)
-        if not id and name:
+        if name and not id:
             id = to_id(name)
 
         self.id = good_resource(id)
@@ -2682,7 +2677,7 @@ class NbtHolder(Command):
     def sign_nbt(self) -> Nbt:
         """Returns the NBT you would use in a sign describing this entity, based on ``full_text``."""
         nbt = Nbt()
-        for i in range(0, 4):
+        for i in range(4):
             nbt[f'Text{i + 1}'] = self.full_text[i]
         return nbt
 

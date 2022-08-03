@@ -25,7 +25,7 @@ _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#
                                ([{_jed_resource}]+:)?         # an optional namespace
                                ([/{_jed_resource}]+)          # the resource path
                                (\[[,=\s{_jed_resource}]*])?   # an optional state, such as "[facing=south]"
-                            ''', re.X)
+                            ''', re.VERBOSE)
 _name_re = re.compile(r'[\w+.-]+')
 _nbt_key_re = re.compile(r'\w+')
 _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
@@ -179,7 +179,7 @@ def _float(value: float) -> str:
 def _not_ify(value: str | Iterable[str]) -> str | Iterable[str]:
     if isinstance(value, str):
         s = str(value)
-        if s[0] != '!':
+        if not s.startswith('!'):
             s = '!' + s
         return s
     else:
@@ -250,9 +250,7 @@ def good_resource_path(path: str | None, allow_not=False) -> str | None:
     if allow_not:
         path = _strip_not(path)
     path = _strip_namespace(path)
-    if path and path[0] == '/':
-        # allow leading '/'
-        path = path[1:]
+    path = path.lstrip('/')
     for part in path.split('/'):
         try:
             good_resource(part, allow_namespace=False)
@@ -410,10 +408,6 @@ class Nbt(UserDict):
     _json_tags = tuple([f'Text{x}' for x in range(1, 5)] + ['CustomName', 'Pages'])
     _float_tags = ('Rotation', 'LeftArm', 'RightArm')
 
-    def __init__(self, *args, **kwargs) -> None:
-        """Takes the parameters from the UserDict constructor."""
-        super().__init__(*args, **kwargs)
-
     def clone(self):
         """Returns a deep copy of this Nbt"""
         return copy.deepcopy(self)
@@ -467,7 +461,7 @@ class Nbt(UserDict):
             if t not in (int, float):
                 return lst
             if t not in types and len(types) > 0:
-                return list(float(x) for x in lst)
+                return [float(x) for x in lst]
             else:
                 types.add(t)
         return lst
@@ -619,7 +613,7 @@ class Parameters:
     def set_float_precision(cls, precision: int):
         """Sets how many decimal places will be shown for floats. Must be at least one."""
         if precision < 1:
-            raise ValueError(f'{precision}: Precision cannot be negative')
+            raise ValueError(f'{precision}: Precision must be positive')
         cls._float_precision = precision
 
 
@@ -627,9 +621,11 @@ NbtDef = Union[Nbt, Mapping]
 
 
 def to_id(name: str) -> str:
-    """Returns an ID from the passed-in name. If it's already an ID, it is just returned. Otherwise it lower-cases the
-    name, and replaces both ' ' and '| with '_'."""
-    return re.sub(r'\s{2,}', ' ', name.strip().lower()).replace(' ', '_').replace('|', '_')
+    """
+    Returns an ID from the passed-in name. If it's already an ID, it is just returned. Otherwise it lower-cases the
+    name, and replaces both ' ' and '| with '_'.
+    """
+    return re.sub(r'\s+|\|', '_', name.strip().lower())
 
 
 def to_name(id: str) -> str:

@@ -12,8 +12,6 @@ from typing import Any
 from .base import _JsonEncoder, _ensure_size, _in_group, _to_list, _to_tuple
 from .commands import *
 
-_function_re = re.compile(r'(\w+:)?(\w+/)?(\w+)')
-
 BLOCKS = 'blocks'
 FLUIDS = 'fluids'
 ITEMS = 'items'
@@ -47,7 +45,7 @@ def text_lines(*orig: any) -> Iterable[str]:
     result = []
     for cmd in lines(orig):
         text = str(cmd)
-        if len(text) > 0 or text[-1] != '\n':
+        if len(text) > 0 or not text.endswith('\n'):
             text += '\n'
         result.append(text)
     return result
@@ -60,7 +58,7 @@ def good_function_name(name: str):
     :param name: The (probable) function name.
     :return: the input value.
     """
-    m = _function_re.fullmatch(name)
+    m = re.fullmatch(r'(\w+:)?(\w+/)?(\w+)', name)
     if not m:
         raise ValueError(f'{name}: Invalid function name')
     return name
@@ -81,7 +79,7 @@ class Function:
     def full_name(self) -> str:
         if self.parent:
             parent_name = self.parent.full_name
-            if parent_name[-1] != ':':
+            if not parent_name.endswith(':'):
                 parent_name += '/'
             return parent_name + self.name
         return self.name
@@ -295,23 +293,21 @@ class Loop(Function):
         loop.looped = load_info['looped']
 
         lines = [x.rstrip() for x in lines]
-        loop.setup, lines = cls._breakup(lines, load_info['setup_len'])
-        loop.before, lines = cls._breakup(list(lines), load_info['before_len'])
-        loop.body, lines = cls._breakup(lines, load_info['body_len'])
+        loop.setup = tuple(cls._pop_lines(lines, load_info['setup_len']))
+        loop.before = cls._pop_lines(lines, load_info['before_len'])
+        loop.body = tuple(cls._pop_lines(lines, load_info['body_len']))
         loop.after = lines
-        loop.setup = tuple(loop.setup)
-        loop.body = tuple(loop.body)
         loop._iterations = load_info['iterations']
 
         if load_info.get('as_iterations', True) and loop.body:
             new_body = []
-            for i in range(0, len(loop._iterations)):
+            for i, iter in enumerate(loop._iterations):
                 iter_suffix = loop._iter_suffix(i)
                 prefix = str(loop._prefix_for(i)) + ' '
                 name = loop.name + iter_suffix
                 func = Function.load(path.parent / name)
                 lines = func.commands()
-                assert len(lines) == loop._iterations[i]
+                assert len(lines) == iter
                 for line in lines:
                     new_body.append(prefix + line)
             loop.body = tuple(new_body)
@@ -320,8 +316,8 @@ class Loop(Function):
         return loop
 
     @classmethod
-    def _breakup(cls, lines, pos):
-        return lines[:pos], lines[pos:]
+    def _pop_lines(cls, lines, pos):
+        return [lines.pop(0) for _ in range(pos)]
 
     def _load_info(self):
         info = super()._load_info()
@@ -414,7 +410,7 @@ class Loop(Function):
 
         self._iterations = []
         if body_func:
-            for (i, elem) in enumerate(items):
+            for i, elem in enumerate(items):
                 once = lines(body_func(Loop.Step(i, elem, self)))
                 self._iterations.append(len(once))
                 prefix = str(self._prefix_for(i)) + ' '
@@ -523,7 +519,7 @@ class DataPack:
 
     def _save_dict(self, d: dict, path: Path):
         for k, v in d.items():
-            if k[-1] == '/':
+            if k.endswith('/'):
                 subdir = path / k[:-1]
                 subdir.mkdir(exist_ok=True, parents=True)
                 self._save_dict(v, subdir)
@@ -634,9 +630,9 @@ class DataPack:
     def _get_json(self, directory, valid=None, which=None) -> dict:
         if valid:
             _in_group(valid, which)
-        if directory[-1] != '/':
+        if not directory.endswith('/'):
             directory += '/'
-        if which[-1] != '/':
+        if not which.endswith('/'):
             which += '/'
         if directory not in self._json:
             self._json[directory] = {}

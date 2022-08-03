@@ -92,7 +92,6 @@ villager_professions = (
     "Weaponsmith",
     "Unemployed",
 )
-"""The villager professions."""
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
 """The (biome) types of villagers."""
 
@@ -133,20 +132,20 @@ stems = ("Warped", "Crimson")
 """The kinds of stems."""
 corals = ('Horn', 'Tube', 'Fire', 'Bubble', 'Brain')
 """The kinds of coral."""
-tulips = ("Red", "Orange", "Pink", "White")
+tulips = ('Red', 'Orange', 'Pink', 'White')
 """The colors of tulips."""
-small_flowers = ("Allium", "Azure Bluet", "Blue Orchid", "Dandelion", "Oxeye Daisy", "Poppy")
+small_flowers = ('Allium', 'Azure Bluet', 'Blue Orchid', 'Dandelion', 'Oxeye Daisy', 'Poppy')
 """The small flowers."""
 
 moon_phases = (
-    (206000, "Full"),
-    (38000, "Waning Gibbous"),
-    (62000, "Three Quarters"),
-    (86000, "Waning Crescent"),
-    (110000, "New"),
-    (134000, "Waxing Crescent"),
-    (158000, "First Quarter"),
-    (182000, "Waxing Gibbous"),
+    (206000, 'Full'),
+    (38000, 'Waning Gibbous'),
+    (62000, 'Three Quarters'),
+    (86000, 'Waning Crescent'),
+    (110000, 'New'),
+    (134000, 'Waxing Crescent'),
+    (158000, 'First Quarter'),
+    (182000, 'Waxing Gibbous'),
 )
 """The phases of the moon and the time for each."""
 

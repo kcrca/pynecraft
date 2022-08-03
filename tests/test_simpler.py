@@ -17,7 +17,7 @@ class TestSimpler(unittest.TestCase):
 
     def test_sign(self):
         self.assertEqual(r'"\"foo\""', Sign.text("foo"))
-        self.assertEqual('{Text2: \'""\'}', str(Sign.lines_nbt((None, ''))))
+        self.assertEqual('''{Text2: '""'}''', str(Sign.lines_nbt((None, ''))))
         self.assertEqual(Nbt({'Text2': 'foo', 'Text3': 'bar baz'}), Sign.lines_nbt((None, 'foo', 'bar baz')))
 
         self.assertEqual([

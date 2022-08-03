@@ -49,7 +49,7 @@ class Sign(Block):
         commands = _ensure_size(commands, 4)
 
         nbt = Nbt()
-        for i, entry in enumerate(tuple(zip(text, commands))):
+        for i, entry in enumerate(zip(text, commands)):
             if entry == (None, None):
                 continue
             txt, cmd = entry
@@ -73,7 +73,10 @@ class Sign(Block):
 
     @classmethod
     def text(cls, txt: str) -> str:
-        """The sign's text"""
+        """
+        Text fit for a sign's ``Text`` fields  It simply puts double quotes around the text, and escapes pre-existing
+        double quotes. This is simple text values, not for full JSON text options; for that see the JsonText class.
+        """
         return r'"\"%s\""' % txt.replace('"', r'\\"')
 
     def _kind_name(self, wood):
@@ -128,13 +131,6 @@ class WallSign(Sign):
     def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None) -> Commands:
         """When placing a wall sign, the orientations are different, but also can be found in good_facing()."""
         return super().place(pos, facing, water, nbt)
-
-
-_backslash_map = {'"': '"', '\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
-
-_fm = {}
-for k, v in _backslash_map.items():
-    _fm[v] = k
 
 
 class Book:
@@ -198,7 +194,7 @@ class Book:
         jt['author'] = self.author
         if self.display_name:
             jt['display_name'] = {'Lore': self.display_name}
-        jt['pages'] = list(JsonList(x) for x in self._pages[:])
+        jt['pages'] = [JsonList(x) for x in self._pages[:]]
         self._cur_page = cur_page
         self._pages.pop()
         return jt
