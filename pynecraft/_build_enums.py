@@ -234,10 +234,15 @@ class Effect(PageEnumDesc):
         return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col], cols[self.desc_col]))
 
     def supplement_class(self):
+        set_name = f'_{self.name.lower()}_negs'
         print()
         print('    @staticmethod')
         print('    def negative(effect):')
-        print(f'      return effect.value in {sorted(self.negatives)}')
+        print(f'      return effect.value in {set_name}')
+        print()
+        print()
+        print('# noinspection SpellCheckingInspection')
+        print(f'{set_name} = {self.negatives}')
 
 
 class Enchantment(PageEnumDesc):
@@ -271,10 +276,14 @@ class Enchantment(PageEnumDesc):
         return name, value, desc
 
     def supplement_class(self):
+        dict_name = f'_{self.name.lower()}_maxes'
         print()
         print('    @staticmethod')
         print('    def max_level(enchantment):')
-        print(f'      return {self.maxes}[enchantment.value]')
+        print(f'      return {dict_name}[enchantment.value]')
+        print()
+        print('# noinspection SpellCheckingInspection')
+        print(f'{dict_name} = {self.maxes}')
 
 
 class GameRule(PageEnumDesc):
@@ -321,10 +330,14 @@ class GameRule(PageEnumDesc):
         return name, value, clean(cols[self.desc_col])
 
     def supplement_class(self):
+        dict_name = f'_{self.name.lower()}_types'
         print()
         print('    @staticmethod')
         print('    def rule_type(rule):')
-        print(f'      return {self.types}[rule.value]')
+        print(f'      return {dict_name}[rule.value]')
+        print()
+        print('# noinspection SpellCheckingInspection')
+        print(f'{dict_name} = {self.types}')
 
 
 class Particle(PageEnumDesc):
