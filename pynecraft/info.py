@@ -219,4 +219,4 @@ tropical_fish = {
         Fish('Goatfish', 'White-Yellow Spotter', 67110144),
         Fish('Cotton Candy Betta', 'Pink-Light Blue Spotty', 50726144)),
 }
-"""The data for the naturally-occurring tropical fish."""
+"""The data for the predefined naturally-occurring tropical fish."""
