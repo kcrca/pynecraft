@@ -406,7 +406,7 @@ class Nbt(UserDict):
     """Whether to output keys in sorted order."""
 
     _json_tags = tuple([f'Text{x}' for x in range(1, 5)] + ['CustomName', 'Pages'])
-    _float_tags = ('Rotation', 'LeftArm', 'RightArm')
+    _forced_type_tags = {'Rotation': 'f', 'Left Arm': 'f', 'Right Arm': 'f', 'Motion': 'd'}
 
     def clone(self):
         """Returns a deep copy of this Nbt"""
@@ -419,7 +419,7 @@ class Nbt(UserDict):
 
     def __str__(self):
         sout = StringIO()
-        Nbt._to_str(self, sout, False)
+        Nbt._to_str(self, sout)
         return str(sout.getvalue())
 
     def __missing__(self, key):
@@ -484,7 +484,7 @@ class Nbt(UserDict):
         sout.write(':')
 
     @classmethod
-    def _to_str(cls, elem, sout, force_float):
+    def _to_str(cls, elem, sout, force_type=None):
         if isinstance(elem, (Nbt, dict)):
             sout.write('{')
             keys = elem.keys()
@@ -498,10 +498,10 @@ class Nbt(UserDict):
                 cls._space(sout)
                 if key in cls._json_tags:
                     sout.write(_quote(json.dumps(value, cls=_JsonEncoder, sort_keys=Nbt.sort_keys)))
-                elif key in cls._float_tags:
-                    cls._to_str(value, sout, force_float=True)
+                elif key in cls._forced_type_tags:
+                    cls._to_str(value, sout, force_type=cls._forced_type_tags[key])
                 else:
-                    cls._to_str(value, sout, force_float)
+                    cls._to_str(value, sout, force_type)
             sout.write('}')
         elif isinstance(elem, str):
             sout.write(_quote(elem))
@@ -511,13 +511,13 @@ class Nbt(UserDict):
             first = True
             for e in elem:
                 first = cls._comma(first, sout)
-                cls._to_str(e, sout, force_float)
+                cls._to_str(e, sout, force_type)
             sout.write(']')
         elif isinstance(elem, bool):
             sout.write(_bool(elem))
-        elif isinstance(elem, float) or (force_float and isinstance(elem, int)):
+        elif isinstance(elem, float) or (force_type and isinstance(elem, int)):
             sout.write(_float(elem))
-            sout.write('f')
+            sout.write(force_type if force_type else 'f')
         elif isinstance(elem, int):
             sout.write(str(elem))
         else:
@@ -733,8 +733,8 @@ def _rel_coord(ch, f, v, *others) -> RelCoord | Tuple[RelCoord, ...]:
     return tuple(f(x) for x in (v, *others))
 
 
-def r(v: float, *others: float) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | Tuple[
-    RelCoord, ...]:
+def r(v: float, *others: float) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | Tuple[
+    RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
     """Returns a single or tuple '~' relative coordinate(s) of its input value(s). If all values are integers,
     the value(s) will be IntRelCoords. """
     return _rel_coord('~', r, v, *others)

@@ -278,7 +278,7 @@ class Loop(Function):
         super().__init__(name, base_name)
         self.score = score
         self.looped = False
-        self._to_incr = Score('_to_incr', score.objective)
+        self.to_incr = Score('_to_incr', score.objective)
         self.max_score = Score(self.score.target, f'{self.score.objective}_max')
         self.setup = ()
         self.before = []
@@ -375,7 +375,7 @@ class Loop(Function):
         return (
             execute().unless().score(self.score).matches((0, None)).run(function(
                 f'{self.score.target}_init')),
-            execute().if_().score(self._to_incr).matches((1, None)).run(literal(self.score.add(1))),
+            execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1))),
             self.max_score.set(loop_size),
             self.score.operation(MOD, self.max_score),
         )
@@ -426,9 +426,9 @@ class Loop(Function):
     def cur(self) -> Commands:
         """Return commands for a "cur" function that will run the function without incrementing the score."""
         return lines(
-            self._to_incr.set(0),
+            self.to_incr.set(0),
             function(self.full_name),
-            self._to_incr.set(1),
+            self.to_incr.set(1),
         )
 
 

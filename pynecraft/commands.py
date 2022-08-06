@@ -926,6 +926,23 @@ class Selector(TargetSpec):
         return self._multi_args('predicate', predicate, predicates)
 
 
+class _IfDataMod(Command):
+    @_fluent
+    def block(self, pos: Position, nbt_path: str) -> _ExecuteMod:
+        self._add('block', *pos, nbt_path)
+        return self._start(_ExecuteMod())
+
+    @_fluent
+    def entity(self, target: Target, nbt_path: str) -> _ExecuteMod:
+        self._add('entity', good_target(target), nbt_path)
+        return self._start(_ExecuteMod())
+
+    @_fluent
+    def storage(self, source: str, nbt_path: str) -> _ExecuteMod:
+        self._add('storage', source, nbt_path)
+        return self._start(_ExecuteMod())
+
+
 class _IfClause(Command):
     @_fluent
     def block(self, pos: Position, block: BlockDef) -> _ExecuteMod:
@@ -938,19 +955,9 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def data_block(self, pos: Position, nbt_path: str) -> _ExecuteMod:
-        self._add('data', 'block', *pos, nbt_path)
-        return self._start(_ExecuteMod())
-
-    @_fluent
-    def data_entity(self, target: Target, nbt_path: str) -> _ExecuteMod:
-        self._add('data', 'entity', good_target(target), nbt_path)
-        return self._start(_ExecuteMod())
-
-    @_fluent
-    def data_storage(self, source: str, nbt_path: str) -> _ExecuteMod:
-        self._add('data', 'storage', source, nbt_path)
-        return self._start(_ExecuteMod())
+    def data(self) -> _IfDataMod:
+        self._add('data')
+        return self._start(_IfDataMod())
 
     @_fluent
     def entity(self, target: Target) -> _ExecuteMod:

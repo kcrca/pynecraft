@@ -90,9 +90,9 @@ class TestCommands(unittest.TestCase):
     def test_if_clause(self):
         self.assertEqual('blocks 1 2 3 4 5 6 7 8 9 masked',
                          str(_IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), MASKED)))
-        self.assertEqual('data block 1 ~2 ^3 {}', str(_IfClause().data_block((1, r(2), d(3)), '{}')))
-        self.assertEqual('data entity @a {}', str(_IfClause().data_entity(a(), '{}')))
-        self.assertEqual('data storage stone {}', str(_IfClause().data_storage('stone', '{}')))
+        self.assertEqual('data block 1 ~2 ^3 {}', str(_IfClause().data().block((1, r(2), d(3)), '{}')))
+        self.assertEqual('data entity @a {}', str(_IfClause().data().entity(a(), '{}')))
+        self.assertEqual('data storage stone {}', str(_IfClause().data().storage('stone', '{}')))
         self.assertEqual('predicate foo', str(_IfClause().predicate('foo')))
         self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, ('up', 'down'))))
         self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, Score('up', 'down'))))

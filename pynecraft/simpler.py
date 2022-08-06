@@ -379,7 +379,7 @@ class Volume:
 class ItemFrame(Entity):
     """A class for item frames."""
 
-    def __init__(self, facing: int | str, glowing: bool = None, nbt=None):
+    def __init__(self, facing: int | str,*, glowing: bool = None, nbt=None):
         """Creates an ItemFrame object facing in the given direction. See good_facing() for useful values."""
         nbt = Nbt.as_nbt(nbt) if nbt else Nbt({})
         nbt = nbt.merge({'Facing': good_facing(facing).number, 'Fixed': True})
@@ -389,6 +389,10 @@ class ItemFrame(Entity):
         """Sets the item that is in the frame."""
         block = good_block(item)
         self.merge_nbt({'Item': Item.nbt_for(block)})
+        return self
+
+    def fixed(self, value:bool)->ItemFrame:
+        self.nbt['Fixed'] = value
         return self
 
     def named(self, name: BlockDef = None) -> ItemFrame:

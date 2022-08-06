@@ -1,6 +1,6 @@
 """Contains various data about vanilla Minecraft."""
 
-from .base import to_id
+from .base import Nbt, to_id
 from .commands import Block, Entity
 
 
@@ -61,7 +61,7 @@ instruments = (
     Instrument('snare', 'Snare Drum', Block('Sand')),
     Instrument('xylophone', 'Xylophone', Block('Bone Block')),
     Instrument('chime', 'Chime', Block('Packed Ice')),
-    Instrument('harp', 'Piano', Block('grass_block', name='Other')),
+    Instrument('harp', 'Harp', Block('grass_block', name='Other')),
     Instrument('guitar', 'Guitar', Block('white_wool', name='Wool')),
     Instrument('bass', 'Bass', Block('oak_planks', name='Wood')),
     Instrument('flute', 'Flute', Block('Clay')),
@@ -149,6 +149,9 @@ moon_phases = (
 )
 """The phases of the moon and the time for each."""
 
+axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
+"""The kinds of axolotls."""
+
 # noinspection SpellCheckingInspection
 music_discs = (
     'music_disc_13',
@@ -171,27 +174,49 @@ music_discs = (
 
 
 class Fish(Entity):
-    """Data about a named fish."""
+    """Data about a tropical fish."""
 
-    def __init__(self, name: str, variant: int):
-        super().__init__('tropical_fish', name=name, nbt={'Variant': variant})
+    def __init__(self, name: str, desc: str, variant: int):
+        super().__init__('tropical_fish', name=name, nbt=Nbt(Variant=variant))
+        self.name = name
+        self.desc = desc
         self.variant = variant
 
 
-# noinspection SpellCheckingInspection
 tropical_fish = {
-    'kob': (Fish('Red-White Kob', 917504), Fish('Orange-White Kob', 65536)),
-    'sunstreak': (Fish('White-Silver Sunstreak', 134217984), Fish('Gray-Sky SunStreak', 50790656),
-                  Fish('Blue-Gray SunStreak', 118161664)),
-    'snooper': (Fish('Gray-Red Snooper', 235340288),),
-    'dasher': (Fish('White-Gray Dasher', 117441280), Fish('Teal-Rose Dasher', 101253888)),
-    'brinely': (Fish('White-Gray Brinely', 117441536), Fish('Line-Sky Dasher', 50660352)),
-    'spotty': (Fish('White-Yellow Spotter', 67110144), Fish('Rose-Sky Spotty', 50726144)),
-    'flopper': (Fish('Gray Flopper', 117899265), Fish('White-Yellow Flopper', 67108865)),
-    'stripey': (Fish('Orange-Gray Stripey', 117506305), Fish('Yellow Stripey', 67371265)),
-    'glitter': (Fish('White-Gray Glitter', 117441025),),
-    'blockfish': (Fish('Plum-Yellow Blockfish', 67764993), Fish('Red-White Blockfish', 918273)),
-    'betty': (Fish('Red-White Betty', 918529),),
-    'clayfish': (Fish('White-Red Clayfish', 234882305), Fish('White-Orange Clayfish', 16778497)),
+    'Flopper': (
+        Fish('Black Tang', 'Gray Flopper', 117899265),
+        Fish('Blue Tang', 'Gray-Blue Flopper', 185008129),
+        Fish('Yellow Tang', 'Yellow Flopper', 67371009),
+        Fish('Threadfin', 'White-Yellow Flopper', 67108865)),
+    'Stripey': (
+        Fish('Anemone', 'Orange-Gray Stripey', 117506305),),
+    'Glitter': (
+        Fish('Moorish Idol', 'White-Gray Glitter', 117441025),),
+    'Blockfish': (
+        Fish('Dottyback', 'Purple-Yellow Blockfish', 67764993),
+        Fish('Red Snapper', 'Red-White Blockfish', 918273)),
+    'Betty': (
+        Fish('Red Cichlid', 'Red-White Betty', 918529),),
+    'Clayfish': (
+        Fish('Emperor Red Snapper', 'White-Red Clayfish', 234882305),
+        Fish('Butterflyfish', 'White-Gray Clayfish', 117441793),
+        Fish('Ornate Butterflyfish', 'White-Orange Clayfish', 16778497)),
+    'Kob': (
+        Fish('Tomato Clownfish', 'Red-White Kob', 917504),
+        Fish('Clownfish', 'Orange-White Kob', 65536)),
+    'Sunstreak': (
+        Fish('Triggerfish', 'Gray-White Sunstreak', 50790656),
+        Fish('Cichlid', 'Blue-Gray Sunstreak', 118161664)),
+    'Snooper': (
+        Fish('Red Lipped Blenny', 'Gray-Red Snooper', 235340288),),
+    'Dasher': (
+        Fish('Yellowtail Parrotfish', 'Cyan-Yellow Dasher', 67699456),
+        Fish('Parrotfish', 'Cyan-Pink Dasher', 101253888)),
+    'Brinely': (
+        Fish('Queen Angelfish', 'Lime-Light Blue Dasher', 50660352),),
+    'Spotty': (
+        Fish('Goatfish', 'White-Yellow Spotter', 67110144),
+        Fish('Cotton Candy Betta', 'Pink-Light Blue Spotty', 50726144)),
 }
 """The data for the naturally-occurring tropical fish."""
