@@ -409,3 +409,5 @@ class ItemFrame(Entity):
             nbt = self.nbt
             nbt['Item']['tag']['display']['Name'] = JsonText.text(block.name)
         return self
+
+

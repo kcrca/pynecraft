@@ -209,7 +209,7 @@ def good_color_num(color: int | str | None) -> int | None:
     if color is None:
         return None
     if isinstance(color, str):
-        color_num = COLORS.index(color)
+        color_num = COLORS.index(to_id(color))
         if color_num < 0:
             raise ValueError(f'{color}: Unknown color')
         return color_num

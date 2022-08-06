@@ -5,6 +5,7 @@ import unittest
 from pynecraft.base import DARK_AQUA, N, NORTH, ROTATION_180, SW, d, r
 from pynecraft.commands import *
 from pynecraft.function import text_lines
+from pynecraft.info import Fish
 from pynecraft.simpler import *
 
 
@@ -210,3 +211,21 @@ class TestSimpler(unittest.TestCase):
             'fill ~1 ~2 ~3 ^4 ^5 ^6 furnace[facing=up] replace observer[facing=up]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 furnace[facing=down] replace observer[facing=down]',
         ], lines(v.replace_facing_all('furnace', 'observer')))
+
+    def test_fish(self):
+        var1 = Fish.variant('Spotty', 'Blue', 'RED')
+        self.assertEqual(0x0e_0b_00_01, var1)
+        fish = Fish('foo', 'bar', var1)
+        self.assertTrue(fish.is_small())
+        self.assertEqual(0, fish.which_body())
+        self.assertEqual('Spotty', fish.kind())
+        self.assertEqual('blue', fish.body_color())
+        self.assertEqual('red', fish.pattern_color())
+        var2 = Fish.variant('Glitter', 'GREEN', 'light blue')
+        self.assertEqual(0x03_0d_03_00, var2)
+        fish = Fish('foo', 'bar', var2)
+        self.assertFalse(fish.is_small())
+        self.assertEqual(3, fish.which_body())
+        self.assertEqual('Glitter', fish.kind())
+        self.assertEqual('green', fish.body_color())
+        self.assertEqual('light_blue', fish.pattern_color())
