@@ -1,7 +1,7 @@
 """Contains various data about vanilla Minecraft."""
 from __future__ import annotations
 
-from .base import COLORS, Nbt, to_id
+from .base import COLORS, Nbt, to_id, to_name
 from .commands import Block, Entity, good_color_num
 
 
@@ -178,11 +178,14 @@ class Fish(Entity):
     """Data about a tropical fish."""
     _kinds = []
 
-    def __init__(self, name: str, desc: str, variant: int):
+    def __init__(self, variant: int, name: str = None):
+        """
+        Creates a new fish with the given variant, and (if present) name. If not given, the desc() will be used as
+        the name.
+        """
         super().__init__('tropical_fish', name=name, nbt=Nbt(Variant=variant))
-        self.name = name
-        self.desc = desc
         self.variant = variant
+        self.name = name if name else self.desc()
 
     @classmethod
     def _fish_kinds(cls):
@@ -220,68 +223,88 @@ class Fish(Entity):
             kind = cls._fish_kinds().index(kind)
         return kind
 
-    def is_small(self):
+    def is_small(self) -> bool:
+        """Return whether this fish is small."""
         return self.variant & 0xff != 0
 
-    def which_body(self):
+    def which_body(self) -> int:
+        """Return which of the body types is used for this fish, in the range (0-5]."""
         return (self.variant & 0xff00) >> 8
 
-    def kind(self):
+    def kind(self) -> str:
+        """Returns the name of the kind of fish."""
         return self._fish_kinds()[self.kind_num()]
 
-    def kind_num(self):
+    def kind_num(self) -> int:
+        """Returns the number of this kind of fish. This is an index into ``tropical_fish.keys()``."""
         if self.is_small():
             return self.which_body()
         else:
             return self.which_body() + 6
 
-    def body_color(self):
+    def body_color(self) -> str:
+        """Returns the body color of the fish."""
         return COLORS[self.body_color_num()]
 
-    def body_color_num(self):
+    def body_color_num(self) -> int:
+        """Returns the number of the body color of the fish as an index into ``COLORS``."""
         return (self.variant & 0xff0000) >> 16
 
-    def pattern_color(self):
+    def pattern_color(self) -> str:
+        """Returns the pattern color of the fish."""
         return COLORS[self.pattern_color_num()]
 
-    def pattern_color_num(self):
+    def pattern_color_num(self) -> int:
+        """Returns the number of the pattern color of the fish as an index into ``COLORS``."""
         return (self.variant & 0xff000000) >> 24
+
+    def desc(self) -> str:
+        """
+        Returns the description of this fish, which includes its body and pattern color (or just one if they are the
+        same) and the body kind name.
+        """
+        body_color = to_name(self.body_color())
+        pattern_color = to_name(self.pattern_color())
+        if body_color == pattern_color:
+            return f'{body_color} {self.kind()}'
+        else:
+            return f'{body_color}-{pattern_color} {self.kind()}'
 
 
 tropical_fish = {
     'Spotty': (
-        Fish('Goatfish', 'White-Yellow Spotter', 67110144),
-        Fish('Cotton Candy Betta', 'Pink-Light Blue Spotty', 50726144)),
+        Fish(67110144, 'Goatfish'),
+        Fish(50726144, 'Cotton Candy Betta')),
     'Brinely': (
-        Fish('Queen Angelfish', 'Lime-Light Blue Dasher', 50660352),),
+        Fish(50660352, 'Queen Angelfish'),),
     'Dasher': (
-        Fish('Yellowtail Parrotfish', 'Cyan-Yellow Dasher', 67699456),
-        Fish('Parrotfish', 'Cyan-Pink Dasher', 101253888)),
+        Fish(67699456, 'Yellowtail Parrotfish'),
+        Fish(101253888, 'Parrotfish')),
     'Snooper': (
-        Fish('Red Lipped Blenny', 'Gray-Red Snooper', 235340288),),
+        Fish(235340288, 'Red Lipped Blenny'),),
     'Sunstreak': (
-        Fish('Triggerfish', 'Gray-White Sunstreak', 50790656),
-        Fish('Cichlid', 'Blue-Gray Sunstreak', 118161664)),
+        Fish(50790656, 'Triggerfish'),
+        Fish(118161664, 'Cichlid')),
     'Kob': (
-        Fish('Tomato Clownfish', 'Red-White Kob', 917504),
-        Fish('Clownfish', 'Orange-White Kob', 65536)),
+        Fish(917504, 'Tomato Clownfish'),
+        Fish(65536, 'Clownfish')),
     'Clayfish': (
-        Fish('Emperor Red Snapper', 'White-Red Clayfish', 234882305),
-        Fish('Butterflyfish', 'White-Gray Clayfish', 117441793),
-        Fish('Ornate Butterflyfish', 'White-Orange Clayfish', 16778497)),
+        Fish(234882305, 'Emperor Red Snapper'),
+        Fish(117441793, 'Butterflyfish'),
+        Fish(16778497, 'Ornate Butterflyfish')),
     'Betty': (
-        Fish('Red Cichlid', 'Red-White Betty', 918529),),
+        Fish(918529, 'Red Cichlid'),),
     'Blockfish': (
-        Fish('Dottyback', 'Purple-Yellow Blockfish', 67764993),
-        Fish('Red Snapper', 'Red-White Blockfish', 918273)),
+        Fish(67764993, 'Dottyback'),
+        Fish(918273, 'Red Snapper')),
     'Glitter': (
-        Fish('Moorish Idol', 'White-Gray Glitter', 117441025),),
+        Fish(117441025, 'Moorish Idol'),),
     'Stripey': (
-        Fish('Anemone', 'Orange-Gray Stripey', 117506305),),
+        Fish(117506305, 'Anemone'),),
     'Flopper': (
-        Fish('Black Tang', 'Gray Flopper', 117899265),
-        Fish('Blue Tang', 'Gray-Blue Flopper', 185008129),
-        Fish('Yellow Tang', 'Yellow Flopper', 67371009),
-        Fish('Threadfin', 'White-Yellow Flopper', 67108865)),
+        Fish(117899265, 'Black Tang'),
+        Fish(185008129, 'Blue Tang'),
+        Fish(67371009, 'Yellow Tang'),
+        Fish(67108865, 'Threadfin')),
 }
 """The data for the predefined naturally-occurring tropical fish."""
