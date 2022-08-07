@@ -406,7 +406,7 @@ class Nbt(UserDict):
     """Whether to output keys in sorted order."""
 
     _json_tags = tuple([f'Text{x}' for x in range(1, 5)] + ['CustomName', 'Pages'])
-    _forced_type_tags = {'Rotation': 'f', 'Left Arm': 'f', 'Right Arm': 'f', 'Motion': 'd'}
+    _forced_type_tags = {'Rotation': 'f', 'LeftArm': 'f', 'RightArm': 'f', 'Motion': 'd'}
 
     def clone(self):
         """Returns a deep copy of this Nbt"""
