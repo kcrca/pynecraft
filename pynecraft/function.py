@@ -64,6 +64,12 @@ def good_function_name(name: str):
     return name
 
 
+def _write_json(values: Mapping, path: Path):
+    with open(path, 'w') as fp:
+        json.dump(values, fp, cls=_JsonEncoder, indent=4)
+        fp.write('\n')
+
+
 class Function:
     """A class that represents a function."""
     _LOAD_INFO = '# __internal_load: '
@@ -512,8 +518,7 @@ class DataPack:
         path.mkdir(parents=True)
         self.function_set.save(path / self._data_dir())
         self._save_dict(self._json, path / self._data_dir())
-        with open(path / 'pack.mcmeta', 'w') as fp:
-            json.dump(self._mcmeta, fp, cls=_JsonEncoder)
+        _write_json(self._mcmeta, path / 'pack.mcmeta')
         with open(path / 'README', 'w') as fp:
             fp.write("Files in this tree were auto-generated using pynecraft. Hand modifications will be lost!")
 
@@ -524,8 +529,7 @@ class DataPack:
                 subdir.mkdir(exist_ok=True, parents=True)
                 self._save_dict(v, subdir)
             else:
-                with open((path / k).with_suffix('.json'), 'w') as fp:
-                    json.dump(v, fp, cls=_JsonEncoder, indent=2)
+                _write_json(v, (path / k).with_suffix('.json'))
 
     @property
     def name(self):
