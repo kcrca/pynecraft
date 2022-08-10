@@ -208,7 +208,7 @@ class Effect(PageEnumDesc):
         self.value_col = None
         self.name_col = None
         self.type_col = None
-        self.negatives = set()
+        self.types = {}
 
     def header(self, col: int, text: str):
         if text == 'Display name':
@@ -229,20 +229,21 @@ class Effect(PageEnumDesc):
     def extract(self, cols):
         if 'N/A' in cols[self.filter_col].text:
             return None
-        if cols[self.type_col].text.startswith('Negative'):
-            self.negatives.add(clean(cols[self.value_col]))
+        type_desc = cols[self.type_col].text
+        name = clean(cols[self.value_col])
+        self.types[name] = True if 'Positive' in type_desc else False if 'Negative' in type_desc else None
         return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col], cols[self.desc_col]))
 
     def supplement_class(self):
-        set_name = f'_{self.name.lower()}_negs'
+        set_name = f'_{self.name.lower()}_types'
         print()
         print('    @staticmethod')
-        print('    def negative(effect):')
-        print(f'      return effect.value in {set_name}')
+        print('    def positive(effect):')
+        print(f'      return {set_name}[effect.value]')
         print()
         print()
         print('# noinspection SpellCheckingInspection')
-        print(f'{set_name} = {self.negatives}')
+        print(f'{set_name} = {self.types}')
 
 
 class Enchantment(PageEnumDesc):
