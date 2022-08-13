@@ -240,13 +240,11 @@ class Effect(PageEnumDesc):
         types_map_name = f'_{self.name.lower()}_positive'
         ids_map_name = f'_{self.name.lower()}_ids'
         print()
-        print('    @staticmethod')
-        print('    def positive(effect):')
-        print(f'      return {types_map_name}[effect.value]')
+        print('    def positive(self):')
+        print(f'      return {types_map_name}[self.value]')
         print()
-        print('    @staticmethod')
-        print('    def id(effect):')
-        print(f'      return {ids_map_name}[effect.value]')
+        print('    def id(self):')
+        print(f'      return {ids_map_name}[self.value]')
         print()
         print()
         print('# noinspection SpellCheckingInspection')
@@ -289,9 +287,8 @@ class Enchantment(PageEnumDesc):
     def supplement_class(self):
         dict_name = f'_{self.name.lower()}_maxes'
         print()
-        print('    @staticmethod')
-        print('    def max_level(enchantment):')
-        print(f'      return {dict_name}[enchantment.value]')
+        print('    def max_level(self):')
+        print(f'      return {dict_name}[self.value]')
         print()
         print('# noinspection SpellCheckingInspection')
         print(f'{dict_name} = {self.maxes}')
@@ -343,9 +340,8 @@ class GameRule(PageEnumDesc):
     def supplement_class(self):
         dict_name = f'_{self.name.lower()}_types'
         print()
-        print('    @staticmethod')
-        print('    def rule_type(rule):')
-        print(f'      return {dict_name}[rule.value]')
+        print('    def rule_type(self):')
+        print(f'      return {dict_name}[self.value]')
         print()
         print('# noinspection SpellCheckingInspection')
         print(f'{dict_name} = {self.types}')
@@ -428,9 +424,8 @@ if __name__ == '__main__':
 
                 map_name = f'_{tab.name.lower()}_display'
                 print()
-                print('    @staticmethod')
-                print('    def display_name(elem) -> str:')
-                print(f'        return {map_name}[elem]')
+                print('    def display_name(self) -> str:')
+                print(f'        return {map_name}[self]')
 
                 tab.supplement_class()
 

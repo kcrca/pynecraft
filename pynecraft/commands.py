@@ -2175,7 +2175,7 @@ def enchant(target: Target, enchantment: Enchantment | str | int, level: int = N
     cmd._add(enchantment)
     if level is not None:
         if type(enchantment) == Enchantment:
-            max_level = Enchantment.max_level(enchantment)
+            max_level = enchantment.max_level()
             if level not in range(max_level + 1):
                 raise ValueError(f'Level not in range [0..{max_level}]')
         cmd._add_opt(level)
@@ -2234,7 +2234,7 @@ def gamerule(rule: GameRule | str, value: bool | int = None) -> str:
     rule = GameRule(rule)
     cmd._add('gamerule', rule)
     if value is not None:
-        rule_type = GameRule.rule_type(rule)
+        rule_type = rule.rule_type()
         if rule_type == 'int':
             if type(value) != int:
                 raise ValueError(f'{rule}: int value required')

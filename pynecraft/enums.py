@@ -318,9 +318,9 @@ class Advancement(ValueEnum):
     THE_HEALING_POWER_OF_FRIENDSHIP = "husbandry/kill_axolotl_target"
     """Team up with an axolotl and win a fight."""
 
-    @staticmethod
-    def display_name(elem) -> str:
-        return _advancement_display[elem]
+    def \
+            display_name(self) -> str:
+        return _advancement_display[self]
 
 
 # noinspection SpellCheckingInspection
@@ -466,17 +466,14 @@ class Effect(ValueEnum):
     DARKNESS = "darkness"
     """Darkens the players screen."""
 
-    @staticmethod
-    def display_name(elem) -> str:
-        return _effect_display[elem]
+    def display_name(self) -> str:
+        return _effect_display[self]
 
-    @staticmethod
-    def positive(effect):
-        return _effect_positive[effect.value]
+    def positive(self):
+        return _effect_positive[self.value]
 
-    @staticmethod
-    def id(effect):
-        return _effect_ids[effect.value]
+    def id(self):
+        return _effect_ids[self.value]
 
 
 # noinspection SpellCheckingInspection
@@ -598,13 +595,11 @@ class Enchantment(ValueEnum):
     UNBREAKING = "unbreaking"
     """Reduces durability damage."""
 
-    @staticmethod
-    def display_name(elem) -> str:
-        return _enchantment_display[elem]
+    def display_name(self) -> str:
+        return _enchantment_display[self]
 
-    @staticmethod
-    def max_level(enchantment):
-        return _enchantment_maxes[enchantment.value]
+    def max_level(self):
+        return _enchantment_maxes[self.value]
 
 
 # noinspection SpellCheckingInspection
@@ -718,13 +713,11 @@ class GameRule(ValueEnum):
     UNIVERSAL_ANGER = "universalAnger"
     """Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled."""
 
-    @staticmethod
-    def display_name(elem) -> str:
-        return _gamerule_display[elem]
+    def display_name(self) -> str:
+        return _gamerule_display[self]
 
-    @staticmethod
-    def rule_type(rule):
-        return _gamerule_types[rule.value]
+    def rule_type(self):
+        return _gamerule_types[self.value]
 
 
 # noinspection SpellCheckingInspection
@@ -792,9 +785,8 @@ class ScoreCriteria(ValueEnum):
     ARMOR = "armor"
     """Ranges from 0 to 20; represents the amount of armor points the player has. May appear as 0 for players before their armor has changed for the first time."""
 
-    @staticmethod
-    def display_name(elem) -> str:
-        return _scorecriteria_display[elem]
+    def display_name(self) -> str:
+        return _scorecriteria_display[self]
 
 
 # noinspection SpellCheckingInspection
@@ -996,9 +988,8 @@ class Particle(ValueEnum):
     WITCH = "witch"
     """Witches."""
 
-    @staticmethod
-    def display_name(elem) -> str:
-        return _particle_display[elem]
+    def display_name(self) -> str:
+        return _particle_display[self]
 
 
 # noinspection SpellCheckingInspection
