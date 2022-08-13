@@ -203,12 +203,13 @@ class Effect(PageEnumDesc):
 
     def __init__(self):
         super().__init__('Effect', WIKI + 'Effect?so=search#Effect_list', 'Effects')
-        self.filter_col = None
+        self.id_col = None
         self.desc_col = None
         self.value_col = None
         self.name_col = None
         self.type_col = None
         self.types = {}
+        self.ids = {}
 
     def header(self, col: int, text: str):
         if text == 'Display name':
@@ -218,8 +219,7 @@ class Effect(PageEnumDesc):
         elif text.find('Effect') >= 0:
             self.desc_col = col
         elif text.find('ID (J.E.)') >= 0:
-            # Filter out non-Java-Edition effects.
-            self.filter_col = col
+            self.id_col = col
         elif text.find('Type') >= 0:
             # Used to generate a method that returns the positive- or negative-ness of the effect.
             self.type_col = col
@@ -227,23 +227,33 @@ class Effect(PageEnumDesc):
             pass
 
     def extract(self, cols):
-        if 'N/A' in cols[self.filter_col].text:
+        if 'N/A' in cols[self.id_col].text:
+            # Filter out non-Java-Edition effects.
             return None
         type_desc = cols[self.type_col].text
         name = clean(cols[self.value_col])
         self.types[name] = True if 'Positive' in type_desc else False if 'Negative' in type_desc else None
-        return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col], cols[self.desc_col]))
+        self.ids[name] = int(clean(cols[self.id_col]))
+        return (clean(cols[x].text) for x in (self.name_col, self.value_col, self.desc_col))
 
     def supplement_class(self):
-        set_name = f'_{self.name.lower()}_types'
+        types_map_name = f'_{self.name.lower()}_positive'
+        ids_map_name = f'_{self.name.lower()}_ids'
         print()
         print('    @staticmethod')
         print('    def positive(effect):')
-        print(f'      return {set_name}[effect.value]')
+        print(f'      return {types_map_name}[effect.value]')
+        print()
+        print('    @staticmethod')
+        print('    def id(effect):')
+        print(f'      return {ids_map_name}[effect.value]')
         print()
         print()
         print('# noinspection SpellCheckingInspection')
-        print(f'{set_name} = {self.types}')
+        print(f'{types_map_name} = {self.types}')
+        print()
+        print('# noinspection SpellCheckingInspection')
+        print(f'{ids_map_name} = {self.ids}')
 
 
 class Enchantment(PageEnumDesc):
@@ -416,10 +426,20 @@ if __name__ == '__main__':
                     print(f'    {key} = "{value}"')
                     print(f'    """{desc}"""')
 
-                print()
+                map_name = f'_{tab.name.lower()}_display'
                 print()
                 print('    @staticmethod')
                 print('    def display_name(elem) -> str:')
-                values = (f'{tab.name}.{k}: "%s"' % v.replace('"', r'\"') for k, v in names.items())
-                print('        return {' + (', '.join(values)) + '}[elem]')
+                print(f'        return {map_name}[elem]')
+
                 tab.supplement_class()
+
+                print()
+                print()
+                print('# noinspection SpellCheckingInspection')
+                values = (f'{tab.name}.{k}: "%s"' % v.replace('"', r'\"') for k, v in names.items())
+                print(f'{map_name} = {{{",".join(values)}}}')
+                # print('        return {' + (', '.join(values)) + '}[elem]')
+
+
+

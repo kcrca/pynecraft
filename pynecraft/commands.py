@@ -2852,9 +2852,15 @@ class Score(Command):
         """Return a 'get' command for the score."""
         return self._cmd().get(self)
 
-    def set(self, value: int) -> str:
-        """Returns a 'get' command for the score."""
-        return self._cmd().set(self, value)
+    def set(self, value: int | str | Command) -> str:
+        """
+        Returns a 'set' command for the score. If the value is a command, returns a command that sets the value to
+        the result of that command.
+        """
+        if isinstance(value, int):
+            return self._cmd().set(self, value)
+        else:
+            return str(execute().store(RESULT).score(self).run(value))
 
     def add(self, value: int) -> str:
         """Returns an 'add' command for the score."""

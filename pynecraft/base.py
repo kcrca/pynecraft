@@ -991,6 +991,9 @@ def good_range(spec: Range) -> str:
 
     if isinstance(spec, float) or isinstance(spec, int):
         return str(spec)
+    for v in spec:
+        if v is not None and not isinstance(v, (float, int)):
+            raise ValueError(f'{v}: Not None or a number')
     s = '' if spec[0] is None else spec[0]
     e = '' if spec[1] is None else spec[1]
     if isinstance(s, float) and isinstance(e, float) and s > e:
