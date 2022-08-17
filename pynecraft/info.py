@@ -21,22 +21,22 @@ class Color:
 
 
 colors = (
-    Color("White", 0xf9fffe),
-    Color("Orange", 0xf9801d),
-    Color("Magenta", 0xc74ebd),
-    Color("Light Blue", 0x3ab3da),
-    Color("Yellow", 0xfed83d),
-    Color("Lime", 0x80c71f),
-    Color("Pink", 0xf38baa),
-    Color("Gray", 0x474f52),
-    Color("Light Gray", 0x9d9d97),
-    Color("Cyan", 0x169c9c),
-    Color("Purple", 0x8932b8),
-    Color("Blue", 0x3c44aa),
-    Color("Brown", 0x835432),
-    Color("Green", 0x5e7c16),
-    Color("Red", 0xb02e26),
-    Color("Black", 0x1d1d21),
+    Color('White', 0xf9fffe),
+    Color('Orange', 0xf9801d),
+    Color('Magenta', 0xc74ebd),
+    Color('Light Blue', 0x3ab3da),
+    Color('Yellow', 0xfed83d),
+    Color('Lime', 0x80c71f),
+    Color('Pink', 0xf38baa),
+    Color('Gray', 0x474f52),
+    Color('Light Gray', 0x9d9d97),
+    Color('Cyan', 0x169c9c),
+    Color('Purple', 0x8932b8),
+    Color('Blue', 0x3c44aa),
+    Color('Brown', 0x835432),
+    Color('Green', 0x5e7c16),
+    Color('Red', 0xb02e26),
+    Color('Black', 0x1d1d21),
 )
 """The standard colors."""
 
@@ -77,59 +77,62 @@ instruments = (
 """The instruments note blocks can play."""
 
 villager_professions = (
-    "Armorer",
-    "Butcher",
-    "Cartographer",
-    "Cleric",
-    "Farmer",
-    "Fisherman",
-    "Fletcher",
-    "Leatherworker",
-    "Librarian",
-    "Mason",
-    "Nitwit",
-    "Shepherd",
-    "Toolsmith",
-    "Weaponsmith",
-    "Unemployed",
+    'Armorer',
+    'Butcher',
+    'Cartographer',
+    'Cleric',
+    'Farmer',
+    'Fisherman',
+    'Fletcher',
+    'Leatherworker',
+    'Librarian',
+    'Mason',
+    'Nitwit',
+    'Shepherd',
+    'Toolsmith',
+    'Weaponsmith',
+    'Unemployed',
 )
-villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
+villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
 """The (biome) types of villagers."""
 
 
 class Horse(Entity):
     """Data about a horse."""
 
-    def __init__(self, name: str, variant=None):
-        if variant is None:
+    variants = ('White', 'Creamy', 'Chestnut', 'Brown', 'Black', 'Gray', 'Dark Brown')
+    markings = (None, 'White', 'White Field', 'White Dots', 'Black Dots')
+
+    def __init__(self, name: str, markings=None):
+        if markings is None:
             super().__init__(name)
             self.tag = f'{self.id}s'
         else:
             super().__init__('horse', name=name)
             self.tag = f'{to_id(name)}_horses'
-        self.variant = variant
+        self.variant = markings
 
 
 horses = (
-    Horse("White", 0),
-    Horse("Creamy", 1),
-    Horse("Chestnut", 2),
-    Horse("Brown", 3),
-    Horse("Black", 4),
-    Horse("Gray", 5),
-    Horse("Dark Brown", 6),
+    Horse('White', 0),
+    Horse('Creamy', 1),
+    Horse('Chestnut', 2),
+    Horse('Brown', 3),
+    Horse('Black', 4),
+    Horse('Gray', 5),
+    Horse('Dark Brown', 6),
 )
 """The horses."""
 other_horses = (
-    Horse("Mule"),
-    Horse("Donkey"),
-    Horse("Skeleton Horse"),
-    Horse("Zombie Horse"),
+    Horse('Mule'),
+    Horse('Donkey'),
+    Horse('Skeleton Horse'),
+    Horse('Zombie Horse'),
 )
 """The non-horse horses."""
-woods = ("Acacia", "Birch", "Jungle", "Mangrove", "Oak", "Dark Oak", "Spruce")
+woods = ('Acacia', 'Birch', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Spruce')
 """The kinds of wood."""
-stems = ("Warped", "Crimson")
+stems = ('Warped', 'Crimson')
 """The kinds of stems."""
 corals = ('Horn', 'Tube', 'Fire', 'Bubble', 'Brain')
 """The kinds of coral."""
