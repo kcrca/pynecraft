@@ -89,8 +89,8 @@ class TestSimpler(unittest.TestCase):
             'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=false] replace #logs[wl=false]',
         ], lines(v.replace('stone', '#logs', ({'wl': True}, {'wl': False}))))
         self.assertEqual([
-            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[up=down, wl=true] replace #logs[up=down, wl=true]',
-            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[up=down, wl=false] replace #logs[up=down, wl=false]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[up=down, wl=true] replace #logs[wl=true]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[up=down, wl=false] replace #logs[wl=false]',
         ], lines(v.replace('stone', '#logs', ({'wl': True}, {'wl': False}), {'up': 'down'})))
         self.assertEqual([
             'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[type=double] replace #slabs[type=double]',
@@ -98,9 +98,9 @@ class TestSimpler(unittest.TestCase):
             'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[type=bottom] replace #slabs[type=bottom]',
         ], lines(v.replace_slabs('stone')))
         self.assertEqual([
-            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=double] replace #slabs[wl=true, type=double]',
-            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=top] replace #slabs[wl=true, type=top]',
-            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=bottom] replace #slabs[wl=true, type=bottom]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=double] replace #slabs[type=double]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=top] replace #slabs[type=top]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=bottom] replace #slabs[type=bottom]',
         ], lines(v.replace_slabs('stone', new_state={'wl': 'true'})))
         self.assertEqual([
             'fill ~1 ~2 ~3 ^4 ^5 ^6 oak[half=top, facing=north, shape=straight] replace #stairs[half=top, facing=north, shape=straight]',
