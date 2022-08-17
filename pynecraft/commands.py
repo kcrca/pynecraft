@@ -1294,7 +1294,7 @@ class _FromOrValue(Command):
         return str(self)
 
     @_fluent
-    def value(self, v: str | float | Nbt | Iterable[str | float | Nbt]) -> str:
+    def value(self, v: str | float | Nbt | Iterable[str | float | Mapping]) -> str:
         if isinstance(v, float):
             v = _float(v)
         self._add('value', Nbt.to_str(v))
@@ -1532,8 +1532,8 @@ class _ItemTarget(Command):
 
 class _ItemReplace(Command):
     @_fluent
-    def with_(self, item: str, count: int = None) -> str:
-        self._add('with', item)
+    def with_(self, item: EntityDef, count: int = None) -> str:
+        self._add('with', good_entity(item))
         self._add_opt(count)
         return str(self)
 
@@ -1785,7 +1785,11 @@ class _PlaceMod(Command):
 
 class _ScheduleMod(Command):
     @_fluent
-    def function(self, path: str, time: DurationDef, action: str) -> str:
+    def function(self, path: str | object, time: DurationDef, action: str) -> str:
+        try:
+            path = path.full_name
+        except AttributeError:
+            pass
         self._add('function', good_resource_path(path), good_duration(time), _in_group(SCHEDULE_ACTIONS, action))
         return str(self)
 

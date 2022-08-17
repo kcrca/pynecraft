@@ -101,7 +101,7 @@ class TestSimpler(unittest.TestCase):
             'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=double] replace #slabs[wl=true, type=double]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=top] replace #slabs[wl=true, type=top]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[wl=true, type=bottom] replace #slabs[wl=true, type=bottom]',
-        ], lines(v.replace_slabs('stone', added_state={'wl': 'true'})))
+        ], lines(v.replace_slabs('stone', new_state={'wl': 'true'})))
         self.assertEqual([
             'fill ~1 ~2 ~3 ^4 ^5 ^6 oak[half=top, facing=north, shape=straight] replace #stairs[half=top, facing=north, shape=straight]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 oak[half=top, facing=north, shape=inner_left] replace #stairs[half=top, facing=north, shape=inner_left]',
