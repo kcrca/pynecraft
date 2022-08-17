@@ -232,11 +232,11 @@ class Loop(Function):
     iterate_at = 10
     """The threshold for breaking the loop out into iterations. A negative value disables this feature. 
     
-    It is easy to see that there is one comparision per line of the iterations. When iterations have a lot of lines, 
+    It is easy to see that there is one comparison per line of the iterations. When iterations have a lot of lines, 
     this results in long scripts with lots of tests. This value says that when any iteration is over this number of 
     lines, each iteration will be broken out into a separate function, which will be invoked with one test. So 
     instead of (say) 12 iterations of 10 lines each giving one function with 120 tests, there will be 12 tests, 
-    each of which invokes a separate 10 line function. This give more funcitons, but fewer tests. 
+    each of which invokes a separate 10 line function. This give more functions, but fewer tests. 
     
     Benchmarking is hard with Minecraft on this point. This is our (rather random) guess at the tradeoff for this value.
     """
@@ -366,7 +366,7 @@ class Loop(Function):
                 self.body = orig_body
 
     def _as_iteration(self):
-        return Loop.iterate_at >= 0 and len(self._iterations) > 0 and max(self._iterations) >= Loop.iterate_at
+        return len(self._iterations) > 0 and 0 <= Loop.iterate_at <= max(self._iterations)
 
     def _iter_suffix(self, i):
         width = int(math.log(len(self._iterations), 10)) + 1

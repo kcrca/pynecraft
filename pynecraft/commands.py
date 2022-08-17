@@ -23,7 +23,8 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, GREEN, In
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_column, \
     good_duration, \
     good_facing, \
-    good_name, good_names, good_pitch, good_range, good_resource, good_resource_path, good_resources, good_yaw, to_id, \
+    good_item_stack, good_name, good_names, good_pitch, good_range, good_resource, good_resource_path, good_resources, \
+    good_yaw, to_id, \
     to_name
 from .enums import Advancement, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
@@ -634,7 +635,7 @@ class Uuid(TargetSpec):
     @classmethod
     def _signed_32(cls, value):
         iv = value & 0xffffffff
-        if (iv & 0x80000000):
+        if iv & 0x80000000:
             iv = -0x100000000 + iv
         return iv
 
@@ -1722,7 +1723,7 @@ class _ScoreboardPlayersMod(Command):
         try:
             score = good_score(score)
             self._add(score)
-        except (TypeError, ValueError) as e:
+        except (TypeError, ValueError):
             # if not a valid full score name, it must be just a target
             if isinstance(score, (str, TargetSpec)):
                 self._add(good_target(score))
@@ -1787,6 +1788,7 @@ class _ScheduleMod(Command):
     @_fluent
     def function(self, path: str | object, time: DurationDef, action: str) -> str:
         try:
+            # noinspection PyUnresolvedReferences
             path = path.full_name
         except AttributeError:
             pass
@@ -1885,7 +1887,7 @@ class _TeleportMod(Command):
             self._add('entity', facing)
             if anchor:
                 self._add(_in_group(ENTITY_ANCHOR, anchor))
-        except ValueError as e:
+        except ValueError:
             # Check if the error was from the entity or the anchor
             if is_entity:
                 raise
@@ -2665,7 +2667,7 @@ class NbtHolder(Command):
         if name and not id:
             id = to_id(name)
 
-        self.id = good_resource(id)
+        self.id = good_item_stack(id)
         self.nbt = Nbt()
         self._add(id)
         self.sign_text = tuple(name.split('|'))
@@ -2823,6 +2825,7 @@ class Block(NbtHolder):
 class Score(Command):
     """This class represents a score, and provides simpler mechanisms for generating commands to manipulate it."""
 
+    # noinspection PyArgumentList -- I don't know why it thinks 'self' isn't fulfilled for the invocation of players()
     _cmd_base = scoreboard().players()
 
     def __init__(self, target: Target, objective: str):
@@ -2848,6 +2851,8 @@ class Score(Command):
 
     def init(self, value: int = 0) -> Iterable[str]:
         """Initializes the score by ensure the objective exists, and setting its value to the provided value."""
+        # noinspection PyArgumentList -- I don't know why it thinks 'self' isn't fulfilled for the invocation of
+        # objectives() or unless()
         return (
             scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY),
             execute().unless().score(self).matches(0).run().scoreboard().players().add(self, value))

@@ -271,6 +271,18 @@ def good_resource_paths(*paths: str, allow_not=False) -> tuple[str, ...]:
     return paths
 
 
+def good_item_stack(item: str):
+    """
+    Checks if the argument is a valid item stack specification. This only checks the resource part of the item stack.
+
+    :param item: The (probable) item stack.
+    :return: the input value
+    """
+    resource, *_ = item.split('{')
+    good_resource(resource)
+    return item
+
+
 def good_name(name: str | None, allow_not=False) -> str | None:
     """Checks if the argument is a valid name, such as for a user, or None.
 
@@ -339,7 +351,7 @@ def good_yaw(yaw: Angle | str | None) -> Angle | None:
      "Valid" means a value that good_facing() or good_angle() accepts. If it is a number or RelCoord, it must be in
      the range [-180, 180).
 
-    :param angle: The (probable) yaw angle.
+    :param yaw: The (probable) yaw angle.
     :return: The input value.
     """
     if yaw is not None:
@@ -358,7 +370,7 @@ def good_pitch(pitch: Angle | None) -> Angle | None:
 
      "Valid" means a value that good_angle() accepts, and that is the range [-90, 90).
 
-    :param angle: The (probable) pitch angle.
+    :param pitch: The (probable) pitch angle.
     :return: The input value.
     """
     if pitch is not None:
@@ -622,14 +634,16 @@ NbtDef = Union[Nbt, Mapping]
 
 def to_id(name: str) -> str:
     """
-    Returns an ID from the passed-in name. If it's already an ID, it is just returned. Otherwise it lower-cases the
+    Returns an ID from the passed-in name. If it's already an ID, it is just returned. Otherwise, it lower-cases the
     name, and replaces both ' ' and '| with '_'.
     """
     return re.sub(r'\s+|\|', '_', name.strip().lower())
 
 
 def to_name(id: str) -> str:
-    """Returns a user-friendly name from the passed-in ID. It just replaces '_' with spaces and title-cases the result."""
+    """
+    Returns a user-friendly name from the passed-in ID. It just replaces '_' with spaces and title-cases the result.
+    """
     return id.replace('_', ' ').title()
 
 
@@ -733,8 +747,8 @@ def _rel_coord(ch, f, v, *others) -> RelCoord | Tuple[RelCoord, ...]:
     return tuple(f(x) for x in (v, *others))
 
 
-def r(v: float, *others: float) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | Tuple[
-    RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
+def r(v: float, *others: float) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
+                                   Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
     """Returns a single or tuple '~' relative coordinate(s) of its input value(s). If all values are integers,
     the value(s) will be IntRelCoords. """
     return _rel_coord('~', r, v, *others)
