@@ -100,9 +100,6 @@ villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Tai
 class Horse(Entity):
     """Data about a horse."""
 
-    variants = ('White', 'Creamy', 'Chestnut', 'Brown', 'Black', 'Gray', 'Dark Brown')
-    markings = (None, 'White', 'White Field', 'White Dots', 'Black Dots')
-
     def __init__(self, name: str, markings=None):
         if markings is None:
             super().__init__(name)
