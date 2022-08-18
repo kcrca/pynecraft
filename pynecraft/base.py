@@ -14,7 +14,7 @@ import json
 import math
 import re
 from abc import ABC, abstractmethod
-from collections import UserDict
+from collections import UserDict, UserList
 from html.parser import HTMLParser
 from io import StringIO
 from json import JSONEncoder
@@ -417,6 +417,11 @@ class Nbt(UserDict):
     sort_keys = True
     """Whether to output keys in sorted order."""
 
+    class TypedArray(UserList):
+        def __init__(self, type: str, *values):
+            super().__init__(*values)
+            self.type = type
+
     _json_tags = tuple([f'Text{x}' for x in range(1, 5)] + ['CustomName', 'Pages'])
     _forced_type_tags = {'Motion': 'd', 'Rotation': 'f',
                          'LeftArm': 'f', 'RightArm': 'f', 'LeftLeg': 'f', 'RightLeg': 'f', 'Head': 'f', 'Body': 'f'}
@@ -516,6 +521,15 @@ class Nbt(UserDict):
                 else:
                     cls._to_str(value, sout, force_type)
             sout.write('}')
+        elif isinstance(elem, Nbt.TypedArray):
+            sout.write('[')
+            sout.write(elem.type)
+            sout.write(';')
+            first = True
+            for e in elem:
+                first = cls._comma(first, sout)
+                cls._to_str(e, sout)
+            sout.write(']')
         elif isinstance(elem, str):
             sout.write(_quote(elem))
         elif isinstance(elem, (list, tuple)):
