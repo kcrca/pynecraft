@@ -818,10 +818,10 @@ class Selector(TargetSpec):
         return self._unique_arg('distance', good_range(distance))
 
     @_fluent
-    def volume(self, values: Tuple[float, float, float]) -> Selector:
+    def volume(self, deltas: Tuple[float, float, float]) -> Selector:
         """Add a volume to the selector. Must have three values in the list or tuple."""
-        dx, dy, dz = values
-        return self._unique_arg('delta', f'dx={str(dx)},dy={str(dy)},dz={str(dz)}')
+        dx, dy, dz = deltas
+        return self._unique_arg('delta', f'dx={_float(dx)},dy={_float(dy)},dz={_float(dz)}')
 
     @_fluent
     def scores(self, *score_specs: str) -> Selector:
@@ -1077,7 +1077,7 @@ class _ExecuteMod(Command):
         return self._start(_StoreClause())
 
     @_fluent
-    def run(self, cmd: str | Command | Commands, *other_cmds: str | Command) -> str | tuple[str]:
+    def run(self, cmd: str | Command | Commands, *other_cmds: str | Command | Commands) -> str | tuple[str]:
         """
         If cmds is empty, expect the command to follow.
         Otherwise, return an 'execute' command for each element of cmds.

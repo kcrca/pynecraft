@@ -259,18 +259,6 @@ def good_resource_path(path: str | None, allow_not=False) -> str | None:
     return orig
 
 
-def good_resource_paths(*paths: str, allow_not=False) -> tuple[str, ...]:
-    """Calls good_resource_path on each name.
-
-    :param paths: The (probable) paths
-    :param allow_not: Whether to allow a '!' before any names.
-    :return: the input values.
-    """
-    for t in paths:
-        good_resources(t, allow_not=allow_not)
-    return paths
-
-
 def good_item_stack(item: str):
     """
     Checks if the argument is a valid item stack specification. This only checks the resource part of the item stack.
@@ -341,6 +329,7 @@ def good_angle(angle: Angle) -> Angle:
     elif isinstance(angle, RelCoord):
         if angle.prefix != '~':
             raise ValueError(f'{angle.prefix}: Invalid angle prefix')
+        return angle
     else:
         raise ValueError(f'{angle}: Invalid angle')
 
@@ -399,6 +388,15 @@ class _JsonEncoder(JSONEncoder):
         return JSONEncoder.default(self, o)
 
 
+_VALID_NBT_ARRAY_TYPES = ('I', 'L', 'B')
+
+
+def _good_array_type(type):
+    if not type.upper() in _VALID_NBT_ARRAY_TYPES:
+        raise ValueError(f'{type}: Must be one of {_VALID_NBT_ARRAY_TYPES}')
+    return type.upper()
+
+
 class Nbt(UserDict):
     """A simple NBT handling class, that models NBT values as a python dictionary.
 
@@ -418,9 +416,14 @@ class Nbt(UserDict):
     """Whether to output keys in sorted order."""
 
     class TypedArray(UserList):
-        def __init__(self, type: str, *values):
-            super().__init__(*values)
-            self.type = type
+        def __init__(self, type: str, initlist=None):
+            super().__init__(initlist)
+            self.type = _good_array_type(type)
+
+        def __str__(self):
+            sout = StringIO()
+            Nbt._to_str(self, sout)
+            return str(sout.getvalue())
 
     _json_tags = tuple([f'Text{x}' for x in range(1, 5)] + ['CustomName', 'Pages'])
     _forced_type_tags = {'Motion': 'd', 'Rotation': 'f',
@@ -584,9 +587,9 @@ class Nbt(UserDict):
         """
         if key in self:
             value = self[key]
+            assert isinstance(value, list), f'{key}: Expected list value, got {value}'
         else:
             value = self[key] = []
-        assert isinstance(value, list), f'{key}: Expected list value, got {value}'
         return value
 
     def get_nbt(self, key: str) -> Nbt:
@@ -636,7 +639,7 @@ class Parameters:
         """Returns how many decimal places will be shown for floats."""
         return cls._float_precision
 
-    @staticmethod
+    @classmethod
     def set_float_precision(cls, precision: int):
         """Sets how many decimal places will be shown for floats. Must be at least one."""
         if precision < 1:
@@ -707,17 +710,11 @@ class RelCoord:
             other = other.value
         return self._v(self.value * other)
 
-    def __div__(self: U, other: float | U) -> U:
+    def __truediv__(self, other):
         if not isinstance(other, (float, int)):
             assert other.prefix == self.prefix
             other = other.value
         return self._v(self.value / other)
-
-    def __mod__(self: U, other: float | U) -> U:
-        if not isinstance(other, (float, int)):
-            assert other.prefix == self.prefix
-            other = other.value
-        return self._v(self.value % other)
 
     def __floordiv__(self: U, other: float | U) -> U:
         if not isinstance(other, (float, int)):
@@ -725,7 +722,7 @@ class RelCoord:
             other = other.value
         return self._v(self.value // other)
 
-    def __exp__(self: U, other: float) -> U:
+    def __pow__(self: U, other: float) -> U:
         return self._v(self.value ** other)
 
     def __abs__(self: U) -> U:
@@ -741,9 +738,6 @@ class RelCoord:
 
     def __pos__(self: U) -> U:
         return self
-
-    def truth(self):
-        return self.value
 
 
 U = TypeVar('U', bound=RelCoord)
