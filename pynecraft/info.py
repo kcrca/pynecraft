@@ -10,9 +10,13 @@ from .commands import Block, Entity, good_color_num
 from .simpler import Item
 
 blocks: dict[str, Block] = {}
-"""All blocks by name and ID. See ``block_items`` if you want an item for a block."""
+"""All blocks by name. See ``block_items`` if you want an item for a block."""
+blocks_by_id: dict[str, Block] = {}
+"""All blocks by ID."""
 items: dict[str, Item] = {}
-"""All items by name and ID. Does not include items for blocks, but see ``block_items``."""
+"""All items by name. Does not include items for blocks, but see ``block_items``."""
+items_by_id: dict[str, Item] = {}
+"""All items by ID."""
 
 
 def __read_things(which: str, ctor):
@@ -27,16 +31,14 @@ def __read_things(which: str, ctor):
             except ValueError:
                 id = desc = name
             thing = ctor(to_id(id), name=desc)
-            all_things[id] = thing
-            all_things[to_id(id)] = thing
             all_things[desc] = thing
-    return all_things
+    return all_things, dict((t.id, t) for t in sorted(all_things.values(), key=lambda t: t.id))
 
 
 def __read_lists():
-    global blocks, items
-    blocks = __read_things('blocks', Block)
-    items = __read_things('items', Block)
+    global blocks, blocks_by_id, items, items_by_id
+    blocks, blocks_by_id = __read_things('blocks', Block)
+    items, items_by_id = __read_things('items', Block)
 
 
 __read_lists()

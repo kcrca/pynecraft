@@ -1,6 +1,6 @@
 import unittest
 
-from pynecraft.info import Fish, block_items, blocks, items
+from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id
 
 
 class TestInfo(unittest.TestCase):
@@ -26,11 +26,11 @@ class TestInfo(unittest.TestCase):
 
     def test_full_lists(self):
         self.assertIn('Oak Sign', blocks)
-        self.assertIn('oak_sign', blocks)
+        self.assertIn('oak_sign', blocks_by_id)
         self.assertNotIn('oak_wall_sign', blocks)
 
         self.assertIn('Book and Quill', items)
-        self.assertIn('writable_book', items)
+        self.assertIn('writable_book', items_by_id)
         self.assertNotIn('Oak Sign', items)
 
         self.assertIn('Cocoa', block_items)
@@ -39,3 +39,5 @@ class TestInfo(unittest.TestCase):
 
         self.assertSequenceEqual(tuple(blocks.values()), sorted(blocks.values()))
         self.assertSequenceEqual(tuple(items.values()), sorted(items.values()))
+        self.assertSequenceEqual(tuple(blocks_by_id.values()), sorted(blocks.values(), key=lambda t: t.id))
+        self.assertSequenceEqual(tuple(items_by_id.values()), sorted(items.values(), key=lambda t: t.id))

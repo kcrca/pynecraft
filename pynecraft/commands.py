@@ -2223,6 +2223,12 @@ def forceload() -> _ForceloadMod:
 def function(path: str) -> str:
     """Runs a function."""
     cmd = Command()
+    try:
+        # This will work if it is a Function, but I can't import Function so we just duck type it
+        # noinspection PyUnresolvedReferences
+        path = path.full_name
+    except AttributeError:
+        pass
     cmd._add('function', good_resource_path(path))
     return str(cmd)
 
