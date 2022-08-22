@@ -1,6 +1,6 @@
 import unittest
 
-from pynecraft.info import Fish
+from pynecraft.info import Fish, block_items, blocks, items
 
 
 class TestInfo(unittest.TestCase):
@@ -23,3 +23,19 @@ class TestInfo(unittest.TestCase):
         self.assertEqual('green', fish.body_color())
         self.assertEqual('light_blue', fish.pattern_color())
         self.assertEqual('Green-Light Blue Glitter', fish.desc())
+
+    def test_full_lists(self):
+        self.assertIn('Oak Sign', blocks)
+        self.assertIn('oak_sign', blocks)
+        self.assertNotIn('oak_wall_sign', blocks)
+
+        self.assertIn('Book and Quill', items)
+        self.assertIn('writable_book', items)
+        self.assertNotIn('Oak Sign', items)
+
+        self.assertIn('Cocoa', block_items)
+        self.assertNotIn('Oak Sign', block_items)
+        self.assertEqual('oak_sign', block_items['Oak Sign'].id)
+
+        self.assertSequenceEqual(tuple(blocks.values()), sorted(blocks.values()))
+        self.assertSequenceEqual(tuple(items.values()), sorted(items.values()))

@@ -396,7 +396,7 @@ class ScoreCriteria(PageEnumDesc):
 
 
 if __name__ == '__main__':
-    with open('enums.py', 'r+') as out:
+    with open('../enums.py', 'r+') as out:
         top = []
         for line in out:
             top.append(line)

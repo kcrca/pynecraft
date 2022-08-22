@@ -16,3 +16,5 @@ logs/
 .hgignore
 /dist/
 /pynecraft/.??*
+.coverage
+.enum_cache

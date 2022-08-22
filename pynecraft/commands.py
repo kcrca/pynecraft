@@ -8,6 +8,7 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 from __future__ import annotations
 
 import copy
+import functools
 import json
 import re
 import struct
@@ -2628,7 +2629,7 @@ def literal(text: str):
     cmd._add(text)
     return cmd
 
-
+@functools.total_ordering
 class NbtHolder(Command):
     """This class represents a thing that has NBT values. These include blocks and entities."""
 
@@ -2677,6 +2678,9 @@ class NbtHolder(Command):
         t = _ensure_size(t, 4, '')
         self.full_text = tuple(t)
         self.name = name.replace('|', ' ')
+
+    def __lt__(self, other):
+        return self.name < other.name
 
     @property
     def name(self):

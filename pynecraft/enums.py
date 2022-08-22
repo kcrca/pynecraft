@@ -238,7 +238,7 @@ class Advancement(ValueEnum):
     IS_IT_A_BALLOON = "adventure/spyglass_at_ghast"
     """Look at a ghast through a spyglass."""
     A_THROWAWAY_JOKE = "adventure/throw_trident"
-    """Throw a trident at something.Note: Throwing away your only weapon is not a good idea."""
+    """Throw a trident at something."""
     IT_SPREADS = "adventure/kill_mob_near_sculk_catalyst"
     """Kill a mob near a Sculk Catalyst."""
     TAKE_AIM = "adventure/shoot_arrow"
@@ -318,8 +318,7 @@ class Advancement(ValueEnum):
     THE_HEALING_POWER_OF_FRIENDSHIP = "husbandry/kill_axolotl_target"
     """Team up with an axolotl and win a fight."""
 
-    def \
-            display_name(self) -> str:
+    def display_name(self) -> str:
         return _advancement_display[self]
 
 

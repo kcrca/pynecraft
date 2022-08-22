@@ -1,8 +1,87 @@
 """Contains various data about vanilla Minecraft."""
 from __future__ import annotations
 
+import re
+from collections import UserDict
+from importlib import resources
+
 from .base import COLORS, Nbt, to_id, to_name
 from .commands import Block, Entity, good_color_num
+from .simpler import Item
+
+blocks: dict[str, Block] = {}
+"""All blocks by name and ID. See ``block_items`` if you want an item for a block."""
+items: dict[str, Item] = {}
+"""All items by name and ID. Does not include items for blocks, but see ``block_items``."""
+
+
+def __read_things(which: str, ctor):
+    all_things = {}
+    with resources.open_text(__package__, f'all_{which}.txt') as fp:
+        for name in fp.readlines():
+            name = name.strip()
+            if not name or name[0] == '#':
+                continue
+            try:
+                desc, id = re.split(r'\s*/\s*', name)
+            except ValueError:
+                id = desc = name
+            thing = ctor(to_id(id), name=desc)
+            all_things[id] = thing
+            all_things[to_id(id)] = thing
+            all_things[desc] = thing
+    return all_things
+
+
+def __read_lists():
+    global blocks, items
+    blocks = __read_things('blocks', Block)
+    items = __read_things('items', Block)
+
+
+__read_lists()
+
+
+class _ItemForBlockDict(UserDict):
+    """
+    Dict that will return an Item(foo) for any foo that is a block, but does _not_ consider these in the dict. This
+    lets the user say ``block_items['Oak Planks']`` and get a value, but also to ask if there is a special item for
+    oak planks by testing ``'Oak Planks' in block_items``, which will be False. This works for the block names and
+    block IDs.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        bi = args[0]
+        for k, v in bi.items():
+            block = blocks[k]
+            self[block.id] = v
+
+    def __getitem__(self, item):
+        if not item in self:
+            if item in blocks:
+                return Item(item)
+
+
+block_items = _ItemForBlockDict({
+    'Bamboo Shoot': Item('Bamboo'),
+    'Cave Vines': Item('Glow Berries'),
+    'Cocoa': Item('Cocoa Beans'),
+    'Fire': Item('Campfire'),
+    'Lava': Item('Lava Bucket'),
+    'Melon Stem': Item('Melon Seeds'),
+    'Pumpkin Stem': Item('Pumpkin Seeds'),
+    'Potatoes': Item('Potato'),
+    'Powder Snow': Item('Powder Snow Bucket'),
+    'Redstone Wire': Item('Redstone'),
+    'Soul Fire': Item('Soul Campfire'),
+    'Sweet Berry Bush': Item('Sweet Berries'),
+    'Tall Seagrass': Item('Seagrass'),
+    'Tripwire': Item('String'),
+    'Water': Item('Water Bucket'),
+})
+"""Items for each kind of block. By default this is simply ``Item(key)``, but there are some special cases where 
+there is no item for a block. """
 
 
 class Color:
