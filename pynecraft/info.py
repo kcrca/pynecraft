@@ -8,6 +8,7 @@ from importlib import resources
 from .base import COLORS, Nbt, to_id, to_name
 from .commands import Block, Entity, good_color_num
 from .simpler import Item
+from .utils.fetch_things import ItemFetcher
 
 blocks: dict[str, Block] = {}
 """All blocks by name. See ``block_items`` if you want an item for a block."""
@@ -17,6 +18,11 @@ items: dict[str, Item] = {}
 """All items by name. Does not include items for blocks, but see ``block_items``."""
 items_by_id: dict[str, Item] = {}
 """All items by ID."""
+
+must_give_items: dict[str, Item] = {}
+"""Items that are not in the creative inventory, by name."""
+must_give_items_by_id: dict[str, Item] = {}
+"""Items that are not in the creative inventory, by ID."""
 
 
 def __read_things(which: str, ctor):
@@ -36,9 +42,13 @@ def __read_things(which: str, ctor):
 
 
 def __read_lists():
-    global blocks, blocks_by_id, items, items_by_id
+    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id
     blocks, blocks_by_id = __read_things('blocks', Block)
     items, items_by_id = __read_things('items', Block)
+
+    for item_name in ItemFetcher.must_give:
+        item = must_give_items[item_name] = items[item_name]
+        must_give_items_by_id[item.id] = item
 
 
 __read_lists()
@@ -67,6 +77,8 @@ class _ItemForBlockDict(UserDict):
 
 block_items = _ItemForBlockDict({
     'Bamboo Shoot': Item('Bamboo'),
+    'Beetroots': Item('Beetroot Seeds'),
+    'Carrots': Item('Carrot'),
     'Cave Vines': Item('Glow Berries'),
     'Cocoa': Item('Cocoa Beans'),
     'Fire': Item('Campfire'),
@@ -83,7 +95,7 @@ block_items = _ItemForBlockDict({
     'Water': Item('Water Bucket'),
 })
 """Items for each kind of block. By default this is simply ``Item(key)``, but there are some special cases where 
-there is no item for a block. """
+there is no item for a block. This map takes a reasonable guess at the most reasonable item."""
 
 
 class Color:

@@ -1,4 +1,4 @@
-# Fetched at 2022-08-21 22:55:56.430647 from https://minecraft.fandom.com/wiki/Block#List_of_blocks
+# Fetched at 2022-08-22 19:39:04.738803 from https://minecraft.fandom.com/wiki/Block#List_of_blocks
 Acacia Button
 Acacia Door
 Acacia Fence
@@ -35,7 +35,7 @@ Beacon
 Bedrock
 Bee Nest
 Beehive
-Beetroots / Beetroot
+Beetroots
 Bell
 Big Dripleaf
 Birch Button
@@ -130,7 +130,7 @@ Cake
 Calcite
 Campfire
 Candle
-Carrots / Carrot
+Carrots
 Cartography Table
 Carved Pumpkin
 Cauldron

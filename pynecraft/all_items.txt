@@ -1,4 +1,4 @@
-# Fetched at 2022-08-21 22:55:57.450792 from https://minecraft.fandom.com/wiki/Item?so=search#List_of_items
+# Fetched at 2022-08-22 19:39:05.629026 from https://minecraft.fandom.com/wiki/Item?so=search#List_of_items
 Acacia Boat
 Acacia Boat with Chest / Acacia Chest Boat
 Allay Spawn Egg
@@ -8,6 +8,7 @@ Armor Stand
 Arrow
 Axolotl Spawn Egg
 Baked Potato
+Barrier
 Bat Spawn Egg
 Bee Spawn Egg
 Beetroot
@@ -54,6 +55,7 @@ Clock
 Coal
 Cocoa Beans
 Cod Spawn Egg
+Command Block
 Compass
 Cooked Chicken
 Cooked Cod
@@ -85,6 +87,7 @@ Diamond Sword
 Disc Fragment / Disc Fragment 5
 Dolphin Spawn Egg
 Donkey Spawn Egg
+Dragon Egg
 Dragon's Breath / Dragon Breath
 Dried Kelp
 Drowned Spawn Egg
@@ -165,6 +168,7 @@ Iron Pickaxe
 Iron Shovel
 Iron Sword
 Item Frame
+Jigsaw
 Jungle Boat
 Jungle Boat with Chest / Jungle Chest Boat
 Kelp
@@ -178,6 +182,7 @@ Leather Cap / Leather Helmet
 Leather Horse Armor
 Leather Pants / Leather Leggings
 Leather Tunic / Leather Chestplate
+Light
 Light Blue Dye
 Light Gray Dye
 Lime Dye
@@ -193,6 +198,7 @@ Melon Slice
 Milk Bucket
 Minecart
 Minecart with Chest / Chest Minecart
+Minecart with Command Block
 Minecart with Command Block / Command Block Minecart
 Minecart with Furnace / Furnace Minecart
 Minecart with Hopper / Hopper Minecart
@@ -294,6 +300,7 @@ Slime Spawn Egg
 Slimeball / Slime Ball
 Snout / Piglin Banner Pattern
 Snowball
+Spawner
 Spectral Arrow
 Spider Eye
 Spider Spawn Egg
@@ -312,6 +319,8 @@ Stone Sword
 Stray Spawn Egg
 Strider Spawn Egg
 String
+Structure Block
+Structure Void
 Sugar
 Suspicious Stew
 Sweet Berries

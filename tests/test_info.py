@@ -1,6 +1,7 @@
 import unittest
 
-from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id
+from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id, must_give_items, \
+    must_give_items_by_id
 
 
 class TestInfo(unittest.TestCase):
@@ -37,7 +38,13 @@ class TestInfo(unittest.TestCase):
         self.assertNotIn('Oak Sign', block_items)
         self.assertEqual('oak_sign', block_items['Oak Sign'].id)
 
+        self.maxDiff = None
         self.assertSequenceEqual(tuple(blocks.values()), sorted(blocks.values()))
         self.assertSequenceEqual(tuple(items.values()), sorted(items.values()))
         self.assertSequenceEqual(tuple(blocks_by_id.values()), sorted(blocks.values(), key=lambda t: t.id))
-        self.assertSequenceEqual(tuple(items_by_id.values()), sorted(items.values(), key=lambda t: t.id))
+        self.assertSequenceEqual(tuple(items_by_id.values()), tuple(sorted(items.values(), key=lambda t: t.id)))
+
+        for key, value in must_give_items.items():
+            self.assertEqual(items[key], value)
+        for key, value in must_give_items_by_id.items():
+            self.assertEqual(items_by_id[key], value)
