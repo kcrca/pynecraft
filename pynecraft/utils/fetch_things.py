@@ -25,7 +25,7 @@ class Fetcher(ABC):
     def get_id(self, raw_id: str, raw_desc: str) -> tuple[str, str]:
         pass
 
-    def added(self):
+    def added(self, things: list[str]):
         return []
 
     def fetch(self):
@@ -48,7 +48,8 @@ class Fetcher(ABC):
                 if id:
                     row = desc if id == desc else f'{desc} / {id}'
                     things.append(row)
-        for to_add in self.added():
+
+        for to_add in self.added(things):
             assert to_add not in things
             things.append(to_add)
 
@@ -59,26 +60,6 @@ class Fetcher(ABC):
 
 
 class BlockFetcher(Fetcher):
-    block_items = {
-        'Bamboo Shoot': 'Bamboo',
-        'Cave Vines': 'Glow Berries',
-        'Cocoa': 'Cocoa Beans',
-        'Fire': 'Campfire',
-        'Lava': 'Lava Bucket',
-        'Melon Stem': 'Melon Seeds',
-        'Pumpkin Stem': 'Pumpkin Seeds',
-        'Potatoes': 'Potato',
-        'Powder Snow': 'Powder Snow Bucket',
-        'Redstone Wire': 'Redstone',
-        'Soul Fire': 'Soul Campfire',
-        'Sweet Berry Bush': 'Sweet Berries',
-        'Tall Seagrass': 'Seagrass',
-        'Tripwire': 'String',
-        'Water': 'Water Bucket',
-        'Air': None,
-        'Cave Air': None,
-    }
-
     def __init__(self):
         super().__init__('blocks', 'https://minecraft.fandom.com/wiki/Block#List_of_blocks')
 
@@ -104,15 +85,32 @@ class BlockFetcher(Fetcher):
         if 'Block' in id or 'Crops' in id:
             id = re.sub(r'Block of (.*)', r'\1 Block', id)
             id = re.sub(r'(Jigsaw|Light|Smooth Quartz|Wheat) (Block|Crops)', r'\1', id)
-        id = re.sub(r'^(Beetroot|Carrot|Vine)s', r'\1', id)
+        id = re.sub(r'^(Vine)s', r'\1', id)
         return id, desc
 
-    def added(self):
+    def added(self, _):
         # These should be there, but aren't
         return ['Air', 'Cave Air']
 
 
 class ItemFetcher(Fetcher):
+    must_give = [
+        'Knowledge Book',
+        'Debug Stick',
+        'Suspicious Stew',
+        'Firework Star',
+        'Bundle',
+        'Jigsaw',
+        'Structure Block',
+        'Structure Void',
+        'Barrier',
+        'Light',
+        'Dragon Egg',
+        'Command Block',
+        'Minecart with Command Block',
+        'Spawner',
+    ]
+
     id_replace = {'Redstone Dust': 'Redstone', 'Book and Quill': 'Writable Book', 'Empty Map': 'Map',
                   'Steak': 'Cooked Beef', 'Turtle Shell': 'Turtle Helmet', 'Disc Fragment': 'Disc Fragment 5',
                   'Nether Quartz': 'Quartz', 'Slimeball': 'Slime Ball'}
@@ -143,8 +141,8 @@ class ItemFetcher(Fetcher):
         id = re.sub(r'\s*[([].*', '', id)
         desc = re.sub(r'\s*[([].*', '', desc)
 
-        if 'Explorer Map' in id:
-            # This shows up twice
+        if 'Explorer Map' in id or 'Command Block Minecart' in id:
+            # These show up twice
             return None, None
         elif id in self.id_replace:
             id = self.id_replace[id]
@@ -170,7 +168,7 @@ class ItemFetcher(Fetcher):
             id = id.replace('Tunic', 'Chestplate')
         elif 'Bucket of' in id or 'Eye of' in id:
             id = re.sub(r'(Bucket|Eye) of (.*)', r'\2 \1', id)
-        elif ' s ' in id:
+        elif ' s ' in id:  # was 's before replacement above
             id = id.replace(" s ", ' ')
         elif 'Raw ' in id:
             m = re.fullmatch('Raw (Copper|Iron|Gold)', id)
@@ -179,6 +177,11 @@ class ItemFetcher(Fetcher):
 
         return id, desc
 
+    def added(self, things):
+        # In this case, some names do show up in the list, and which ones might change.
+        return filter(lambda s: s not in things, ItemFetcher.must_give)
 
-BlockFetcher().fetch()
-ItemFetcher().fetch()
+
+if __name__ == '__main__':
+    BlockFetcher().fetch()
+    ItemFetcher().fetch()
