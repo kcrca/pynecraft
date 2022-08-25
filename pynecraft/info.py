@@ -18,6 +18,8 @@ items: dict[str, Item] = {}
 """All items by name. Does not include items for blocks, but see ``block_items``."""
 items_by_id: dict[str, Item] = {}
 """All items by ID."""
+mobs: dict[str, Entity] = {}
+mobs_by_id: dict[str, Entity] ={}
 
 must_give_items: dict[str, Item] = {}
 """Items that are not in the creative inventory, by name."""
@@ -42,9 +44,10 @@ def __read_things(which: str, ctor):
 
 
 def __read_lists():
-    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id
+    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id
     blocks, blocks_by_id = __read_things('blocks', Block)
     items, items_by_id = __read_things('items', Block)
+    mobs, mobs_by_id = __read_things('mobs', Entity)
 
     for item_name in ItemFetcher.must_give:
         item = must_give_items[item_name] = items[item_name]

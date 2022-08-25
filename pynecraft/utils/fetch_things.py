@@ -28,6 +28,9 @@ class Fetcher(ABC):
     def added(self, things: list[str]):
         return []
 
+    def desc_elem(self):
+        return 'li'
+
     def fetch(self):
         html = requests.get(self.url).text
         page = BeautifulSoup(html, 'html.parser')
@@ -36,7 +39,7 @@ class Fetcher(ABC):
         for elem in start.find_next_siblings():
             if self.is_end(elem):
                 break
-            for li in elem.find_all('li'):
+            for li in elem.find_all(self.desc_elem()):
                 raw_text = li.text.replace(u'\u200c', '')  # Discard the zero-width non-joiners
                 m = re.search(r'\[(.*) only]', raw_text, re.IGNORECASE)
                 if m and not ('Java' in m.group(1) or 'JE' in m.group(1)):
@@ -182,6 +185,29 @@ class ItemFetcher(Fetcher):
         return filter(lambda s: s not in things, ItemFetcher.must_give)
 
 
+class MobFetcher(Fetcher):
+    def __init__(self):
+        super().__init__('mobs', 'https://minecraft.fandom.com/wiki/Mob?so=search#List_of_mobs')
+
+    def get_start(self, page):
+        return page.find('h2', text='List of mobs')
+
+    def is_end(self, elem):
+        return elem.name == 'h2' or 'Unused mobs' in elem.text
+
+    def desc_elem(self):
+        return 'td'
+
+    def get_id(self, raw_id: str, raw_desc: str):
+        id = re.sub(r'\s*\(.*', '', raw_id)
+        desc = re.sub(r'\s*\(.*', '', raw_desc)
+        # Not really mobs, you can't summon them.
+        if 'Jockey' in desc:
+            return None, None
+        return id, desc
+
+
 if __name__ == '__main__':
     BlockFetcher().fetch()
     ItemFetcher().fetch()
+    MobFetcher().fetch()

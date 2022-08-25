@@ -1,0 +1,76 @@
+# Fetched at 2022-08-24 19:03:41.311078 from https://minecraft.fandom.com/wiki/Mob?so=search#List_of_mobs
+Allay
+Axolotl
+Bat
+Bee
+Blaze
+Cat
+Cave Spider
+Chicken
+Cod
+Cow
+Creeper
+Dolphin
+Donkey
+Drowned
+Elder Guardian
+Ender Dragon
+Enderman
+Endermite
+Evoker
+Fox
+Frog
+Ghast
+Glow Squid
+Goat
+Guardian
+Hoglin
+Horse
+Husk
+Iron Golem
+Llama
+Magma Cube
+Mooshroom
+Mule
+Ocelot
+Panda
+Parrot
+Phantom
+Pig
+Piglin
+Piglin Brute
+Pillager
+Polar Bear
+Pufferfish
+Rabbit
+Ravager
+Salmon
+Sheep
+Shulker
+Silverfish
+Skeleton
+Skeleton Horse
+Skeleton Horseman
+Slime
+Snow Golem
+Spider
+Squid
+Stray
+Strider
+Tadpole
+Trader Llama
+Tropical Fish
+Turtle
+Vex
+Villager
+Vindicator
+Wandering Trader
+Warden
+Witch
+Wither
+Wither Skeleton
+Wolf
+Zoglin
+Zombie
+Zombie Villager
+Zombified Piglin
