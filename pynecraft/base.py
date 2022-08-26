@@ -886,6 +886,9 @@ class Facing:
         self.number = number
         self.sign_rotation = sign_rotation
 
+    def __str__(self):
+        return self.name
+
     @property
     def yaw(self) -> int | float:
         """Return the yaw (first) value of the rotation."""
@@ -903,15 +906,16 @@ class Facing:
 
     @property
     def dy(self) -> int | float:
+        """Return the Y (second) value of the delta."""
         return self.delta[1]
 
     @property
     def dz(self) -> int | float:
-        """Return the Y (second) value of the delta."""
+        """Return the Z (third) value of the delta."""
         return self.delta[2]
 
     def scale(self, scale: float) -> Tuple[float, float, float]:
-        """Return the Z (third) value of the delta."""
+        """Return the motion vector scaled by a value."""
         return self.dx * scale, self.dy * scale, self.dz * scale
 
 
@@ -959,7 +963,11 @@ def rotated_facing(facing: FacingDef, rotated_by: int = None) -> Facing:
     if rotated_by is not None:
         rot = int(_in_group(ROTATIONS, rotated_by) / 90)
         facing = good_facing(facing)
-        rotation_aid = DIRECTIONS + DIRECTIONS
+        if facing.name in DIRECTIONS:
+            rotation_aid = DIRECTIONS + DIRECTIONS
+        else:
+            rotation_aid = SIGN_DIRECTIONS + SIGN_DIRECTIONS
+            rot *= 4
         facing = good_facing(rotation_aid[rotation_aid.index(facing.name) + rot])
     return good_facing(facing)
 

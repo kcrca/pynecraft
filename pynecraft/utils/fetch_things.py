@@ -202,7 +202,7 @@ class MobFetcher(Fetcher):
         id = re.sub(r'\s*\(.*', '', raw_id)
         desc = re.sub(r'\s*\(.*', '', raw_desc)
         # Not really mobs, you can't summon them.
-        if 'Jockey' in desc:
+        if 'Jockey' in desc or 'Horseman' in desc:
             return None, None
         return id, desc
 

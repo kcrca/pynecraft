@@ -2220,7 +2220,7 @@ def forceload() -> _ForceloadMod:
     return cmd._start(_ForceloadMod())
 
 
-def function(path: str) -> str:
+def function(path: str|object) -> str:
     """Runs a function."""
     cmd = Command()
     try:
