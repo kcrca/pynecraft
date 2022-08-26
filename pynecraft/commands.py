@@ -2215,8 +2215,9 @@ def forceload() -> _ForceloadMod:
     cmd._add('forceload')
     return cmd._start(_ForceloadMod())
 
+
 # We use 'object' here because importing Function would create a circular dependency.
-def function(path: str|object) -> str:
+def function(path: str | object) -> str:
     """Runs a function."""
     cmd = Command()
     try:
