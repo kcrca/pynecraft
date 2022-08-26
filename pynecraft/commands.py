@@ -39,10 +39,6 @@ def _fluent(method):
     return inner
 
 
-def _score_strs(*scores: ScoreName) -> [str, ...]:
-    return (str(good_score(x)) for x in scores)
-
-
 def good_target(target: Target) -> TargetSpec | None:
     """Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or user names,
     or None. If not, it raises a ValueError.
@@ -2219,7 +2215,7 @@ def forceload() -> _ForceloadMod:
     cmd._add('forceload')
     return cmd._start(_ForceloadMod())
 
-
+# We use 'object' here because importing Function would create a circular dependency.
 def function(path: str|object) -> str:
     """Runs a function."""
     cmd = Command()
@@ -2634,6 +2630,7 @@ def literal(text: str):
     cmd = Command()
     cmd._add(text)
     return cmd
+
 
 @functools.total_ordering
 class NbtHolder(Command):
