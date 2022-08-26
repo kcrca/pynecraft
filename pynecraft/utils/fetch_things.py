@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 import re
 from abc import ABC, abstractmethod
 
@@ -57,7 +56,6 @@ class Fetcher(ABC):
             things.append(to_add)
 
         with open(f'../all_{self.which}.txt', 'w') as fp:
-            fp.write(f'# Fetched at {datetime.datetime.now()} from {self.url}\n')
             fp.write('\n'.join(sorted(things)))
             fp.write('\n')
 
