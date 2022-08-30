@@ -18,7 +18,7 @@ from collections import UserDict, UserList
 from html.parser import HTMLParser
 from io import StringIO
 from json import JSONEncoder
-from typing import Any, Iterable, Mapping, Optional, Tuple, TypeVar, Union
+from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
 _jed_resource = r'a-zA-Z0-9_.-'
 _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
@@ -739,6 +739,31 @@ class RelCoord:
     def __pos__(self: U) -> U:
         return self
 
+    @classmethod
+    def add(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
+        """Returns ``v1 + v2``. If either is None, the result is the other."""
+        return cls.merge(lambda v1, v2: v1 + v2, v1, v2)
+
+    @classmethod
+    def sub(vls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
+        """Returns ``v1 - v2``. If either is None, the result is the other."""
+        return vls.merge(lambda v1, v2: v1 - v2, v1, v2)
+
+    @staticmethod
+    def merge(op: Callable[[Coord, Coord], Coord], v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> \
+            tuple[Coord, ...] | None:
+        """
+        Returns the result of invoking op on each element of the vectors. If either vector is None, the result is the
+        other.
+        """
+        if v1 is None:
+            return v2
+        elif v2 is None:
+            return v1
+        if len(v1) != len(v2):
+            raise ValueError('Not the same length')
+        return tuple(op(v1[i], v2[i]) for i in range(len(v1)))
+
 
 U = TypeVar('U', bound=RelCoord)
 
@@ -750,23 +775,29 @@ class IntRelCoord(RelCoord):
         super().__init__(prefix, int(v))
 
 
-def _rel_coord(ch, f, v, *others) -> RelCoord | Tuple[RelCoord, ...]:
-    if len(others) == 0:
+def _rel_coord(ch, f, values: Sequence[float]) -> RelCoord | Tuple[RelCoord, ...]:
+    if len(values) == 1:
+        v = values[0]
         return IntRelCoord(ch, v) if isinstance(v, int) else RelCoord(ch, v)
-    return tuple(f(x) for x in (v, *others))
+    return tuple(f(x) for x in values)
 
 
-def r(v: float, *others: float) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
-                                   Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
-    """Returns a single or tuple '~' relative coordinate(s) of its input value(s). If all values are integers,
-    the value(s) will be IntRelCoords. """
-    return _rel_coord('~', r, v, *others)
+def r(*v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
+                                      Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
+    """
+    Returns a single or tuple '~' relative coordinate(s) of its input value(s). If all values are integers,
+    the value(s) will be IntRelCoords.
+    """
+    return _rel_coord('~', r, tuple(v))
 
 
-def d(v: float, *others: float) -> RelCoord | Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
-    """Returns a single or tuple '^' relative coordinate(s) of its input value(s). If all values are integers,
-    the value(s) will be IntRelCoords. """
-    return _rel_coord('^', d, v, *others)
+def d(*v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
+                                      Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
+    """
+    Returns a single or tuple '^' relative coordinate(s) of its input value(s). If all values are integers,
+    the value(s) will be IntRelCoords.
+    """
+    return _rel_coord('^', d, tuple(v))
 
 
 def days(num: float) -> TimeSpec:

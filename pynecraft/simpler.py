@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Callable, Mapping
+from typing import Callable, Iterable, Mapping, Sequence, Tuple
 
-from .base import FacingDef, Nbt, NbtDef, Position, _ensure_size, _in_group, _quote, _to_list, good_facing, to_id
+from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote,    _to_list,     d, good_facing,     r, to_id
 from .commands import Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
     SignText, \
     SomeMappings, fill, good_block, good_color_num, setblock
@@ -374,6 +374,43 @@ class Volume:
                              new_state: Mapping = None) -> Commands:
         """Replaces curved rails in the volume using all the relevant states."""
         yield from self.replace(new, old, Volume.curved_rail_states, new_state)
+
+
+class Offset:
+    """
+    This provides a tool for offsetting relative coordinates. This allows you write code placed in a way that may be
+    more convenient, such as if a command block is hidden in a convenient place, but wants to operate relative to a
+    different base location. Given an initial offset of a given length, coordinates generated through the object's r()
+    and d() methods will be adjusted by that location. The values passed to r() and () must be the same length as
+    the initial offset.
+    """
+
+    def __init__(self, *position: float):
+        """Creates an offsetting object with the given values."""
+        if len(position) == 0:
+            raise ValueError(f'Must have at least one value in offset')
+        self.position: tuple[float] = position
+
+    def r(self, *v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
+                                                Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
+        """Returns the result of base.r() with the input, with each return value added to this object's offset."""
+        return self._rel_coord(r, v)
+
+    def d(self, *v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
+                                                Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
+        """Returns the result of base.d() with the input, with each return value added to this object's offset."""
+        return self._rel_coord(d, v)
+
+    def _rel_coord(self, f, v: Sequence[float]) -> RelCoord | Tuple[RelCoord, ...]:
+        vec = f(*v)
+        if len(v) == 1:
+            vec = (vec,)
+        if len(vec) != len(self.position):
+            raise ValueError(f'{len(vec)} != postion len ({len(self.position)})')
+        vals = RelCoord.add(vec, self.position)
+        if len(vals) == 1:
+            return vals[0]
+        return vals
 
 
 class ItemFrame(Entity):

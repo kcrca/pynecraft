@@ -2,7 +2,7 @@ import shutil
 import tempfile
 import unittest
 
-from pynecraft.base import DARK_AQUA, N, NORTH, ROTATION_180, SW, d, r
+from pynecraft.base import DARK_AQUA, N, NORTH, ROTATION_180, SW
 from pynecraft.commands import *
 from pynecraft.function import text_lines
 from pynecraft.simpler import *
@@ -210,3 +210,9 @@ class TestSimpler(unittest.TestCase):
             'fill ~1 ~2 ~3 ^4 ^5 ^6 furnace[facing=up] replace observer[facing=up]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 furnace[facing=down] replace observer[facing=down]',
         ], lines(v.replace_facing_all('furnace', 'observer')))
+
+    def test_offset(self):
+        self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(0, 0, 0))
+        self.assertEqual(d(1, 2, 3), Offset(1, 2, 3).d(0, 0, 0))
+        with self.assertRaises(ValueError):
+            Offset(1, 2, 3).r(5)

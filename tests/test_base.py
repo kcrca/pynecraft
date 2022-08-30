@@ -2,7 +2,7 @@ import unittest
 
 from parameterized import parameterized
 
-from pynecraft.base import EAST, IntRelCoord, NORTH, Nbt, Parameters, ROTATION_0, ROTATION_180, ROTATION_270, \
+from pynecraft.base import Coord, EAST, IntRelCoord, NORTH, Nbt, Parameters, ROTATION_0, ROTATION_180, ROTATION_270, \
     ROTATION_90, RelCoord, SOUTH, \
     TimeSpec, WEST, \
     r, rotated_facing
@@ -117,6 +117,18 @@ class TestBase(unittest.TestCase):
         self.assertFalse(r(3) > r(3.1))
         self.assertFalse(r(-3.5) > -r(3.5))
         self.assertFalse(r(3.5) > -r(-3.5))
+
+    def test_rel_coord_merge(self):
+        def add(v1: Coord, v2: Coord):
+            return v1 + v2
+
+        self.assertEqual(None, RelCoord.merge(add, None, None))
+        self.assertEqual((1, 2, 3), RelCoord.merge(add, (1, 2, 3), None))
+        self.assertEqual((1, 2, 3), RelCoord.merge(add, None, (1, 2, 3)))
+        self.assertEqual((2, 4, 6), RelCoord.merge(add, (1, 2, 3), (1, 2, 3)))
+        self.assertEqual(r(1, 2, 3), RelCoord.merge(add, r(1, 2, 3), None))
+        self.assertEqual(r(1, 2, 3), RelCoord.merge(add, None, r(1, 2, 3)))
+        self.assertEqual(r(2, 4, 6), RelCoord.merge(add, r(1, 2, 3), r(1, 2, 3)))
 
     def test_time_spec(self):
         self.assertEqual(0, TimeSpec(0).ticks)
