@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Callable, Iterable, Mapping, Sequence, Tuple
+from typing import Callable, Mapping, Tuple, Union
 
-from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote,    _to_list,     d, good_facing,     r, to_id
+from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, _to_list, d, \
+    good_facing, r, to_id
 from .commands import Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
     SignText, \
     SomeMappings, fill, good_block, good_color_num, setblock
@@ -385,28 +386,38 @@ class Offset:
     the initial offset.
     """
 
+    CoordsIn = Union[float, RelCoord]
+    # This is so complicated because some functions take specific-length tuples so we want to declare that we produce
+    # them to make the type checker happier.
+    CoordsOut = Union[RelCoord, Tuple[RelCoord, RelCoord], Tuple[IntRelCoord, IntRelCoord],
+                      Tuple[RelCoord, RelCoord, RelCoord], Tuple[RelCoord, ...]]
+
     def __init__(self, *position: float):
         """Creates an offsetting object with the given values."""
         if len(position) == 0:
             raise ValueError(f'Must have at least one value in offset')
         self.position: tuple[float] = position
 
-    def r(self, *v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
-                                                Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
-        """Returns the result of base.r() with the input, with each return value added to this object's offset."""
-        return self._rel_coord(r, v)
+    def r(self, *v: CoordsIn) -> CoordsOut:
+        """ Returns the result of base.r() with the input, with each return value added to this object's offset. """
+        return self._rel_coord(r, *v)
 
-    def d(self, *v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
-                                                Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
-        """Returns the result of base.d() with the input, with each return value added to this object's offset."""
-        return self._rel_coord(d, v)
+    def d(self, *v: CoordsIn) -> CoordsOut:
+        """ Returns the result of base.d() with the input, with each return value added to this object's offset. """
+        return self._rel_coord(d, *v)
 
-    def _rel_coord(self, f, v: Sequence[float]) -> RelCoord | Tuple[RelCoord, ...]:
-        vec = f(*v)
-        if len(v) == 1:
-            vec = (vec,)
-        if len(vec) != len(self.position):
-            raise ValueError(f'{len(vec)} != postion len ({len(self.position)})')
+    def _rel_coord(self, f, *values: CoordsIn) -> RelCoord | Tuple[RelCoord, ...]:
+        if len(values) != len(self.position):
+            raise ValueError(f'{len(values)} != postion length ({len(self.position)})')
+        vec = []
+        exemplar = f(0)
+        for v in values:
+            if isinstance(v, (float, int)):
+                vec.append(f(v))
+            elif v.prefix != exemplar.prefix:
+                raise ValueError(f'{f}: incompatible RelCoord type')
+            else:
+                vec.append(v)
         vals = RelCoord.add(vec, self.position)
         if len(vals) == 1:
             return vals[0]

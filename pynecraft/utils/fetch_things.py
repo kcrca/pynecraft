@@ -99,7 +99,6 @@ class ItemFetcher(Fetcher):
         'Knowledge Book',
         'Debug Stick',
         'Suspicious Stew',
-        'Firework Star',
         'Bundle',
         'Jigsaw',
         'Structure Block',

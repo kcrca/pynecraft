@@ -214,5 +214,8 @@ class TestSimpler(unittest.TestCase):
     def test_offset(self):
         self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(0, 0, 0))
         self.assertEqual(d(1, 2, 3), Offset(1, 2, 3).d(0, 0, 0))
+        self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(*r(0, 0, 0)))
+        self.assertEqual(d(1, 2, 3), Offset(1, 2, 3).d(*d(0, 0, 0)))
         with self.assertRaises(ValueError):
             Offset(1, 2, 3).r(5)
+            Offset(1, 2, 3).r(d(1), 2, 3)

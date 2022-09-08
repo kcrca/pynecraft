@@ -1,8 +1,7 @@
 import unittest
 
 from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id, mobs, mobs_by_id, \
-    must_give_items, \
-    must_give_items_by_id
+    must_give_items, must_give_items_by_id
 
 
 class TestInfo(unittest.TestCase):
