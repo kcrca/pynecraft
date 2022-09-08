@@ -189,8 +189,8 @@ villager_professions = (
     'Weaponsmith',
     'Unemployed',
 )
-villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
-"""The (biome) types of villagers."""
+villager_biomes = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
+"""The biome types of villagers."""
 
 
 class Horse(Entity):
