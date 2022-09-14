@@ -8,6 +8,7 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 from __future__ import annotations
 
 import copy
+import dataclasses
 import functools
 import json
 import re
@@ -614,7 +615,7 @@ class User(TargetSpec):
 
     def __init__(self, name: str):
         super().__init__()
-        good_user(name)
+        self.name = good_user(name)
         self._add(name)
 
 
@@ -2830,7 +2831,156 @@ class Block(NbtHolder):
         return self
 
 
-class Score(Command):
+class _Evaluate:
+    """Internal class used to turn expressions involving scores into a series of commands."""
+    _constant_ops = {
+        PLUS: lambda x, y: x + y,
+        MINUS: lambda x, y: x - y,
+        DIV: lambda x, y: x // y,  # This is how the "/=" operator works with scores, so we keep it for the constants.
+        MOD: lambda x, y: x % y,
+    }
+
+    def __init__(self, score: Score, top: BinaryOp):
+        self.score = score
+        self.top = top
+        self.commands = []
+        self.scratches = set()
+        self.score_scratch = None
+        self.at_left = True
+        self._generate(score, top)
+
+    def _generate(self, score, node) -> ScoreValue:
+        """Generates the commands needed by this node. Evaluates lhs and rhs recursively."""
+        lhs = self._resolve(score, node.lhs)
+        scratch = self._next_scratch()
+        try:
+            self.at_left = False
+            rhs = self._resolve(scratch, node.rhs)
+            if isinstance(lhs, (int, float)) and isinstance(rhs, (int, float)):
+                return self._as_constant(node)
+            if isinstance(lhs, (int, float)) or score is not lhs:
+                self.commands.append(score.set(lhs))
+            if isinstance(rhs, (int, float)):
+                if node.op == PLUS:
+                    self.commands.append(score.add(rhs))
+                elif node.op == MINUS:
+                    self.commands.append(score.remove(rhs))
+                else:
+                    self.commands.append(scratch.set(rhs))
+                    self.commands.append(score.operation(node.op, scratch))
+            else:
+                self.commands.append(score.operation(node.op, rhs))
+            return score
+        finally:
+            self._free_scratch(scratch)
+
+    def _resolve(self, score: Score, node: ScoreValue | BinaryOp) -> int | float | Score:
+        """Turns a node (either lhs or rhs) into a value or a Score. Recurses if needed into _generate() for nodes."""
+        if isinstance(node, (int, float)):
+            return node
+        if isinstance(node, Score):
+            # If the value of the final target score is used in the expression, and this expression isn't the left-most
+            # node, we must store the value before assigning to the variable. For example, with x = 3 + x, we need a
+            # scratch variable to hold the value of 'x', because the operation resolves into "x = 3, x += x" otherwise.
+            # But x = x + 3 has x at the leftmost side, and it resolves to "x += 3", so x doesn't need to be saved.
+            if node is not self.score or self.at_left:
+                return node
+            if self.score_scratch is None:
+                self.score_scratch = self._next_scratch()
+                self.commands.append(self.score_scratch.set(self.score))
+            return self.score_scratch
+        if isinstance(node, (str, Command)):
+            node = str(node)
+            self.commands.append(score.set(node))
+            return score
+        return self._generate(score, node)
+
+    def _as_constant(self, node) -> int | float:
+        """Turns an operation on a pair of values into a value."""
+        return self._constant_ops[node.op](node.lhs, node.rhs)
+
+    def _next_scratch(self) -> Score:
+        """Returns the next unused scratch value."""
+        for i in range(0, 100):
+            name = f't{i:02d}'
+            if name not in self.scratches:
+                self.scratches.add(name)
+                return Score(name, '__scratch')
+        raise ValueError('Expression requires more than 100 scratch values')
+
+    def _free_scratch(self, scratch: Score):
+        """Removes scratch variable from the 'used' set."""
+        assert isinstance(scratch.target, User)
+        self.scratches.remove(scratch.target.name)
+
+
+class Expression:
+    """Represents an expression of scores, or a single score."""
+
+    def __add__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, PLUS, other)
+
+    def __sub__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, MINUS, other)
+
+    def __mul__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, MULT, other)
+
+    def __floordiv__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, DIV, other)
+
+    def __mod__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, MOD, other)
+
+    def __radd__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(other, PLUS, self)
+
+    def __rsub__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(other, MINUS, self)
+
+    def __rmul__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(other, MULT, self)
+
+    def __rfloordiv__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(other, DIV, self)
+
+    def __rmod__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(other, MOD, self)
+
+    def __iadd__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, PLUS, other)
+
+    def __isub__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, MINUS, other)
+
+    def __imul__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, MULT, other)
+
+    def __ifloordiv__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, DIV, other)
+
+    def __imod__(self, other: ScoreValue) -> BinaryOp:
+        return BinaryOp(self, MOD, other)
+
+    def __neg__(self):
+        return self * -1
+
+    def __invert__(self):
+        return self.__neg__()
+
+    def __pos__(self):
+        return self
+
+
+@dataclasses.dataclass
+class BinaryOp(Expression):
+    """A binary expression involving scores values, or other expressions."""
+    lhs: ScoreValue | Expression
+    op: str
+    rhs: ScoreValue | Expression
+
+
+class Score(Command, Expression):
     """This class represents a score, and provides simpler mechanisms for generating commands to manipulate it."""
 
     # noinspection PyArgumentList -- I don't know why it thinks 'self' isn't fulfilled for the invocation of players()
@@ -2869,13 +3019,18 @@ class Score(Command):
         """Return a 'get' command for the score."""
         return self._cmd().get(self)
 
-    def set(self, value: int | str | Command) -> str:
+    def set(self, value: int | str | Command | Score | Expression) -> str | list[Command]:
         """
         Returns a 'set' command for the score. If the value is a command, returns a command that sets the value to
-        the result of that command.
+        the result of that command. If the value is an expression, returns the commands required to set this score to
+        the value of that expression.
         """
         if isinstance(value, int):
             return self._cmd().set(self, value)
+        elif isinstance(value, Score):
+            return self._cmd().operation(self, EQ, value)
+        elif isinstance(value, BinaryOp):
+            return _Evaluate(self, value).commands
         else:
             return str(execute().store(RESULT).score(self).run(value))
 
@@ -2902,6 +3057,9 @@ class Score(Command):
     @staticmethod
     def _cmd():
         return Score._cmd_base
+
+
+ScoreValue = Union[str, int, float, Command, Score, BinaryOp]
 
 
 class JsonList(UserList, JsonHolder):
