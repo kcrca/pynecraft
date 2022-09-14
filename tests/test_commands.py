@@ -914,40 +914,50 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('help\nhelp foo\nfunction m:b/c', commands(help(), help('foo'), function('m:b/c')))
 
     def test_expressions(self):
+        objective = 'scoreboard objectives add __scratch dummy'
         x = Score('x', 'score')
         y = Score('y', 'score')
         z = Score('z', 'score')
         w = Score('w', 'score')
-        self.assertEqual(['scoreboard players operation x score = y score',
+        self.assertEqual([objective,
+                          'scoreboard players operation x score = y score',
                           'scoreboard players set t00 __scratch -1',
                           'scoreboard players operation x score *= t00 __scratch'], x.set(-y))
-        self.assertEqual(['scoreboard players add x score 3'], x.set(x + 3))
-        self.assertEqual(['scoreboard players operation t01 __scratch = x score',
+        self.assertEqual([objective, 'scoreboard players add x score 3'], x.set(x + 3))
+        self.assertEqual([objective,
+                          'scoreboard players operation t01 __scratch = x score',
                           'scoreboard players set x score 3',
                           'scoreboard players operation x score += t01 __scratch'], x.set(3 + x))
-        self.assertEqual(['scoreboard players add x score 3',
+        self.assertEqual([objective,
+                          'scoreboard players add x score 3',
                           'scoreboard players add x score 5'], x.set(x + 3 + 5))
-        self.assertEqual(['scoreboard players add x score 8'], x.set(x + (3 + 5)))
-        self.assertEqual(['scoreboard players operation x score += y score'], x.set(x + y))
-        self.assertEqual(['scoreboard players operation t01 __scratch = x score',
+        self.assertEqual([objective, 'scoreboard players add x score 8'], x.set(x + (3 + 5)))
+        self.assertEqual([objective, 'scoreboard players operation x score += y score'], x.set(x + y))
+        self.assertEqual([objective,
+                          'scoreboard players operation t01 __scratch = x score',
                           'scoreboard players operation x score = y score',
                           'scoreboard players operation x score += t01 __scratch'], x.set(y + x))
-        self.assertEqual(['scoreboard players operation x score = y score',
+        self.assertEqual([objective,
+                          'scoreboard players operation x score = y score',
                           'scoreboard players operation x score += z score'], x.set(y + z))
-        self.assertEqual(['scoreboard players operation x score = y score',
+        self.assertEqual([objective,
+                          'scoreboard players operation x score = y score',
                           'scoreboard players operation x score += z score',
                           'scoreboard players add x score 3'], x.set(y + z + 3))
-        self.assertEqual(['scoreboard players operation x score = y score',
+        self.assertEqual([objective,
+                          'scoreboard players operation x score = y score',
                           'scoreboard players operation x score *= z score',
                           'scoreboard players operation t00 __scratch = w score',
                           'scoreboard players set t01 __scratch 3',
                           'scoreboard players operation t00 __scratch /= t01 __scratch',
                           'scoreboard players operation x score += t00 __scratch'], x.set(y * z + w // 3))
-        self.assertEqual(['scoreboard players operation x score = y score',
+        self.assertEqual([objective,
+                          'scoreboard players operation x score = y score',
                           'scoreboard players operation x score *= z score',
                           'scoreboard players operation t00 __scratch = w score',
                           'scoreboard players set t01 __scratch 3',
                           'scoreboard players operation t00 __scratch %= t01 __scratch',
                           'scoreboard players operation x score += t00 __scratch'], x.set(y * z + w % 3))
-        self.assertEqual(['execute store result score t00 __scratch run some_cmd',
+        self.assertEqual([objective,
+                          'execute store result score t00 __scratch run some_cmd',
                           'scoreboard players operation x score += t00 __scratch'], x.set(x + "some_cmd"))

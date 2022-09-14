@@ -2843,7 +2843,7 @@ class _Evaluate:
     def __init__(self, score: Score, top: BinaryOp):
         self.score = score
         self.top = top
-        self.commands = []
+        self.commands: list[Command | str] = [scoreboard().objectives().add('__scratch', ScoreCriteria.DUMMY)]
         self.scratches = set()
         self.score_scratch = None
         self.at_left = True
