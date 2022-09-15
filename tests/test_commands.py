@@ -961,3 +961,14 @@ class TestCommands(unittest.TestCase):
         self.assertEqual([objective,
                           'execute store result score t00 __scratch run some_cmd',
                           'scoreboard players operation x score += t00 __scratch'], x.set(x + "some_cmd"))
+
+        orig = Expression.scratch_objective()
+        try:
+            Expression.set_scratch_objective('__foo')
+            objective = 'scoreboard objectives add __foo dummy'
+            self.assertEqual([objective,
+                              'scoreboard players operation x score = y score',
+                              'scoreboard players set t00 __foo -1',
+                              'scoreboard players operation x score *= t00 __foo'], x.set(-y))
+        finally:
+            Expression.set_scratch_objective(orig)

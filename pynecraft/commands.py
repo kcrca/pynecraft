@@ -2833,6 +2833,8 @@ class Block(NbtHolder):
 
 class _Evaluate:
     """Internal class used to turn expressions involving scores into a series of commands."""
+    _scratch_objective = '__scratch'
+
     _constant_ops = {
         PLUS: lambda x, y: x + y,
         MINUS: lambda x, y: x - y,
@@ -2843,7 +2845,8 @@ class _Evaluate:
     def __init__(self, score: Score, top: BinaryOp):
         self.score = score
         self.top = top
-        self.commands: list[Command | str] = [scoreboard().objectives().add('__scratch', ScoreCriteria.DUMMY)]
+        self.commands: list[Command | str] = [
+            scoreboard().objectives().add(self._scratch_objective, ScoreCriteria.DUMMY)]
         self.scratches = set()
         self.score_scratch = None
         self.at_left = True
@@ -2905,7 +2908,7 @@ class _Evaluate:
             name = f't{i:02d}'
             if name not in self.scratches:
                 self.scratches.add(name)
-                return Score(name, '__scratch')
+                return Score(name, self._scratch_objective)
         raise ValueError('Expression requires more than 100 scratch values')
 
     def _free_scratch(self, scratch: Score):
@@ -2916,6 +2919,14 @@ class _Evaluate:
 
 class Expression:
     """Represents an expression of scores, or a single score."""
+
+    @staticmethod
+    def scratch_objective() -> str:
+        return _Evaluate._scratch_objective
+
+    @staticmethod
+    def set_scratch_objective(objective: str) -> None:
+        _Evaluate._scratch_objective = objective
 
     def __add__(self, other: ScoreValue) -> BinaryOp:
         return BinaryOp(self, PLUS, other)
