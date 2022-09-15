@@ -2845,9 +2845,9 @@ class _Evaluate:
     def __init__(self, score: Score, top: BinaryOp):
         self.score = score
         self.top = top
-        self.commands: list[Command | str] = [
-            scoreboard().objectives().add(self._scratch_objective, ScoreCriteria.DUMMY)]
+        self.commands: list[Command | str] = []
         self.scratches = set()
+        self.scratches_used = False
         self.score_scratch = None
         self.at_left = True
         self._generate(score, top)
@@ -2862,17 +2862,17 @@ class _Evaluate:
             if isinstance(lhs, (int, float)) and isinstance(rhs, (int, float)):
                 return self._as_constant(node)
             if isinstance(lhs, (int, float)) or score is not lhs:
-                self.commands.append(score.set(lhs))
+                self.append(score.set(lhs))
             if isinstance(rhs, (int, float)):
                 if node.op == PLUS:
-                    self.commands.append(score.add(rhs))
+                    self.append(score.add(rhs))
                 elif node.op == MINUS:
-                    self.commands.append(score.remove(rhs))
+                    self.append(score.remove(rhs))
                 else:
-                    self.commands.append(scratch.set(rhs))
-                    self.commands.append(score.operation(node.op, scratch))
+                    self.append(scratch.set(rhs))
+                    self.append(score.operation(node.op, scratch))
             else:
-                self.commands.append(score.operation(node.op, rhs))
+                self.append(score.operation(node.op, rhs))
             return score
         finally:
             self._free_scratch(scratch)
@@ -2890,13 +2890,21 @@ class _Evaluate:
                 return node
             if self.score_scratch is None:
                 self.score_scratch = self._next_scratch()
-                self.commands.append(self.score_scratch.set(self.score))
+                self.append(self.score_scratch.set(self.score))
             return self.score_scratch
         if isinstance(node, (str, Command)):
             node = str(node)
-            self.commands.append(score.set(node))
+            self.append(score.set(node))
             return score
         return self._generate(score, node)
+
+    def append(self, command):
+        if re.search(fr'\bt[0-9]{{2}} {self._scratch_objective}', command):
+            if not self.scratches_used:
+                # noinspection PyArgumentList
+                self.append(scoreboard().objectives().add(self._scratch_objective, ScoreCriteria.DUMMY))
+                self.scratches_used = True
+        self.commands.append(command)
 
     def _as_constant(self, node) -> int | float:
         """Turns an operation on a pair of values into a value."""
@@ -2918,14 +2926,21 @@ class _Evaluate:
 
 
 class Expression:
-    """Represents an expression of scores, or a single score."""
+    """Represents an expression of scores, or a single score, and operations upon it that can be used to generate a
+    series of commands that will evaluate it.
+
+    Evaluating expressions often require some intermediate scratch values. These will be created in "the scratch objective",
+    which by default is '__scratch', though you can change that. They will be reused where possible.
+    """
 
     @staticmethod
     def scratch_objective() -> str:
+        """Returns the objective in which scratch variables will be created. By default, this is '__scratch'"""
         return _Evaluate._scratch_objective
 
     @staticmethod
     def set_scratch_objective(objective: str) -> None:
+        """Sets the objective in which scratch variables will be created."""
         _Evaluate._scratch_objective = objective
 
     def __add__(self, other: ScoreValue) -> BinaryOp:
@@ -2992,9 +3007,11 @@ class BinaryOp(Expression):
 
 
 class Score(Command, Expression):
-    """This class represents a score, and provides simpler mechanisms for generating commands to manipulate it."""
+    """
+    This class represents a score, and provides simpler mechanisms for generating commands to use and manipulate it.
+    """
 
-    # noinspection PyArgumentList -- I don't know why it thinks 'self' isn't fulfilled for the invocation of players()
+    # noinspection PyArgumentList
     _cmd_base = scoreboard().players()
 
     def __init__(self, target: Target, objective: str):
@@ -3020,8 +3037,7 @@ class Score(Command, Expression):
 
     def init(self, value: int = 0) -> Iterable[str]:
         """Initializes the score by ensure the objective exists, and setting its value to the provided value."""
-        # noinspection PyArgumentList -- I don't know why it thinks 'self' isn't fulfilled for the invocation of
-        # objectives() or unless()
+        # noinspection PyArgumentList
         return (
             scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY),
             execute().unless().score(self).matches(0).run().scoreboard().players().add(self, value))
