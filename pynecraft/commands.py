@@ -2931,6 +2931,11 @@ class Expression:
 
     Evaluating expressions often require some intermediate scratch values. These will be created in "the scratch objective",
     which by default is '__scratch', though you can change that. They will be reused where possible.
+
+    The operators supported are ``+``, ``-``, ``*``, ``//``, and ``%``, and are supported against scores and
+    constants in any order, and the assignment versions as well (``+=``, etc.). Unary ``+`` and ``-`` are also
+    supported. Floor division (``//``) is supported because that is the definition of the division in the
+    ``scoreboard players operation`` command.
     """
 
     @staticmethod
@@ -2990,9 +2995,6 @@ class Expression:
 
     def __neg__(self):
         return self * -1
-
-    def __invert__(self):
-        return self.__neg__()
 
     def __pos__(self):
         return self
