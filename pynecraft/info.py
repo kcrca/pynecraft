@@ -172,25 +172,6 @@ instruments = (
 )
 """The instruments note blocks can play."""
 
-villager_professions = (
-    'Armorer',
-    'Butcher',
-    'Cartographer',
-    'Cleric',
-    'Farmer',
-    'Fisherman',
-    'Fletcher',
-    'Leatherworker',
-    'Librarian',
-    'Mason',
-    'Nitwit',
-    'Shepherd',
-    'Toolsmith',
-    'Weaponsmith',
-    'Unemployed',
-)
-villager_biomes = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
-"""The biome types of villagers."""
 
 
 class Horse(Entity):

@@ -1,13 +1,58 @@
 from __future__ import annotations
 
+import dataclasses
 from typing import Callable, Mapping, Tuple, Union
 
-from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, _to_list, d, \
-    good_facing, r, to_id
+from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, _to_list, \
+    d, good_facing, r, to_id
 from .commands import Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignText, \
-    SomeMappings, fill, good_block, good_color_num, setblock
+    SignText, SomeMappings, fill, good_block, good_color_num, setblock
 from .enums import Pattern
+
+ARMORER = 'Armorer'
+BUTCHER = 'Butcher'
+CARTOGRAPHER = 'Cartographer'
+CLERIC = 'Cleric'
+FARMER = 'Farmer'
+FISHERMAN = 'Fisherman'
+FLETCHER = 'Fletcher'
+LEATHERWORKER = 'Leatherworker'
+LIBRARIAN = 'Librarian'
+MASON = 'Mason'
+NITWIT = 'Nitwit'
+SHEPHERD = 'Shepherd'
+TOOLSMITH = 'Toolsmith'
+UNEMPLOYED = 'Unemployed'
+WEAPONSMITH = 'Weaponsmith'
+CHILD = 'Child'
+VILLAGER_PROFESSIONS = (
+    ARMORER,
+    BUTCHER,
+    CARTOGRAPHER,
+    CLERIC,
+    FARMER,
+    FISHERMAN,
+    FLETCHER,
+    LEATHERWORKER,
+    LIBRARIAN,
+    MASON,
+    NITWIT,
+    SHEPHERD,
+    TOOLSMITH,
+    WEAPONSMITH,
+    UNEMPLOYED,
+)
+"""Villager professions."""
+
+DESERT = 'Desert'
+JUNGLE = 'Jungle'
+PLAINS = 'Plains'
+SAVANNA = 'Savanna'
+SNOW = 'Snow'
+SWAMP = 'Swamp'
+TAIGA = 'Taiga'
+VILLAGER_BIOMES = (DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, TAIGA)
+"""Villager biomes / types."""
 
 
 class Sign(Block):
@@ -224,7 +269,7 @@ class Item(Entity):
                 retval = retval.merge(item.nbt)
                 if nbt:
                     retval = retval.merge(nbt)
-            else:
+            elif item.nbt:
                 retval['tag']['BlockEntityTag'] = item.nbt
         try:
             block_state = item.state
@@ -379,10 +424,10 @@ class Volume:
 
 class Offset:
     """
-    This provides a tool for offsetting relative coordinates. This allows you write code placed in a way that may be
-    more convenient, such as if a command block is hidden in a convenient place, but wants to operate relative to a
-    different base location. Given an initial offset of a given length, coordinates generated through the object's r()
-    and d() methods will be adjusted by that location. The values passed to r() and () must be the same length as
+    This provides a tool for offsetting relative coordinates. This allows you to write code placed in a way that may
+    be more convenient, such as if a command block is hidden in a convenient place, but wants to operate relative to
+    a different base location. Given an initial offset of a given length, coordinates generated through the object's
+    r() and d() methods will be adjusted by that location. The values passed to r() and () must be the same length as
     the initial offset.
     """
 
@@ -408,7 +453,7 @@ class Offset:
 
     def _rel_coord(self, f, *values: CoordsIn) -> RelCoord | Tuple[RelCoord, ...]:
         if len(values) != len(self.position):
-            raise ValueError(f'{len(values)} != postion length ({len(self.position)})')
+            raise ValueError(f'{len(values)} != position length ({len(self.position)})')
         vec = []
         exemplar = f(0)
         for v in values:
@@ -456,4 +501,142 @@ class ItemFrame(Entity):
                 self.item(block)
             nbt = self.nbt
             nbt['Item']['tag']['display']['Name'] = JsonText.text(block.name)
+        return self
+
+
+@dataclasses.dataclass
+class Trade:
+    """Represents a single trade a villager can make."""
+    max_uses = 12
+    uses = 0
+    xp = 1
+    buy: tuple[tuple[BlockDef, int]] | tuple[tuple[BlockDef, int], tuple[BlockDef, int]]
+    sell: tuple[BlockDef, int]
+    reward_exp = True
+
+    def __init__(self, buy1: BlockDef | tuple[BlockDef, int], thing1: BlockDef | tuple[BlockDef, int],
+                 thing2: BlockDef | tuple[BlockDef, int] = None, /, max_uses=None, uses=0, xp=1, reward_exp=True):
+        """
+        Creates a Trade object. The first block or item is the price. If thing2 is present, then it is the block or item
+        being sold, and thing1 is the second part of the price. Otherwise, thing1 is the block or item being sold.
+        """
+        if thing2:
+            self.buy = (_to_def(buy1), _to_def(thing1))
+            self.sell = _to_def(thing2)
+        else:
+            self.buy = (_to_def(buy1),)
+            self.sell = _to_def(thing1)
+        self.max_uses = max_uses
+        self.uses = uses
+        self.xp = xp
+        self.reward_exp = reward_exp
+
+    def nbt(self):
+        """Returns the nbt for this trade."""
+        values = {
+            'buy': {'id': self.buy[0][0], 'Count': self.buy[0][1]},
+            'sell': {'id': self.sell[0], 'Count': self.sell[1]},
+            'rewardExp': self.reward_exp
+        }
+        if len(self.buy) > 1:
+            values['buyB'] = {'id': self.buy[1][0], 'Count': self.buy[1][1]}
+        if self.max_uses:
+            values['maxUses'] = self.max_uses
+        return values
+
+
+def _to_def(block) -> tuple[Block, int]:
+    if isinstance(block, tuple):
+        return good_block(block[0]).id, block[1]
+    return good_block(block).id, 1
+
+
+class Villager(Entity):
+    """Convenience class for a villager or zombie villager. This presents simpler mechanisms for profession,
+    biome, experience, levels, and trades."""
+    level_xp = {
+        'Novice': range(0, 10),
+        'Apprentice': range(10, 70),
+        'Journeyman': range(70, 150),
+        'Expert': range(150, 250),
+        'Master': range(250, 2147483647),
+    }
+    """The range of experience for each level."""
+
+    def __init__(self, profession: str = 'Unemployed', biome: str = 'Plains', nbt: NbtDef = None, /, name=None,
+                 zombie: bool = False):
+        """Creates a villager."""
+        super().__init__('zombie_villager' if zombie else 'villager', nbt=nbt, name=name)
+        self.zombie = zombie
+        self.profession(profession)
+        self.biome(biome)
+        self._trades: list[Trade] = []
+
+    def xp(self, xp: int) -> Villager:
+        """Sets the villager's experience."""
+        self.merge_nbt({'VillagerData': {'Xp': xp, 'level': self.level}})
+        return self
+
+    @property
+    def level(self) -> int:
+        """Returns the villager's level as a number."""
+        i, _ = self._lookup_level()
+        return i
+
+    @property
+    def level_name(self) -> str:
+        """Returns the villager's level as a name."""
+        _, n = self._lookup_level()
+        return n
+
+    def _lookup_level(self):
+        try:
+            xp = self.nbt()['VillagerData']['Xp']
+        except KeyError:
+            xp = 0
+        for i, (n, r) in enumerate(Villager.level_xp.items()):
+            if xp in r:
+                return i, n
+        raise ValueError(f'{xp}: Invalid experience value')
+
+    def profession(self, profession: str) -> Villager:
+        """Sets the villager's profession. The profession can also be 'child' for non-zombie villagers."""
+        profession = profession.title()
+        if profession == 'Child':
+            if self.zombie:
+                raise ValueError('Child: Invalid zombie villager profession')
+            profession = UNEMPLOYED
+            self.merge_nbt({'Age': -2147483648})
+        self.merge_nbt({'VillagerData': {'profession': _in_group(VILLAGER_PROFESSIONS, profession).lower()}})
+        return self
+
+    def biome(self, biome: str) -> Villager:
+        """Sets the villager's biome."""
+        biome = biome.title()
+        self.merge_nbt({'VillagerData': {'type': _in_group(VILLAGER_BIOMES, biome).lower()}})
+        return self
+
+    type = biome
+    """Alias for the ``biome`` method, because these two terms are used interchangeably."""
+
+    def add_trade(self, *trades: Trade | NbtDef) -> Villager:
+        """Add trades to the villager's list."""
+        recipes = self.nbt['Offers'].get_list('Recipes')
+        for t in trades:
+            if isinstance(t, Trade):
+                if len(t.buy) not in range(1, 3):
+                    raise ValueError(f'{len(t.buy)}: Invalid buy length (must be 1 or 2)')
+                t = t.nbt()
+            recipes.append(t)
+        return self
+
+    def inventory(self, *items: BlockDef | tuple[BlockDef, int]) -> Villager:
+        """Sets the villager's inventory."""
+        inventory = self.nbt.get_list('Inventory')
+        for i in items:
+            if not isinstance(i, tuple):
+                i = (i, 1)
+            item_nbt = Item.nbt_for(good_block(i[0]))
+            item_nbt['Count'] = i[1]
+            inventory.append(Nbt(item_nbt))
         return self

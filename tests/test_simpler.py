@@ -219,3 +219,30 @@ class TestSimpler(unittest.TestCase):
         with self.assertRaises(ValueError):
             Offset(1, 2, 3).r(5)
             Offset(1, 2, 3).r(d(1), 2, 3)
+
+    def test_villager(self):
+        self.assertEqual(Nbt({'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+                         Villager(MASON, JUNGLE).nbt)
+        self.assertEqual(Nbt({'Age': -2147483648, 'VillagerData': {'profession': 'unemployed', 'type': 'plains'}}),
+                         Villager(CHILD, 'plains').nbt)
+        self.assertEqual(Nbt({
+            'Offers': {'Recipes': [
+                {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
+            ]},
+            'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+            Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon')).nbt)
+        self.assertEqual(Nbt({
+            'Offers': {'Recipes': [
+                {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
+                {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
+            ]},
+            'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+            Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon'), Trade('stone', 'melon').nbt()).nbt)
+        self.assertEqual(Nbt({
+            'Inventory': [{'id': 'minecraft:iron_hoe', 'Count': 1},
+                          {'id': 'minecraft:wheat', 'Count': 25}],
+            'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+            Villager(MASON, JUNGLE).inventory('iron_hoe', ('wheat', 25)).nbt)
+
+        with self.assertRaises(ValueError):
+            Villager(CHILD, JUNGLE, zombie=True)
