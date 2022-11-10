@@ -77,9 +77,13 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
         with self.assertRaises(ValueError):
             _ExecuteMod().align('foo')
+        with self.assertRaises(ValueError):
             _ExecuteMod().anchored('foo')
+        with self.assertRaises(ValueError):
             _ExecuteMod().facing_entity(User('robin'), 'foo')
+        with self.assertRaises(ValueError):
             _ExecuteMod().in_('foo')
+        with self.assertRaises(TypeError):
             _ExecuteMod().store().block((1, r(2), d(3)), '{}', 'foo', 1.3)
 
     def test_run(self):
@@ -101,8 +105,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
         self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar')).matches(3)))
         with self.assertRaises(ValueError):
-            _IfClause().score(('foo', 'bar')).matches((None, 10))
             _IfClause().score(('*', 'bar')).is_('foo', ('up', 'down'))
+        with self.assertRaises(ValueError):
             _IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), 'foo')
 
     def test_store_clause(self):
@@ -114,7 +118,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('storage @s {} double 1.9', str(_StoreClause().storage(s(), '{}', DOUBLE, 1.9)))
         with self.assertRaises(ValueError):
             _StoreClause().bossbar('stud', 'foo')
+        with self.assertRaises(ValueError):
             _StoreClause().entity(p(), '{}', 'foo', 3.5)
+        with self.assertRaises(ValueError):
             _StoreClause().storage(s(), '{}', 'foo', 1.9)
 
     def test_range(self):
@@ -326,6 +332,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[sort=nearest]', str(a().sort(NEAREST)))
         with self.assertRaises(KeyError):
             a().sort(NEAREST).sort(RANDOM)
+        with self.assertRaises(ValueError):
             a().sort('foo')
 
     def test_target_limit(self):
@@ -343,6 +350,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[gamemode=survival]', str(a().gamemode(SURVIVAL)))
         with self.assertRaises(KeyError):
             a().gamemode(CREATIVE).gamemode(ADVENTURE)
+        with self.assertRaises(ValueError):
             a().gamemode('foo')
 
     def test_target_not_gamemodes(self):
@@ -352,6 +360,7 @@ class TestCommands(unittest.TestCase):
                              CREATIVE)))
         with self.assertRaises(KeyError):
             a().gamemode(CREATIVE).not_gamemode(ADVENTURE)
+        with self.assertRaises(ValueError):
             a().not_gamemode('foo')
 
     def test_target_name(self):
@@ -515,10 +524,15 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
         with self.assertRaises(ValueError):
             effect().give(s(), Effect.SPEED, -1)
+        with self.assertRaises(ValueError):
             effect().give(s(), Effect.SPEED, MAX_EFFECT_SECONDS + 100)
+        with self.assertRaises(ValueError):
             effect().give(s(), Effect.SPEED, None, 2)
+        with self.assertRaises(ValueError):
             effect().give(s(), Effect.SPEED, None, None, True)
+        with self.assertRaises(ValueError):
             effect().give(s(), Effect.SPEED, 100, None, True)
+        with self.assertRaises(ValueError):
             effect().clear(None, Effect.SPEED)
 
     def test_enchant(self):
@@ -587,7 +601,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('gamerule disableRaids true', gamerule('disableRaids', True))
         with self.assertRaises(ValueError):
             gamerule(GameRule.DISABLE_RAIDS, 17)
+        with self.assertRaises(ValueError):
             gamerule(GameRule.MAX_COMMAND_CHAIN_LENGTH, True)
+        with self.assertRaises(ValueError):
             gamerule('nothing', 17)
 
     def test_give(self):
@@ -622,6 +638,7 @@ class TestCommands(unittest.TestCase):
                          str(item().replace().block((1, r(2), d(3)), 'hotbar.0').from_().entity(s(), 'b')))
         with self.assertRaises(ValueError):
             item().replace().block((1, r(2), d(3)), 'a.17', 'm:a')
+        with self.assertRaises(ValueError):
             item().replace().entity(s(), 'a.17', 'm:a')
 
     def test_kill_command(self):
@@ -808,11 +825,17 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('team modify foo suffix post', team().modify('foo', TeamOption.SUFFIX, 'post'))
         with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.DISPLAY_NAME, True)
+        with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.FRIENDLY_FIRE, 'false')
+        with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.NAMETAG_VISIBILITY, 'bar')
+        with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.DEATH_MESSAGE_VISIBILITY, 'bar')
+        with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.COLLISION_RULE, 'bar')
+        with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.PREFIX, True)
+        with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.SUFFIX, True)
 
     def test_teleport_commands(self):
@@ -893,10 +916,15 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('m:/a/b/c', good_resource_path('m:/a/b/c'))
         with self.assertRaises(ValueError):
             good_resource('%')
+        with self.assertRaises(ValueError):
             good_resource('m:xyzzy', allow_namespace=False)
+        with self.assertRaises(ValueError):
             good_resource_path('/')
+        with self.assertRaises(ValueError):
             good_resource_path('a//b')
+        with self.assertRaises(ValueError):
             good_resource_path('/a/b: c')
+        with self.assertRaises(ValueError):
             good_resource_path('//a/b/c')
 
     def test_tag_checks(self):
@@ -907,7 +935,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(('_', '!b-3'), good_names('_', '!b-3', allow_not=True))
         with self.assertRaises(ValueError):
             good_name('x&y')
+        with self.assertRaises(ValueError):
             good_name('!foo')
+        with self.assertRaises(ValueError):
             good_names('_', '!b-3')
 
     def test_commands(self):

@@ -218,10 +218,11 @@ def good_resource(name: str | None, allow_namespace=True, allow_not=False) -> st
     eval_name = name
     if allow_not:
         eval_name = _strip_not(eval_name)
-    if allow_namespace:
-        eval_name = _strip_namespace(eval_name)
-    if not _resource_re.fullmatch(eval_name):
+    m = _resource_re.fullmatch(eval_name)
+    if not m:
         raise ValueError(f'{eval_name}: Invalid resource')
+    if not allow_namespace and m.group(2):
+        raise ValueError(f'{eval_name}: Namespace given ({m.group(2)} but not allowed')
     return name
 
 
@@ -250,7 +251,11 @@ def good_resource_path(path: str | None, allow_not=False) -> str | None:
     if allow_not:
         path = _strip_not(path)
     path = _strip_namespace(path)
+    if re.search('^//', path):
+        raise ValueError(f'{orig}: Multiple leading "/"s in path')
     path = path.lstrip('/')
+    if len(path) == 0:
+        raise ValueError(f'{orig}: Invalid empty resource')
     for part in path.split('/'):
         try:
             good_resource(part, allow_namespace=False)

@@ -1854,8 +1854,13 @@ class _TeamMod(Command):
     def modify(self, team, option: TeamOption | str, value: str | bool) -> str:
         value_type = TeamOption.value_spec(TeamOption(option))
         if value_type == bool:
+            if not isinstance(value, bool):
+                raise ValueError(f'{value}: Must be bool')
             value = _bool(value)
-        elif value_type != str:
+        elif value_type == str:
+            if not isinstance(value, str):
+                raise ValueError(f'{value}: Must be str')
+        else:
             if value not in value_type:
                 raise ValueError(f'{value}: Must be one of {value_type}')
         self._add('modify', good_team(team), option, value)
@@ -2250,8 +2255,12 @@ def gamerule(rule: GameRule | str, value: bool | int = None) -> str:
             if type(value) != int:
                 raise ValueError(f'{rule}: int value required')
             cmd._add(int(value))
-        else:
+        elif rule_type == 'bool':
+            if type(value) != bool:
+                raise ValueError(f'{rule}: bool value required')
             cmd._add(_bool(value))
+        else:
+            raise ValueError(f'{rule_type}: Unexpected rule type (gamerule "{rule}")')
     return str(cmd)
 
 
