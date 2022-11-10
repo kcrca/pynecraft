@@ -705,7 +705,9 @@ class RelCoord:
 
     def __sub__(self: U, other: float | U) -> U:
         if not isinstance(other, (float, int)):
-            assert other.prefix == self.prefix
+            if other.prefix != self.prefix:
+                raise ValueError(
+                    f'{other}: right hand operator to - must be the same type of coord as the left, or a number')
             other = other.value
         return self._v(self.value - other)
 

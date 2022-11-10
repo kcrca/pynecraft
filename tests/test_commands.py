@@ -500,11 +500,26 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('clear @s foo{bar} 4', clear(s()).item('foo{bar}', 4))
 
     def test_clone(self):
+        self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9', str(clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9))))
         self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9 replace', clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9)).replace())
         self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9 masked force',
                          clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9)).masked(FORCE))
         self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9 filtered stone force',
                          clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9)).filtered('stone', FORCE))
+
+        self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9',
+                         str(clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9), LEAST)))
+        self.assertEqual('clone 1 2 3 4 5 6 4 5 6', str(clone((1, 2, 3), (4, 5, 6), (7, 8, 9), LAST)))
+        self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~4 ~5 ~6', str(clone(r(1, 2, 3), r(4, 5, 6), r(7, 8, 9), LAST)))
+        self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~11 ~2 ~13', str(clone(r(1, 2, 3), r(4, 5, 6), (10, 0, 10), DELTA)))
+        with self.assertRaises(ValueError):
+            clone(r(1, 2, 3), r(4, 5, 6), d(1, 2, 3), LAST)
+        with self.assertRaises(TypeError):
+                clone(r(1, 2, 3), d(4, 5, 6), (1, 2, 3), LAST)
+        with self.assertRaises(ValueError):
+                clone(r(1, 2, 3), d(4, 5, 6), d(1, 2, 3), DELTA)
+        with self.assertRaises(ValueError):
+                clone(r(1, 2, 3), d(4, 5, 6), r(1, 2, 3), DELTA)
 
     def test_data_target(self):
         self.assertEqual('block 1 ~2 ^3', data_target_str((1, r(2), d(3))))

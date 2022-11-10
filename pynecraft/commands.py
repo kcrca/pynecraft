@@ -277,6 +277,11 @@ NORMAL = 'normal'
 CLONE_FLAGS = [FORCE, MOVE, NORMAL]
 """Valid clone flags."""
 
+LEAST = 'least'
+LAST = 'last'
+DELTA = 'delta'
+CLONE_COORDS = [LEAST, LAST, DELTA]
+
 RESULT = 'result'
 SUCCESS = 'success'
 STORE_WHAT = [RESULT, SUCCESS]
@@ -320,7 +325,6 @@ DATAPACK_ACTIONS = [ENABLE, DISABLE]
 """Valid actions on a datapack."""
 
 FIRST = 'first'
-LAST = 'last'
 BEFORE = 'before_cmds'
 AFTER = 'after_cmds'
 ORDER = [FIRST, LAST, BEFORE, AFTER]
@@ -2118,9 +2122,41 @@ def clear(target: Target) -> _ClearClause:
     return cmd._start(_ClearClause())
 
 
-def clone(start_pos: Position, end_pos: Position, dest_pos: Position) -> _CloneClause:
-    """Copies blocks from one place to another."""
+def _clone_dest(start_pos, end_pos, dest_pos, dest_type):
+    dest_type = _in_group(CLONE_COORDS, dest_type)
+    if dest_type == LEAST:
+        return dest_pos
+    # Need to deal with the case where these are relative coordinates. Probably can't handle ^ coords, because we don't
+    # know which is the min, but I can tell the min between two ~ coords.
+    min_pos = tuple(min(s, e) for s, e in zip(start_pos, end_pos))
+    if dest_type == LAST:
+        return tuple(d - (e - m) for e, d, m in zip(end_pos, dest_pos, min_pos))
+    elif dest_type == DELTA:
+        for c in dest_pos:
+            if not isinstance(c, (int, float)):
+                raise ValueError(f'{c}: Delta must contain only numbers')
+        return tuple(m + d for m, d in zip(min_pos, dest_pos))
+    else:
+        raise ValueError(f'{dest_type}: Unknown destination coords type')
+
+
+def clone(start_pos: Position, end_pos: Position, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
+    """
+    Copies blocks from one place to another.
+
+    The dest_type says how to interpret dest_coords, and is one of the following:
+
+    LEAST (default): dest_coords are the lowest coordinates of the destination region. This matches the clone
+    command.
+
+    LAST: dest_coords are where the old region's end_pos should be in the new region. That is, the copy of
+    the block at end_pos will be placed at these coordinates.
+
+    DELTA: dest_coords is the amount ot shift the whole region. So (10, 0, 0) means to clone the region 10 blocks
+    away along the X axis.
+    """
     cmd = Command()
+    dest_pos = _clone_dest(start_pos, end_pos, dest_pos, dest_type)
     cmd._add('clone', *start_pos, *end_pos, *dest_pos)
     return cmd._start(_CloneClause())
 
