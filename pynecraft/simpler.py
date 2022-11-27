@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Callable, Mapping, Tuple, Union
+from typing import Callable, Iterable, Mapping, Tuple, Union
 
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, _to_list, \
     d, good_facing, r, to_id
@@ -443,13 +443,21 @@ class Offset:
             raise ValueError(f'Must have at least one value in offset')
         self.position: tuple[float] = position
 
-    def r(self, *v: CoordsIn) -> CoordsOut:
+    def r(self, *values: CoordsIn) -> CoordsOut:
         """ Returns the result of base.r() with the input, with each return value added to this object's offset. """
-        return self._rel_coord(r, *v)
+        return self._rel_coord(r, *values)
 
-    def d(self, *v: CoordsIn) -> CoordsOut:
+    def d(self, *values: CoordsIn) -> CoordsOut:
         """ Returns the result of base.d() with the input, with each return value added to this object's offset. """
-        return self._rel_coord(d, *v)
+        return self._rel_coord(d, *values)
+
+    def abs(self, *values: float | int | Iterable[float | int]) -> float | int | tuple[float | int]:
+        if len(values) != len(self.position):
+            raise ValueError(f'{len(values)}: Expected {len(self.position)} values')
+        result = tuple(sum(p) for p in zip(values, self.position))
+        if len(values) == 1:
+            return result[0]
+        return result
 
     def _rel_coord(self, f, *values: CoordsIn) -> RelCoord | Tuple[RelCoord, ...]:
         if len(values) != len(self.position):
