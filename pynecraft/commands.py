@@ -20,9 +20,10 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
-from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, GREEN, IntColumn, JSON_COLORS, \
+from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, GREEN, IntColumn, JSON_COLORS, \
     JsonHolder, Nbt, NbtDef, PINK, PURPLE, Position, RED, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
-    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_column, \
+    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_biome, \
+    good_column, \
     good_duration, \
     good_facing, \
     good_item_stack, good_name, good_names, good_pitch, good_range, good_resource, good_resource_path, good_resources, \
@@ -1481,6 +1482,13 @@ class _FilterClause(Command):
         return str(self)
 
 
+class _BiomeFilterClause(Command):
+    @_fluent
+    def replace(self, biome: Biome | str) -> str:
+        self._add('replace', good_biome(biome))
+        return str(self)
+
+
 class _ForceloadMod(Command):
     def _from_to(self, action: str, start: IntColumn, end: IntColumn) -> str:
         self._add(action, *start)
@@ -2249,6 +2257,13 @@ def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClau
     cmd = Command()
     cmd._add('fill', *start_pos, *end_pos, good_block(block))
     return cmd._start(_FilterClause())
+
+
+def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
+    cmd = Command()
+    cmd._add('fillbiome', *start_pos, *end_pos, good_biome(biome))
+    return cmd._start(_BiomeFilterClause())
+    pass
 
 
 def forceload() -> _ForceloadMod:

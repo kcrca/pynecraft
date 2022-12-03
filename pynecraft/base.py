@@ -20,6 +20,8 @@ from io import StringIO
 from json import JSONEncoder
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
+from pynecraft.enums import BiomeId
+
 _jed_resource = r'a-zA-Z0-9_.-'
 _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
                                ([{_jed_resource}]+:)?         # an optional namespace
@@ -421,8 +423,8 @@ class Nbt(UserDict):
     """Whether to output keys in sorted order."""
 
     class TypedArray(UserList):
-        def __init__(self, type: str, initlist=None):
-            super().__init__(initlist)
+        def __init__(self, type: str, init_list=None):
+            super().__init__(init_list)
             self.type = _good_array_type(type)
 
         def __str__(self):
@@ -752,9 +754,9 @@ class RelCoord:
         return cls.merge(lambda v1, v2: v1 + v2, v1, v2)
 
     @classmethod
-    def sub(vls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
+    def sub(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
         """Returns ``v1 - v2``. If either is None, the result is the other."""
-        return vls.merge(lambda v1, v2: v1 - v2, v1, v2)
+        return cls.merge(lambda v1, v2: v1 - v2, v1, v2)
 
     @staticmethod
     def merge(op: Callable[[Coord, Coord], Coord], v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> \
@@ -1034,6 +1036,7 @@ Position = Tuple[Coord, Coord, Coord]
 XYZ = Tuple[float, float, float]
 Column = Tuple[Coord, Coord]
 IntColumn = Tuple[IntCoord, IntCoord]
+Biome = Union[str, BiomeId]
 
 
 def good_duration(duration: DurationDef) -> TimeSpec | None:
@@ -1068,3 +1071,9 @@ def good_range(spec: Range) -> str:
     if isinstance(s, float) and isinstance(e, float) and s > e:
         raise ValueError('Start is greater than end')
     return str(s) + '..' + str(e)
+
+
+def good_biome(biome: Biome, allow_not: bool = False) -> str:
+    if isinstance(biome, BiomeId):
+        return str(biome)
+    return good_resource(biome, allow_not=allow_not)

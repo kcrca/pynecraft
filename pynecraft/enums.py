@@ -397,6 +397,174 @@ _advancement_display = {Advancement.MINECRAFT: "Minecraft", Advancement.STONE_AG
 
 # noinspection SpellCheckingInspection
 @enum.unique
+class BiomeId(ValueEnum):
+    THE_VOID = "the_void"
+    """The Void."""
+    PLAINS = "plains"
+    """Plains."""
+    SUNFLOWER_PLAINS = "sunflower_plains"
+    """Sunflower Plains."""
+    SNOWY_PLAINS = "snowy_plains"
+    """Snowy Plains."""
+    ICE_SPIKES = "ice_spikes"
+    """Ice Spikes."""
+    DESERT = "desert"
+    """Desert."""
+    SWAMP = "swamp"
+    """Swamp."""
+    MANGROVE_SWAMP = "mangrove_swamp"
+    """Mangrove Swamp."""
+    FOREST = "forest"
+    """Forest."""
+    FLOWER_FOREST = "flower_forest"
+    """Flower Forest."""
+    BIRCH_FOREST = "birch_forest"
+    """Birch Forest."""
+    DARK_FOREST = "dark_forest"
+    """Dark Forest."""
+    OLD_GROWTH_BIRCH_FOREST = "old_growth_birch_forest"
+    """Old Growth Birch Forest."""
+    OLD_GROWTH_PINE_TAIGA = "old_growth_pine_taiga"
+    """Old Growth Pine Taiga."""
+    OLD_GROWTH_SPRUCE_TAIGA = "old_growth_spruce_taiga"
+    """Old Growth Spruce Taiga."""
+    TAIGA = "taiga"
+    """Taiga."""
+    SNOWY_TAIGA = "snowy_taiga"
+    """Snowy Taiga."""
+    SAVANNA = "savanna"
+    """Savanna."""
+    SAVANNA_PLATEAU = "savanna_plateau"
+    """Savanna Plateau."""
+    WINDSWEPT_HILLS = "windswept_hills"
+    """Windswept Hills."""
+    WINDSWEPT_GRAVELLY_HILLS = "windswept_gravelly_hills"
+    """Windswept Gravelly Hills."""
+    WINDSWEPT_FOREST = "windswept_forest"
+    """Windswept Forest."""
+    WINDSWEPT_SAVANNA = "windswept_savanna"
+    """Windswept Savanna."""
+    JUNGLE = "jungle"
+    """Jungle."""
+    SPARSE_JUNGLE = "sparse_jungle"
+    """Sparse Jungle."""
+    BAMBOO_JUNGLE = "bamboo_jungle"
+    """Bamboo Jungle."""
+    BADLANDS = "badlands"
+    """Badlands."""
+    ERODED_BADLANDS = "eroded_badlands"
+    """Eroded Badlands."""
+    WOODED_BADLANDS = "wooded_badlands"
+    """Wooded Badlands."""
+    MEADOW = "meadow"
+    """Meadow."""
+    GROVE = "grove"
+    """Grove."""
+    SNOWY_SLOPES = "snowy_slopes"
+    """Snowy Slopes."""
+    FROZEN_PEAKS = "frozen_peaks"
+    """Frozen Peaks."""
+    JAGGED_PEAKS = "jagged_peaks"
+    """Jagged Peaks."""
+    STONY_PEAKS = "stony_peaks"
+    """Stony Peaks."""
+    RIVER = "river"
+    """River."""
+    FROZEN_RIVER = "frozen_river"
+    """Frozen River."""
+    BEACH = "beach"
+    """Beach."""
+    SNOWY_BEACH = "snowy_beach"
+    """Snowy Beach."""
+    STONY_SHORE = "stony_shore"
+    """Stony Shore."""
+    WARM_OCEAN = "warm_ocean"
+    """Warm Ocean."""
+    LUKEWARM_OCEAN = "lukewarm_ocean"
+    """Lukewarm Ocean."""
+    DEEP_LUKEWARM_OCEAN = "deep_lukewarm_ocean"
+    """Deep Lukewarm Ocean."""
+    OCEAN = "ocean"
+    """Ocean."""
+    DEEP_OCEAN = "deep_ocean"
+    """Deep Ocean."""
+    COLD_OCEAN = "cold_ocean"
+    """Cold Ocean."""
+    DEEP_COLD_OCEAN = "deep_cold_ocean"
+    """Deep Cold Ocean."""
+    FROZEN_OCEAN = "frozen_ocean"
+    """Frozen Ocean."""
+    DEEP_FROZEN_OCEAN = "deep_frozen_ocean"
+    """Deep Frozen Ocean."""
+    MUSHROOM_FIELDS = "mushroom_fields"
+    """Mushroom Fields."""
+    DRIPSTONE_CAVES = "dripstone_caves"
+    """Dripstone Caves."""
+    LUSH_CAVES = "lush_caves"
+    """Lush Caves."""
+    DEEP_DARK = "deep_dark"
+    """Deep Dark."""
+    NETHER_WASTES = "nether_wastes"
+    """Nether Wastes."""
+    WARPED_FOREST = "warped_forest"
+    """Warped Forest."""
+    CRIMSON_FOREST = "crimson_forest"
+    """Crimson Forest."""
+    SOUL_SAND_VALLEY = "soul_sand_valley"
+    """Soul Sand Valley."""
+    BASALT_DELTAS = "basalt_deltas"
+    """Basalt Deltas."""
+    THE_END = "the_end"
+    """The End."""
+    END_HIGHLANDS = "end_highlands"
+    """End Highlands."""
+    END_MIDLANDS = "end_midlands"
+    """End Midlands."""
+    SMALL_END_ISLANDS = "small_end_islands"
+    """Small End Islands."""
+    END_BARRENS = "end_barrens"
+    """End Barrens."""
+
+    def display_name(self) -> str:
+        return _biomeid_display[self]
+
+
+# noinspection SpellCheckingInspection
+_biomeid_display = {BiomeId.THE_VOID: "the_void", BiomeId.PLAINS: "plains",
+                    BiomeId.SUNFLOWER_PLAINS: "sunflower_plains", BiomeId.SNOWY_PLAINS: "snowy_plains",
+                    BiomeId.ICE_SPIKES: "ice_spikes", BiomeId.DESERT: "desert", BiomeId.SWAMP: "swamp",
+                    BiomeId.MANGROVE_SWAMP: "mangrove_swamp", BiomeId.FOREST: "forest",
+                    BiomeId.FLOWER_FOREST: "flower_forest", BiomeId.BIRCH_FOREST: "birch_forest",
+                    BiomeId.DARK_FOREST: "dark_forest", BiomeId.OLD_GROWTH_BIRCH_FOREST: "old_growth_birch_forest",
+                    BiomeId.OLD_GROWTH_PINE_TAIGA: "old_growth_pine_taiga",
+                    BiomeId.OLD_GROWTH_SPRUCE_TAIGA: "old_growth_spruce_taiga", BiomeId.TAIGA: "taiga",
+                    BiomeId.SNOWY_TAIGA: "snowy_taiga", BiomeId.SAVANNA: "savanna",
+                    BiomeId.SAVANNA_PLATEAU: "savanna_plateau", BiomeId.WINDSWEPT_HILLS: "windswept_hills",
+                    BiomeId.WINDSWEPT_GRAVELLY_HILLS: "windswept_gravelly_hills",
+                    BiomeId.WINDSWEPT_FOREST: "windswept_forest", BiomeId.WINDSWEPT_SAVANNA: "windswept_savanna",
+                    BiomeId.JUNGLE: "jungle", BiomeId.SPARSE_JUNGLE: "sparse_jungle",
+                    BiomeId.BAMBOO_JUNGLE: "bamboo_jungle", BiomeId.BADLANDS: "badlands",
+                    BiomeId.ERODED_BADLANDS: "eroded_badlands", BiomeId.WOODED_BADLANDS: "wooded_badlands",
+                    BiomeId.MEADOW: "meadow", BiomeId.GROVE: "grove", BiomeId.SNOWY_SLOPES: "snowy_slopes",
+                    BiomeId.FROZEN_PEAKS: "frozen_peaks", BiomeId.JAGGED_PEAKS: "jagged_peaks",
+                    BiomeId.STONY_PEAKS: "stony_peaks", BiomeId.RIVER: "river", BiomeId.FROZEN_RIVER: "frozen_river",
+                    BiomeId.BEACH: "beach", BiomeId.SNOWY_BEACH: "snowy_beach", BiomeId.STONY_SHORE: "stony_shore",
+                    BiomeId.WARM_OCEAN: "warm_ocean", BiomeId.LUKEWARM_OCEAN: "lukewarm_ocean",
+                    BiomeId.DEEP_LUKEWARM_OCEAN: "deep_lukewarm_ocean", BiomeId.OCEAN: "ocean",
+                    BiomeId.DEEP_OCEAN: "deep_ocean", BiomeId.COLD_OCEAN: "cold_ocean",
+                    BiomeId.DEEP_COLD_OCEAN: "deep_cold_ocean", BiomeId.FROZEN_OCEAN: "frozen_ocean",
+                    BiomeId.DEEP_FROZEN_OCEAN: "deep_frozen_ocean", BiomeId.MUSHROOM_FIELDS: "mushroom_fields",
+                    BiomeId.DRIPSTONE_CAVES: "dripstone_caves", BiomeId.LUSH_CAVES: "lush_caves",
+                    BiomeId.DEEP_DARK: "deep_dark", BiomeId.NETHER_WASTES: "nether_wastes",
+                    BiomeId.WARPED_FOREST: "warped_forest", BiomeId.CRIMSON_FOREST: "crimson_forest",
+                    BiomeId.SOUL_SAND_VALLEY: "soul_sand_valley", BiomeId.BASALT_DELTAS: "basalt_deltas",
+                    BiomeId.THE_END: "the_end", BiomeId.END_HIGHLANDS: "end_highlands",
+                    BiomeId.END_MIDLANDS: "end_midlands", BiomeId.SMALL_END_ISLANDS: "small_end_islands",
+                    BiomeId.END_BARRENS: "end_barrens"}
+
+
+# noinspection SpellCheckingInspection
+@enum.unique
 class Effect(ValueEnum):
     SPEED = "speed"
     """Increases walking speed; higher levels make the affected entity faster and increases the player's field of view when affected."""
@@ -641,6 +809,8 @@ _enchantment_display = {Enchantment.AQUA_AFFINITY: "Aqua Affinity",
 class GameRule(ValueEnum):
     ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
     """Whether advancements should be announced in chat."""
+    BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
+    """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a block explosion (e.g. clicking a bed in dimensions other than the Overworld)."""
     COMMAND_BLOCK_OUTPUT = "commandBlockOutput"
     """Whether command blocks should notify admins when they perform commands."""
     DISABLE_ELYTRA_MOVEMENT_CHECK = "disableElytraMovementCheck"
@@ -658,7 +828,7 @@ class GameRule(ValueEnum):
     DO_IMMEDIATE_RESPAWN = "doImmediateRespawn"
     """Players respawn immediately without showing the death screen."""
     DO_LIMITED_CRAFTING = "doLimitedCrafting"
-    """Whether players should be able to craft only those recipes that they've unlocked first."""
+    """Whether players can craft only those recipes that they have unlocked."""
     DO_MOB_LOOT = "doMobLoot"
     """Whether mobs should drop items and experience orbs."""
     DO_MOB_SPAWNING = "doMobSpawning"
@@ -683,16 +853,22 @@ class GameRule(ValueEnum):
     """Makes angered neutral mobs stop being angry when the targeted player dies nearby."""
     FREEZE_DAMAGE = "freezeDamage"
     """Whether the player should take damage when inside powder snow."""
+    GLOBAL_SOUND_EVENTS = "globalSoundEvents"
+    """Whether certain sound events are heard by all players regardless of location."""
     KEEP_INVENTORY = "keepInventory"
     """Whether the player should keep items and experience in their inventory after death."""
+    LAVA_SOURCE_CONVERSION = "lavaSourceConversion"
+    """Whether new sources of lava are allowed to form."""
     LOG_ADMIN_COMMANDS = "logAdminCommands"
     """Whether to log admin commands to server log."""
     MAX_COMMAND_CHAIN_LENGTH = "maxCommandChainLength"
     """The maximum length of a chain of commands that can be executed during one tick. Applies to command blocks and functions."""
     MAX_ENTITY_CRAMMING = "maxEntityCramming"
-    """The maximum number of pushable entities a mob or player can push, before taking 3 suffocation damage per half-second. Setting to 0 or lower disables the rule. Damage affects survival-mode or adventure-mode players, and all mobs but bats. Pushable entities include non-spectator-mode players, any mob except bats, as well as boats and minecarts."""
+    """The maximum number of pushable entities a mob or player can push, before taking 6 entity cramming damage per half-second. Setting to 0 or lower disables the rule. Damage affects Survival-mode or Adventure-mode players, and all mobs but bats. Pushable entities include non-Spectator-mode players, any mob except bats, as well as boats and minecarts."""
+    MOB_EXPLOSION_DROP_DECAY = "mobExplosionDropDecay"
+    """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a mob explosion (e.g. Creeper explosion)."""
     MOB_GRIEFING = "mobGriefing"
-    """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals should be able to change blocks, and whether mobs can pick up items. When mobGriefing is disabled, piglins will not pick up gold ingots, but a player can still barter with them by using the item on the mob. Similarly, villagers will not pick up food items but can still breed until they run out of any food already in their inventory. This also affects the capability of zombie-like creatures like zombified piglins and drowned to pathfind to turtle eggs."""
+    """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals should be able to change blocks, and whether mobs can pick up items. When mobGriefing is disabled, piglins do not pick up gold ingots, but a player can still barter with them by using the item on the mob. Similarly, villagers do not pick up food items but can still breed until they run out of any food already in their inventory. This also affects the capability of zombie-like creatures like zombified piglins and drowned to pathfind to turtle eggs."""
     NATURAL_REGENERATION = "naturalRegeneration"
     """Whether the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)."""
     PLAYERS_SLEEPING_PERCENTAGE = "playersSleepingPercentage"
@@ -705,12 +881,18 @@ class GameRule(ValueEnum):
     """Whether the feedback from commands executed by a player should show up in chat. Also affects the default behavior of whether command blocks store their output text."""
     SHOW_DEATH_MESSAGES = "showDeathMessages"
     """Whether death messages are put into chat when a player dies. Also affects whether a message is sent to the pet's owner when the pet dies."""
+    SNOW_ACCUMULATION_HEIGHT = "snowAccumulationHeight"
+    """The maximum number of snow layers that can be accumulated on each block."""
     SPAWN_RADIUS = "spawnRadius"
-    """The number of blocks outward from the world spawn coordinates that a player spawns in when first joining a server or when dying without a personal spawnpoint. Has no effect on servers where the default game mode is adventure."""
+    """The number of blocks outward from the world spawn coordinates that a player spawns in when first joining a server or when dying without a personal spawnpoint. Has no effect on servers where the default game mode is Adventure."""
     SPECTATORS_GENERATE_CHUNKS = "spectatorsGenerateChunks"
-    """Whether players in spectator mode can generate chunks."""
+    """Whether players in Spectator mode can generate chunks."""
+    TNT_EXPLOSION_DROP_DECAY = "tntExplosionDropDecay"
+    """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a TNT explosion."""
     UNIVERSAL_ANGER = "universalAnger"
     """Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled."""
+    WATER_SOURCE_CONVERSION = "waterSourceConversion"
+    """Whether new sources of water are allowed to form."""
 
     def display_name(self) -> str:
         return _gamerule_display[self]
@@ -720,20 +902,24 @@ class GameRule(ValueEnum):
 
 
 # noinspection SpellCheckingInspection
-_gamerule_types = {'announceAdvancements': 'bool', 'commandBlockOutput': 'bool', 'disableElytraMovementCheck': 'bool',
-                   'disableRaids': 'bool', 'doDaylightCycle': 'bool', 'doEntityDrops': 'bool', 'doFireTick': 'bool',
-                   'doInsomnia': 'bool', 'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool',
-                   'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool',
-                   'doTraderSpawning': 'bool', 'doWeatherCycle': 'bool', 'doWardenSpawning': 'bool',
-                   'drowningDamage': 'bool', 'fallDamage': 'bool', 'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool',
-                   'freezeDamage': 'bool', 'keepInventory': 'bool', 'logAdminCommands': 'bool',
-                   'maxCommandChainLength': 'int', 'maxEntityCramming': 'int', 'mobGriefing': 'bool',
-                   'naturalRegeneration': 'bool', 'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int',
-                   'reducedDebugInfo': 'bool', 'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool',
-                   'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'universalAnger': 'bool'}
+_gamerule_types = {'announceAdvancements': 'bool', 'blockExplosionDropDecay': 'bool', 'commandBlockOutput': 'bool',
+                   'disableElytraMovementCheck': 'bool', 'disableRaids': 'bool', 'doDaylightCycle': 'bool',
+                   'doEntityDrops': 'bool', 'doFireTick': 'bool', 'doInsomnia': 'bool', 'doImmediateRespawn': 'bool',
+                   'doLimitedCrafting': 'bool', 'doMobLoot': 'bool', 'doMobSpawning': 'bool',
+                   'doPatrolSpawning': 'bool', 'doTileDrops': 'bool', 'doTraderSpawning': 'bool',
+                   'doWeatherCycle': 'bool', 'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'fallDamage': 'bool',
+                   'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool',
+                   'globalSoundEvents': 'bool', 'keepInventory': 'bool', 'lavaSourceConversion': 'bool',
+                   'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int',
+                   'mobExplosionDropDecay': 'bool', 'mobGriefing': 'bool', 'naturalRegeneration': 'bool',
+                   'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool',
+                   'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int',
+                   'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool',
+                   'universalAnger': 'bool', 'waterSourceConversion': 'bool'}
 
 # noinspection SpellCheckingInspection
 _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
+                     GameRule.BLOCK_EXPLOSION_DROP_DECAY: "block Explosion Drop Decay",
                      GameRule.COMMAND_BLOCK_OUTPUT: "command Block Output",
                      GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK: "disable Elytra Movement Check",
                      GameRule.DISABLE_RAIDS: "disable Raids", GameRule.DO_DAYLIGHT_CYCLE: "do Daylight Cycle",
@@ -745,17 +931,24 @@ _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
                      GameRule.DO_WEATHER_CYCLE: "do Weather Cycle", GameRule.DO_WARDEN_SPAWNING: "do Warden Spawning",
                      GameRule.DROWNING_DAMAGE: "drowning Damage", GameRule.FALL_DAMAGE: "fall Damage",
                      GameRule.FIRE_DAMAGE: "fire Damage", GameRule.FORGIVE_DEAD_PLAYERS: "forgive Dead Players",
-                     GameRule.FREEZE_DAMAGE: "freeze Damage", GameRule.KEEP_INVENTORY: "keep Inventory",
+                     GameRule.FREEZE_DAMAGE: "freeze Damage", GameRule.GLOBAL_SOUND_EVENTS: "global Sound Events",
+                     GameRule.KEEP_INVENTORY: "keep Inventory",
+                     GameRule.LAVA_SOURCE_CONVERSION: "lava Source Conversion",
                      GameRule.LOG_ADMIN_COMMANDS: "log Admin Commands",
                      GameRule.MAX_COMMAND_CHAIN_LENGTH: "max Command Chain Length",
-                     GameRule.MAX_ENTITY_CRAMMING: "max Entity Cramming", GameRule.MOB_GRIEFING: "mob Griefing",
-                     GameRule.NATURAL_REGENERATION: "natural Regeneration",
+                     GameRule.MAX_ENTITY_CRAMMING: "max Entity Cramming",
+                     GameRule.MOB_EXPLOSION_DROP_DECAY: "mob Explosion Drop Decay",
+                     GameRule.MOB_GRIEFING: "mob Griefing", GameRule.NATURAL_REGENERATION: "natural Regeneration",
                      GameRule.PLAYERS_SLEEPING_PERCENTAGE: "players Sleeping Percentage",
                      GameRule.RANDOM_TICK_SPEED: "random Tick Speed", GameRule.REDUCED_DEBUG_INFO: "reduced Debug Info",
                      GameRule.SEND_COMMAND_FEEDBACK: "send Command Feedback",
-                     GameRule.SHOW_DEATH_MESSAGES: "show Death Messages", GameRule.SPAWN_RADIUS: "spawn Radius",
+                     GameRule.SHOW_DEATH_MESSAGES: "show Death Messages",
+                     GameRule.SNOW_ACCUMULATION_HEIGHT: "snow Accumulation Height",
+                     GameRule.SPAWN_RADIUS: "spawn Radius",
                      GameRule.SPECTATORS_GENERATE_CHUNKS: "spectators Generate Chunks",
-                     GameRule.UNIVERSAL_ANGER: "universal Anger"}
+                     GameRule.TNT_EXPLOSION_DROP_DECAY: "tnt Explosion Drop Decay",
+                     GameRule.UNIVERSAL_ANGER: "universal Anger",
+                     GameRule.WATER_SOURCE_CONVERSION: "water Source Conversion"}
 
 
 # noinspection SpellCheckingInspection
@@ -925,7 +1118,7 @@ class Particle(ValueEnum):
     LAVA = "lava"
     """Lava bubble."""
     LIGHT = "light"
-    """Light block displays it when the player holds the Light item of any level."""
+    """Light block displays it when the player holds the light item of any level."""
     MYCELIUM = "mycelium"
     """Mycelium blocks."""
     NAUTILUS = "nautilus"
@@ -945,9 +1138,9 @@ class Particle(ValueEnum):
     SCULK_CHARGE_POP = "sculk_charge_pop"
     """Sculk charge ends by popping."""
     SCULK_SOUL = "sculk_soul"
-    """When a mob dies near a Sculk Catalyst these particles are shown."""
+    """When a mob dies near a sculk catalyst these particles are shown."""
     SHRIEK = "shriek"
-    """Shown when a Sculk Shrieker triggers."""
+    """Shown when a sculk shrieker triggers."""
     SMOKE = "smoke"
     """Torches, primed TNT, droppers, dispensers, end portals, brewing stands, spawners, furnaces, ghast fireballs, wither skulls, taming, withers, lava (when raining), placing an eye of ender in an end portal frame, redstone torches burning out, food items on campfire."""
     SNEEZE = "sneeze"
@@ -957,7 +1150,7 @@ class Particle(ValueEnum):
     SONIC_BOOM = "sonic_boom"
     """Wardens casting sonic boom."""
     SOUL = "soul"
-    """Appears when walking on Soul Sand or Soul Soil with the Soul Speed Enchantment, when a Mob dies near a Sculk Catalyst."""
+    """Appears when walking on soul sand or soul soil with the Soul Speed Enchantment, when a mob dies near a sculk catalyst."""
     SOUL_FIRE_FLAME = "soul_fire_flame"
     """Appears on top of soul torches as a flame."""
     SPIT = "spit"

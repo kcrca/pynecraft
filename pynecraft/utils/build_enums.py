@@ -395,6 +395,25 @@ class ScoreCriteria(PageEnumDesc):
         return camel_to_name(value), value, clean(cols[self.desc_col])
 
 
+class BiomeIds(PageEnumDesc):
+    def __init__(self):
+        super().__init__('BiomeId', WIKI + 'Biome/ID', 'Java Biome IDs')
+        self.desc_col = None
+        self.value_col = None
+
+    def header(self, col: int, text: str):
+        if text.find('Resource') >= 0:
+            self.value_col = col
+        elif text.find('Name') >= 0:
+            self.desc_col = col
+        else:
+            pass
+
+    def extract(self, cols) -> tuple[str, str, str]:
+        value = clean(cols[self.value_col])
+        return camel_to_name(value), value, clean(cols[self.desc_col])
+
+
 if __name__ == '__main__':
     with open('../enums.py', 'r+') as out:
         top = []
@@ -408,7 +427,7 @@ if __name__ == '__main__':
         out.writelines(top)
         with redirect_stdout(out):
             for tab in (
-                    Advancement(), Effect(), Enchantment(), GameRule(), ScoreCriteria(), Particle()):
+                    Advancement(), BiomeIds(), Effect(), Enchantment(), GameRule(), ScoreCriteria(), Particle()):
                 fields = tab.generate()
                 print()
                 print()
@@ -435,6 +454,3 @@ if __name__ == '__main__':
                 values = (f'{tab.name}.{k}: "%s"' % v.replace('"', r'\"') for k, v in names.items())
                 print(f'{map_name} = {{{",".join(values)}}}')
                 # print('        return {' + (', '.join(values)) + '}[elem]')
-
-
-

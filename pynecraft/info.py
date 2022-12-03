@@ -19,7 +19,7 @@ items: dict[str, Item] = {}
 items_by_id: dict[str, Item] = {}
 """All items by ID."""
 mobs: dict[str, Entity] = {}
-mobs_by_id: dict[str, Entity] ={}
+mobs_by_id: dict[str, Entity] = {}
 
 must_give_items: dict[str, Item] = {}
 """Items that are not in the creative inventory, by name."""
@@ -73,7 +73,7 @@ class _ItemForBlockDict(UserDict):
             self[block.id] = v
 
     def __getitem__(self, item):
-        if not item in self:
+        if item not in self:
             if item in blocks:
                 return Item(item)
 
@@ -97,7 +97,7 @@ block_items = _ItemForBlockDict({
     'Tripwire': Item('String'),
     'Water': Item('Water Bucket'),
 })
-"""Items for each kind of block. By default this is simply ``Item(key)``, but there are some special cases where 
+"""Items for each kind of block. By default, this is simply ``Item(key)``, but there are some special cases where 
 there is no item for a block. This map takes a reasonable guess at the most reasonable item."""
 
 
@@ -171,7 +171,6 @@ instruments = (
     Instrument('pling', 'Pling', Block('Glowstone')),
 )
 """The instruments note blocks can play."""
-
 
 
 class Horse(Entity):

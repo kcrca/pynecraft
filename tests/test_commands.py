@@ -6,6 +6,7 @@ from pynecraft.base import DARK_GREEN, GAMETIME, THE_NETHER, d, days, r, seconds
 from pynecraft.commands import *
 from pynecraft.commands import _AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
     _ScoreboardCriteria, _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
+from pynecraft.enums import BiomeId
 
 
 def commands(*cmds: str | Command) -> str:
@@ -515,11 +516,11 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3), r(4, 5, 6), d(1, 2, 3), LAST)
         with self.assertRaises(TypeError):
-                clone(r(1, 2, 3), d(4, 5, 6), (1, 2, 3), LAST)
+            clone(r(1, 2, 3), d(4, 5, 6), (1, 2, 3), LAST)
         with self.assertRaises(ValueError):
-                clone(r(1, 2, 3), d(4, 5, 6), d(1, 2, 3), DELTA)
+            clone(r(1, 2, 3), d(4, 5, 6), d(1, 2, 3), DELTA)
         with self.assertRaises(ValueError):
-                clone(r(1, 2, 3), d(4, 5, 6), r(1, 2, 3), DELTA)
+            clone(r(1, 2, 3), d(4, 5, 6), r(1, 2, 3), DELTA)
 
     def test_data_target(self):
         self.assertEqual('block 1 ~2 ^3', data_target_str((1, r(2), d(3))))
@@ -571,6 +572,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace air',
                          fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace('air'))
+
+    def test_fillbiome(self):
+        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach', str(fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH)))
+        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach replace m:ice',
+                         fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH).replace('m:ice'))
 
     def test_data_mod(self):
         self.assertEqual('get entity @a', str(_DataMod().get(a())))
