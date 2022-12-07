@@ -411,7 +411,8 @@ class BiomeIds(PageEnumDesc):
 
     def extract(self, cols) -> tuple[str, str, str]:
         value = clean(cols[self.value_col])
-        return camel_to_name(value), value, clean(cols[self.desc_col])
+        desc = clean(cols[self.desc_col])
+        return desc, value, desc
 
 
 if __name__ == '__main__':
