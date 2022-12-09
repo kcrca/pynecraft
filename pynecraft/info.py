@@ -5,7 +5,9 @@ import re
 from collections import UserDict
 from importlib import resources
 
-from .base import COLORS, Nbt, to_id, to_name
+from packaging.version import Version
+
+from .base import COLORS, Nbt, Parameters, parameters, to_id, to_name
 from .commands import Block, Entity, good_color_num
 from .simpler import Item
 from .utils.fetch_things import ItemFetcher
@@ -384,3 +386,24 @@ tropical_fish = {
         Fish(67108865, 'Threadfin')),
 }
 """The data for the predefined naturally-occurring tropical fish."""
+
+
+def _version_change_handler(_: Version, version: Version):
+    global woods
+    bundle = Item('Bundle')
+    if version == Parameters._version_1_19_3_x:
+        if 'Bamboo' not in woods:
+            woods = woods + ('Bamboo',)
+        items[bundle.name] = bundle
+        items_by_id[bundle.id] = bundle
+        must_give_items[bundle.name] = bundle
+        must_give_items_by_id[bundle.id] = bundle
+    else:
+        if 'Bamboo' in woods:
+            woods = woods[:-2]
+        del items[bundle.name]
+        del items[bundle.id]
+        del must_give_items[bundle.name]
+        del must_give_items_by_id[bundle.id]
+
+parameters.add_version_change_handler(_version_change_handler)

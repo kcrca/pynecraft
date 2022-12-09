@@ -21,13 +21,14 @@ from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
 from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, GREEN, IntColumn, JSON_COLORS, \
-    JsonHolder, Nbt, NbtDef, PINK, PURPLE, Position, RED, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
+    JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, \
+    YELLOW, \
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_biome, \
     good_column, \
     good_duration, \
     good_facing, \
     good_item_stack, good_name, good_names, good_pitch, good_range, good_resource, good_resource_path, good_resources, \
-    good_yaw, to_id, \
+    good_yaw, parameters, to_id, \
     to_name
 from .enums import Advancement, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
@@ -2260,6 +2261,8 @@ def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClau
 
 
 def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
+    if parameters.version < Parameters._version_1_19_3:
+        raise NotImplementedError(f'{parameters.version}: Unsupported version')
     cmd = Command()
     cmd._add('fillbiome', *start_pos, *end_pos, good_biome(biome))
     return cmd._start(_BiomeFilterClause())

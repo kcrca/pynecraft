@@ -20,6 +20,8 @@ from io import StringIO
 from json import JSONEncoder
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
+from packaging.version import Version
+
 from pynecraft.enums import BiomeId
 
 _jed_resource = r'a-zA-Z0-9_.-'
@@ -175,7 +177,7 @@ def _bool(value: bool | None) -> str | None:
 
 
 def _float(value: float) -> str:
-    return str(round(value, Parameters.float_precision()))
+    return str(round(value, parameters.float_precision))
 
 
 def _not_ify(value: str | Iterable[str]) -> str | Iterable[str]:
@@ -638,21 +640,48 @@ class _ToMinecraftText(HTMLParser):
 
 class Parameters:
     """Manage general parameters."""
+    _version_1_19_3 = Version('1.19.3')
+    _version_1_19_3_x = Version('1.19.3+x')
+    _first_version = Version('1.19')
+    _last_version = _version_1_19_3_x
 
-    _float_precision = 3
+    def __init__(self):
+        self._float_precision = 3
+        self._version = Version('1.19')
+        self._handlers = set()
 
-    @classmethod
-    def float_precision(cls):
+    @property
+    def float_precision(self) -> int:
         """Returns how many decimal places will be shown for floats."""
-        return cls._float_precision
+        return self._float_precision
 
-    @classmethod
-    def set_float_precision(cls, precision: int):
+    @float_precision.setter
+    def float_precision(self, precision: int):
         """Sets how many decimal places will be shown for floats. Must be at least one."""
         if precision < 1:
             raise ValueError(f'{precision}: Precision must be positive')
-        cls._float_precision = precision
+        self._float_precision = precision
 
+    @property
+    def version(self) -> Version:
+        return self._version
+
+    @version.setter
+    def version(self, version: Version | str):
+        if isinstance(version, str):
+            version = Version(version)
+        if version < Parameters._first_version or version > Parameters._last_version:
+            raise ValueError(f'{version}: Unsupported version')
+        orig = self._version
+        self._version = version
+        for h in self._handlers:
+            h(orig, version)
+
+    def add_version_change_handler(self, handler: Callable[[Version, Version], None]):
+        self._handlers.add(handler)
+
+
+parameters = Parameters()
 
 NbtDef = Union[Nbt, Mapping]
 

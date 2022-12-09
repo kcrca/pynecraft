@@ -7,6 +7,8 @@ Armor Stand
 Arrow
 Axolotl Spawn Egg
 Baked Potato
+Bamboo Raft
+Bamboo Raft with Chest / Chest Bamboo Raft
 Barrier
 Bat Spawn Egg
 Bee Spawn Egg
@@ -23,6 +25,7 @@ Blue Dye
 Bone
 Bone Meal
 Book
+Book
 Book and Quill / Writable Book
 Bottle o' Enchanting / Experience Bottle
 Bow
@@ -38,6 +41,7 @@ Bucket of Salmon / Salmon Bucket
 Bucket of Tadpole / Tadpole Bucket
 Bucket of Tropical Fish / Tropical Fish Bucket
 Bundle
+Camel Spawn Egg
 Carrot
 Carrot on a Stick
 Cat Spawn Egg
@@ -97,8 +101,10 @@ Elytra
 Emerald
 Empty Map / Map
 Enchanted Book
+Enchanted Book
 Enchanted Golden Apple
 End Crystal
+Ender Dragon Spawn Egg
 Ender Pearl
 Enderman Spawn Egg
 Endermite Spawn Egg
@@ -156,6 +162,7 @@ Ink Sac
 Iron Axe
 Iron Boots
 Iron Chestplate
+Iron Golem Spawn Egg
 Iron Helmet
 Iron Hoe
 Iron Horse Armor
@@ -298,6 +305,7 @@ Skull / Skull Banner Pattern
 Slime Spawn Egg
 Slimeball / Slime Ball
 Snout / Piglin Banner Pattern
+Snow Golem Spawn Egg
 Snowball
 Spawner
 Spectral Arrow
@@ -345,6 +353,7 @@ Wheat Seeds
 White Dye
 Witch Spawn Egg
 Wither Skeleton Spawn Egg
+Wither Spawn Egg
 Wolf Spawn Egg
 Wooden Axe
 Wooden Hoe

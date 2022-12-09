@@ -1,5 +1,7 @@
 import unittest
 
+from pynecraft import info
+from pynecraft.base import parameters
 from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id, mobs, mobs_by_id, \
     must_give_items, must_give_items_by_id
 
@@ -53,3 +55,16 @@ class TestInfo(unittest.TestCase):
             self.assertEqual(items[key], value)
         for key, value in must_give_items_by_id.items():
             self.assertEqual(items_by_id[key], value)
+
+    def test_versions(self):
+        parameters.version = "1.19"
+        self.assertNotIn('Bamboo', info.woods)
+        parameters.version = "1.19.2"
+        self.assertNotIn('Bamboo', info.woods)
+        parameters.version = "1.19.3"
+        self.assertIn('Bamboo', info.woods)
+        parameters.version = "1.19.3+x"
+        self.assertIn('Bamboo', info.woods)
+        parameters.version = "1.19"
+        self.assertNotIn('Bamboo', info.woods)
+

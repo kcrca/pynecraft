@@ -2,6 +2,7 @@ Acacia Button
 Acacia Door
 Acacia Fence
 Acacia Fence Gate
+Acacia Hanging Sign [x] / Acacia Hanging Sign
 Acacia Leaves
 Acacia Log
 Acacia Planks
@@ -26,7 +27,21 @@ Azalea
 Azalea Leaves
 Azure Bluet
 Bamboo
-Bamboo Shoot
+Bamboo Button [x] / Bamboo Button
+Bamboo Door [x] / Bamboo Door
+Bamboo Fence Gate [x] / Bamboo Fence Gate
+Bamboo Fence [x] / Bamboo Fence
+Bamboo Hanging Sign [x] / Bamboo Hanging Sign
+Bamboo Mosaic Slab [x] / Bamboo Mosaic Slab
+Bamboo Mosaic Stairs [x] / Bamboo Mosaic Stairs
+Bamboo Mosaic [x] / Bamboo Mosaic
+Bamboo Planks [x] / Bamboo Planks
+Bamboo Pressure Plate [x] / Bamboo Pressure Plate
+Bamboo Shoot / Bamboo Sapling
+Bamboo Sign [x] / Bamboo Sign
+Bamboo Slab [x] / Bamboo Slab
+Bamboo Stairs [x] / Bamboo Stairs
+Bamboo Trapdoor [x] / Bamboo Trapdoor
 Barrel
 Barrier
 Basalt
@@ -41,6 +56,7 @@ Birch Button
 Birch Door
 Birch Fence
 Birch Fence Gate
+Birch Hanging Sign [x] / Birch Hanging Sign
 Birch Leaves
 Birch Log
 Birch Planks
@@ -69,6 +85,7 @@ Blackstone Stairs
 Blackstone Wall
 Blast Furnace
 Block of Amethyst / Amethyst Block
+Block of Bamboo [x] / Bamboo Block
 Block of Coal / Coal Block
 Block of Copper / Copper Block
 Block of Diamond / Diamond Block
@@ -82,6 +99,7 @@ Block of Raw Copper / Raw Copper Block
 Block of Raw Gold / Raw Gold Block
 Block of Raw Iron / Raw Iron Block
 Block of Redstone / Redstone Block
+Block of Stripped Bamboo [x] / Stripped Bamboo Block
 Blue Banner
 Blue Bed
 Blue Candle
@@ -139,6 +157,7 @@ Chain
 Chain Command Block
 Chest
 Chipped Anvil
+Chiseled Bookshelf [x] / Chiseled Bookshelf
 Chiseled Deepslate
 Chiseled Nether Bricks
 Chiseled Polished Blackstone
@@ -178,6 +197,7 @@ Crimson Door
 Crimson Fence
 Crimson Fence Gate
 Crimson Fungus
+Crimson Hanging Sign [x] / Crimson Hanging Sign
 Crimson Hyphae
 Crimson Nylium
 Crimson Planks
@@ -214,6 +234,7 @@ Dark Oak Button
 Dark Oak Door
 Dark Oak Fence
 Dark Oak Fence Gate
+Dark Oak Hanging Sign [x] / Dark Oak Hanging Sign
 Dark Oak Leaves
 Dark Oak Log
 Dark Oak Planks
@@ -367,6 +388,7 @@ Jungle Button
 Jungle Door
 Jungle Fence
 Jungle Fence Gate
+Jungle Hanging Sign [x] / Jungle Hanging Sign
 Jungle Leaves
 Jungle Log
 Jungle Planks
@@ -447,6 +469,7 @@ Mangrove Button
 Mangrove Door
 Mangrove Fence
 Mangrove Fence Gate
+Mangrove Hanging Sign [x] / Mangrove Hanging Sign
 Mangrove Leaves
 Mangrove Log
 Mangrove Planks
@@ -461,6 +484,7 @@ Mangrove Wood
 Medium Amethyst Bud
 Melon
 Melon Stem
+Monster Spawner
 Moss Block
 Moss Carpet
 Mossy Cobblestone
@@ -495,6 +519,7 @@ Oak Button
 Oak Door
 Oak Fence
 Oak Fence Gate
+Oak Hanging Sign [x] / Oak Hanging Sign
 Oak Leaves
 Oak Log
 Oak Planks
@@ -531,6 +556,7 @@ Packed Mud
 Pearlescent Froglight
 Peony
 Petrified Oak Slab
+Piglin Head [x] / Piglin Head
 Pink Banner
 Pink Bed
 Pink Candle
@@ -683,13 +709,13 @@ Soul Lantern
 Soul Sand
 Soul Soil
 Soul Torch
-Spawner
 Sponge
 Spore Blossom
 Spruce Button
 Spruce Door
 Spruce Fence
 Spruce Fence Gate
+Spruce Hanging Sign [x] / Spruce Hanging Sign
 Spruce Leaves
 Spruce Log
 Spruce Planks
@@ -757,6 +783,7 @@ Warped Door
 Warped Fence
 Warped Fence Gate
 Warped Fungus
+Warped Hanging Sign [x] / Warped Hanging Sign
 Warped Hyphae
 Warped Nylium
 Warped Planks

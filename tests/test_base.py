@@ -2,10 +2,10 @@ import unittest
 
 from parameterized import parameterized
 
-from pynecraft.base import Coord, EAST, IntRelCoord, NORTH, Nbt, Parameters, ROTATION_0, ROTATION_180, ROTATION_270, \
+from pynecraft.base import Coord, EAST, IntRelCoord, NORTH, Nbt, ROTATION_0, ROTATION_180, ROTATION_270, \
     ROTATION_90, RelCoord, SOUTH, \
     TimeSpec, WEST, \
-    r, rotated_facing
+    parameters, r, rotated_facing
 from pynecraft.commands import setblock
 
 
@@ -83,18 +83,18 @@ class TestBase(unittest.TestCase):
             Nbt.TypedArray('d', ())
 
     def test_precision(self):
-        orig = Parameters.float_precision()
+        orig = parameters.float_precision
         try:
-            Parameters.set_float_precision(1)
+            parameters.float_precision = 1
             self.assertEqual('setblock 1.1 2.2 5.6 air', str(setblock((1.111, 2.222, 5.555), 'air')))
-            Parameters.set_float_precision(3)
+            parameters.float_precision = 3
             self.assertEqual('setblock 1.111 2.222 5.555 air', str(setblock((1.111, 2.222, 5.555), 'air')))
 
             with self.assertRaises(ValueError):
-                Parameters.set_float_precision(0)
+                parameters.float_precision = 0
 
         finally:
-            Parameters.set_float_precision(orig)
+            parameters.float_precision = orig
 
     def test_rel_coord(self):
         self.assertEqual(IntRelCoord('~', 3), r(3))

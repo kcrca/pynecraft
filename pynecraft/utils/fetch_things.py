@@ -77,6 +77,11 @@ class BlockFetcher(Fetcher):
 
         id = raw_id
         desc = raw_desc
+        if 'upcoming' in id:
+            if not re.search(r'\bJ\.*E\.*', id):
+                return None, None
+            id = re.sub(r'\s*\[*upcoming.*', '', id)
+            desc = re.sub(r'\s*\[*upcoming.*', ' [x]', desc)
         if 'Lapis' in id and id != 'Lapis Lazuli':
             id = id.replace('Lapis Lazuli', 'Lapis')
         elif 'Bale' in id:
@@ -87,6 +92,7 @@ class BlockFetcher(Fetcher):
             id = re.sub(r'Block of (.*)', r'\1 Block', id)
             id = re.sub(r'(Jigsaw|Light|Smooth Quartz|Wheat) (Block|Crops)', r'\1', id)
         id = re.sub(r'^(Vine)s', r'\1', id)
+        id = re.sub(r'Bamboo Shoot', 'Bamboo Sapling', id)
         return id, desc
 
     def added(self, _):
