@@ -394,16 +394,9 @@ def _version_change_handler(_: Version, version: Version):
     if version == Parameters._version_1_19_3_x:
         if 'Bamboo' not in woods:
             woods = woods + ('Bamboo',)
-        items[bundle.name] = bundle
-        items_by_id[bundle.id] = bundle
-        must_give_items[bundle.name] = bundle
-        must_give_items_by_id[bundle.id] = bundle
     else:
         if 'Bamboo' in woods:
             woods = woods[:-2]
-        del items[bundle.name]
-        del items[bundle.id]
-        del must_give_items[bundle.name]
-        del must_give_items_by_id[bundle.id]
+
 
 parameters.add_version_change_handler(_version_change_handler)
