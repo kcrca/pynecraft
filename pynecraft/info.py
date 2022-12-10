@@ -390,7 +390,7 @@ tropical_fish = {
 
 def _version_change_handler(_: Version, version: Version):
     global woods
-    if version == Parameters._version_1_19_3_x:
+    if version == Parameters._VERSION_1_19_3_X:
         if 'Bamboo' not in woods:
             woods = woods + ('Bamboo',)
     else:

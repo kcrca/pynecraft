@@ -57,14 +57,18 @@ class TestInfo(unittest.TestCase):
             self.assertEqual(items_by_id[key], value)
 
     def test_versions(self):
-        parameters.version = "1.19"
-        self.assertNotIn('Bamboo', info.woods)
-        parameters.version = "1.19.2"
-        self.assertNotIn('Bamboo', info.woods)
-        parameters.version = "1.19.3"
-        self.assertNotIn('Bamboo', info.woods)
-        parameters.version = "1.19.3+x"
-        self.assertIn('Bamboo', info.woods)
-        parameters.version = "1.19"
-        self.assertNotIn('Bamboo', info.woods)
+        orig_version = parameters.version
+        try:
+            parameters.version = "1.19"
+            self.assertNotIn('Bamboo', info.woods)
+            parameters.version = "1.19.2"
+            self.assertNotIn('Bamboo', info.woods)
+            parameters.version = "1.19.3"
+            self.assertNotIn('Bamboo', info.woods)
+            parameters.version = "1.19.3+x"
+            self.assertIn('Bamboo', info.woods)
+            parameters.version = "1.19"
+            self.assertNotIn('Bamboo', info.woods)
+        finally:
+            parameters.version = orig_version
 

@@ -20,6 +20,8 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
+from packaging.version import Version
+
 from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, GREEN, IntColumn, JSON_COLORS, \
     JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, \
     YELLOW, \
@@ -949,6 +951,12 @@ class _IfDataMod(Command):
 
 
 class _IfClause(Command):
+    @_fluent
+    def biome(self, pos: Position, biome: Biome) -> _ExecuteMod:
+        _good_version(Parameters._VERSION_1_19_3)
+        self._add('biome', *pos, good_biome(biome))
+        return self._start(_ExecuteMod())
+
     @_fluent
     def block(self, pos: Position, block: BlockDef) -> _ExecuteMod:
         self._add('block', *pos, good_block(block))
@@ -2260,9 +2268,13 @@ def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClau
     return cmd._start(_FilterClause())
 
 
+def _good_version(min_version: Version):
+    if parameters.version < Parameters._VERSION_1_19_3:
+        raise NotImplementedError(f'{parameters.version}: Unsupported version (requires >= {min_version}')
+
+
 def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
-    if parameters.version < Parameters._version_1_19_3:
-        raise NotImplementedError(f'{parameters.version}: Unsupported version')
+    _good_version(Parameters._VERSION_1_19_3)
     cmd = Command()
     cmd._add('fillbiome', *start_pos, *end_pos, good_biome(biome))
     return cmd._start(_BiomeFilterClause())
@@ -2426,12 +2438,26 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
     return str(cmd)
 
 
-def publish(port: int = None) -> str:
-    """Opens single-player dir to local network."""
+def publish_1_19(port: int = None) -> str:
     cmd = Command()
     cmd._add('publish')
     cmd._add_opt(port)
     return str(cmd)
+
+
+def _publish_1_19_3(allowCommands: bool = None, gamemode: str = None, port: int = None) -> str:
+    cmd = Command()
+    cmd._add('publish')
+    cmd._add_opt(_bool(allowCommands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
+    return str(cmd)
+
+
+def publish(*args, **kwargs) -> str:
+    """Opens single-player dir to local network."""
+    if parameters.version < Parameters._VERSION_1_19_3:
+        return publish_1_19(*args, **kwargs)
+    else:
+        return _publish_1_19_3(*args, **kwargs)
 
 
 def recipe(action: str, target: Target, recipe_name: str) -> str:

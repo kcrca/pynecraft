@@ -768,3 +768,12 @@ class FunctionSet:
     def add_child(self, child: FunctionSet):
         """Adds a child FunctionSet."""
         self._kids.append(child)
+
+def _version_change_handler(_: Version, version: Version):
+    global LATEST_PACK_VERSION
+    if version >= Parameters._VERSION_1_19_3:
+        LATEST_PACK_VERSION = 11
+    else:
+        LATEST_PACK_VERSION = 10
+
+parameters.add_version_change_handler(_version_change_handler)

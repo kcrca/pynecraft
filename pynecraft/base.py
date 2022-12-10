@@ -640,10 +640,10 @@ class _ToMinecraftText(HTMLParser):
 
 class Parameters:
     """Manage general parameters."""
-    _version_1_19_3 = Version('1.19.3')
-    _version_1_19_3_x = Version('1.19.3+x')
-    _first_version = Version('1.19')
-    _last_version = _version_1_19_3_x
+    _VERSION_1_19_3 = Version('1.19.3')
+    _VERSION_1_19_3_X = Version('1.19.3+x')
+    _FIRST_VERSION = Version('1.19')
+    _LATEST_VERSION = _VERSION_1_19_3_X
 
     def __init__(self):
         self._float_precision = 3
@@ -670,7 +670,7 @@ class Parameters:
     def version(self, version: Version | str):
         if isinstance(version, str):
             version = Version(version)
-        if version < Parameters._first_version or version > Parameters._last_version:
+        if version < Parameters._FIRST_VERSION or version > Parameters._LATEST_VERSION:
             raise ValueError(f'{version}: Unsupported version')
         orig = self._version
         self._version = version
@@ -1018,7 +1018,10 @@ for __i, __r in enumerate(SIGN_DIRECTIONS):
 _facing_info = {NORTH: (0, -1, 0), EAST: (1, 0, 270), SOUTH: (0, 1, 180), WEST: (-1, 0, 90)}
 
 
-def _in_group(group: list | tuple, name: str | int):
+def _in_group(group: list | tuple, name: str | int | None, allow_none=True):
+    if allow_none and name is None:
+        return name
+
     if name not in group:
         raise ValueError(f'{name}: Not in {group}')
     return name
