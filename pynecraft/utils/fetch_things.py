@@ -88,6 +88,8 @@ class BlockFetcher(Fetcher):
             id = id.replace('Bale', 'Block')
         elif 'Redstone' in id:
             id = re.sub(r'Redstone (Repeater|Comparator)', r'\1', id)
+        elif id == 'Monster Spawner':
+            id = 'Spawner'
         if 'Block' in id or 'Crops' in id:
             id = re.sub(r'Block of (.*)', r'\1 Block', id)
             id = re.sub(r'(Jigsaw|Light|Smooth Quartz|Wheat) (Block|Crops)', r'\1', id)
@@ -158,8 +160,10 @@ class ItemFetcher(Fetcher):
             m = re.fullmatch(r'Banner Pattern \(([^ ]+)( .*)?.*\)', id)
             id = f'{m.group(1)} Banner Pattern'
             desc = m.group(1)
-        elif 'Boat with Chest' in id:
-            id = re.sub(r'(.*) Boat with Chest', r'\1 Chest Boat', id)
+        elif re.search('(Boat|Raft) with Chest', id):
+            id = re.sub(r'(.*) (Boat|Raft) with Chest', r'\1 Chest \2', id)
+        elif id == 'Monster Spawner':
+            id = 'spawner'
         elif ' with ' in id:
             id = re.sub(r'(.*) with (.*)', r'\2 \1', id)
         elif 'Redstone Dust' in id:

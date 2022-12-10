@@ -484,7 +484,7 @@ Mangrove Wood
 Medium Amethyst Bud
 Melon
 Melon Stem
-Monster Spawner
+Monster Spawner / Spawner
 Moss Block
 Moss Carpet
 Mossy Cobblestone
