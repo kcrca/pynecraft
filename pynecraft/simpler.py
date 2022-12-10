@@ -339,6 +339,8 @@ class Volume:
     """North, east, west, and south."""
     facing_all_states = tuple(Nbt({'facing': x}) for x in __dirs + ('up', 'down'))
     """North, east, west, south, up, and down."""
+    rotation_states = tuple(Nbt({'rotation': x}) for x in range(16))
+    """16 sign direction rotations."""
     axes_states = tuple(Nbt({'axis': x}) for x in ('x', 'y', 'z'))
     """X, y, and z. Pillars and logs use this, for example."""
     rail_states = tuple(Nbt({'shape': x}) for x in ('east_west', 'north_south') + tuple(
@@ -361,65 +363,81 @@ class Volume:
         yield f
 
     def replace(self, new: BlockDef, old: BlockDef, states: SomeMappings = None,
-                new_states: SomeMappings = None) -> Commands:
+                new_states: SomeMappings = None, shared_states: SomeMappings = None) -> Commands:
         """Returns commands that will replace one with block with another. If states are given, commands will be
         generated for each state, applied to both the fill block and the filter block. States are specified by a map,
         and can be passed as a single state, or an Iterable of them. States in new_states will only be applied to the
         new blocks. One command will be generated for each combination of the two sets of states. """
         states = _to_list(states) if states else [{}]
         new_states = _to_list(new_states) if new_states else [{}]
+        if not shared_states:
+            shared_states = {}
         new = good_block(new)
         old = good_block(old)
 
-        if not states and not new_states:
+        if not states and not new_states and not shared_states:
             yield from self.fill(new, old)
         else:
             for new_added in new_states:
-                n = new.clone().merge_state(new_added)
-                o = old.clone()
+                n = new.clone().merge_state(new_added).merge_state(shared_states)
+                o = old.clone().merge_state(shared_states)
                 for s in states:
                     yield from self.fill(n.clone().merge_state(s), o.clone().merge_state(s))
 
-    def replace_slabs(self, new: BlockDef, old: BlockDef = '#slabs', new_state: Mapping = None) -> Commands:
+    def replace_slabs(self, new: BlockDef, old: BlockDef = '#slabs', new_state: Mapping = None,
+                      shared_states: SomeMappings = None) -> Commands:
         """Replaces slabs in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.slab_states, new_state)
+        yield from self.replace(new, old, Volume.slab_states, new_state, shared_states)
 
-    def replace_stairs(self, new: BlockDef, old: BlockDef = '#stairs', new_state: Mapping = None) -> Commands:
+    def replace_stairs(self, new: BlockDef, old: BlockDef = '#stairs', new_state: Mapping = None,
+                       shared_states: SomeMappings = None) -> Commands:
         """Replaces stairs in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.stair_states, new_state)
+        yield from self.replace(new, old, Volume.stair_states, new_state, shared_states)
 
-    def replace_buttons(self, new: BlockDef, old: BlockDef = '#buttons', new_state: Mapping = None) -> Commands:
+    def replace_buttons(self, new: BlockDef, old: BlockDef = '#buttons', new_state: Mapping = None,
+                        shared_states: SomeMappings = None) -> Commands:
         """Replaces buttons in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.button_states, new_state)
+        yield from self.replace(new, old, Volume.button_states, new_state, shared_states)
 
-    def replace_doors(self, new: BlockDef, old: BlockDef = '#doors', new_state: Mapping = None) -> Commands:
+    def replace_doors(self, new: BlockDef, old: BlockDef = '#doors', new_state: Mapping = None,
+                      shared_states: SomeMappings = None) -> Commands:
         """Replaces doors in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.door_states, new_state)
+        yield from self.replace(new, old, Volume.door_states, new_state, shared_states)
 
-    def replace_trapdoors(self, new: BlockDef, old: BlockDef = '#trapdoors', new_state: Mapping = None) -> Commands:
+    def replace_trapdoors(self, new: BlockDef, old: BlockDef = '#trapdoors', new_state: Mapping = None,
+                          shared_states: SomeMappings = None) -> Commands:
         """Replaces trapdoors in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.trapdoor_states, new_state)
+        yield from self.replace(new, old, Volume.trapdoor_states, new_state, shared_states)
 
-    def replace_facing(self, new: BlockDef, old: BlockDef, new_state: Mapping = None) -> Commands:
-        """Replaces blocks in the volume using all the "facing"" states."""
-        yield from self.replace(new, old, Volume.facing_states, new_state)
+    def replace_facing(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
+                       shared_states: SomeMappings = None) -> Commands:
+        """Replaces blocks in the volume using all the "facing" states."""
+        yield from self.replace(new, old, Volume.facing_states, new_state, shared_states)
 
-    def replace_facing_all(self, new: BlockDef, old: BlockDef, new_state: Mapping = None) -> Commands:
-        """Replaces blocks in the volume using all the "all_facing"" states."""
-        yield from self.replace(new, old, Volume.facing_all_states, new_state)
+    def replace_facing_all(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
+                           shared_states: SomeMappings = None) -> Commands:
+        """Replaces blocks in the volume using all the "all_facing" states."""
+        yield from self.replace(new, old, Volume.facing_all_states, new_state, shared_states)
 
-    def replace_axes(self, new: BlockDef, old: BlockDef, new_state: Mapping = None) -> Commands:
+    def replace_rotation(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
+                         shared_states: SomeMappings = None) -> Commands:
+        """Replaces blocks in the volume using all the "rotation" states."""
+        yield from self.replace(new, old, Volume.rotation_states, new_state, shared_states)
+
+    def replace_axes(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
+                     shared_states: SomeMappings = None) -> Commands:
         """Replaces blocks in the volume using all the "axes"" states."""
-        yield from self.replace(new, old, Volume.axes_states, new_state)
+        yield from self.replace(new, old, Volume.axes_states, new_state, shared_states)
 
-    def replace_straight_rails(self, new: BlockDef, old: BlockDef = '#rails', new_state: Mapping = None) -> Commands:
+    def replace_straight_rails(self, new: BlockDef, old: BlockDef = '#rails', new_state: Mapping = None,
+                               shared_states: SomeMappings = None) -> Commands:
         """Replaces straight rails in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.rail_states, new_state)
+        yield from self.replace(new, old, Volume.rail_states, new_state, shared_states)
 
     def replace_curved_rails(self, new: BlockDef = "rail", old: BlockDef = '#rails',
-                             new_state: Mapping = None) -> Commands:
+                             new_state: Mapping = None, shared_states: SomeMappings = None) -> Commands:
         """Replaces curved rails in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.curved_rail_states, new_state)
+        yield from self.replace(new, old, Volume.curved_rail_states, new_state, shared_states)
 
 
 class Offset:

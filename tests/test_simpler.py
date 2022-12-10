@@ -210,6 +210,9 @@ class TestSimpler(unittest.TestCase):
             'fill ~1 ~2 ~3 ^4 ^5 ^6 furnace[facing=up] replace observer[facing=up]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 furnace[facing=down] replace observer[facing=down]',
         ], lines(v.replace_facing_all('furnace', 'observer')))
+        self.assertEqual(list(
+            f'fill ~1 ~2 ~3 ^4 ^5 ^6 oak_sign[rotation={i}] replace #signs[rotation={i}]' for i in range(16)
+        ), lines(v.replace_rotation('oak_sign', '#signs')))
 
     def test_offset(self):
         self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(0, 0, 0))

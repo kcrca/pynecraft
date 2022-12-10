@@ -62,7 +62,7 @@ class TestInfo(unittest.TestCase):
         parameters.version = "1.19.2"
         self.assertNotIn('Bamboo', info.woods)
         parameters.version = "1.19.3"
-        self.assertIn('Bamboo', info.woods)
+        self.assertNotIn('Bamboo', info.woods)
         parameters.version = "1.19.3+x"
         self.assertIn('Bamboo', info.woods)
         parameters.version = "1.19"

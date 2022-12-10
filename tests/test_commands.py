@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 
+from pynecraft import info
 from pynecraft.base import DARK_GREEN, GAMETIME, THE_NETHER, d, days, r, seconds, ticks
 from pynecraft.commands import *
 from pynecraft.commands import _AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
@@ -574,9 +575,14 @@ class TestCommands(unittest.TestCase):
                          fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace('air'))
 
     def test_fillbiome(self):
-        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach', str(fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH)))
-        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach replace m:ice',
-                         fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH).replace('m:ice'))
+        orig_version = info.parameters.version
+        info.parameters.version = '1.19.3'
+        try:
+            self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach', str(fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH)))
+            self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach replace m:ice',
+                             fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH).replace('m:ice'))
+        finally:
+            parameters = orig_version
 
     def test_data_mod(self):
         self.assertEqual('get entity @a', str(_DataMod().get(a())))
