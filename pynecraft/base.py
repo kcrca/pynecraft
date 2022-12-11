@@ -724,8 +724,6 @@ class Parameters:
 
 parameters = Parameters()
 
-NbtDef = Union[Nbt, Mapping]
-
 
 def to_id(name: str) -> str:
     """
@@ -1100,18 +1098,6 @@ def good_facing(facing: FacingDef) -> Facing:
     return _facing[facing]
 
 
-FacingDef = Union[int, str, Facing]
-DurationDef = Union[str, int, TimeSpec]
-Coord = Union[float, RelCoord]
-Angle = Union[float, RelCoord]
-IntCoord = Union[int, IntRelCoord]
-Position = Tuple[Coord, Coord, Coord]
-XYZ = Tuple[float, float, float]
-Column = Tuple[Coord, Coord]
-IntColumn = Tuple[IntCoord, IntCoord]
-Biome = Union[str, BiomeId]
-
-
 def good_duration(duration: DurationDef) -> TimeSpec | None:
     """Checks if the argument is a valid duration specification, or None.
 
@@ -1120,9 +1106,6 @@ def good_duration(duration: DurationDef) -> TimeSpec | None:
     if duration is None or isinstance(duration, TimeSpec):
         return duration
     return TimeSpec(duration)
-
-
-Range = Union[float, Tuple[Optional[float], Optional[float]]]
 
 
 def good_range(spec: Range) -> str:
@@ -1147,6 +1130,24 @@ def good_range(spec: Range) -> str:
 
 
 def good_biome(biome: Biome, allow_not: bool = False) -> str:
+    """
+    Returns a string version of the given biome. A string version is preferred because new biome types can be added
+    by datapacks.
+    """
     if isinstance(biome, BiomeId):
         return str(biome)
     return good_resource(biome, allow_not=allow_not)
+
+
+NbtDef = Union[Nbt, Mapping]
+FacingDef = Union[int, str, Facing]
+DurationDef = Union[str, int, TimeSpec]
+Coord = Union[float, RelCoord]
+Angle = Union[float, RelCoord]
+IntCoord = Union[int, IntRelCoord]
+Position = Tuple[Coord, Coord, Coord]
+XYZ = Tuple[float, float, float]
+Column = Tuple[Coord, Coord]
+IntColumn = Tuple[IntCoord, IntCoord]
+Biome = Union[str, BiomeId]
+Range = Union[float, Tuple[Optional[float], Optional[float]]]

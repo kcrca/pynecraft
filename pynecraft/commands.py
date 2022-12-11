@@ -2426,13 +2426,15 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
 
 
 def publish_1_19(port: int = None) -> str:
+    """Opens single-player dir to local network."""
     cmd = Command()
     cmd._add('publish')
     cmd._add_opt(port)
     return str(cmd)
 
 
-def _publish_1_19_3(allowCommands: bool = None, gamemode: str = None, port: int = None) -> str:
+def publish_1_19_3(allowCommands: bool = None, gamemode: str = None, port: int = None) -> str:
+    """Opens single-player dir to local network."""
     cmd = Command()
     cmd._add('publish')
     cmd._add_opt(_bool(allowCommands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
@@ -2440,11 +2442,12 @@ def _publish_1_19_3(allowCommands: bool = None, gamemode: str = None, port: int 
 
 
 def publish(*args, **kwargs) -> str:
-    """Opens single-player dir to local network."""
+    """Opens single-player dir to local network. The syntax depends on the version: See publish_1_19 for the
+    original syntax, and publish_1_19_3 for the post 1.19.3 syntax."""
     if parameters.version < Parameters.VERSION_1_19_3:
         return publish_1_19(*args, **kwargs)
     else:
-        return _publish_1_19_3(*args, **kwargs)
+        return publish_1_19_3(*args, **kwargs)
 
 
 def recipe(action: str, target: Target, recipe_name: str) -> str:
