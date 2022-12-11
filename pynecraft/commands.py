@@ -20,10 +20,9 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
-from packaging.version import Version
-
-from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, GREEN, IntColumn, JSON_COLORS, \
-    JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, \
+from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, EQ, GE, GREEN, IntColumn, JSON_COLORS, \
+    JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, \
+    WHITE, \
     YELLOW, \
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_biome, \
     good_column, \
@@ -383,13 +382,6 @@ DISPLAY_SLOTS = [LIST, SIDEBAR, BELOW_NAME]
 """Valid scoreboard display slots."""
 
 SIDEBAR_TEAM = 'sidebar.team.'
-
-LT = '<'
-LE = '<='
-EQ = '='
-GE = '>='
-GT = '>'
-RELATION = [LT, LE, EQ, GE, GT]
 
 PLUS = '+='
 MINUS = '-='
@@ -953,7 +945,7 @@ class _IfDataMod(Command):
 class _IfClause(Command):
     @_fluent
     def biome(self, pos: Position, biome: Biome) -> _ExecuteMod:
-        _good_version(Parameters._VERSION_1_19_3)
+        parameters.check_version(GE, Parameters.VERSION_1_19_3)
         self._add('biome', *pos, good_biome(biome))
         return self._start(_ExecuteMod())
 
@@ -2268,13 +2260,8 @@ def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClau
     return cmd._start(_FilterClause())
 
 
-def _good_version(min_version: Version):
-    if parameters.version < Parameters._VERSION_1_19_3:
-        raise NotImplementedError(f'{parameters.version}: Unsupported version (requires >= {min_version}')
-
-
 def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
-    _good_version(Parameters._VERSION_1_19_3)
+    parameters.check_version(GE, Parameters.VERSION_1_19_3)
     cmd = Command()
     cmd._add('fillbiome', *start_pos, *end_pos, good_biome(biome))
     return cmd._start(_BiomeFilterClause())
@@ -2454,7 +2441,7 @@ def _publish_1_19_3(allowCommands: bool = None, gamemode: str = None, port: int 
 
 def publish(*args, **kwargs) -> str:
     """Opens single-player dir to local network."""
-    if parameters.version < Parameters._VERSION_1_19_3:
+    if parameters.version < Parameters.VERSION_1_19_3:
         return publish_1_19(*args, **kwargs)
     else:
         return _publish_1_19_3(*args, **kwargs)

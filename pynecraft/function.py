@@ -771,7 +771,7 @@ class FunctionSet:
 
 def _version_change_handler(_: Version, version: Version):
     global LATEST_PACK_VERSION
-    if version >= Parameters._VERSION_1_19_3:
+    if version >= Parameters.VERSION_1_19_3:
         LATEST_PACK_VERSION = 11
     else:
         LATEST_PACK_VERSION = 10

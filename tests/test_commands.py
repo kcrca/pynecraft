@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 
 from pynecraft import info
-from pynecraft.base import DARK_GREEN, GAMETIME, THE_NETHER, d, days, r, seconds, ticks
+from pynecraft.base import DARK_GREEN, GAMETIME, LT, THE_NETHER, d, days, r, seconds, ticks
 from pynecraft.commands import *
 from pynecraft.commands import _AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
     _ScoreboardCriteria, _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause

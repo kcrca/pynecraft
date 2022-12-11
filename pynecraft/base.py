@@ -123,6 +123,13 @@ SUNRISE = 'sunrise'
 SUNSET = 'sunset'
 TIME_SPEC = [DAY, NIGHT, NOON, MIDNIGHT, SUNRISE, SUNSET]
 
+LT = '<'
+LE = '<='
+EQ = '='
+GE = '>='
+GT = '>'
+RELATION = [LT, LE, EQ, GE, GT]
+
 
 def _quote(value):
     if isinstance(value, str):
@@ -638,12 +645,28 @@ class _ToMinecraftText(HTMLParser):
         return json.dumps(self.out)
 
 
+def good_version(version: Version | str) -> Version:
+    if isinstance(version, Version):
+        return version
+    return Version(version)
+
+
 class Parameters:
-    """Manage general parameters."""
-    _VERSION_1_19_3 = Version('1.19.3')
-    _VERSION_1_19_3_X = Version('1.19.3+x')
-    _FIRST_VERSION = Version('1.19')
-    _LATEST_VERSION = _VERSION_1_19_3_X
+    """Manage general parameters. Use the 'parameters' variable to adjust the parameters."""
+    VERSION_1_19_3 = Version('1.19.3')
+    VERSION_1_19_3_X = Version('1.19.3+x')
+    FIRST_VERSION = Version('1.19')
+    LATEST_VERSION = VERSION_1_19_3_X
+
+    _VERSION_RELATION = RELATION + ['!=']
+    _comparator = {
+        LT: lambda x, y: x < y,
+        LE: lambda x, y: x <= y,
+        EQ: lambda x, y: x == y,
+        '!=': lambda x, y: x != y,
+        GE: lambda x, y: x >= y,
+        GT: lambda x, y: x > y,
+    }
 
     def __init__(self):
         self._float_precision = 3
@@ -668,16 +691,34 @@ class Parameters:
 
     @version.setter
     def version(self, version: Version | str):
-        if isinstance(version, str):
-            version = Version(version)
-        if version < Parameters._FIRST_VERSION or version > Parameters._LATEST_VERSION:
+        version = good_version(version)
+        if version < Parameters.FIRST_VERSION or version > Parameters.LATEST_VERSION:
             raise ValueError(f'{version}: Unsupported version')
         orig = self._version
         self._version = version
         for h in self._handlers:
             h(orig, version)
 
+    def check_version(self, relation: str, version: Version | str):
+        """
+        Checks if the current version has the expected relation to the given one, raising a ValueError if it is not.
+
+        Note that a relation of "not equal" can be specified by either '!=' or 'NE', which is technically
+        "ne" (northeast), but which is natural to use, so it is translated to '!=' if provided.
+        """
+        if relation == NE:
+            relation = '!='
+        _in_group(Parameters._VERSION_RELATION, relation)
+        version = good_version(version)
+        if not Parameters._comparator[relation](self.version, version):
+            raise ValueError(f'{self.version}: Invalid version (expected {relation} {version})')
+
     def add_version_change_handler(self, handler: Callable[[Version, Version], None]):
+        """
+        Adds a callback that will be invoked when the version changed. Code should initially assume that the version
+        is FIRST_VERSION. The handler will be invoked with the original version and the new version. It will be
+        invoked after the version has been set.
+        """
         self._handlers.add(handler)
 
 
