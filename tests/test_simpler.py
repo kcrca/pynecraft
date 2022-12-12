@@ -4,6 +4,7 @@ import unittest
 
 from pynecraft.base import DARK_AQUA, N, NORTH, ROTATION_180, SW
 from pynecraft.commands import *
+from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines
 from pynecraft.simpler import *
 
@@ -77,7 +78,7 @@ class TestSimpler(unittest.TestCase):
             'written_book{author: Me, display_name: {Lore: "My Name"}, pages: ' '[\'[{"text": "hi\\n", "color": "dark_aqua"}, {"text": "plain"}]\'], title: ' '"My Title"}'),
             str(book.as_entity()))
 
-    def test_volume(self):
+    def test_region(self):
         v = Region(r(1, 2, 3), d(4, 5, 6))
         self.assertEqual(['fill ~1 ~2 ~3 ^4 ^5 ^6 stone replace #logs'], lines(v.fill('stone', '#logs')))
         self.assertEqual(['fill ~1 ~2 ~3 ^4 ^5 ^6 stone replace #logs'], lines(v.replace('stone', '#logs')))
@@ -213,6 +214,14 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual(list(
             f'fill ~1 ~2 ~3 ^4 ^5 ^6 oak_sign[rotation={i}] replace #signs[rotation={i}]' for i in range(16)
         ), lines(v.replace_rotation('oak_sign', '#signs')))
+
+        orig_version = parameters.version
+        try:
+            parameters.version = Parameters.VERSION_1_19_3
+            self.assertEqual(['fillbiome ~1 ~2 ~3 ^4 ^5 ^6 plains replace poi'],
+                             lines(v.fillbiome(BiomeId.PLAINS, 'poi')))
+        finally:
+            parameters.version = orig_version
 
     def test_offset(self):
         self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(0, 0, 0))

@@ -3,10 +3,11 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Iterable, Mapping, Tuple, Union
 
-from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, _to_list, \
-    d, good_facing, r, to_id
+from .base import Biome, FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
+    _to_list, \
+    d, good_biome, good_facing, r, to_id
 from .commands import Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignText, SomeMappings, fill, good_block, good_color_num, setblock
+    SignText, SomeMappings, fill, fillbiome, good_block, good_color_num, setblock
 from .enums import Pattern
 
 ARMORER = 'Armorer'
@@ -362,6 +363,12 @@ class Region:
         f = fill(self.start, self.end, good_block(new))
         if replace:
             f = f.replace(replace)
+        yield f
+
+    def fillbiome(self, biome: Biome, replace: Biome = None) -> Command:
+        f = fillbiome(self.start, self.end, good_biome(biome))
+        if replace:
+            f = f.replace(good_biome(replace))
         yield f
 
     def replace(self, new: BlockDef, old: BlockDef, states: SomeMappings = None,
