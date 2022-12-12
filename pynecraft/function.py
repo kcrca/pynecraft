@@ -8,6 +8,8 @@ import shutil
 from re import Pattern
 from typing import Any
 
+from packaging.version import Version
+
 from .base import _JsonEncoder, _ensure_size, _in_group, _to_list, _to_tuple
 from .commands import *
 
@@ -769,11 +771,13 @@ class FunctionSet:
         """Adds a child FunctionSet."""
         self._kids.append(child)
 
+
 def _version_change_handler(_: Version, version: Version):
     global LATEST_PACK_VERSION
     if version >= Parameters.VERSION_1_19_3:
         LATEST_PACK_VERSION = 11
     else:
         LATEST_PACK_VERSION = 10
+
 
 parameters.add_version_change_handler(_version_change_handler)

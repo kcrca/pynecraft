@@ -78,7 +78,7 @@ class TestSimpler(unittest.TestCase):
             str(book.as_entity()))
 
     def test_volume(self):
-        v = Volume(r(1, 2, 3), d(4, 5, 6))
+        v = Region(r(1, 2, 3), d(4, 5, 6))
         self.assertEqual(['fill ~1 ~2 ~3 ^4 ^5 ^6 stone replace #logs'], lines(v.fill('stone', '#logs')))
         self.assertEqual(['fill ~1 ~2 ~3 ^4 ^5 ^6 stone replace #logs'], lines(v.replace('stone', '#logs')))
         self.assertEqual([

@@ -303,8 +303,8 @@ class Shield(Item):
         return self
 
 
-class Volume:
-    """Represents a volume of space, and gives tools for changing items within it."""
+class Region:
+    """Represents a region of space, and gives tools for changing items within it."""
     __slab_states = []
     __stair_states = []
     __door_states = []
@@ -350,13 +350,15 @@ class Volume:
     """The block states that curved rails can have related to its placements."""
 
     def __init__(self, start: Position, end: Position):
-        """Creates a new volume object. Any two opposite corners will do."""
+        """Creates a new region object. Any two opposite corners will do."""
         self.start = start
         self.end = end
 
     def fill(self, new: BlockDef, replace: BlockDef = None) -> Command:
-        """Returns a command that will the volume with a block. If a second block is given, it will be the filter; only this kind of block
-        will be replaced. This can, of course, be a tag."""
+        """
+        Returns a command that will fill the region with a block. If a second block is given, it will be the filter;
+        only this kind of block will be replaced. This can, of course, be a tag.
+        """
         f = fill(self.start, self.end, good_block(new))
         if replace:
             f = f.replace(replace)
@@ -386,58 +388,58 @@ class Volume:
 
     def replace_slabs(self, new: BlockDef, old: BlockDef = '#slabs', new_state: Mapping = None,
                       shared_states: SomeMappings = None) -> Commands:
-        """Replaces slabs in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.slab_states, new_state, shared_states)
+        """Replaces slabs in the region using all the relevant states."""
+        yield from self.replace(new, old, Region.slab_states, new_state, shared_states)
 
     def replace_stairs(self, new: BlockDef, old: BlockDef = '#stairs', new_state: Mapping = None,
                        shared_states: SomeMappings = None) -> Commands:
-        """Replaces stairs in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.stair_states, new_state, shared_states)
+        """Replaces stairs in the region using all the relevant states."""
+        yield from self.replace(new, old, Region.stair_states, new_state, shared_states)
 
     def replace_buttons(self, new: BlockDef, old: BlockDef = '#buttons', new_state: Mapping = None,
                         shared_states: SomeMappings = None) -> Commands:
-        """Replaces buttons in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.button_states, new_state, shared_states)
+        """Replaces buttons in the region using all the relevant states."""
+        yield from self.replace(new, old, Region.button_states, new_state, shared_states)
 
     def replace_doors(self, new: BlockDef, old: BlockDef = '#doors', new_state: Mapping = None,
                       shared_states: SomeMappings = None) -> Commands:
-        """Replaces doors in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.door_states, new_state, shared_states)
+        """Replaces doors in the region using all the relevant states."""
+        yield from self.replace(new, old, Region.door_states, new_state, shared_states)
 
     def replace_trapdoors(self, new: BlockDef, old: BlockDef = '#trapdoors', new_state: Mapping = None,
                           shared_states: SomeMappings = None) -> Commands:
-        """Replaces trapdoors in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.trapdoor_states, new_state, shared_states)
+        """Replaces trapdoors in the region using all the relevant states."""
+        yield from self.replace(new, old, Region.trapdoor_states, new_state, shared_states)
 
     def replace_facing(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
                        shared_states: SomeMappings = None) -> Commands:
-        """Replaces blocks in the volume using all the "facing" states."""
-        yield from self.replace(new, old, Volume.facing_states, new_state, shared_states)
+        """Replaces blocks in the region using all the "facing" states."""
+        yield from self.replace(new, old, Region.facing_states, new_state, shared_states)
 
     def replace_facing_all(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
                            shared_states: SomeMappings = None) -> Commands:
-        """Replaces blocks in the volume using all the "all_facing" states."""
-        yield from self.replace(new, old, Volume.facing_all_states, new_state, shared_states)
+        """Replaces blocks in the region using all the "all_facing" states."""
+        yield from self.replace(new, old, Region.facing_all_states, new_state, shared_states)
 
     def replace_rotation(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
                          shared_states: SomeMappings = None) -> Commands:
-        """Replaces blocks in the volume using all the "rotation" states."""
-        yield from self.replace(new, old, Volume.rotation_states, new_state, shared_states)
+        """Replaces blocks in the region using all the "rotation" states."""
+        yield from self.replace(new, old, Region.rotation_states, new_state, shared_states)
 
     def replace_axes(self, new: BlockDef, old: BlockDef, new_state: Mapping = None,
                      shared_states: SomeMappings = None) -> Commands:
-        """Replaces blocks in the volume using all the "axes"" states."""
-        yield from self.replace(new, old, Volume.axes_states, new_state, shared_states)
+        """Replaces blocks in the region using all the "axes"" states."""
+        yield from self.replace(new, old, Region.axes_states, new_state, shared_states)
 
     def replace_straight_rails(self, new: BlockDef, old: BlockDef = '#rails', new_state: Mapping = None,
                                shared_states: SomeMappings = None) -> Commands:
-        """Replaces straight rails in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.rail_states, new_state, shared_states)
+        """Replaces straight rails in the region using all the relevant states."""
+        yield from self.replace(new, old, Region.rail_states, new_state, shared_states)
 
     def replace_curved_rails(self, new: BlockDef = "rail", old: BlockDef = '#rails',
                              new_state: Mapping = None, shared_states: SomeMappings = None) -> Commands:
-        """Replaces curved rails in the volume using all the relevant states."""
-        yield from self.replace(new, old, Volume.curved_rail_states, new_state, shared_states)
+        """Replaces curved rails in the region using all the relevant states."""
+        yield from self.replace(new, old, Region.curved_rail_states, new_state, shared_states)
 
 
 class Offset:
