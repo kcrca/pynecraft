@@ -453,9 +453,9 @@ class Offset:
     """
     This provides a tool for offsetting relative coordinates. This allows you to write code placed in a way that may
     be more convenient, such as if a command block is hidden in a convenient place, but wants to operate relative to
-    a different base location. Given an initial offset of a given length, coordinates generated through the object's
-    r() and d() methods will be adjusted by that location. The values passed to r() and () must be the same length as
-    the initial offset.
+    a different base location. Given an initial offset of a given number of coordinates, coordinates generated
+    through the object's r() and d() methods will be adjusted by that location. The values passed to r() and () must
+    be the same length as the initial offset.
     """
 
     CoordsIn = Union[float, RelCoord]
@@ -478,7 +478,7 @@ class Offset:
         """ Returns the result of base.d() with the input, with each return value added to this object's offset. """
         return self._rel_coord(d, *values)
 
-    def abs(self, *values: float | int | Iterable[float | int]) -> float | int | tuple[float | int]:
+    def abs(self, *values: float | int | Iterable[float | int]) -> float | int | Iterable[float | int]:
         if len(values) != len(self.position):
             raise ValueError(f'{len(values)}: Expected {len(self.position)} values')
         result = tuple(sum(p) for p in zip(values, self.position))

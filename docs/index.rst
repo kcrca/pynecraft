@@ -232,14 +232,23 @@ complicated:
 
     who = execute().as_(e().tag('runner'))
 
-    who.run(say('Ready to go!'))
-    who.run(function('my_pack:go_to_it'))
-    who.run(say('Done!'))
+    print(who.run(say('Ready to go!')))
+    print(who.run(function('my_pack:go_to_it')))
+    print(who.run(say('Done!')))
 
 This remembers the prefix that says which entity to run the command
 as, and the use it three times (it is ``as_()`` because ``as`` is
 a keyword in python.) Each returned command object is immutable,
 so you can reuse them without worrying about affecting future calls.
+
+You can also do this by giving ``run()`` multiple commands to
+run, and it will generate a command for each one.
+::
+
+    print(cmd) for cmd in execute().as_(e().tag('runner')).run(
+        say('Ready to go!'),
+        function('my_pack:go_to_it')
+        say('Done!'))
 
 *Functions*
 -----------
@@ -380,6 +389,21 @@ The standard members of a data pack's JSON file set have defined
 methods, such as ``advacnements()``, ``recipies``, and ``tags()``.
 You can create other dirctories using the pack's ``json_directory()``
 method.
+
+Minecraft Versions
+------------------
+
+Pynecraft was originally written for Minecraft version 1.19, but new things can happen to the
+commands with each release. You can specify a version to the ``parameters`` object. For example,
+to set the version to 1.19.3, you could say
+
+::
+    base.parameters.version = '1.19.3'
+
+Where differences exist, they are checked when used. For example, the ``fillbiome`` command was
+new in 1.19.3. So without setting the version to a value >= 1.19.3, invoking ``fillbiome()`` will
+get an exception. Versions are specified using either ``packaging.version.Version``
+objects or strings, which are converted to ``Version`` objects.
 
 Indices and tables
 ==================
