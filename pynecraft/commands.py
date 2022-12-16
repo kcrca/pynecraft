@@ -272,7 +272,7 @@ ENTITY_ANCHOR = [EYES, FEET]
 ALL = 'all'
 MASKED = 'masked'
 SCAN_MODE = [ALL, MASKED]
-"""Valid scan modes for blocks subpart of /execute commands."""
+"""Valid scan modes for blocks subpart of ``/execute`` commands."""
 
 FORCE = 'force'
 MOVE = 'move'
@@ -288,7 +288,7 @@ CLONE_COORDS = [LEAST, LAST, DELTA]
 RESULT = 'result'
 SUCCESS = 'success'
 STORE_WHAT = [RESULT, SUCCESS]
-"""Valid things to store from /execute commands."""
+"""Valid things to store from ``/execute`` commands."""
 
 BYTE = 'byte'
 SHORT = 'short'
@@ -305,7 +305,7 @@ FROM = 'from'
 THROUGH = 'through'
 UNTIL = 'until'
 ADVANCEMENT = [EVERYTHING, ONLY, FROM, THROUGH, UNTIL]
-"""Valid behavior specifications for the /advancement command."""
+"""Valid behavior specifications for the ``/advancement`` command."""
 
 VALUE = 'value'
 MAX = 'max'
@@ -348,7 +348,7 @@ DIFFICULTIES = [EASY, HARD, NORMAL, PEACEFUL]
 LEVELS = 'levels'
 POINTS = 'points'
 EXPERIENCE_POINTS = [LEVELS, POINTS]
-"""Valid experience specifications for the /experience command."""
+"""Valid experience specifications for the ``/experience`` command."""
 
 START = 'start'
 STOP = 'stop'
@@ -358,7 +358,7 @@ STRUCTURE = 'structure'
 BIOME = 'biome'
 POI = 'poi'
 LOCATABLE = [STRUCTURE, BIOME, POI]
-"""Valid categories of things for the /locate command."""
+"""Valid categories of things for the ``/locate`` command."""
 
 MAINHAND = 'mainhand'
 OFFHAND = 'offhand'
@@ -639,12 +639,12 @@ class Uuid(TargetSpec):
 
     @property
     def ints(self) -> tuple[int, int, int, int]:
-        """Returns the four int components of the UUID."""
+        """The four int components of the UUID."""
         return self._ints
 
     @property
     def hex_str(self) -> str:
-        """Returns the hex string for the UUID."""
+        """The hex string for the UUID."""
         hex = '%08x%08x%08x%08x' % tuple(x & 0xffffffff for x in self._ints)
         result = ''
         pos = 0
@@ -655,13 +655,13 @@ class Uuid(TargetSpec):
 
     @property
     def most_least_dict(self) -> dict[str, int]:
-        """Returns the most/least dict for the UUID."""
+        """The most/least dict for the UUID."""
         most, least = self.most_least
         return {'UUIDMost': most, 'UUIDLeast': least}
 
     @property
     def most_least(self) -> (int, int):
-        """Returns the most/least values for the UUID."""
+        """The most/least values for the UUID."""
         return self._ints[0] << 32 | (0xffffffff & self._ints[1]), self._ints[2] << 32 | (0xffffffff & self._ints[3])
 
     @classmethod
@@ -2590,7 +2590,7 @@ def team() -> _TeamMod:
 
 
 def teammsg(msg: str, *msgs: str) -> str:
-    """An alias of /tm. Specifies the message to send to team."""
+    """An alias of ``/tm``. Specifies the message to send to team."""
     cmd = Command()
     cmd._add('teammsg', msg, *msgs)
     return str(cmd)
@@ -2601,7 +2601,7 @@ tm = teammsg
 
 def teleport(who_or_to: Target | Position, to: Target | Position = None,
              rotation: float = None) -> str | _TeleportMod:
-    """An alias of /tp. Teleports entities."""
+    """An alias of ``/tp``. Teleports entities."""
     cmd = Command()
     cmd._add('tp')
     try:
@@ -2768,6 +2768,7 @@ class NbtHolder(Command):
 
     @property
     def name(self):
+        """The object's name."""
         return self._name
 
     @name.setter
@@ -2776,7 +2777,7 @@ class NbtHolder(Command):
 
     @property
     def sign_nbt(self) -> Nbt:
-        """Returns the NBT you would use in a sign describing this entity, based on ``full_text``."""
+        """The NBT you would use in a sign describing this entity, based on ``full_text``."""
         nbt = Nbt()
         for i in range(4):
             nbt[f'Text{i + 1}'] = self.full_text[i]

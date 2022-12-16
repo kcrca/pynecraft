@@ -614,13 +614,13 @@ class Villager(Entity):
 
     @property
     def level(self) -> int:
-        """Returns the villager's level as a number."""
+        """The villager's level as a number."""
         i, _ = self._lookup_level()
         return i
 
     @property
     def level_name(self) -> str:
-        """Returns the villager's level as a name."""
+        """The villager's level as a name."""
         _, n = self._lookup_level()
         return n
 

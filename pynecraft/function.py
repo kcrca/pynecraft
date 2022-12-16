@@ -84,6 +84,7 @@ class Function:
 
     @property
     def full_name(self) -> str:
+        """The full name of the function, including datapack name and path."""
         if self.parent:
             parent_name = self.parent.full_name
             if not parent_name.endswith(':'):
@@ -93,6 +94,7 @@ class Function:
 
     @property
     def pack(self):
+        """The pack this function is in."""
         ancestor = self.parent
         while ancestor is not None and ancestor.pack is None:
             ancestor = ancestor.parent
@@ -398,10 +400,10 @@ class Loop(Function):
         Define the loop itself.
 
         :param body_func: The function to call for each iteration of the loop. This returns the same kind of values
-        that add() will take.
+                          that add() will take.
         :param items: The items that will be iterated over. Can be a simple range or any other iterable.
         :param bounce: If True, the loop will "bounce" between the list values. A loop with range(0, 4) and bounce True
-        will go through the values (0, 1, 2, 3, 2, 1) instead of (0, 1, 2, 3).
+                       will go through the values (0, 1, 2, 3, 2, 1) instead of (0, 1, 2, 3).
         :param replace: If True, will replace the loops contents; otherwise you will get an AssertionError.
         :return: the Loop object.
         """

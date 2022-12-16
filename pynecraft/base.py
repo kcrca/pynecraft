@@ -656,7 +656,9 @@ class Parameters:
     VERSION_1_19_3 = Version('1.19.3')
     VERSION_1_19_3_X = Version('1.19.3+x')
     FIRST_VERSION = Version('1.19')
+    """The first (earliest) version of Minecraft supported by pynecraft."""
     LATEST_VERSION = VERSION_1_19_3_X
+    """The most recent version of Minecraft supported by pynecraft."""
 
     _VERSION_RELATION = RELATION + ['!=']
     _comparator = {
@@ -675,18 +677,19 @@ class Parameters:
 
     @property
     def float_precision(self) -> int:
-        """Returns how many decimal places will be shown for floats."""
+        """The number of decimal places will be shown for floats."""
         return self._float_precision
 
     @float_precision.setter
     def float_precision(self, precision: int):
-        """Sets how many decimal places will be shown for floats. Must be at least one."""
         if precision < 1:
             raise ValueError(f'{precision}: Precision must be positive')
         self._float_precision = precision
 
     @property
     def version(self) -> Version:
+        """The minecraft version commands are being generated for. By default this is FIRST_VERSION, but
+        can be set to any value."""
         return self._version
 
     @version.setter
@@ -878,21 +881,22 @@ def d(*v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tup
 
 
 def days(num: float) -> TimeSpec:
-    """Return a specification for the given number of days."""
+    """Returns a specification for the given number of days."""
     return TimeSpec(f'{num}d')
 
 
 def seconds(num: float) -> TimeSpec:
-    """Return a specification for the given number of seconds."""
+    """Returns a specification for the given number of seconds."""
     return TimeSpec(f'{num}s')
 
 
 def ticks(num: float) -> TimeSpec:
-    """Return a specification for the given number of ticks."""
+    """Returns a specification for the given number of ticks."""
     return TimeSpec(num)
 
 
 def _int_or_float(value: int | float) -> int | float:
+    """Returns the input value as an int if that looses no information."""
     if isinstance(value, int) or value.is_integer():
         return int(value)
     return value
@@ -999,31 +1003,31 @@ class Facing:
 
     @property
     def yaw(self) -> int | float:
-        """Return the yaw (first) value of the rotation."""
+        """The yaw (first) value of the rotation."""
         return self.rotation[0]
 
     @property
     def pitch(self) -> int | float:
-        """Return the pitch (second) value of the rotation."""
+        """The pitch (second) value of the rotation."""
         return self.rotation[1]
 
     @property
     def dx(self) -> int | float:
-        """Return the X (first) value of the delta."""
+        """The X (first) value of the delta."""
         return self.delta[0]
 
     @property
     def dy(self) -> int | float:
-        """Return the Y (second) value of the delta."""
+        """The Y (second) value of the delta."""
         return self.delta[1]
 
     @property
     def dz(self) -> int | float:
-        """Return the Z (third) value of the delta."""
+        """The Z (third) value of the delta."""
         return self.delta[2]
 
     def scale(self, scale: float) -> Tuple[float, float, float]:
-        """Return the motion vector scaled by a value."""
+        """Returns the motion vector scaled by a value."""
         return self.dx * scale, self.dy * scale, self.dz * scale
 
 
