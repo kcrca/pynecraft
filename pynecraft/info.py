@@ -29,12 +29,21 @@ must_give_items_by_id: dict[str, Item] = {}
 """Items that are not in the creative inventory, by ID."""
 
 
+def pre_1_20_filter(x):
+    return not re.search(r'(Bamboo|Camel|Hanging|Chiseled Book|Piglin Head)', x)
+
+
 def __read_things(which: str, ctor):
     all_things = {}
+    filter = lambda x: True
+    if parameters.version < Parameters.VERSION_1_19_3_X:
+        filter = pre_1_20_filter
     with resources.open_text(__package__, f'all_{which}.txt') as fp:
         for name in fp.readlines():
             name = name.strip()
             if not name or name[0] == '#':
+                continue
+            if not filter(name):
                 continue
             try:
                 desc, id = re.split(r'\s*/\s*', name)
@@ -42,6 +51,7 @@ def __read_things(which: str, ctor):
                 id = desc = name
             thing = ctor(to_id(id), name=desc)
             all_things[desc] = thing
+
     return all_things, dict((t.id, t) for t in sorted(all_things.values(), key=lambda t: t.id))
 
 
@@ -71,8 +81,11 @@ class _ItemForBlockDict(UserDict):
         super().__init__(*args, **kwargs)
         bi = args[0]
         for k, v in bi.items():
-            block = blocks[k]
-            self[block.id] = v
+            try:
+                block = blocks[k]
+                self[block.id] = v
+            except KeyError:
+                pass
 
     def __getitem__(self, item):
         if item not in self:
@@ -396,6 +409,7 @@ def _version_change_handler(_: Version, version: Version):
     else:
         if 'Bamboo' in woods:
             woods = woods[:-2]
+    __read_lists()
 
 
 parameters.add_version_change_handler(_version_change_handler)
