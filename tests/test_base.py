@@ -33,6 +33,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual({'key': 2}, Nbt(key=1).merge(Nbt(key=2)))
         self.assertEqual({'key': 1, 'key2': 3}, Nbt(key=1, key2=2).merge(Nbt(key2=3)))
         self.assertEqual({'key': (2, 4, 6)}, Nbt(key=(1, 3, 5)).merge(Nbt(key=(2, 4, 6))))
+        self.assertEqual({'key': '➝'}, Nbt(key='➝'), 'Non-ascii unicode should be unchanged')
 
     def test_nbt_regularize(self):
         self.assertEqual('{key: [1, 2]}', str(Nbt(key=[1, 2])))
