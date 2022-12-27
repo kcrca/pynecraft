@@ -216,7 +216,7 @@ class Horse(Entity):
 
     # Variants
 
-    def __init__(self, name: str, color: int | Color = Color.WHITE, markings: int | Markings = Markings.NONE):
+    def __init__(self, name: str = None, color: int | Color = Color.WHITE, markings: int | Markings = Markings.NONE):
         self.color = Horse.Color(color)
         self.markings = Horse.Markings(markings)
         self.variant = int(color) + int(markings)
