@@ -67,7 +67,7 @@ def good_function_name(name: str):
 
 def _write_json(values: Mapping, path: Path):
     with open(path, 'w') as fp:
-        json.dump(values, fp, cls=_JsonEncoder, indent=4)
+        json.dump(values, fp, cls=_JsonEncoder, indent=4, ensure_ascii=False)
         fp.write('\n')
 
 

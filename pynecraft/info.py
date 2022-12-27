@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 from collections import UserDict
+from enum import Enum
 from importlib import resources
 
 from packaging.version import Version
@@ -191,31 +192,53 @@ instruments = (
 class Horse(Entity):
     """Data about a horse."""
 
-    def __init__(self, name: str, markings=None):
-        if markings is None:
-            super().__init__(name)
-            self.tag = f'{self.id}s'
-        else:
-            super().__init__('horse', name=name)
-            self.tag = f'{to_id(name)}_horses'
-        self.variant = markings
+    class Color(Enum):
+        WHITE = 0
+        CREAMY = 1
+        CHESTNUT = 2
+        BROWN = 3
+        BLACK = 4
+        GRAY = 5
+        DARK_BROWN = 6
+
+        def __int__(self):
+            return self.value
+
+    class Markings(Enum):
+        NONE = 0 * 256
+        WHITE = 1 * 256
+        WHITE_FIELD = 2 * 256
+        WHITE_SPOTS = 3 * 256
+        BLACK_DOTS = 4 * 256
+
+        def __int__(self):
+            return self.value
+
+    # Variants
+
+    def __init__(self, name: str, color: int | Color = Color.WHITE, markings: int | Markings = Markings.NONE):
+        self.color = Horse.Color(color)
+        self.markings = Horse.Markings(markings)
+        self.variant = int(color) + int(markings)
+        super().__init__('horse', name=name, nbt={'Variant': self.variant})
+        self.tag = f'{to_id(name)}_horses'
 
 
 horses = (
-    Horse('White', 0),
-    Horse('Creamy', 1),
-    Horse('Chestnut', 2),
-    Horse('Brown', 3),
-    Horse('Black', 4),
-    Horse('Gray', 5),
-    Horse('Dark Brown', 6),
+    Horse('White', Horse.Color.WHITE),
+    Horse('Creamy', Horse.Color.CREAMY),
+    Horse('Chestnut', Horse.Color.CHESTNUT),
+    Horse('Brown', Horse.Color.BROWN),
+    Horse('Black', Horse.Color.BLACK),
+    Horse('Gray', Horse.Color.GRAY),
+    Horse('Dark Brown', Horse.Color.DARK_BROWN),
 )
-"""The horses."""
+"""The non-horse horses."""
 other_horses = (
-    Horse('Mule'),
-    Horse('Donkey'),
-    Horse('Skeleton Horse'),
-    Horse('Zombie Horse'),
+    Entity('Mule'),
+    Entity('Donkey'),
+    Entity('Skeleton Horse'),
+    Entity('Zombie Horse'),
 )
 """The non-horse horses."""
 woods = ('Acacia', 'Birch', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Spruce')
