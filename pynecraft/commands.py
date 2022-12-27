@@ -2562,7 +2562,7 @@ def stopsound(target: Target, /, source: str = None, sound: str = None) -> str:
     return str(cmd)
 
 
-def summon(to_summon: EntityDef, /, pos: Position = None, nbt=None) -> str:
+def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) -> str:
     """Summons an entity."""
     to_summon = good_entity(to_summon)
     cmd = Command()
