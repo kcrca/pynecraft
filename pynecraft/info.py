@@ -423,6 +423,13 @@ tropical_fish = {
 }
 """The data for the predefined naturally-occurring tropical fish."""
 
+trim_materials = (
+    'emerald', 'redstone', 'lapis', 'amethyst', 'quartz', 'netherite', 'diamond', 'gold', 'iron', 'copper')
+
+trim_patterns = ('coast', 'dune', 'eye', 'rib', 'sentry', 'snout', 'spire', 'tide', 'vex', 'ward', 'wild')
+
+armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
+
 
 def _version_change_handler(_: Version, version: Version):
     global woods

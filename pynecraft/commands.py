@@ -2822,7 +2822,7 @@ class Entity(NbtHolder):
         self._update_custom_name()
 
     def custom_name(self, manage: bool = True) -> Entity:
-        """Sets whether to manage the 'CustomName' NBT tag along with the name. Default is True. """
+        """Sets whether to manage the 'CustomName' NBT tag along with the name. Default value is True. """
         self._custom_name = manage
         self._update_custom_name()
         return self
