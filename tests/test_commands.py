@@ -185,20 +185,20 @@ class TestCommands(unittest.TestCase):
                 '{"text": [{"text": "hi", "bold": "true", "italic": "true"}, {"text": " there", "bold": "true"},'
                 ' {"text": " friend"}]}'),
                 str(JsonText.html_text('<b><i>hi</i> there</b> friend')))
-            self.assertEqual(('{"translate": "m.id", "with": ["t1", "t2"]}'),
+            self.assertEqual('{"translate": "m.id", "with": ["t1", "t2"]}',
                              str(JsonText.translate('m.id', 't1', 't2')))
             self.assertEqual('{"score": {"name": "sc", "objective": "obj"}}', str(JsonText.score(Score('sc', 'obj'))))
-            self.assertEqual(('{"score": {"name": "sc", "objective": "obj", "value": 17}}'),
+            self.assertEqual('{"score": {"name": "sc", "objective": "obj", "value": 17}}',
                              str(JsonText.score(('sc', 'obj'), 17)))
             self.assertEqual('{"selector": "@a"}', str(JsonText.entity(a())))
-            self.assertEqual(('{"selector": "@a", "separator": {"color": "red", "text": "_"}}'),
+            self.assertEqual('{"selector": "@a", "separator": {"color": "red", "text": "_"}}',
                              str(JsonText.entity(a(), RED, '_')))
             self.assertEqual('{"keybind": "b.id"}', str(JsonText.keybind('b.id')))
             self.assertEqual('{"nbt": "m:a/b", "entity": "@a"}', str(JsonText.nbt('m:a/b', a())))
-            self.assertEqual(('{"nbt": "m:a/b", "block": "1 ~2 ^3", "interpret": true, "separator": "_"}'),
+            self.assertEqual('{"nbt": "m:a/b", "block": "1 ~2 ^3", "interpret": true, "separator": "_"}',
                              str(JsonText.nbt('m:a/b', (1, r(2), d(3)), interpret=True, separator='_')))
             self.assertEqual('{"text": "boo", "extra": []}', str(JsonText.text('boo').extra()))
-            self.assertEqual(('{"text": "boo", "extra": ["foo", {"text": "bar"}]}'),
+            self.assertEqual('{"text": "boo", "extra": ["foo", {"text": "bar"}]}',
                              str(JsonText.text('boo').extra('foo', JsonText.text('bar'))))
             self.assertEqual('{"text": "boo", "color": "dark_green"}', str(JsonText.text('boo').color(DARK_GREEN)))
             self.assertEqual('{"text": "boo", "font": "m:a/b"}', str(JsonText.text('boo').font('m:a/b')))
@@ -699,7 +699,7 @@ class TestCommands(unittest.TestCase):
     def test_particle_command(self):
         self.assertEqual('particle ash', particle(Particle.ASH))
         self.assertEqual('particle ash 1 ~2 ^3', particle(Particle.ASH, (1, r(2), d(3))))
-        self.assertEqual(('particle ash 1 ~2 ^3 4 ~5 ^6 2.1 15 force'),
+        self.assertEqual('particle ash 1 ~2 ^3 4 ~5 ^6 2.1 15 force',
                          particle(Particle.ASH, (1, r(2), d(3)), (4, r(5), d(6)), 2.1, 15, FORCE))
 
     def test_place(self):

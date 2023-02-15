@@ -245,7 +245,7 @@ class TestFunctions(unittest.TestCase):
             self.assertIn('packer', fp.read())
 
         blocks = pack.tags('blocks')
-        blocks['air'] = { 'values': [ 'air', 'cave_air' ] }
+        blocks['air'] = {'values': ['air', 'cave_air']}
         pack.save(self.tmp_path)
         tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'tags' / 'blocks'
         self.assertTrue(tags_dir.exists())

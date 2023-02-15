@@ -247,7 +247,7 @@ class Effect(PageEnumDesc):
         print(f'      return {ids_map_name}[self.value]')
         print()
         print()
-        print('# noinspection SpellCheckingInspection')
+        print('# noinspection SpellCheckingInspection,GrazieInspection')
         print(f'{types_map_name} = {self.types}')
         print()
         print('# noinspection SpellCheckingInspection')

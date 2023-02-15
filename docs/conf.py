@@ -12,8 +12,8 @@
 #
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__name__), '..'))
 
+sys.path.append(os.path.join(os.path.dirname(__name__), '..'))
 
 # -- Project information -----------------------------------------------------
 
@@ -23,7 +23,6 @@ author = 'Ken Arnold'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -42,13 +41,12 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
+# html_theme = 'alabaster'
 html_theme = "classic"
 
 # Add any paths that contain custom static files (such as style sheets) here,

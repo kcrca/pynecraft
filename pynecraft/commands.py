@@ -44,7 +44,7 @@ def _fluent(method):
 
 
 def good_target(target: Target) -> TargetSpec | None:
-    """Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or user names,
+    """Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or usernames,
     or None. If not, it raises a ValueError.
 
     Valid targets are subclasses of TargetSpec, a '*', or a user name.
@@ -71,7 +71,7 @@ def good_data_target(dt: DataTarget | None) -> Iterable[any] | None:
     TargetSpec is an entity target, and a string is presumed to be intended as a resource path.
 
     :param dt: The (probable) data target.
-    :return: a tuple, whose first value is 'block', 'entity', or 'storage', and whose second element is an appropriate
+    :return: A tuple, whose first value is 'block', 'entity', or 'storage', and whose second element is an appropriate
         object: the result of good_position for 'block', the TargetSpec input for 'entity', the result of
         good_resource_path() on a string. A None argument returns None.
     """
@@ -154,7 +154,7 @@ def good_block(block: BlockDef | None) -> Block | None:
     "Valid" means a string block name, or valid arguments to the Block constructor.
 
     :param block: The (probable) block.
-    :return: a Block object for the argument, or None.
+    :return: A Block object for the argument, or None.
     """
     if block is None:
         return None
@@ -188,7 +188,7 @@ def good_score(score: ScoreName | None) -> Score | None:
     "Valid" means a Score object, or a target/objective pair in a tuple or list.
 
     :param score: The (probable) score.
-    :return: a Score object, or None.
+    :return: A Score object, or None.
     """
     if score is None:
         return None
@@ -227,7 +227,7 @@ def good_color(color: int | str | None) -> str | None:
     ``COLORS`` array.
 
     :param color: The ((probable) color name.
-    :return: the color name, in lower case.
+    :return: The color name, in lower case.
     """
     if color is None:
         return None
@@ -241,7 +241,7 @@ def good_slot(slot: str | None) -> str | None:
     "Valid" means valid for the ``item`` command.
 
     :param slot: The (probable) slot name.
-    :return: the input value.
+    :return: The input value.
     """
     if slot is None:
         return None

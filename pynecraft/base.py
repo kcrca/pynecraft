@@ -866,8 +866,9 @@ def _rel_coord(ch, f, values: Sequence[float]) -> RelCoord | Tuple[RelCoord, ...
     return tuple(f(x) for x in values)
 
 
-def r(*v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
-                                      Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
+def r(*v: float | Iterable[float]) -> RelCoord | IntRelCoord | Tuple[RelCoord, RelCoord] | \
+                                      Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
+                                      Tuple[RelCoord, ...]:
     """
     Returns a single or tuple '~' relative coordinate(s) of its input value(s). If all values are integers,
     the value(s) will be IntRelCoords.
@@ -875,8 +876,9 @@ def r(*v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tup
     return _rel_coord('~', r, tuple(v))
 
 
-def d(*v: float | Iterable[float]) -> RelCoord | Tuple[RelCoord, RelCoord] | Tuple[IntRelCoord, IntRelCoord] | \
-                                      Tuple[RelCoord, RelCoord, RelCoord] | Tuple[RelCoord, ...]:
+def d(*v: float | Iterable[float]) -> RelCoord | IntCoord | Tuple[RelCoord, RelCoord] | \
+                                      Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
+                                      Tuple[RelCoord, ...]:
     """
     Returns a single or tuple '^' relative coordinate(s) of its input value(s). If all values are integers,
     the value(s) will be IntRelCoords.
