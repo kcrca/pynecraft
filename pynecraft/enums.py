@@ -142,7 +142,7 @@ class Advancement(ValueEnum):
     ZOMBIE_DOCTOR = "story/cure_zombie_villager"
     """Weaken and then cure a Zombie Villager."""
     EYE_SPY = "story/follow_ender_eye"
-    """Follow an Eye of Ender."""
+    """Follow an Ender Eye."""
     ENTER_THE_END = "story/enter_the_end"
     """Enter the End Portal."""
     NETHER = "nether/root"
@@ -290,7 +290,7 @@ class Advancement(ValueEnum):
     TOTAL_BEELOCATION = "husbandry/silk_touch_nest"
     """Move a Bee Nest, with 3 bees inside, using Silk Touch."""
     BUKKIT_BUKKIT = "husbandry/tadpole_in_a_bucket"
-    """Catch a tadpole in a Bucket."""
+    """Catch a Tadpole in a Bucket."""
     A_SEEDY_PLACE = "husbandry/plant_seed"
     """Plant a seed and watch it grow."""
     WAX_ON = "husbandry/wax_on"
@@ -643,13 +643,13 @@ class Effect(ValueEnum):
         return _effect_ids[self.value]
 
 
-# noinspection SpellCheckingInspection,GrazieInspection
+# noinspection SpellCheckingInspection
 _effect_positive = {'speed': True, 'slowness': False, 'haste': True, 'mining_fatigue': False, 'strength': True,
                     'instant_health': True, 'instant_damage': True, 'jump_boost': True, 'nausea': False,
                     'regeneration': True, 'resistance': True, 'fire_resistance': True, 'water_breathing': True,
                     'invisibility': True, 'blindness': False, 'night_vision': True, 'hunger': False, 'weakness': False,
                     'poison': False, 'wither': False, 'health_boost': True, 'absorption': True, 'saturation': True,
-                    'glowing': None, 'levitation': False, 'luck': True, 'unluck': False, 'slow_falling': True,
+                    'glowing': None, 'levitation': None, 'luck': True, 'unluck': False, 'slow_falling': True,
                     'conduit_power': True, 'dolphins_grace': True, 'bad_omen': None, 'hero_of_the_village': True,
                     'darkness': False}
 
@@ -813,8 +813,6 @@ class GameRule(ValueEnum):
     """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a block explosion (e.g. clicking a bed in dimensions other than the Overworld)."""
     COMMAND_BLOCK_OUTPUT = "commandBlockOutput"
     """Whether command blocks should notify admins when they perform commands."""
-    COMMAND_MODIFICATION_BLOCK_LIMIT = "commandModificationBlockLimit"
-    """Controls the maximum number of blocks changed when using /clone, /fill, or /fillbiome."""
     DISABLE_ELYTRA_MOVEMENT_CHECK = "disableElytraMovementCheck"
     """Whether the server should skip checking player speed when the player is wearing elytra. Often helps with jittering due to lag in multiplayer."""
     DISABLE_RAIDS = "disableRaids"
@@ -841,8 +839,6 @@ class GameRule(ValueEnum):
     """Whether blocks should have drops."""
     DO_TRADER_SPAWNING = "doTraderSpawning"
     """Whether wandering traders can spawn."""
-    DO_VINES_SPREAD = "doVinesSpread"
-    """Whether vines can spread to other blocks."""
     DO_WEATHER_CYCLE = "doWeatherCycle"
     """Whether the weather can change naturally. The /weather command can still change weather."""
     DO_WARDEN_SPAWNING = "doWardenSpawning"
@@ -907,26 +903,24 @@ class GameRule(ValueEnum):
 
 # noinspection SpellCheckingInspection
 _gamerule_types = {'announceAdvancements': 'bool', 'blockExplosionDropDecay': 'bool', 'commandBlockOutput': 'bool',
-                   'commandModificationBlockLimit': 'int', 'disableElytraMovementCheck': 'bool', 'disableRaids': 'bool',
-                   'doDaylightCycle': 'bool', 'doEntityDrops': 'bool', 'doFireTick': 'bool', 'doInsomnia': 'bool',
-                   'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool',
-                   'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool',
-                   'doTraderSpawning': 'bool', 'doVinesSpread': 'bool', 'doWeatherCycle': 'bool',
-                   'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'fallDamage': 'bool', 'fireDamage': 'bool',
-                   'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool', 'globalSoundEvents': 'bool',
-                   'keepInventory': 'bool', 'lavaSourceConversion': 'bool', 'logAdminCommands': 'bool',
-                   'maxCommandChainLength': 'int', 'maxEntityCramming': 'int', 'mobExplosionDropDecay': 'bool',
-                   'mobGriefing': 'bool', 'naturalRegeneration': 'bool', 'playersSleepingPercentage': 'int',
-                   'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool', 'sendCommandFeedback': 'bool',
-                   'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int', 'spawnRadius': 'int',
-                   'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool', 'universalAnger': 'bool',
-                   'waterSourceConversion': 'bool'}
+                   'disableElytraMovementCheck': 'bool', 'disableRaids': 'bool', 'doDaylightCycle': 'bool',
+                   'doEntityDrops': 'bool', 'doFireTick': 'bool', 'doInsomnia': 'bool', 'doImmediateRespawn': 'bool',
+                   'doLimitedCrafting': 'bool', 'doMobLoot': 'bool', 'doMobSpawning': 'bool',
+                   'doPatrolSpawning': 'bool', 'doTileDrops': 'bool', 'doTraderSpawning': 'bool',
+                   'doWeatherCycle': 'bool', 'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'fallDamage': 'bool',
+                   'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool',
+                   'globalSoundEvents': 'bool', 'keepInventory': 'bool', 'lavaSourceConversion': 'bool',
+                   'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int',
+                   'mobExplosionDropDecay': 'bool', 'mobGriefing': 'bool', 'naturalRegeneration': 'bool',
+                   'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool',
+                   'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int',
+                   'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool',
+                   'universalAnger': 'bool', 'waterSourceConversion': 'bool'}
 
 # noinspection SpellCheckingInspection
 _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
                      GameRule.BLOCK_EXPLOSION_DROP_DECAY: "block Explosion Drop Decay",
                      GameRule.COMMAND_BLOCK_OUTPUT: "command Block Output",
-                     GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT: "command Modification Block Limit",
                      GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK: "disable Elytra Movement Check",
                      GameRule.DISABLE_RAIDS: "disable Raids", GameRule.DO_DAYLIGHT_CYCLE: "do Daylight Cycle",
                      GameRule.DO_ENTITY_DROPS: "do Entity Drops", GameRule.DO_FIRE_TICK: "do Fire Tick",
@@ -934,11 +928,11 @@ _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
                      GameRule.DO_LIMITED_CRAFTING: "do Limited Crafting", GameRule.DO_MOB_LOOT: "do Mob Loot",
                      GameRule.DO_MOB_SPAWNING: "do Mob Spawning", GameRule.DO_PATROL_SPAWNING: "do Patrol Spawning",
                      GameRule.DO_TILE_DROPS: "do Tile Drops", GameRule.DO_TRADER_SPAWNING: "do Trader Spawning",
-                     GameRule.DO_VINES_SPREAD: "do Vines Spread", GameRule.DO_WEATHER_CYCLE: "do Weather Cycle",
-                     GameRule.DO_WARDEN_SPAWNING: "do Warden Spawning", GameRule.DROWNING_DAMAGE: "drowning Damage",
-                     GameRule.FALL_DAMAGE: "fall Damage", GameRule.FIRE_DAMAGE: "fire Damage",
-                     GameRule.FORGIVE_DEAD_PLAYERS: "forgive Dead Players", GameRule.FREEZE_DAMAGE: "freeze Damage",
-                     GameRule.GLOBAL_SOUND_EVENTS: "global Sound Events", GameRule.KEEP_INVENTORY: "keep Inventory",
+                     GameRule.DO_WEATHER_CYCLE: "do Weather Cycle", GameRule.DO_WARDEN_SPAWNING: "do Warden Spawning",
+                     GameRule.DROWNING_DAMAGE: "drowning Damage", GameRule.FALL_DAMAGE: "fall Damage",
+                     GameRule.FIRE_DAMAGE: "fire Damage", GameRule.FORGIVE_DEAD_PLAYERS: "forgive Dead Players",
+                     GameRule.FREEZE_DAMAGE: "freeze Damage", GameRule.GLOBAL_SOUND_EVENTS: "global Sound Events",
+                     GameRule.KEEP_INVENTORY: "keep Inventory",
                      GameRule.LAVA_SOURCE_CONVERSION: "lava Source Conversion",
                      GameRule.LOG_ADMIN_COMMANDS: "log Admin Commands",
                      GameRule.MAX_COMMAND_CHAIN_LENGTH: "max Command Chain Length",
@@ -957,7 +951,7 @@ _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
                      GameRule.WATER_SOURCE_CONVERSION: "water Source Conversion"}
 
 
-# noinspection SpellCheckingInspection,GrazieInspection
+# noinspection SpellCheckingInspection
 @enum.unique
 class ScoreCriteria(ValueEnum):
     DUMMY = "dummy"
@@ -996,7 +990,7 @@ _scorecriteria_display = {ScoreCriteria.DUMMY: "dummy", ScoreCriteria.TRIGGER: "
                           ScoreCriteria.AIR: "air", ScoreCriteria.ARMOR: "armor"}
 
 
-# noinspection SpellCheckingInspection,GrazieInspection
+# noinspection SpellCheckingInspection
 @enum.unique
 class Particle(ValueEnum):
     AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
@@ -1005,10 +999,12 @@ class Particle(ValueEnum):
     """Attacking a villager in a village; when villagers can't breed because there aren't enough beds nearby or when a panda is attacked by a player on the village."""
     ASH = "ash"
     """Naturally generated in soul sand valley biome environment."""
+    BARRIER = "barrier"
+    """Barrier blocks."""
     BLOCK = "block"
     """Breaking blocks, sprinting, iron golems walking."""
     BLOCK_MARKER = "block_marker"
-    """Barriers and light when their corresponding item is held."""
+    """Replaces separate barrier and light particles in 1.19."""
     BUBBLE = "bubble"
     """Entities in water, guardian laser beams, fishing."""
     BUBBLE_COLUMN_UP = "bubble_column_up"
@@ -1121,6 +1117,8 @@ class Particle(ValueEnum):
     """Fire, minecart with furnace, blazes, water flowing into lava, lava flowing into water."""
     LAVA = "lava"
     """Lava bubble."""
+    LIGHT = "light"
+    """Light block displays it when the player holds the light item of any level."""
     MYCELIUM = "mycelium"
     """Mycelium blocks."""
     NAUTILUS = "nautilus"
@@ -1188,9 +1186,10 @@ class Particle(ValueEnum):
 
 # noinspection SpellCheckingInspection
 _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Particle.ANGRY_VILLAGER: "Angry Villager",
-                     Particle.ASH: "Ash", Particle.BLOCK: "Block", Particle.BLOCK_MARKER: "Block Marker",
-                     Particle.BUBBLE: "Bubble", Particle.BUBBLE_COLUMN_UP: "Bubble Column Up",
-                     Particle.BUBBLE_POP: "Bubble Pop", Particle.CAMPFIRE_COSY_SMOKE: "Campfire Cosy Smoke",
+                     Particle.ASH: "Ash", Particle.BARRIER: "Barrier", Particle.BLOCK: "Block",
+                     Particle.BLOCK_MARKER: "Block Marker", Particle.BUBBLE: "Bubble",
+                     Particle.BUBBLE_COLUMN_UP: "Bubble Column Up", Particle.BUBBLE_POP: "Bubble Pop",
+                     Particle.CAMPFIRE_COSY_SMOKE: "Campfire Cosy Smoke",
                      Particle.CAMPFIRE_SIGNAL_SMOKE: "Campfire Signal Smoke", Particle.CLOUD: "Cloud",
                      Particle.COMPOSTER: "Composter", Particle.CRIMSON_SPORE: "Crimson Spore", Particle.CRIT: "Crit",
                      Particle.CURRENT_DOWN: "Current Down", Particle.DAMAGE_INDICATOR: "Damage Indicator",
@@ -1217,13 +1216,13 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.ITEM_SLIME: "Item Slime", Particle.ITEM_SNOWBALL: "Item Snowball",
                      Particle.LANDING_HONEY: "Landing Honey", Particle.LANDING_LAVA: "Landing Lava",
                      Particle.LANDING_OBSIDIAN_TEAR: "Landing Obsidian Tear", Particle.LARGE_SMOKE: "Large Smoke",
-                     Particle.LAVA: "Lava", Particle.MYCELIUM: "Mycelium", Particle.NAUTILUS: "Nautilus",
-                     Particle.NOTE: "Note", Particle.POOF: "Poof", Particle.PORTAL: "Portal", Particle.RAIN: "Rain",
-                     Particle.SCRAPE: "Scrape", Particle.SCULK_CHARGE: "Sculk Charge",
-                     Particle.SCULK_CHARGE_POP: "Sculk Charge Pop", Particle.SCULK_SOUL: "Sculk Soul",
-                     Particle.SHRIEK: "Shriek", Particle.SMOKE: "Smoke", Particle.SNEEZE: "Sneeze",
-                     Particle.SNOWFLAKE: "Snowflake", Particle.SONIC_BOOM: "Sonic Boom", Particle.SOUL: "Soul",
-                     Particle.SOUL_FIRE_FLAME: "Soul Fire Flame", Particle.SPIT: "Spit",
+                     Particle.LAVA: "Lava", Particle.LIGHT: "Light", Particle.MYCELIUM: "Mycelium",
+                     Particle.NAUTILUS: "Nautilus", Particle.NOTE: "Note", Particle.POOF: "Poof",
+                     Particle.PORTAL: "Portal", Particle.RAIN: "Rain", Particle.SCRAPE: "Scrape",
+                     Particle.SCULK_CHARGE: "Sculk Charge", Particle.SCULK_CHARGE_POP: "Sculk Charge Pop",
+                     Particle.SCULK_SOUL: "Sculk Soul", Particle.SHRIEK: "Shriek", Particle.SMOKE: "Smoke",
+                     Particle.SNEEZE: "Sneeze", Particle.SNOWFLAKE: "Snowflake", Particle.SONIC_BOOM: "Sonic Boom",
+                     Particle.SOUL: "Soul", Particle.SOUL_FIRE_FLAME: "Soul Fire Flame", Particle.SPIT: "Spit",
                      Particle.SPORE_BLOSSOM_AIR: "Spore Blossom Air", Particle.SPLASH: "Splash",
                      Particle.SQUID_INK: "Squid Ink", Particle.SWEEP_ATTACK: "Sweep Attack",
                      Particle.TOTEM_OF_UNDYING: "Totem Of Undying", Particle.UNDERWATER: "Underwater",
