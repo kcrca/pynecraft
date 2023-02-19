@@ -31,7 +31,8 @@ _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#
                                (\[[,=\s{_jed_resource}]*])?   # an optional state, such as "[facing=south]"
                             ''', re.VERBOSE)
 _name_re = re.compile(r'[\w+.-]+')
-_nbt_key_re = re.compile(r'\w+')
+_nbt_key_re = re.compile(r'[a-zA-Z0-9_]+')
+_nbt_path_re = re.compile(r'[a-zA-Z0-9_.[\]{}]*')
 _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
 _backslash_map = {'\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
@@ -214,6 +215,12 @@ def good_nbt_key(key: str) -> str:
     if not _nbt_key_re.fullmatch(key):
         raise KeyError(f'{key}: Invalid NBT key')
     return key
+
+
+def good_nbt_path(path: str) -> str:
+    if _nbt_path_re.fullmatch(path) is None:
+        raise ValueError(f'{path}: Invalid NBT path')
+    return path
 
 
 def good_resource(name: str | None, allow_namespace=True, allow_not=False) -> str | None:
@@ -659,9 +666,10 @@ class Parameters:
     """Manage general parameters. Use the 'parameters' variable to adjust the parameters."""
     VERSION_1_19_3 = Version('1.19.3')
     VERSION_1_19_3_X = Version('1.19.3+x')
+    VERSION_1_20 = Version('1.20')
     FIRST_VERSION = Version('1.19')
     """The first (earliest) version of Minecraft supported by pynecraft."""
-    LATEST_VERSION = VERSION_1_19_3_X
+    LATEST_VERSION = VERSION_1_20
     """The most recent version of Minecraft supported by pynecraft."""
 
     _VERSION_RELATION = RELATION + ['!=']

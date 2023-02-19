@@ -28,7 +28,8 @@ from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, EQ
     good_column, \
     good_duration, \
     good_facing, \
-    good_item_stack, good_name, good_names, good_pitch, good_range, good_resource, good_resource_path, good_resources, \
+    good_item_stack, good_name, good_names, good_nbt_path, good_pitch, good_range, good_resource, good_resource_path, \
+    good_resources, \
     good_yaw, parameters, to_id, \
     to_name
 from .enums import Advancement, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
@@ -64,26 +65,26 @@ def good_target(target: Target) -> TargetSpec | None:
             raise ValueError(f'{target}: Invalid target')
 
 
-def good_data_target(dt: DataTarget | None) -> Iterable[any] | None:
+def good_data_target(target: DataTarget | None) -> Iterable[any] | None:
     """Checks if the argument is a valid data target for commands like ``data merge``, or None. If not, it raises ValueError.
 
     A tuple or list argument is presumed to be intended as a position on which good_position will be called; a
     TargetSpec is an entity target, and a string is presumed to be intended as a resource path.
 
-    :param dt: The (probable) data target.
+    :param target: The (probable) data target.
     :return: A tuple, whose first value is 'block', 'entity', or 'storage', and whose second element is an appropriate
         object: the result of good_position for 'block', the TargetSpec input for 'entity', the result of
         good_resource_path() on a string. A None argument returns None.
     """
-    if dt is None:
+    if target is None:
         return None
-    if isinstance(dt, (tuple, list)):
-        return 'block', *good_position(dt)
-    if isinstance(dt, TargetSpec):
-        return 'entity', dt
-    if isinstance(dt, str):
-        return 'storage', good_resource_path(dt)
-    raise ValueError(f'{dt}: Invalid data target (must be position, entity selector, or resource name)')
+    if isinstance(target, (tuple, list)):
+        return 'block', *good_position(target)
+    if isinstance(target, TargetSpec):
+        return 'entity', target
+    if isinstance(target, str):
+        return 'storage', good_resource_path(target)
+    raise ValueError(f'{target}: Invalid data target (must be position, entity selector, or resource name)')
 
 
 def data_target_str(data_target: DataTarget) -> str:
@@ -1295,7 +1296,7 @@ class _End(Command):
 class _FromOrValue(Command):
     @_fluent
     def from_(self, data_target: DataTarget, nbt_path: str) -> str:
-        self._add('from', data_target_str(data_target), good_resource_path(nbt_path))
+        self._add('from', data_target_str(data_target), good_nbt_path(nbt_path))
         return str(self)
 
     @_fluent
