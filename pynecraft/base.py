@@ -666,6 +666,8 @@ class Parameters:
     """Manage general parameters. Use the 'parameters' variable to adjust the parameters."""
     VERSION_1_19_3 = Version('1.19.3')
     VERSION_1_19_3_X = Version('1.19.3+x')
+    VERSION_1_19_4 = Version('1.19.4')
+    VERSION_1_19_4_X = Version('1.19.4+x')
     VERSION_1_20 = Version('1.20')
     FIRST_VERSION = Version('1.19')
     """The first (earliest) version of Minecraft supported by pynecraft."""
