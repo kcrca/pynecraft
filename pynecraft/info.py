@@ -430,6 +430,8 @@ trim_patterns = sorted(('coast', 'dune', 'eye', 'rib', 'sentry', 'snout', 'spire
 
 armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 
+shards = tuple(f'pottery_shard_{shard}' for shard in ('arms_up', 'archer', 'prize', 'skull'))
+
 
 def _version_change_handler(_: Version, version: Version):
     global woods
