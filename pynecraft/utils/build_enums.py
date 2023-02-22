@@ -10,6 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 
 WIKI = 'https://minecraft.fandom.com/wiki/'
+noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
 
 
 class EnumDesc(ABC):
@@ -247,10 +248,10 @@ class Effect(PageEnumDesc):
         print(f'      return {ids_map_name}[self.value]')
         print()
         print()
-        print('# noinspection SpellCheckingInspection,GrazieInspection')
+        print(noinspection)
         print(f'{types_map_name} = {self.types}')
         print()
-        print('# noinspection SpellCheckingInspection')
+        print(noinspection)
         print(f'{ids_map_name} = {self.ids}')
 
 
@@ -290,7 +291,7 @@ class Enchantment(PageEnumDesc):
         print('    def max_level(self):')
         print(f'      return {dict_name}[self.value]')
         print()
-        print('# noinspection SpellCheckingInspection')
+        print(noinspection)
         print(f'{dict_name} = {self.maxes}')
 
 
@@ -343,7 +344,7 @@ class GameRule(PageEnumDesc):
         print('    def rule_type(self):')
         print(f'      return {dict_name}[self.value]')
         print()
-        print('# noinspection SpellCheckingInspection')
+        print(noinspection)
         print(f'{dict_name} = {self.types}')
 
 
@@ -432,7 +433,7 @@ if __name__ == '__main__':
                 fields = tab.generate()
                 print()
                 print()
-                print('# noinspection SpellCheckingInspection')
+                print(noinspection)
                 print('@enum.unique')
                 print(f'class {tab.name}(ValueEnum):')
                 names = {}
@@ -451,7 +452,7 @@ if __name__ == '__main__':
 
                 print()
                 print()
-                print('# noinspection SpellCheckingInspection')
+                print(noinspection)
                 values = (f'{tab.name}.{k}: "%s"' % v.replace('"', r'\"') for k, v in names.items())
                 print(f'{map_name} = {{{",".join(values)}}}')
                 # print('        return {' + (', '.join(values)) + '}[elem]')

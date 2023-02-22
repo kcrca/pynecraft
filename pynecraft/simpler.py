@@ -3,11 +3,10 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Iterable, Mapping, Tuple, Union
 
-from .base import Biome, FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, \
-    d, good_biome, good_facing, r, to_id
-from .commands import Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignText, SomeMappings, fill, fillbiome, good_block, good_color_num, setblock
+from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
+    _to_list, d, good_facing, r, to_id
+from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
+    SignText, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock
 from .enums import Pattern
 
 ARMORER = 'Armorer'
@@ -461,8 +460,9 @@ class Offset:
     CoordsIn = Union[float, RelCoord]
     # This is so complicated because some functions take specific-length tuples so we want to declare that we produce
     # them to make the type checker happier.
-    CoordsOut = Union[RelCoord, Tuple[RelCoord, RelCoord], Tuple[IntRelCoord, IntRelCoord],
-                      Tuple[RelCoord, RelCoord, RelCoord], Tuple[RelCoord, ...]]
+    CoordsOut = Union[
+        RelCoord, Tuple[RelCoord, RelCoord], Tuple[IntRelCoord, IntRelCoord], Tuple[RelCoord, RelCoord, RelCoord],
+        Tuple[RelCoord, ...]]
 
     def __init__(self, *position: float):
         """Creates an offsetting object with the given values."""

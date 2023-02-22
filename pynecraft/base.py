@@ -22,8 +22,6 @@ from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Tuple, 
 
 from packaging.version import Version
 
-from pynecraft.enums import BiomeId
-
 _jed_resource = r'a-zA-Z0-9_.-'
 _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
                                ([{_jed_resource}]+:)?         # an optional namespace
@@ -1149,14 +1147,6 @@ def good_range(spec: Range) -> str:
     return str(s) + '..' + str(e)
 
 
-def good_biome(biome: Biome, allow_not: bool = False) -> str:
-    """
-    Returns a string version of the given biome. A string version is preferred because new biome types can be added
-    by datapacks.
-    """
-    if isinstance(biome, BiomeId):
-        return str(biome)
-    return good_resource(biome, allow_not=allow_not)
 
 
 NbtDef = Union[Nbt, Mapping]
@@ -1169,5 +1159,4 @@ Position = Tuple[Coord, Coord, Coord]
 XYZ = Tuple[float, float, float]
 Column = Tuple[Coord, Coord]
 IntColumn = Tuple[IntCoord, IntCoord]
-Biome = Union[str, BiomeId]
 Range = Union[float, Tuple[Optional[float], Optional[float]]]

@@ -20,11 +20,11 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
-from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, EQ, GE, GREEN, IntColumn, JSON_COLORS, \
+from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GE, GREEN, IntColumn, JSON_COLORS, \
     JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, \
     WHITE, \
     YELLOW, \
-    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, good_biome, \
+    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, \
     good_column, \
     good_duration, \
     good_facing, \
@@ -32,7 +32,7 @@ from .base import Angle, BLUE, Biome, COLORS, Column, DIMENSION, DurationDef, EQ
     good_resources, \
     good_yaw, parameters, to_id, \
     to_name
-from .enums import Advancement, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
+from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 
 def _fluent(method):
@@ -42,6 +42,16 @@ def _fluent(method):
         return method(obj, *args, **kwargs)
 
     return inner
+
+
+def good_biome(biome: Biome, allow_not: bool = False) -> str:
+    """
+    Returns a string version of the given biome. A string version is preferred because new biome types can be added
+    by datapacks.
+    """
+    if isinstance(biome, BiomeId):
+        return str(biome)
+    return good_resource(biome, allow_not=allow_not)
 
 
 def good_target(target: Target) -> TargetSpec | None:
@@ -3334,6 +3344,7 @@ Commands = Iterable[Union[Command, str]]
 DataTarget = Union[Position, TargetSpec, str]
 SomeBlockDefs = Union[BlockDef, Iterable[BlockDef]]
 SomeMappings = Union[Mapping, Iterable[Mapping]]
+Biome = Union[str, BiomeId]
 
 
 def lines(*orig: any) -> list[str]:
