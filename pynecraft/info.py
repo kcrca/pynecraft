@@ -440,13 +440,13 @@ def _version_change_handler(_: Version, version: Version):
             woods = woods + ('Bamboo',)
     else:
         if 'Bamboo' in woods:
-            woods.remove('Bamboo')
+            woods = filter(lambda x: x != 'Bamboo', woods)
     if version >= Parameters.VERSION_1_19_4_X:
         if 'Cherry' not in woods:
             woods = woods + ('Cherry',)
     else:
         if 'Cherry' in woods:
-            woods.remove('Cherry')
+            woods = filter(lambda x: x != 'Cherry', woods)
     woods = tuple(sorted(woods))
     __read_lists()
 
