@@ -1299,6 +1299,26 @@ class _CloneClause(Command):
         return str(self)
 
 
+class _CloneFromDimMod(Command):
+    def from_(self, dimension: str, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
+        self._dimesion = dimension
+        self._start_pos = start_pos
+        self._end_pos = end_pos
+        return _CloneToDimMod(self)
+
+
+class _CloneToDimMod(Command):
+    def __init__(self, from_: _CloneFromDimMod):
+        super().__init__()
+        self._from_ = from_
+
+    def to(self, dimension: str, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
+        f = self._from_
+        dest_pos = _clone_dest(f._start_pos, f._end_pos, dest_pos, dest_type)
+        self._add('clone', 'from', f._dimesion, *f._start_pos, *f._end_pos, 'to', dimension, *dest_pos)
+        return self._start(_CloneClause())
+
+
 class _End(Command):
     pass
 
@@ -2186,7 +2206,8 @@ def _clone_dest(start_pos, end_pos, dest_pos, dest_type):
         raise ValueError(f'{dest_type}: Unknown destination coords type')
 
 
-def clone(start_pos: Position, end_pos: Position, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
+def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Position = None,
+          dest_type: str = LEAST) -> _CloneClause | _CloneFromDimMod:
     """
     Copies blocks from one place to another.
 
@@ -2200,8 +2221,18 @@ def clone(start_pos: Position, end_pos: Position, dest_pos: Position, dest_type:
 
     DELTA: dest_coords is the amount ot shift the whole region. So (10, 0, 0) means to clone the region 10 blocks
     away along the X axis.
+
+    To use the 1.19.4 syntax, use "clone().from_(...).to(...)". In this form it is the "to" method that takes the
+    optional dest_coords interpretation parameter.
     """
     cmd = Command()
+
+    if start_pos is None:
+        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        return cmd._start(_CloneFromDimMod())
+    if end_pos is None or dest_pos is None:
+        raise ValueError('Must give all positions or none of them')
+
     dest_pos = _clone_dest(start_pos, end_pos, dest_pos, dest_type)
     cmd._add('clone', *start_pos, *end_pos, *dest_pos)
     return cmd._start(_CloneClause())

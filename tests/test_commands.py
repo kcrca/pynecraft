@@ -514,6 +514,22 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('clone 1 2 3 4 5 6 4 5 6', str(clone((1, 2, 3), (4, 5, 6), (7, 8, 9), LAST)))
         self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~4 ~5 ~6', str(clone(r(1, 2, 3), r(4, 5, 6), r(7, 8, 9), LAST)))
         self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~11 ~2 ~13', str(clone(r(1, 2, 3), r(4, 5, 6), (10, 0, 10), DELTA)))
+
+        v = Parameters.version
+        try:
+            Parameters.version = Parameters.VERSION_1_19_4_X
+            self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9',
+                             str(clone().from_('overworld', (1, r(2), d(3)), (4, 5, 6)).to('the_end', (7, 8, 9))))
+            self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9 replace',
+                             str(clone()
+                                 .from_('overworld', (1, r(2), d(3)), (4, 5, 6))
+                                 .to('the_end', (7, 8, 9)).replace()))
+            self.assertEqual('clone from overworld ~1 ~2 ~3 ~4 ~5 ~6 to the_end ~11 ~2 ~13',
+                             str(clone().from_('overworld', r(1, 2, 3), r(4, 5, 6)).to('the_end', (10, 0, 10), DELTA)))
+            with self.assertRaises(ValueError):
+                clone(r(1, 2, 3))
+        finally:
+            Parameters.version = v
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3), r(4, 5, 6), d(1, 2, 3), LAST)
         with self.assertRaises(TypeError):
@@ -522,6 +538,8 @@ class TestCommands(unittest.TestCase):
             clone(r(1, 2, 3), d(4, 5, 6), d(1, 2, 3), DELTA)
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3), d(4, 5, 6), r(1, 2, 3), DELTA)
+        with self.assertRaises(ValueError):
+            clone()
 
     def test_damage(self):
         with self.assertRaises(ValueError):
