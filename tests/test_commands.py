@@ -523,6 +523,21 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3), d(4, 5, 6), r(1, 2, 3), DELTA)
 
+    def test_damage(self):
+        with self.assertRaises(ValueError):
+            damage(s(), 15)
+
+        v = Parameters.version
+        try:
+            Parameters.version = Parameters.VERSION_1_19_4_X
+            self.assertEqual('damage @s 15', str(damage(s(), 15)))
+            self.assertEqual('damage @s 15 a:b', str(damage(s(), 15, 'a:b')))
+            self.assertEqual('damage @a 27 at 1 ~2 ^3', str(damage(a(), 27).at((1, r(2), d(3)))))
+            self.assertEqual('damage @a 27 by @s', str(damage(a(), 27).by(s())))
+            self.assertEqual('damage @a 27 by @s from @p', str(damage(a(), 27).by(s()).from_(p())))
+        finally:
+            Parameters.version = v
+
     def test_data_target(self):
         self.assertEqual('block 1 ~2 ^3', data_target_str((1, r(2), d(3))))
         self.assertEqual('entity @s', data_target_str(s()))

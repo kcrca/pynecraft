@@ -1317,6 +1317,22 @@ class _FromOrValue(Command):
         return str(self)
 
 
+class _DamageByMod(Command):
+    def from_(self, target: Target) -> str:
+        self._add('from', good_target(target))
+        return str(self)
+
+
+class _DamageMod(Command):
+    def at(self, pos: Position) -> str:
+        self._add('at', *pos)
+        return str(self)
+
+    def by(self, target: Target) -> _DamageByMod:
+        self._add('by', good_target(target))
+        return self._start(_DamageByMod())
+
+
 class _DataModifyClause(Command):
     def _keyword(self, keyword: str) -> _FromOrValue:
         self._add(keyword)
@@ -2179,6 +2195,15 @@ def clone(start_pos: Position, end_pos: Position, dest_pos: Position, dest_type:
     dest_pos = _clone_dest(start_pos, end_pos, dest_pos, dest_type)
     cmd._add('clone', *start_pos, *end_pos, *dest_pos)
     return cmd._start(_CloneClause())
+
+
+def damage(target: Selector | User, amount: int, type: str = None) -> _DamageMod:
+    """Applies a set amount of damage to the specified entities."""
+    parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+    cmd = Command()
+    cmd._add('damage', good_target(target), amount)
+    cmd._add_opt(good_resource(type))
+    return cmd._start(_DamageMod())
 
 
 def data() -> _DataMod:
