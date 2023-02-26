@@ -1066,7 +1066,7 @@ for __i, __r in enumerate(SIGN_DIRECTIONS):
         _facing[__i].sign_rotation = __i
         _facing[__r] = _facing[__i]
     else:
-        __deg = round((90 + __i * 22.5 + 720) % 360, 1)
+        __deg = round((0 + __i * 22.5 + 720) % 360, 1)
         __angle = math.radians(__deg)
         # noinspection PyTypeChecker
         _facing[__r] = Facing(__r, (math.cos(__angle), 0, math.sin(__angle)), ((720 + __deg) % 360, 0), math.nan, __i)
@@ -1129,24 +1129,25 @@ def good_duration(duration: DurationDef) -> TimeSpec | None:
 def good_range(spec: Range) -> str:
     """Checks if the argument is a valid numeric range.
 
-     "Valid" means a single number, or a two-element list or tuple that define the endpoints. One of the
-     endpoints may be None to define an open end.
+     "Valid" means a single number or bool, or a two-element list or tuple that define the endpoints. If a bool, it will
+     be treated as 1 or 0. For a two-element range, one of the endpoints may be None to define an open-ended range.
 
     :param spec: The (probable) range.
     :return: A string for the range, either the single number of a range using '..' between the two values.    """
 
-    if isinstance(spec, float) or isinstance(spec, int):
+    if isinstance(spec, bool):
+        return str(int(spec))
+    if isinstance(spec, (float, int)):
         return str(spec)
-    for v in spec:
+
+    for i, v in enumerate(spec):
         if v is not None and not isinstance(v, (float, int)):
-            raise ValueError(f'{v}: Not None or a number')
+            raise ValueError(f'{v}: Must be None or a number')
     s = '' if spec[0] is None else spec[0]
     e = '' if spec[1] is None else spec[1]
     if isinstance(s, float) and isinstance(e, float) and s > e:
         raise ValueError('Start is greater than end')
     return str(s) + '..' + str(e)
-
-
 
 
 NbtDef = Union[Nbt, Mapping]
@@ -1159,4 +1160,4 @@ Position = Tuple[Coord, Coord, Coord]
 XYZ = Tuple[float, float, float]
 Column = Tuple[Coord, Coord]
 IntColumn = Tuple[IntCoord, IntCoord]
-Range = Union[float, Tuple[Optional[float], Optional[float]]]
+Range = Union[float, bool, Tuple[Optional[float], Optional[float]]]
