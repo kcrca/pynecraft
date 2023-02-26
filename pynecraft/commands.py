@@ -1336,6 +1336,12 @@ class _FromOrValue(Command):
         self._add('value', Nbt.to_str(v))
         return str(self)
 
+    def string(self, data_target: DataTarget, nbt_path: str = None, start: int = None, end: int = None) -> str:
+        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        self._add('string', data_target_str(data_target))
+        self._add_opt(good_nbt_path(nbt_path), start, end)
+        return str(self)
+
 
 class _DamageByMod(Command):
     def from_(self, target: Target) -> str:
