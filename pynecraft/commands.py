@@ -1822,6 +1822,16 @@ class _PlaceMod(Command):
         return str(self)
 
 
+class _RideMod(Command):
+    def mount(self, target: Target) -> str:
+        self._add('mount', good_target(target))
+        return str(self)
+
+    def dismount(self) -> str:
+        self._add('dismount')
+        return str(self)
+
+
 class _ScheduleMod(Command):
     @_fluent
     def function(self, path: str | object, time: DurationDef, action: str) -> str:
@@ -2197,7 +2207,7 @@ def clone(start_pos: Position, end_pos: Position, dest_pos: Position, dest_type:
     return cmd._start(_CloneClause())
 
 
-def damage(target: Selector | User, amount: int, type: str = None) -> _DamageMod:
+def damage(target: Target, amount: int, type: str = None) -> _DamageMod:
     """Applies a set amount of damage to the specified entities."""
     parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
     cmd = Command()
@@ -2233,7 +2243,7 @@ def defaultgamemode(gamemode: str) -> str:
     return str(cmd)
 
 
-def deop(*targets: Selector | User) -> str:
+def deop(*targets: Target) -> str:
     """Revokes operator status from a player."""
     cmd = Command()
     cmd._add('deop', *targets)
@@ -2501,6 +2511,14 @@ def reload() -> str:
     cmd = Command()
     cmd._add('reload')
     return str(cmd)
+
+
+def ride(target: Target) -> _RideMod:
+    """Allows entities to mount or dismount other entities. """
+    parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+    cmd = Command()
+    cmd._add('ride', target)
+    return cmd._start(_RideMod())
 
 
 def say(msg: str, *msgs: str):

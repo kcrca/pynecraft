@@ -739,6 +739,18 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('recipe give @s *', recipe(GIVE, s(), '*'))
         self.assertEqual('recipe give @s m:/a/b', recipe(GIVE, s(), 'm:/a/b'))
 
+    def test_ride(self):
+        with self.assertRaises(ValueError):
+            ride(s())
+
+        v = Parameters.version
+        try:
+            Parameters.version = Parameters.VERSION_1_19_4_X
+            self.assertEqual('ride @s mount @e[tag=vehicle]', ride(s()).mount(e().tag('vehicle')))
+            self.assertEqual('ride @s dismount', ride(s()).dismount())
+        finally:
+            Parameters.version = v
+
     def test_scoreboard(self):
         self.assertEqual('scoreboard objectives add obj food', scoreboard().objectives().add('obj', ScoreCriteria.FOOD))
         self.assertEqual('list', _ScoreboardObjectivesMod().list())
