@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import unittest
+from contextlib import contextmanager
+from distutils.version import Version
 
 from pynecraft import info
 from pynecraft.base import DARK_GREEN, GAMETIME, LT, THE_NETHER, d, days, r, seconds, ticks
@@ -13,6 +15,11 @@ from pynecraft.enums import BiomeId
 def commands(*cmds: str | Command) -> str:
     """Return a single multiline string for all the commands in the input."""
     return '\n'.join(str(x) for x in cmds)
+
+
+@contextmanager
+def version(v: Version):
+    cur_version = Parameters.version
 
 
 class TestCommands(unittest.TestCase):
@@ -42,6 +49,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('execute align xz', str(execute().align('xz')))
         with self.assertRaises(ValueError):
             execute().align('foo')
+
+    def test_execute_summon(self):
+        self.assertEqual('execute summon cow', str(execute().summon('cow')))
 
     def test_uuids(self):
         uuid1 = Uuid(-534823299, 1525499658, -1223897314, -535100990)
@@ -764,7 +774,7 @@ class TestCommands(unittest.TestCase):
         v = Parameters.version
         try:
             Parameters.version = Parameters.VERSION_1_19_4_X
-            self.assertEqual('ride @s mount @e[tag=vehicle]', ride(s()).mount(e().tag('vehicle')))
+            self.assertEqual('ride @s mount @e[tag=vehicle, limit=1]', ride(s()).mount(e().tag('vehicle').limit(1)))
             self.assertEqual('ride @s dismount', ride(s()).dismount())
         finally:
             Parameters.version = v

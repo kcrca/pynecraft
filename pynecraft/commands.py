@@ -53,6 +53,14 @@ def good_biome(biome: Biome, allow_not: bool = False) -> str:
         return str(biome)
     return good_resource(biome, allow_not=allow_not)
 
+def good_single(target: Target) -> TargetSpec | None:
+    orig = target
+    if target is None:
+        return None
+    target = good_target(target)
+    if not target.is_single():
+        raise ValueError(f'{str(orig)}: Not a single target')
+    return target
 
 def good_target(target: Target) -> TargetSpec | None:
     """Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or usernames,
@@ -404,6 +412,16 @@ MIN = '<'
 SWAP = '><'
 SCORE_OPERATIONS = [PLUS, MINUS, MULT, DIV, MOD, EQ, MIN, MAX, SWAP]
 
+ATTACKER = 'attacker'
+CONTROLLER = 'controller'
+LEASHER = 'leasher'
+OWNER = 'owner'
+PASSENGERS = 'passengers'
+TARGET = 'target'
+VEHICLE = 'vehicle'
+ORIGIN = 'origin'
+RELATIONSHIPS = [ATTACKER, CONTROLLER, LEASHER, OWNER, PASSENGERS, TARGET, VEHICLE, ORIGIN]
+
 PARTICLE_MODES = [FORCE, NORMAL]
 
 REPLACE = 'replace'
@@ -432,6 +450,8 @@ SUBTITLE = 'subtitle'
 ACTION_BAR = 'actionbar'
 TITLE_GIVEN = [TITLE, SUBTITLE, ACTION_BAR]
 TITLE_ACTIONS = [CLEAR, RESET] + TITLE_GIVEN
+
+INFINITE = 'infinite'
 
 RAIN = 'rain'
 THUNDER = 'thunder'
@@ -618,7 +638,9 @@ class _JsonTextClickEventAction(_JsonTextMod):
 
 class TargetSpec(Command, ABC):
     """Superclass of all target specification root classes."""
-    pass
+
+    def is_single(self):
+        return False
 
 
 class User(TargetSpec):
@@ -628,6 +650,9 @@ class User(TargetSpec):
         super().__init__()
         self.name = good_user(name)
         self._add(name)
+
+    def is_single(self):
+        return True
 
 
 class Uuid(TargetSpec):
@@ -640,6 +665,9 @@ class Uuid(TargetSpec):
         super().__init__()
         self._ints = (Uuid._signed_32(u1), Uuid._signed_32(u2), Uuid._signed_32(u3), Uuid._signed_32(u4))
         self._add(list(self._ints))
+
+    def is_single(self):
+        return True
 
     @classmethod
     def _signed_32(cls, value):
@@ -765,7 +793,11 @@ class Selector(TargetSpec):
         super().__init__()
         assert (create_key == Selector._create_key), 'Private __init__, use creation methods'
         self._selector = selector
+        self._single = selector in ('@s', '@p', '@r')
         self._args = {}
+
+    def is_single(self):
+        return self._single
 
     def __str__(self):
         if len(self._args) == 0:
@@ -864,7 +896,8 @@ class Selector(TargetSpec):
 
     @_fluent
     def limit(self, limit: int) -> Selector:
-        """Add a result limit to the selector."""
+        """Add a result count limit to the selector."""
+        self._single = limit == 1
         return self._unique_arg('limit', str(limit))
 
     @_fluent
@@ -990,6 +1023,11 @@ class _IfClause(Command):
         self._add('score', good_score(score))
         return self._start(_ScoreClause())
 
+    def loaded(self, pos: Position) -> _ExecuteMod:
+        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        self._add('loaded', *pos)
+        return self._start(_ExecuteMod())
+
 
 class _StoreClause(Command):
     @_fluent
@@ -1066,6 +1104,10 @@ class _ExecuteMod(Command):
         self._add('positioned as', good_target(target))
         return self
 
+    def positioned_over(self, resource: str) -> _ExecuteMod:
+        self.add('positioned over', good_resource(resource))
+        return self
+
     @_fluent
     def rotated(self, yaw: Angle, pitch: float) -> _ExecuteMod:
         self._add('rotated', good_yaw(yaw), good_pitch(pitch))
@@ -1090,6 +1132,20 @@ class _ExecuteMod(Command):
     def store(self, what: str) -> _StoreClause:
         self._add('store', _in_group(STORE_WHAT, what))
         return self._start(_StoreClause())
+
+    def dimension(self, dimension: str) -> _ExecuteMod:
+        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        self._add('dimension', dimension)
+        return self
+
+    def on(self, relationship: str) -> _ExecuteMod:
+        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        self._add(_in_group(RELATIONSHIPS, relationship))
+        return self
+
+    def summon(self, entity: EntityDef) -> _ExecuteMod:
+        self._add('summon', good_entity(entity))
+        return self
 
     @_fluent
     def run(self, cmd: str | Command | Commands, *other_cmds: str | Command | Commands) -> str | tuple[str]:
@@ -1467,15 +1523,20 @@ class _DebugMod(Command):
 
 class _EffectAction(Command):
     @_fluent
-    def give(self, target: Target, effect: Effect | str, duration: int = None, amplifier: int = None,
+    def give(self, target: Target, effect: Effect | str, duration: int | str = None, amplifier: int = None,
              hide_particles: bool = None, /) -> str:
         if amplifier is not None and duration is None:
             raise ValueError('must give seconds to use amplifier')
         if hide_particles is not None and amplifier is None:
             raise ValueError('must give amplifier to use hide_particles')
-        seconds_range = range(MAX_EFFECT_SECONDS + 1)
-        if duration is not None and duration not in seconds_range:
-            raise ValueError(f'{duration}: Not in range {seconds_range}')
+        if isinstance(duration, str):
+            parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+            if duration != INFINITE:
+                raise ValueError(f'{duration}: Invalid duration')
+        elif duration is not None:
+            seconds_range = range(MAX_EFFECT_SECONDS + 1)
+            if duration not in seconds_range:
+                raise ValueError(f'{duration}: Not in range {seconds_range}')
         self._add('give', good_target(target), Effect(effect))
         self._add_opt(duration, amplifier, _bool(hide_particles))
         return str(self)
@@ -1850,7 +1911,7 @@ class _PlaceMod(Command):
 
 class _RideMod(Command):
     def mount(self, target: Target) -> str:
-        self._add('mount', good_target(target))
+        self._add('mount', good_single(target))
         return str(self)
 
     def dismount(self) -> str:
@@ -2032,8 +2093,8 @@ class _TitleMod(Command):
         return self._add_str('actionbar', _quote(msg))
 
     @_fluent
-    def times(self, fade_in: int, stay: int, fade_out: int) -> str:
-        self._add('times', fade_in, stay, fade_out)
+    def times(self, fade_in: DurationDef, stay: DurationDef, fade_out: DurationDef) -> str:
+        self._add('times', good_duration(fade_in), good_duration(stay), good_duration(fade_out))
         return str(self)
 
 
@@ -2554,7 +2615,7 @@ def ride(target: Target) -> _RideMod:
     """Allows entities to mount or dismount other entities. """
     parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
     cmd = Command()
-    cmd._add('ride', target)
+    cmd._add('ride', good_single(target))
     return cmd._start(_RideMod())
 
 
@@ -2764,11 +2825,11 @@ def trigger(objective: str):
     return cmd._start(_TriggerMod())
 
 
-def weather(weather_name: str, duration: int = None) -> str:
+def weather(weather_name: str, duration: DurationDef = None) -> str:
     """Sets the weather."""
     cmd = Command()
     cmd._add('weather', _in_group(WEATHER_TYPES, weather_name))
-    cmd._add_opt(duration)
+    cmd._add_opt(good_duration(duration))
     return str(cmd)
 
 

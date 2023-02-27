@@ -448,7 +448,7 @@ def _pack_version_rep(spec: str):
     return ver_rep
 
 
-LATEST_PACK_VERSION = 10
+LATEST_PACK_VERSION = 12
 
 
 class DataPack:
