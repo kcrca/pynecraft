@@ -1024,7 +1024,7 @@ class _IfClause(Command):
         return self._start(_ScoreClause())
 
     def loaded(self, pos: Position) -> _ExecuteMod:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('loaded', *pos)
         return self._start(_ExecuteMod())
 
@@ -1134,12 +1134,12 @@ class _ExecuteMod(Command):
         return self._start(_StoreClause())
 
     def dimension(self, dimension: str) -> _ExecuteMod:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('dimension', dimension)
         return self
 
     def on(self, relationship: str) -> _ExecuteMod:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add(_in_group(RELATIONSHIPS, relationship))
         return self
 
@@ -1393,7 +1393,7 @@ class _FromOrValue(Command):
         return str(self)
 
     def string(self, data_target: DataTarget, nbt_path: str = None, start: int = None, end: int = None) -> str:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('string', data_target_str(data_target))
         self._add_opt(good_nbt_path(nbt_path), start, end)
         return str(self)
@@ -1530,7 +1530,7 @@ class _EffectAction(Command):
         if hide_particles is not None and amplifier is None:
             raise ValueError('must give amplifier to use hide_particles')
         if isinstance(duration, str):
-            parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+            parameters.check_version(GE, Parameters.VERSION_1_19_4)
             if duration != INFINITE:
                 raise ValueError(f'{duration}: Invalid duration')
         elif duration is not None:
@@ -2295,7 +2295,7 @@ def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Positi
     cmd = Command()
 
     if start_pos is None:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         return cmd._start(_CloneFromDimMod())
     if end_pos is None or dest_pos is None:
         raise ValueError('Must give all positions or none of them')
@@ -2307,7 +2307,7 @@ def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Positi
 
 def damage(target: Target, amount: int, type: str = None) -> _DamageMod:
     """Applies a set amount of damage to the specified entities."""
-    parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+    parameters.check_version(GE, Parameters.VERSION_1_19_4)
     cmd = Command()
     cmd._add('damage', good_target(target), amount)
     cmd._add_opt(good_resource(type))
@@ -2613,7 +2613,7 @@ def reload() -> str:
 
 def ride(target: Target) -> _RideMod:
     """Allows entities to mount or dismount other entities. """
-    parameters.check_version(GE, Parameters.VERSION_1_19_4_X)
+    parameters.check_version(GE, Parameters.VERSION_1_19_4)
     cmd = Command()
     cmd._add('ride', good_single(target))
     return cmd._start(_RideMod())

@@ -527,7 +527,7 @@ class TestCommands(unittest.TestCase):
 
         v = Parameters.version
         try:
-            Parameters.version = Parameters.VERSION_1_19_4_X
+            Parameters.version = Parameters.VERSION_1_19_4
             self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9',
                              str(clone().from_('overworld', (1, r(2), d(3)), (4, 5, 6)).to('the_end', (7, 8, 9))))
             self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9 replace',
@@ -557,7 +557,7 @@ class TestCommands(unittest.TestCase):
 
         v = Parameters.version
         try:
-            Parameters.version = Parameters.VERSION_1_19_4_X
+            Parameters.version = Parameters.VERSION_1_19_4
             self.assertEqual('damage @s 15', str(damage(s(), 15)))
             self.assertEqual('damage @s 15 a:b', str(damage(s(), 15, 'a:b')))
             self.assertEqual('damage @a 27 at 1 ~2 ^3', str(damage(a(), 27).at((1, r(2), d(3)))))
@@ -773,7 +773,7 @@ class TestCommands(unittest.TestCase):
 
         v = Parameters.version
         try:
-            Parameters.version = Parameters.VERSION_1_19_4_X
+            Parameters.version = Parameters.VERSION_1_19_4
             self.assertEqual('ride @s mount @e[tag=vehicle, limit=1]', ride(s()).mount(e().tag('vehicle').limit(1)))
             self.assertEqual('ride @s dismount', ride(s()).dismount())
         finally:
