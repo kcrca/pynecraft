@@ -155,6 +155,21 @@ Cave Air
 Cave Vines
 Chain
 Chain Command Block
+Cherry Button [x] / Cherry Button
+Cherry Door [x] / Cherry Door
+Cherry Fence Gate [x] / Cherry Fence Gate
+Cherry Fence [x] / Cherry Fence
+Cherry Hanging Sign [x] / Cherry Hanging Sign
+Cherry Leaves [x] / Cherry Leaves
+Cherry Log [x] / Cherry Log
+Cherry Planks [x] / Cherry Planks
+Cherry Pressure Plate [x] / Cherry Pressure Plate
+Cherry Sapling [x] / Cherry Sapling
+Cherry Sign [x] / Cherry Sign
+Cherry Slab [x] / Cherry Slab
+Cherry Stairs [x] / Cherry Stairs
+Cherry Trapdoor [x] / Cherry Trapdoor
+Cherry Wood [x] / Cherry Wood
 Chest
 Chipped Anvil
 Chiseled Bookshelf [x] / Chiseled Bookshelf
@@ -265,6 +280,7 @@ Dead Horn Coral Fan
 Dead Tube Coral
 Dead Tube Coral Block
 Dead Tube Coral Fan
+Decorated Pot [x] / Decorated Pot
 Deepslate
 Deepslate Brick Slab
 Deepslate Brick Stairs
@@ -564,6 +580,7 @@ Pink Carpet
 Pink Concrete
 Pink Concrete Powder
 Pink Glazed Terracotta
+Pink Petals [x] / Pink Petals
 Pink Shulker Box
 Pink Stained Glass
 Pink Stained Glass Pane
@@ -741,6 +758,8 @@ Stripped Acacia Log
 Stripped Acacia Wood
 Stripped Birch Log
 Stripped Birch Wood
+Stripped Cherry Log [x] / Stripped Cherry Log
+Stripped Cherry Wood [x] / Stripped Cherry Wood
 Stripped Crimson Hyphae
 Stripped Crimson Stem
 Stripped Dark Oak Log
@@ -759,6 +778,7 @@ Structure Block
 Structure Void
 Sugar Cane
 Sunflower
+Suspicious Sand [x] / Suspicious Sand
 Sweet Berry Bush
 TNT
 Tall Grass
@@ -767,6 +787,7 @@ Target
 Terracotta
 Tinted Glass
 Torch
+Torchflower [x] / Torchflower
 Trapped Chest
 Tripwire
 Tripwire Hook

@@ -30,15 +30,17 @@ must_give_items_by_id: dict[str, Item] = {}
 """Items that are not in the creative inventory, by ID."""
 
 
-def pre_1_20_filter(x):
-    return not re.search(r'(Bamboo|Camel|Hanging|Chiseled Book|Piglin Head)', x)
+def pre_1_19_4_filter(x):
+    return not re.search(
+        r'(Bamboo|Camel|Hanging|Chiseled Book|Piglin Head|Cherry|Pink Petal|Decorated|Supicious|Torchflower|Brush|Shard|Smithing|Trim\b)',
+        x)
 
 
 def __read_things(which: str, ctor):
     all_things = {}
     filter = lambda x: True
     if parameters.version < Parameters.VERSION_1_19_3_X:
-        filter = pre_1_20_filter
+        filter = pre_1_19_4_filter
     with resources.open_text(__package__, f'all_{which}.txt') as fp:
         for name in fp.readlines():
             name = name.strip()
@@ -434,6 +436,8 @@ shards = tuple(f'pottery_shard_{shard}' for shard in ('arms_up', 'archer', 'priz
 
 
 def _version_change_handler(_: Version, version: Version):
+    if version == Parameters.version:
+        return
     global woods
     if version >= Parameters.VERSION_1_19_3_X:
         if 'Bamboo' not in woods:

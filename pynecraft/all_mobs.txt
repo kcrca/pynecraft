@@ -51,6 +51,7 @@ Silverfish
 Skeleton
 Skeleton Horse
 Slime
+Sniffer
 Snow Golem
 Spider
 Squid

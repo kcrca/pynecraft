@@ -3,7 +3,9 @@ Acacia Boat with Chest / Acacia Chest Boat
 Allay Spawn Egg
 Amethyst Shard
 Apple
+Archer Pottery Shard / Pottery Shard Archer
 Armor Stand
+Arms Up Pottery Shard / Pottery Shard Arms Up
 Arrow
 Axolotl Spawn Egg
 Baked Potato
@@ -33,6 +35,7 @@ Bowl
 Bread
 Brick
 Brown Dye
+Brush
 Bucket
 Bucket of Axolotl / Axolotl Bucket
 Bucket of Cod / Cod Bucket
@@ -51,11 +54,14 @@ Chainmail Chestplate
 Chainmail Helmet
 Chainmail Leggings
 Charcoal
+Cherry Boat
+Cherry Boat with Chest / Cherry Chest Boat
 Chicken Spawn Egg
 Chorus Fruit
 Clay Ball
 Clock
 Coal
+Coast Armor Trim / Coast Armor Trim Smithing Template
 Cocoa Beans
 Cod Spawn Egg
 Command Block
@@ -94,6 +100,7 @@ Dragon Egg
 Dragon's Breath / Dragon Breath
 Dried Kelp
 Drowned Spawn Egg
+Dune Armor Trim / Dune Armor Trim Smithing Template
 Echo Shard
 Egg
 Elder Guardian Spawn Egg
@@ -109,6 +116,7 @@ Ender Pearl
 Enderman Spawn Egg
 Endermite Spawn Egg
 Evoker Spawn Egg
+Eye Armor Trim / Eye Armor Trim Smithing Template
 Eye of Ender / Ender Eye
 Feather
 Fermented Spider Eye
@@ -244,6 +252,7 @@ Netherite Pickaxe
 Netherite Scrap
 Netherite Shovel
 Netherite Sword
+Netherite Upgrade / Netherite Upgrade Smithing Template
 Oak Boat
 Oak Boat with Chest / Oak Chest Boat
 Ocelot Spawn Egg
@@ -266,6 +275,7 @@ Potato
 Powder Snow Bucket
 Prismarine Crystals
 Prismarine Shard
+Prize Pottery Shard / Pottery Shard Prize
 Pufferfish
 Pufferfish Spawn Egg
 Pumpkin Pie
@@ -289,10 +299,12 @@ Raw Salmon / Salmon
 Recovery Compass
 Red Dye
 Redstone Dust / Redstone
+Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
 Salmon Spawn Egg
 Scute
+Sentry Armor Trim / Sentry Armor Trim Smithing Template
 Shears
 Sheep Spawn Egg
 Shield
@@ -302,8 +314,10 @@ Silverfish Spawn Egg
 Skeleton Horse Spawn Egg
 Skeleton Spawn Egg
 Skull / Skull Banner Pattern
+Skull Pottery Shard / Pottery Shard Skull
 Slime Spawn Egg
 Slimeball / Slime Ball
+Sniffer Spawn Egg
 Snout / Piglin Banner Pattern
 Snow Golem Spawn Egg
 Snowball
@@ -311,6 +325,7 @@ Spawner
 Spectral Arrow
 Spider Eye
 Spider Spawn Egg
+Spire Armor Trim / Spire Armor Trim Smithing Template
 Splash Potion
 Spruce Boat
 Spruce Boat with Chest / Spruce Chest Boat
@@ -333,7 +348,9 @@ Suspicious Stew
 Sweet Berries
 Tadpole Spawn Egg
 Thing / Mojang Banner Pattern
+Tide Armor Trim / Tide Armor Trim Smithing Template
 Tipped Arrow
+Torchflower Seeds
 Totem of Undying
 Trader Llama Spawn Egg
 Trident
@@ -341,16 +358,19 @@ Tropical Fish
 Tropical Fish Spawn Egg
 Turtle Shell / Turtle Helmet
 Turtle Spawn Egg
+Vex Armor Trim / Vex Armor Trim Smithing Template
 Vex Spawn Egg
 Villager Spawn Egg
 Vindicator Spawn Egg
 Wandering Trader Spawn Egg
+Ward Armor Trim / Ward Armor Trim Smithing Template
 Warden Spawn Egg
 Warped Fungus on a Stick
 Water Bucket
 Wheat
 Wheat Seeds
 White Dye
+Wild Armor Trim / Wild Armor Trim Smithing Template
 Witch Spawn Egg
 Wither Skeleton Spawn Egg
 Wither Spawn Egg
