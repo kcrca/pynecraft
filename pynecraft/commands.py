@@ -53,6 +53,7 @@ def good_biome(biome: Biome, allow_not: bool = False) -> str:
         return str(biome)
     return good_resource(biome, allow_not=allow_not)
 
+
 def good_single(target: Target) -> TargetSpec | None:
     orig = target
     if target is None:
@@ -61,6 +62,7 @@ def good_single(target: Target) -> TargetSpec | None:
     if not target.is_single():
         raise ValueError(f'{str(orig)}: Not a single target')
     return target
+
 
 def good_target(target: Target) -> TargetSpec | None:
     """Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or usernames,
@@ -1105,7 +1107,7 @@ class _ExecuteMod(Command):
         return self
 
     def positioned_over(self, resource: str) -> _ExecuteMod:
-        self.add('positioned over', good_resource(resource))
+        self._add('positioned over', good_resource(resource))
         return self
 
     @_fluent
@@ -1355,9 +1357,10 @@ class _CloneClause(Command):
         return str(self)
 
 
+# noinspection PyAttributeOutsideInit
 class _CloneFromDimMod(Command):
     def from_(self, dimension: str, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
-        self._dimesion = dimension
+        self.dimension = dimension
         self._start_pos = start_pos
         self._end_pos = end_pos
         return _CloneToDimMod(self)
@@ -1371,7 +1374,7 @@ class _CloneToDimMod(Command):
     def to(self, dimension: str, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
         f = self._from_
         dest_pos = _clone_dest(f._start_pos, f._end_pos, dest_pos, dest_type)
-        self._add('clone', 'from', f._dimesion, *f._start_pos, *f._end_pos, 'to', dimension, *dest_pos)
+        self._add('clone', 'from', f.dimension, *f._start_pos, *f._end_pos, 'to', dimension, *dest_pos)
         return self._start(_CloneClause())
 
 
@@ -1559,7 +1562,9 @@ class _ExperienceMod(Command):
         return str(self)
 
     @_fluent
-    def set(self, target: Target, amount: int, which: str) -> str:
+    def set(self, target: Target, amount: int, which: str = None) -> str:
+        if which is None:
+            which = POINTS
         self._add('set', good_target(target), amount, _in_group(EXPERIENCE_POINTS, which))
         return str(self)
 

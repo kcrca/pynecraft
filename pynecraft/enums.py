@@ -1,4 +1,4 @@
-"""Various enums for varoius groups of canstants. Most are generated automatically from the web pages at
+"""Various enums for various groups of constants. Most are generated automatically from the web pages at
 minecraft.fandom.com."""
 import enum
 from enum import Enum
