@@ -441,6 +441,12 @@ ALWAYS = 'always'
 NAMETAG_VISIBILITY_VALUES = [NEVER, HIDE_FOR_OTHER_TEAMS, HIDE_FOR_OWN_TEAM, ALWAYS]
 DEATH_MESSAGE_VISIBILITY_VALUES = NAMETAG_VISIBILITY_VALUES
 
+WORLD_SURFACE = 'world_surface'
+MOTION_BLOCKING = 'motion_blocking'
+MOTION_BLOCKING_NO_LEAVES = 'motion_blocking_no_leaves'
+OCEAN_FLOOR = 'ocean_floor'
+HEIGHTMAP = [WORLD_SURFACE, MOTION_BLOCKING, MOTION_BLOCKING_NO_LEAVES, OCEAN_FLOOR]
+
 PUSH_OTHER_TEAMS = 'pushOtherTeams'
 PUSH_OWN_TEAM = 'pushOwnTeam'
 COLLISION_RULE_VALUES = [NEVER, PUSH_OTHER_TEAMS, PUSH_OWN_TEAM, ALWAYS]
@@ -1106,8 +1112,8 @@ class _ExecuteMod(Command):
         self._add('positioned as', good_target(target))
         return self
 
-    def positioned_over(self, resource: str) -> _ExecuteMod:
-        self._add('positioned over', good_resource(resource))
+    def positioned_over(self, heightmap: str) -> _ExecuteMod:
+        self._add('positioned over', _in_group(HEIGHTMAP, heightmap))
         return self
 
     @_fluent
