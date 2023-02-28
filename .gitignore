@@ -12,8 +12,6 @@
 scripts/functions
 /venv
 logs/
-.hg
-.hgignore
 /dist/
 /pynecraft/.??*
 .coverage
