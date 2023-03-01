@@ -628,20 +628,20 @@ class TestCommands(unittest.TestCase):
             parameters.version = orig_version
 
     def test_data_mod(self):
-        self.assertEqual('get entity @a', str(_DataMod().get(a())))
-        self.assertEqual('merge entity @a {}', str(_DataMod().merge(a(), {})))
-        self.assertEqual('modify entity @a a.b', str(_DataMod().modify(a(), 'a.b')))
-        self.assertEqual('modify entity @a a.b append from storage m:b name',
-                         str(_DataMod().modify(a(), 'a.b').append().from_('m:b', 'name')))
-        self.assertEqual('modify entity @a a.b insert 3 value "hi there"',
-                         str(_DataMod().modify(a(), 'a.b').insert(3).value('hi there')))
-        self.assertEqual('modify entity @a x merge value "hi there"',
-                         str(_DataMod().modify(a(), 'x').merge().value('hi there')))
-        self.assertEqual('modify entity @a x prepend value "hi there"',
-                         str(_DataMod().modify(a(), 'x').prepend().value('hi there')))
-        self.assertEqual('modify entity @a x set value "hi there"',
-                         str(_DataMod().modify(a(), 'x').set().value('hi there')))
-        self.assertEqual('remove entity @a x', str(_DataMod().remove(a(), 'x')))
+        self.assertEqual('get entity @s', str(_DataMod().get(s())))
+        self.assertEqual('merge entity @s {}', str(_DataMod().merge(s(), {})))
+        self.assertEqual('modify entity @s a.b', str(_DataMod().modify(s(), 'a.b')))
+        self.assertEqual('modify entity @s a.b append from storage m:b name',
+                         str(_DataMod().modify(s(), 'a.b').append().from_('m:b', 'name')))
+        self.assertEqual('modify entity @s a.b insert 3 value "hi there"',
+                         str(_DataMod().modify(s(), 'a.b').insert(3).value('hi there')))
+        self.assertEqual('modify entity @s x merge value "hi there"',
+                         str(_DataMod().modify(s(), 'x').merge().value('hi there')))
+        self.assertEqual('modify entity @s x prepend value "hi there"',
+                         str(_DataMod().modify(s(), 'x').prepend().value('hi there')))
+        self.assertEqual('modify entity @s x set value "hi there"',
+                         str(_DataMod().modify(s(), 'x').set().value('hi there')))
+        self.assertEqual('remove entity @s x', str(_DataMod().remove(s(), 'x')))
         with self.assertRaises(ValueError):
             _DataMod().get((1, r(2), d(3)), None, 2.2)
 
@@ -725,7 +725,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('locate poi foo', locate(POI, 'foo'))
 
     def test_loot_command(self):
-        self.assertEqual('loot give @a fish m:/a/b 1 ~2 ^3 stone', loot().give(a()).fish('m:/a/b', (1, r(2), d(3)),
+        self.assertEqual('loot give @s fish m:/a/b 1 ~2 ^3 stone', loot().give(s()).fish('m:/a/b', (1, r(2), d(3)),
                                                                                          'stone'))
         self.assertEqual('loot insert 1 ~2 ^3 loot m:/a/b', loot().insert((1, r(2), d(3))).loot('m:/a/b'))
         self.assertEqual('loot spawn 1 ~2 ^3 kill @p', loot().spawn((1, r(2), d(3))).kill(p()))

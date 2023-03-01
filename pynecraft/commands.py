@@ -96,12 +96,21 @@ def good_data_target(target: DataTarget | None) -> Iterable[any] | None:
         object: the result of good_position for 'block', the TargetSpec input for 'entity', the result of
         good_resource_path() on a string. A None argument returns None.
     """
+    return _good_data_target(target, good_target)
+
+
+def good_data_single(target: DataTarget | None) -> Iterable[any] | None:
+    """Like good_data_target, but an entity target must be a single target"""
+    return _good_data_target(target, good_single)
+
+
+def _good_data_target(target: DataTarget | None, checker: Callable) -> Iterable[any] | None:
     if target is None:
         return None
     if isinstance(target, (tuple, list)):
         return 'block', *good_position(target)
     if isinstance(target, TargetSpec):
-        return 'entity', target
+        return 'entity', checker(target)
     if isinstance(target, str):
         return 'storage', good_resource_path(target)
     raise ValueError(f'{target}: Invalid data target (must be position, entity selector, or resource name)')
@@ -113,7 +122,16 @@ def data_target_str(data_target: DataTarget) -> str:
     :param data_target: The data target.
     :return: A single string, such as 'block 1 2 3'.
     """
-    return ' '.join(str(x) for x in good_data_target(data_target))
+    return _data_target_str(data_target, good_data_target)
+
+
+def data_single_str(data_target: DataTarget) -> str:
+    """Like data_target_str(), but requires a single target."""
+    return _data_target_str(data_target, good_data_single)
+
+
+def _data_target_str(data_target: DataTarget, checker: Callable) -> str:
+    return ' '.join(str(x) for x in checker(data_target))
 
 
 def good_position(pos: Position) -> Position:
@@ -1391,7 +1409,7 @@ class _End(Command):
 class _FromOrValue(Command):
     @_fluent
     def from_(self, data_target: DataTarget, nbt_path: str) -> str:
-        self._add('from', data_target_str(data_target), good_nbt_path(nbt_path))
+        self._add('from', data_single_str(data_target), good_nbt_path(nbt_path))
         return str(self)
 
     @_fluent
@@ -1403,7 +1421,7 @@ class _FromOrValue(Command):
 
     def string(self, data_target: DataTarget, nbt_path: str = None, start: int = None, end: int = None) -> str:
         parameters.check_version(GE, Parameters.VERSION_1_19_4)
-        self._add('string', data_target_str(data_target))
+        self._add('string', data_single_str(data_target))
         self._add_opt(good_nbt_path(nbt_path), start, end)
         return str(self)
 
@@ -1454,7 +1472,7 @@ class _DataModifyClause(Command):
 class _DataMod(Command):
     @_fluent
     def get(self, data_target: DataTarget, nbt_path: str = None, scale: float = None, /) -> str:
-        self._add('get', data_target_str(data_target))
+        self._add('get', data_single_str(data_target))
         if not nbt_path and scale is not None:
             raise ValueError('Must give dir to use scale')
         self._add_opt(nbt_path, scale)
@@ -1462,17 +1480,17 @@ class _DataMod(Command):
 
     @_fluent
     def merge(self, data_target: DataTarget, nbt: NbtDef) -> str:
-        self._add('merge', data_target_str(data_target), Nbt.as_nbt(nbt))
+        self._add('merge', data_single_str(data_target), Nbt.as_nbt(nbt))
         return str(self)
 
     @_fluent
     def modify(self, data_target: DataTarget, nbt_path: str) -> _DataModifyClause:
-        self._add('modify', data_target_str(data_target), nbt_path)
+        self._add('modify', data_single_str(data_target), nbt_path)
         return self._start(_DataModifyClause())
 
     @_fluent
     def remove(self, data_target: DataTarget, nbt_path: str) -> str:
-        self._add('remove', data_target_str(data_target), nbt_path)
+        self._add('remove', data_single_str(data_target), nbt_path)
         return str(self)
 
 
@@ -1576,7 +1594,7 @@ class _ExperienceMod(Command):
 
     @_fluent
     def query(self, target: Target, which: str) -> str:
-        self._add('query', good_target(target), _in_group(EXPERIENCE_POINTS, which))
+        self._add('query', good_single(target), _in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
 
@@ -1750,7 +1768,7 @@ class _LootReplaceTarget(Command):
 class _LootTarget(Command):
     @_fluent
     def give(self, target: Target) -> _LootSource:
-        self._add('give', good_target(target))
+        self._add('give', good_single(target))
         return self._start(_LootSource())
 
     @_fluent
@@ -2248,7 +2266,7 @@ def advancement(action: str, target: Selector) -> _AdvancementMod:
 def attribute(target: Target, attribute: str) -> _AttributeMod:
     """Queries, adds, removes, or sets an entity attribute."""
     cmd = Command()
-    cmd._add('attribute', good_target(target), good_resource(attribute))
+    cmd._add('attribute', good_single(target), good_resource(attribute))
     return cmd._start(_AttributeMod())
 
 
@@ -2699,7 +2717,7 @@ def spawnpoint(target: Target = None, pos: Position = None, yaw: Angle | str = N
 def spectate(target: Target = None, watched: Target = None) -> str:
     """Make one player in spectator mode spectate an entity."""
     cmd = Command()
-    cmd._add('spectate', good_target(target))
+    cmd._add('spectate', good_single(target))
     cmd._add_opt(good_target(watched))
     return str(cmd)
 
@@ -2768,7 +2786,10 @@ def teleport(who_or_to: Target | Position, to: Target | Position = None,
     cmd = Command()
     cmd._add('tp')
     try:
-        cmd._add(good_target(who_or_to))
+        if to is None:
+            cmd._add(good_single(who_or_to))
+        else:
+            cmd._add(good_target(who_or_to))
     except ValueError:
         cmd._add(*good_position(who_or_to))
     if to is None:
@@ -2776,7 +2797,7 @@ def teleport(who_or_to: Target | Position, to: Target | Position = None,
             raise ValueError('Rotation not allowed without two arguments')
     else:
         try:
-            cmd._add(good_target(to))
+            cmd._add(good_single(to))
         except ValueError:
             cmd._add(*good_position(to))
         if rotation is not None:
