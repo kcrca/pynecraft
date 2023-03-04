@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from collections import UserDict
 from enum import Enum
-from importlib import resources
+from importlib.resources import files
 
 from packaging.version import Version
 
@@ -41,7 +41,7 @@ def __read_things(which: str, ctor):
     filter = lambda x: True
     if parameters.version < Parameters.VERSION_1_19_3_X:
         filter = pre_1_19_4_filter
-    with resources.open_text(__package__, f'all_{which}.txt') as fp:
+    with (files(__package__).joinpath(f'all_{which}.txt')).open() as fp:
         for name in fp.readlines():
             name = name.strip()
             if not name or name[0] == '#':
