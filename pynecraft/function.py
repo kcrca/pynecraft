@@ -248,7 +248,10 @@ class Loop(Function):
     class Step:
         """Data about a specific step in the iteration."""
         i: int
+        stage: int
+        count: int
         elem: any
+        last: any
         loop: Loop
 
     class TestControls:
@@ -411,8 +414,12 @@ class Loop(Function):
             assert not self.looped, 'loop() invoked more than once'
 
         items = _to_list(items)
-        if bounce and len(items) > 2:
+        last = items[-1] if len(items) > 0 else None
+        count = len(items)
+        stages = tuple(range(count))
+        if bounce and count > 2:
             items = items + list(reversed(items[1:-1]))
+            stages = stages + tuple(reversed(stages[1:-1]))
 
         self.setup = self._setup_for(len(items))
         self._add_to = []
@@ -420,7 +427,7 @@ class Loop(Function):
         self._iterations = []
         if body_func:
             for i, elem in enumerate(items):
-                once = lines(body_func(Loop.Step(i, elem, self)))
+                once = lines(body_func(Loop.Step(i, stages[i], count, elem, last, self)))
                 self._iterations.append(len(once))
                 prefix = str(self._prefix_for(i)) + ' '
                 for line in lines(once):
