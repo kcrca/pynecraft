@@ -1047,7 +1047,7 @@ class Facing:
 
 _facing = {NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2), EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5),
            SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3), WEST: Facing(WEST, (-1, 0, 0), (90.0, 0.0), 4),
-           UP: Facing(UP, (0, 1, 0), (0.0, 90.0), 1), DOWN: Facing(DOWN, (0, -1, 0), (0.0, 270.0), 0)}
+           UP: Facing(UP, (0, 1, 0), (0.0, 270.0), 1), DOWN: Facing(DOWN, (0, -1, 0), (0.0, 90.0), 0)}
 _facing[ROTATION_0] = _facing[SOUTH]
 _facing[ROTATION_90] = _facing[EAST]
 _facing[ROTATION_180] = _facing[NORTH]
