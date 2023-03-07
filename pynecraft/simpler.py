@@ -6,7 +6,8 @@ from typing import Callable, Iterable, Mapping, Tuple, Union
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
     _to_list, d, good_facing, r, to_id
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignText, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock
+    SignText, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock, Target, execute, data, s, \
+    e
 from .enums import Pattern
 
 ARMORER = 'Armorer'
@@ -244,6 +245,38 @@ class Book:
         self._cur_page = cur_page
         self._pages.pop()
         return jt
+
+
+class TextDisplay(Entity):
+    """An object that represents a text_display entity."""
+
+    def __init__(self, text: str | None, nbt: NbtDef = None):
+        super().__init__('text_display', nbt)
+        if text is not None:
+            self.merge_nbt({'text': JsonText.text(text)})
+        self._tags = []
+
+    def tag(self, *tags: str) -> Entity:
+        self._tags.extend(tags)
+        return super().tag(*tags)
+
+    def scale(self, value: float) -> TextDisplay:
+        self.merge_nbt({'transformation': {'scale': [value, value, value]}})
+        return self
+
+    def transform(self, target: Target) -> str | None:
+        if 'transformation' not in self.nbt:
+            return None
+        return execute().as_(target).run(data().merge(s(), {'transformation': self.nbt['transformation']}))
+
+    def summon(self, pos: Position, nbt=None, facing: str = None) -> Tuple[str, ...]:
+        summon = super().summon(pos, nbt, facing)
+        if len(self._tags) == 0:
+            return (summon,)
+        return (
+            summon,
+            self.transform(e().tag(*self._tags))
+        )
 
 
 class Item(Entity):
