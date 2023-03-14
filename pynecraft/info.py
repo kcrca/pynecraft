@@ -223,7 +223,7 @@ class Horse(Entity):
         self.markings = Horse.Markings(markings)
         self.variant = int(color) + int(markings)
         super().__init__('horse', name=name, nbt={'Variant': self.variant})
-        self.tag = f'{to_id(name)}_horses'
+        self.tag_name = f'{to_id(name)}_horses'
 
 
 horses = (
