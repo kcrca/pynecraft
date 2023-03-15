@@ -142,7 +142,8 @@ class Sign(Block):
             self.nbt['Color'] = _in_group(COLORS, color)
         return self
 
-    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None) -> Commands:
+    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
+              clear_out=True) -> Commands | Command:
         """
         Place the sign.
 
@@ -157,10 +158,13 @@ class Sign(Block):
             self.merge_state({'waterlogged': True})
         if nbt:
             self.merge_nbt(nbt)
-        return (
-            setblock(pos, 'water' if water else 'air'),
-            setblock(pos, self),
-        )
+        if clear_out:
+            return (
+                setblock(pos, 'water' if water else 'air'),
+                setblock(pos, self),
+            )
+        else:
+            return setblock(pos, self)
 
     def _orientation(self, facing):
         self.merge_state({'rotation': good_facing(facing).sign_rotation})
@@ -175,9 +179,9 @@ class WallSign(Sign):
     def _orientation(self, facing):
         self.merge_state({'facing': good_facing(facing).name})
 
-    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None) -> Commands:
+    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None, clear_out=True) -> Commands:
         """When placing a wall sign, the orientations are different, but also can be found in good_facing()."""
-        return super().place(pos, facing, water, nbt)
+        return super().place(pos, facing, water, nbt, clear_out)
 
 
 class Book:

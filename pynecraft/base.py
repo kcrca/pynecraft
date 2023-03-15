@@ -1044,6 +1044,28 @@ class Facing:
         """Returns the motion vector scaled by a value."""
         return self.dx * scale, self.dy * scale, self.dz * scale
 
+    def move(self, start: Tuple[Coord, Coord, Coord], distance: int) -> Tuple[Coord, Coord, Coord]:
+        return (
+            start[0] + distance * self.delta[0],
+            start[1] + distance * self.delta[1],
+            start[2] + distance * self.delta[2]
+        )
+
+    def turn(self, rotated_by: int):
+        """
+        Returns a Facing that is this one rotating by the specified amount. Must be a multiple of 90 or one of the
+        ROTATION constants.
+
+        For example ``turn(NORTH, ROTATION_90)`` is ``EAST``. This allows your code to use relative operations, such as
+        placing a sign to the right of an entity, no matter which way it is facing."""
+        rot = int(_in_group(ROTATIONS, rotated_by) / 90)
+        if self.name in DIRECTIONS:
+            rotation_aid = DIRECTIONS + DIRECTIONS
+        else:
+            rotation_aid = SIGN_DIRECTIONS + SIGN_DIRECTIONS
+            rot *= 4
+        return good_facing(rotation_aid[rotation_aid.index(self.name) + rot])
+
 
 _facing = {NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2), EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5),
            SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3), WEST: Facing(WEST, (-1, 0, 0), (90.0, 0.0), 4),
@@ -1084,21 +1106,12 @@ def _in_group(group: list | tuple, name: str | int | None, allow_none=True):
     return name
 
 
-def rotated_facing(facing: FacingDef, rotated_by: int = None) -> Facing:
-    """Returns the value of facing() after rotating by the specified amount.
+def rotated_facing(facing: FacingDef, rotated_by: int) -> Facing:
+    """Returns the value of turn(rotated_by) invoked on facing, or on good_facing(facing).
 
     For example ``rotated_Facing(NORTH, ROTATION_90)`` is ``EAST``. This allows your code to use relative operations, such as
     placing a sign to the right of an entity, no matter which way it is facing."""
-    if rotated_by is not None:
-        rot = int(_in_group(ROTATIONS, rotated_by) / 90)
-        facing = good_facing(facing)
-        if facing.name in DIRECTIONS:
-            rotation_aid = DIRECTIONS + DIRECTIONS
-        else:
-            rotation_aid = SIGN_DIRECTIONS + SIGN_DIRECTIONS
-            rot *= 4
-        facing = good_facing(rotation_aid[rotation_aid.index(facing.name) + rot])
-    return good_facing(facing)
+    return good_facing(facing).turn(rotated_by)
 
 
 def good_facing(facing: FacingDef) -> Facing:
