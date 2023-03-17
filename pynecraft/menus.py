@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import FacingDef, good_facing, Position, Facing, ROTATION_270, DOWN
+from pynecraft.base import FacingDef, good_facing, Position, Facing, ROTATION_270, DOWN, r
 from pynecraft.commands import fill, BlockDef, function, execute, Selector, e
 from pynecraft.function import Function
 from pynecraft.simpler import WallSign
@@ -15,6 +15,7 @@ class Menu:
         self._home = home if isinstance(home, Selector) else e().tag(home).limit(1)
         if not self._home.is_single():
             raise ValueError(f'{home}: Selecting multiple not allowed')
+        self._run_at = execute().at(self._home).run
         self._function_factory = function_factory
         self._action = action
         self._wood = wood
@@ -93,13 +94,18 @@ class Placement:
             sign = entry._menu_sign(submenu_pos, self.facing)
         else:
             text = self.menu._to_text(entry)
-            sign = WallSign(text, self.commands(entry), wood=self.menu._wood)
+            sign = WallSign(text, self.commands(entry, text), wood=self.menu._wood)
         yield sign.place(self.placing.move(self.pos, offset), self.facing, clear=False)
 
-    def commands(self, entry) -> Tuple[str, ...]:
-        return execute().at(self.menu._home).run(
+    def commands(self, entry, text) -> Tuple[str, ...]:
+        action = self.menu._action(entry)
+        sel_sign = WallSign(text, (
+            action
+        ), self.menu._selected_wood)
+        return tuple(self.menu._run_at(
             function(self.menu.func('init')),
-            self.menu._action(entry))
+            action)
+        ) + (sel_sign.place(r(0, 0, 0), self.facing, clear=False),)
 
 
 class Submenu(Menu):
@@ -130,5 +136,13 @@ class Submenu(Menu):
         return self.parent._funcs()
 
     def _menu_sign(self, pos, facing):
-        return WallSign(self.text, (
-            execute().at(self._home).run(function(self.func('init')), )))
+        return WallSign(self.text,
+                        execute().at(self._home).run(
+                            function(self.parent.func('init')),
+                            function(self.func('init')),
+                        ) + (
+                            WallSign(self.text, (
+                                execute().at(self._home).run(function(self.parent.func('init'))),
+                            ), wood=self._selected_wood).place(r(0, 0, 0), facing, clear=False),
+                        ),
+                        self._wood)
