@@ -196,6 +196,13 @@ def _not_ify(value: str | Iterable[str]) -> str | Iterable[str]:
         return tuple((_not_ify(x) for x in value))
 
 
+def string(obj):
+    """Returns the string value of obj. Most significantly, this uses str on iterable elements instead of repr."""
+    if isinstance(obj, Iterable) and not isinstance(obj, str):
+        return '(' + ', '.join(str(o) for o in obj) + ')'
+    return str(obj)
+
+
 def _ensure_size(lst: Iterable[any, ...], size: int, fill=None) -> list:
     lst = _to_list(lst)
     if len(lst) > size:
@@ -225,7 +232,7 @@ def good_resource(name: str | None, allow_namespace=True, allow_not=False) -> st
     """Checks if the argument is a valid resource name, or None. If not, it raises ValueError.
 
     :param name: The (probable) resource name.
-    :param allow_namespace: Whether to allow a resource prefix such as 'minecraft:'..
+    :param allow_namespace: Whether to allow a resource prefix such as 'minecraft:'...
     :param allow_not: Whether to allow a '!' before the name.
     :return: the input value.
     """
@@ -391,6 +398,12 @@ def good_pitch(pitch: Angle | None) -> Angle | None:
     return pitch
 
 
+def good_version(version: Version | str) -> Version:
+    if isinstance(version, Version):
+        return version
+    return Version(version)
+
+
 class JsonHolder(ABC):
     """Base class for a holder of JSON."""
 
@@ -416,10 +429,10 @@ class _JsonEncoder(JSONEncoder):
 _VALID_NBT_ARRAY_TYPES = ('I', 'L', 'B')
 
 
-def _good_array_type(type):
-    if not type.upper() in _VALID_NBT_ARRAY_TYPES:
-        raise ValueError(f'{type}: Must be one of {_VALID_NBT_ARRAY_TYPES}')
-    return type.upper()
+def _good_array_type(elem_type):
+    if not elem_type.upper() in _VALID_NBT_ARRAY_TYPES:
+        raise ValueError(f'{elem_type}: Must be one of {_VALID_NBT_ARRAY_TYPES}')
+    return elem_type.upper()
 
 
 class Nbt(UserDict):
@@ -441,6 +454,7 @@ class Nbt(UserDict):
     """Whether to output keys in sorted order."""
 
     class TypedArray(UserList):
+        # noinspection PyShadowingBuiltins
         def __init__(self, type: str, init_list=None):
             super().__init__(init_list)
             self.type = _good_array_type(type)
@@ -654,12 +668,6 @@ class _ToMinecraftText(HTMLParser):
         return json.dumps(self.out)
 
 
-def good_version(version: Version | str) -> Version:
-    if isinstance(version, Version):
-        return version
-    return Version(version)
-
-
 class Parameters:
     """Manage general parameters. Use the 'parameters' variable to adjust the parameters."""
     VERSION_1_19_3 = Version('1.19.3')
@@ -700,7 +708,7 @@ class Parameters:
 
     @property
     def version(self) -> Version:
-        """The minecraft version commands are being generated for. By default this is FIRST_VERSION, but
+        """The minecraft version commands are being generated for. By default, this is FIRST_VERSION, but
         can be set to any value."""
         return self._version
 
@@ -755,6 +763,7 @@ def to_name(id: str) -> str:
     return id.replace('_', ' ').title()
 
 
+# noinspection PyShadowingNames
 @functools.total_ordering
 class RelCoord:
     """A relative coordinate. These are shown in minecraft commands with special annotation, such as '~1' or '^2'."""
@@ -842,8 +851,8 @@ class RelCoord:
         return cls.merge(lambda v1, v2: v1 - v2, v1, v2)
 
     @staticmethod
-    def merge(op: Callable[[Coord, Coord], Coord], v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> \
-            tuple[Coord, ...] | None:
+    def merge(op: Callable[[Coord, Coord], Coord], v1: Sequence[Coord, ...] | None,
+              v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
         """
         Returns the result of invoking op on each element of the vectors. If either vector is None, the result is the
         other.
@@ -1109,8 +1118,8 @@ def _in_group(group: list | tuple, name: str | int | None, allow_none=True):
 def rotated_facing(facing: FacingDef, rotated_by: int) -> Facing:
     """Returns the value of turn(rotated_by) invoked on facing, or on good_facing(facing).
 
-    For example ``rotated_Facing(NORTH, ROTATION_90)`` is ``EAST``. This allows your code to use relative operations, such as
-    placing a sign to the right of an entity, no matter which way it is facing."""
+    For example ``rotated_Facing(NORTH, ROTATION_90)`` is ``EAST``. This allows your code to use relative operations,
+    such as placing a sign to the right of an entity, no matter which way it is facing."""
     return good_facing(facing).turn(rotated_by)
 
 
