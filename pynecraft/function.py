@@ -73,8 +73,9 @@ def _write_json(values: Mapping, path: Path):
 
 class Function:
     """A class that represents a function."""
+    SUFFIX = '.mcfunction'
+
     _LOAD_INFO = '# __internal_load: '
-    _FUNC_SUFFIX = '.mcfunction'
 
     def __init__(self, name: str, base_name: str = None):
         self.name = good_function_name(name)
@@ -109,10 +110,10 @@ class Function:
     def load(cls, path: Path | str) -> Function:
         if isinstance(path, str):
             path = Path(path)
-        if path.suffix != Function._FUNC_SUFFIX:
+        if path.suffix != Function.SUFFIX:
             if path.suffix:
                 raise ValueError(f'{path}: Invalid function suffix')
-            path = path.with_suffix(Function._FUNC_SUFFIX)
+            path = path.with_suffix(Function.SUFFIX)
         with open(path) as fp:
             lines = fp.readlines()
             if len(lines) == 0 or not lines[-1].startswith(Function._LOAD_INFO):
@@ -160,10 +161,10 @@ class Function:
         if path.is_dir():
             path = path / self.name
         if path.suffix:
-            if path.suffix != Function._FUNC_SUFFIX:
-                raise ValueError(f'{path.suffix}: Suffix must be absent or "{Function._FUNC_SUFFIX}"')
+            if path.suffix != Function.SUFFIX:
+                raise ValueError(f'{path.suffix}: Suffix must be absent or "{Function.SUFFIX}"')
         else:
-            path = path.with_suffix(Function._FUNC_SUFFIX)
+            path = path.with_suffix(Function.SUFFIX)
         return path
 
     def add(self: T, *cmds: [Command | str]) -> T:
@@ -350,7 +351,7 @@ class Loop(Function):
         try:
             # Clear out old iteration files if they exist
             full_path = self._path_for(path)
-            for f in full_path.parent.glob(full_path.name + '__[0-9]*' + Function._FUNC_SUFFIX):
+            for f in full_path.parent.glob(full_path.name + '__[0-9]*' + Function.SUFFIX):
                 f.unlink()
 
             if as_iteration:
@@ -427,6 +428,7 @@ class Loop(Function):
         self._iterations = []
         if body_func:
             for i, elem in enumerate(items):
+                # noinspection PyArgumentList
                 once = lines(body_func(Loop.Step(i, stages[i], count, elem, last, self)))
                 self._iterations.append(len(once))
                 prefix = str(self._prefix_for(i)) + ' '
@@ -683,7 +685,8 @@ class FunctionSet:
 
         :param name: The set name. For the top level directory this is notional. For subdirectories, it is the
         directory name. The parent can be either a DataPack (for the top-level function directory) or that pack's
-        FunctionSet. :param pack_or_parent: The parent of this set.
+        FunctionSet.
+        :param pack_or_parent: The parent of this set.
         """
         self.name = good_name(name)
         if isinstance(pack_or_parent, FunctionSet):
@@ -720,8 +723,8 @@ class FunctionSet:
             return fs
         for root, dirs, files in os.walk(path):
             for f in files:
-                if not f.endswith(Function._FUNC_SUFFIX):
-                    print(f'Warning: {f} ignored: suffix required: {Function._FUNC_SUFFIX}')
+                if not f.endswith(Function.SUFFIX):
+                    print(f'Warning: {f} ignored: suffix required: {Function.SUFFIX}')
                     continue
                 func = Function.load(Path(root) / f)
                 fs.add(func)
