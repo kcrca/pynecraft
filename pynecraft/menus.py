@@ -19,18 +19,48 @@ class Menu:
                  action_factory: Callable[[str], str], /, wood: BlockDef = 'oak', selected_wood: BlockDef = 'birch',
                  dir: FacingDef = DOWN, close_menus=False, top_row_blank=True):
         """
-        Create a Menu object that can provide menus. A menu has a home, which is a selector that defines
-        the relative op
+        Create a Menu object that can provide menus. This class defines the menus contents. The commands to place it
+        in the world are returned by the place() method, which allows you to put the same menu in different place in
+        the world.
 
-         The menu owns the area of its maximum extent.
-        :param home:
-        :param function_factory:
-        :param action_factory:
-        :param wood:
-        :param selected_wood:
-        :param dir:
-        :param close_menus:
-        :param top_row_blank:
+        A placed menu starts with a home target, such as ``e().tag('foo_menu').limit(1)``. All commands are executed
+        this place, and the menu is positioned relative to it.
+
+        A menu can contain two kinds of buttons (signs, but in a UI sense they are "buttons"), either simple
+        actions, or a submenu. When a non-menu button is selected, it runs a user-generated action, and changes
+        from using the default wood type to the "selected" wood type. Selecting a different button deselects this
+        sign. The action is defined via the action_factory callback you provide, which can return only a singe
+        string command.
+
+        A submenu button brings up the submenu below it (or optionally above). The buttons in this menu behave
+        the same as at the top level. You can set it to pull down the submenu when an item is selected if you prefer.
+
+        To do its work, the menu needs to define some functions, so you must provide a factory that will do that. The
+        factory is given a function name, and returns a ``Function`` object for it, using whatever path it likes.
+        The first function created is the 'init' function for the top-level menu. To instantiate the menu in
+        your world, you invoke this function at the menu's home target, such as
+
+            ```
+            execute at @e[tag=foo_home,limit=1] run function mypack:foo_menu_init
+            ```
+
+        The menu owns the entire space starting at the original position provided to place() to the
+        outer boundaries of all the submenus. For example, the init function fills all that space with
+        air and puts the op level menu in it. Don't put anything else in this area.
+
+        When the menu has been defined, you use place() to put it in the world. You provide the home entity,
+        the starting position, and the direction the signs will face. This generates all the needed functions.
+        The same menu can be placed in many places in the same world. Each locatoin needs its own home.
+        The factory function can produce unique function names for each placement or not.
+
+        :param function_factory: Returns a function given a name.
+        :param action_factory: Returns an action given the text on the button.
+        :param wood: Wood used for the buttons (default: 'oak').
+        :param selected_wood: Wood used for currently selected buttons (default: 'birch').
+        :param dir: Direction the menu grows, either UP or DOWN (default: DOWN).
+        :param close_menus: True if submenus should be closed when a selection is made (default: False)
+        :param top_row_blank: True if the button's top row should be left blank if there are three or fewer rows of text
+               (default: True).
         """
         self.function_factory = function_factory
         self.action_factory = action_factory
@@ -48,6 +78,7 @@ class Menu:
         self.top = self
 
     def func(self, name):
+        """Returns a function from the given base name, using the factory if it does not yet exist."""
         name = self._func_prefix + name
         try:
             return self.top.__functions[name]
@@ -56,6 +87,10 @@ class Menu:
             return func
 
     def add(self, to_add: str | Submenu | Iterable[str | Submenu]):
+        """
+        Adds a button. For a string, it is split into lines with ``'|'``. The action factory is invoked with the
+        original text (during placement).
+        """
         if isinstance(to_add, (str, Submenu)):
             self._entries.append(to_add)
         else:
@@ -64,7 +99,16 @@ class Menu:
         return self
 
     def place(self, home: str | Selector, pos: Position, facing: FacingDef) -> None:
-        Placement(self, home, pos, good_facing(facing), self.dir).place()
+        """
+        Place an instance of the menu using the given home. All the functions are executed at this home,
+        and the position is relative, it is relative to the home.
+
+        :param home: The home.
+        :param pos: The starting position.
+        :param facing: Direction the signs face.
+        :return:
+        """
+        _Placement(self, home, pos, good_facing(facing), self.dir).place()
 
     def end(self, pos: Position, facing: FacingDef) -> Position:
         facing = good_facing(facing)
@@ -95,7 +139,7 @@ class Menu:
 
 
 # noinspection PyProtectedMember
-class Placement:
+class _Placement:
     def __init__(self, menu: Menu, home, pos: Position, facing: Facing, dir: Facing):
         if isinstance(home, str):
             home = e().tag(home).limit(1)
@@ -142,6 +186,10 @@ class Placement:
 
 
 class Submenu(Menu):
+    """
+    A submenu object. By default, most values are inherited from the parent menu provided here.
+    """
+
     def __init__(self, parent: Menu, name: str, function_factory: Callable[[str], Function] = None,
                  action_factory: Callable[[str], str] = None, /, text: str = None, wood: BlockDef = None,
                  selected_wood: BlockDef = None):
