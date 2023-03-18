@@ -9,14 +9,29 @@ from pynecraft.simpler import WallSign
 
 
 class Menu:
+    """
+    This class gives you a way to build menus. Each menu is a set of signs which perform some user-defined
+    action, including possibly bringing up a submenu. Various options allow some control of the presentation.
+    See __init__() for details.
+    """
 
-    def __init__(self, home: str | Selector, function_factory: Callable[[str], Function],
+    def __init__(self, function_factory: Callable[[str], Function],
                  action_factory: Callable[[str], str], /, wood: BlockDef = 'oak', selected_wood: BlockDef = 'birch',
                  dir: FacingDef = DOWN, close_menus=False, top_row_blank=True):
-        self._home = home if isinstance(home, Selector) else e().tag(home).limit(1)
-        if not self._home.is_single():
-            raise ValueError(f'{home}: Selecting multiple not allowed')
-        self._run_at = execute().at(self._home).run
+        """
+        Create a Menu object that can provide menus. A menu has a home, which is a selector that defines
+        the relative op
+
+         The menu owns the area of its maximum extent.
+        :param home:
+        :param function_factory:
+        :param action_factory:
+        :param wood:
+        :param selected_wood:
+        :param dir:
+        :param close_menus:
+        :param top_row_blank:
+        """
         self.function_factory = function_factory
         self.action_factory = action_factory
         self.wood = wood
@@ -48,8 +63,8 @@ class Menu:
                 self.add(item)
         return self
 
-    def place(self, pos: Position, facing: FacingDef) -> None:
-        Placement(self, pos, good_facing(facing), self.dir, self._run_at).place()
+    def place(self, home: str | Selector, pos: Position, facing: FacingDef) -> None:
+        Placement(self, home, pos, good_facing(facing), self.dir).place()
 
     def end(self, pos: Position, facing: FacingDef) -> Position:
         facing = good_facing(facing)
@@ -81,13 +96,18 @@ class Menu:
 
 # noinspection PyProtectedMember
 class Placement:
-    def __init__(self, menu: Menu, pos: Position, facing: Facing, dir: Facing, run_at):
+    def __init__(self, menu: Menu, home, pos: Position, facing: Facing, dir: Facing):
+        if isinstance(home, str):
+            home = e().tag(home).limit(1)
+        if not home.is_single():
+            raise ValueError(f'{home}: Selecting multiple homes not allowed')
+        self.home = home
+        self.run_at = execute().at(home).run
         self.menu = menu
         self.pos = pos
         self.facing = facing
         self.placing = facing.turn(ROTATION_270)
         self.dir = good_facing(dir)
-        self.run_at = run_at
 
     def place(self):
         if not self.menu._entries:
@@ -100,8 +120,8 @@ class Placement:
     def place_sign(self, offset, entry):
         if isinstance(entry, Submenu):
             submenu_pos = self.dir.move(self.placing.move(self.pos, offset), 1)
-            entry.place(submenu_pos, self.facing)
-            sign = entry._menu_sign(self.facing)
+            entry.place(self.home, submenu_pos, self.facing)
+            sign = entry._menu_sign(self.facing, self.run_at)
         else:
             text = self.menu._to_text(entry)
             sign = WallSign(text, self.commands(entry, text), wood=self.menu.wood)
@@ -141,7 +161,7 @@ class Submenu(Menu):
             wood = parent.wood
         if not selected_wood:
             selected_wood = parent.selected_wood
-        super().__init__(parent._home, function_factory, action_factory, wood, selected_wood)
+        super().__init__(function_factory, action_factory, wood, selected_wood)
         name_prefix = name.replace(' ', '_').lower()
         if parent._func_prefix:
             self._func_prefix = f'{parent._func_prefix}_{name_prefix}_'
@@ -149,9 +169,9 @@ class Submenu(Menu):
             self._func_prefix = f'{name_prefix}_'
         self._name = name
 
-    def _menu_sign(self, facing):
-        sel_sign = WallSign(self.text, (self._run_at(function(self.parent.func('init'))),), wood=self.selected_wood)
-        commands = self._run_at(
+    def _menu_sign(self, facing, run_at):
+        sel_sign = WallSign(self.text, (run_at(function(self.parent.func('init'))),), wood=self.selected_wood)
+        commands = run_at(
             function(self.parent.func('init')),
             function(self.func('init'))) + (
                        sel_sign.place(r(0, 0, 0), facing, clear=False),)
