@@ -1024,6 +1024,10 @@ class Facing:
     def __str__(self):
         return self.name
 
+    def __eq__(self, other):
+        other = good_facing(other)
+        return self.rotation == other.rotation
+
     @property
     def yaw(self) -> int | float:
         """The yaw (first) value of the rotation."""
