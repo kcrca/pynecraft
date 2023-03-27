@@ -4,10 +4,11 @@ import dataclasses
 from typing import Callable, Iterable, Mapping, Tuple, Union
 
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, d, good_facing, r, to_id
+    _to_list, d, good_facing, r, to_id, BLACK
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignText, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock, Target, execute, data, s, \
-    e
+    SignMessages, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock, Target, execute, \
+    data, s, \
+    e, SignMessage, SignCommand
 from .enums import Pattern
 
 ARMORER = 'Armorer'
@@ -59,87 +60,115 @@ VILLAGER_BIOMES = (DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, TAIGA)
 class Sign(Block):
     """A class that represents a sign. This class is a standing sign, the WallSign subclass is for wall signs."""
 
-    def __init__(self, text: SignText, /, commands: SignCommands = (), wood='oak', state: Mapping = None,
-                 nbt: NbtDef = None):
+    waxed = False
+    """Whether signs are waxed by default."""
+
+    def __init__(self, text: SignMessages = (), /, commands: SignCommands = (), wood='oak', state: Mapping = None,
+                 nbt: NbtDef = None, hanging=False):
         """
-        Creates a sign object.
-        :param text:
-        :param commands:
-        :param wood:
-        :param state:
-        :param nbt:
+        Creates a sign object. The text and commands are passed to front().
         """
+        self.hanging = hanging
         wood = to_id(wood)
         super().__init__(self._kind_name(wood), state=state, nbt=nbt)
         self.wood = wood
-        text = _ensure_size(text, 4)
-        commands = _ensure_size(commands, 4)
-        lines_nbt = Sign.lines_nbt(text, commands)
-        self.merge_nbt(lines_nbt)
+        if text or commands:
+            self.front(text, commands)
+        self.merge_nbt({'is_waxed': Sign.waxed})
         if nbt:
             self.merge_nbt(nbt)
 
+    def front(self, text: SignMessages, /, commands: SignCommands = ()) -> Sign:
+        """Sets the text for the front of the sign."""
+        self.merge_nbt({'front_text': (Sign.lines_nbt(text, commands))})
+        return self
+
+    def back(self, text: SignMessages, /, commands: SignCommands = ()) -> Sign:
+        """Sets the text for the back of the sign."""
+        self.merge_nbt({'back_text': (Sign.lines_nbt(text, commands))})
+        return self
+
+    def wax(self, on=True):
+        """Sets the sign to be waxed or not. The default is True (ignoring Sign.waxed)"""
+        self.merge_nbt({'is_waxed': on})
+        return self
+
     @classmethod
-    def lines_nbt(cls, text: SignText, commands: SignCommands = ()) -> Nbt:
+    def lines_nbt(cls, texts: SignMessages, commands: SignCommands = ()) -> Nbt:
         """Returns the lines of NBT for sign text.
-        :param text: The sign text, as an iterable of one to four lines of text. Entries that are None will generate no
+        :param texts: The sign text, as an iterable of one to four lines of text. Entries that are None will generate no
         NBT, any text will generate a line for the sign.
         :param commands: Commands for the sign, in order.
         :return: The NBT for the combination of text and commands.
         """
-        text = _to_list(text)
-        commands = _to_list(commands)
-        max_count = max(len(text), len(commands))
+        texts = _ensure_size(_to_list(texts), 4)
+        commands = _ensure_size(_to_list(commands), 4)
+        max_count = max(len(texts), len(commands))
         if max_count > 4:
             raise ValueError(f'{max_count}: Too many values for text and/or commands')
-        text = _ensure_size(text, 4)
+        texts = _ensure_size(texts, 4)
         commands = _ensure_size(commands, 4)
 
-        nbt = Nbt()
-        for i, entry in enumerate(zip(text, commands)):
-            if entry == (None, None):
-                continue
-            txt, cmd = entry
-            if txt is None:
-                txt = ''
-            key = f'Text{i + 1}'
-            if isinstance(txt, str):
-                if not cmd:
-                    nbt[key] = txt
-                    continue
-                txt = JsonText.text(txt)
-            txt = JsonText.as_json(txt)
-            if cmd:
-                if isinstance(cmd, Callable):
-                    txt = cmd(txt)
-                else:
-                    txt = txt.click_event().run_command(cmd)
-            nbt[key] = txt
+        messages = []
+        for i in range(4):
+            messages.append(cls.line_nbt(texts[i], commands[i]))
 
-        return nbt
+        return Nbt({'messages': messages})
 
     @classmethod
-    def text(cls, txt: str) -> str:
+    def line_nbt(cls, text: SignMessage = None, command: SignCommand = None) -> Nbt:
+        orig_text = text
+        if text is None:
+            text = JsonText.text('')
+        elif isinstance(text, str):
+            text = JsonText.text(text)
+        entry = text
+        if isinstance(command, Callable):
+            command = command(orig_text)
+        if command:
+            entry = text.click_event().run_command(command)
+        return entry
+
+    @classmethod
+    def change(cls, pos: Position, messages: SignMessages = None, commands: SignCommands = None,
+               back=False) -> Commands:
+        messages = messages if messages else (None, None, None, None)
+        commands = commands if commands else (None, None, None, None)
+        cmds = []
+        face = 'back_text' if back else 'front_text'
+        for i, desc in enumerate(zip(messages, commands)):
+            msg, cmd = desc
+            if msg is None and cmd is None:
+                continue
+            cmds.append(data().modify(pos, f'{face}.messages[{i}]').set().value(str(cls.line_nbt(msg, cmd))))
+        if len(cmds) == 4:
+            return data().merge(pos, {face: (cls.lines_nbt(messages, commands))})
+        return cmds
+
+    @classmethod
+    def message(cls, txt: SignMessage) -> str:
         """
         Text fit for a sign's ``Text`` fields  It simply puts double quotes around the text, and escapes pre-existing
         double quotes. This is simple text values, not for full JSON text options; for that see the JsonText class.
         """
-        return r'"\"%s\""' % txt.replace('"', r'\\"')
+        if txt is None:
+            txt = ''
+        if isinstance(txt, str):
+            txt = JsonText.text(txt)
+        return str(txt)
 
     def _kind_name(self, wood):
-        return wood + '_sign'
+        return f'{wood}_hanging_sign' if self.hanging else f'{wood}_sign'
 
     def glowing(self, v: bool) -> Sign:
         """Set the text will be glowing or not."""
-        self.nbt['GlowingText'] = v
+        self.merge_nbt({'front_text': {'glowing': v}, 'back_text': {'glowing': v}})
         return self
 
-    def color(self, color: str) -> Sign:
+    def color(self, color: str = BLACK) -> Sign:
         """Set the overall text color."""
-        if color is None:
-            del self.nbt['Color']
-        else:
-            self.nbt['Color'] = _in_group(COLORS, color)
+        color = _in_group(COLORS, color)
+        self.merge_nbt({'front_text': {'color': color}, 'back_text': {'color': color}})
         return self
 
     def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
@@ -174,7 +203,7 @@ class WallSign(Sign):
     """A class for wall signs."""
 
     def _kind_name(self, wood):
-        return wood + '_wall_sign'
+        return f'{wood}_wall_hanging_sign' if self.hanging else f'{wood}_wall_sign'
 
     def _orientation(self, facing):
         self.merge_state({'facing': good_facing(facing).name})

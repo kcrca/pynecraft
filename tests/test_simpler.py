@@ -2,7 +2,7 @@ import shutil
 import tempfile
 import unittest
 
-from pynecraft.base import DARK_AQUA, N, NORTH, ROTATION_180, SW
+from pynecraft.base import DARK_AQUA, N, NORTH, SW
 from pynecraft.commands import *
 from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines
@@ -17,50 +17,66 @@ class TestSimpler(unittest.TestCase):
         shutil.rmtree(self.tmp_path)
 
     def test_sign(self):
-        self.assertEqual(r'"\"foo\""', Sign.text("foo"))
-        self.assertEqual('''{Text2: '""'}''', str(Sign.lines_nbt((None, ''))))
-        self.assertEqual(Nbt({'Text2': 'foo', 'Text3': 'bar baz'}), Sign.lines_nbt((None, 'foo', 'bar baz')))
+        self.assertEqual('{"text": ""}', Sign.message(None))
+        self.assertEqual('{"text": ""}', Sign.message(""))
+        self.assertEqual('{"text": "foo"}', Sign.message("foo"))
+        self.assertEqual(
+            """{messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}""",
+            str(Sign.lines_nbt(("one", "two", "three", "four"))))
+        self.assertEqual(
+            """{messages: ['{"text": ""}', '{"text": ""}', '{"text": ""}', '{"text": ""}']}""",
+            str(Sign.lines_nbt((None, ''))))
+        self.assertEqual(
+            Nbt({'messages': [{"text": ""}, {"text": "foo"}, {"text": "bar baz"}, {"text": ""}]}),
+            Sign.lines_nbt((None, 'foo', 'bar baz')))
 
-        self.assertEqual([
-            'setblock 1 ~2 ^3 air\n', 'setblock 1 ~2 ^3 oak_sign[rotation=2]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW)))
-        self.assertEqual([
-            'setblock 1 ~2 ^3 oak_sign[rotation=2, waterlogged=true]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, water=True))[1:])
-        self.assertEqual([
-            'setblock 1 ~2 ^3 oak_sign[rotation=8]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH))[1:])
-        self.assertEqual([
-            'setblock 1 ~2 ^3 spruce_sign[rotation=8]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(Sign((None, 'hi', 'there'), wood='spruce').place((1, r(2), d(3)), N))[1:])
-        self.assertEqual([
-            'setblock 1 ~2 ^3 oak_sign[rotation=8]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), 8))[1:])
-
-    def test_wall_sign(self):
         self.assertEqual([
             'setblock 1 ~2 ^3 air\n',
-            'setblock 1 ~2 ^3 oak_wall_sign[facing=north]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
+            """setblock 1 ~2 ^3 oak_sign[rotation=2]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW)))
+        self.assertEqual([
+            """setblock 1 ~2 ^3 oak_sign[rotation=2, waterlogged=true]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, water=True))[1:])
+        self.assertEqual([
+            """setblock 1 ~2 ^3 oak_sign[rotation=8]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH))[1:])
+        self.assertEqual([
+            """setblock 1 ~2 ^3 spruce_sign[rotation=8]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            text_lines(Sign((None, 'hi', 'there'), wood='spruce').place((1, r(2), d(3)), N))[1:])
+
+        self.assertEqual({'messages': [
+            {'text': '', 'clickEvent': {'action': 'run_command', 'value': '/say hi'}},
+            {'text': ''}, {'text': ''}, {'text': ''}]},
+            Sign.lines_nbt((), (say('hi'))))
+        self.assertEqual({'messages': [
+            {'text': 'hi', 'clickEvent': {'action': 'run_command', 'value': '/say boo'}},
+            {'text': 'there'},
+            {'text': '', 'clickEvent': {'action': 'run_command', 'value': '/tell @a hoo'}},
+            {'text': ''}]},
+            Sign.lines_nbt(('hi', 'there'), (say('boo'), None, tell(a(), 'hoo'))))
+
+        self.assertEqual(Nbt({
+            'front_text': {'messages': [{'text': 'hi'}, {'text': ''}, {'text': ''}, {'text': ''}]},
+            'back_text': {'messages': [{'text': 'there'}, {'text': ''}, {'text': ''}, {'text': ''}]},
+            'is_waxed': True}),
+            Sign().front(('hi',)).back(('there',)).wax().nbt)
+
+    def test_wall_sign(self):
+
+        self.assertEqual([
+            'setblock 1 ~2 ^3 air\n',
+            """setblock 1 ~2 ^3 oak_wall_sign[facing=north]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
             text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH)))
         self.assertEqual([
-            'setblock 1 ~2 ^3 oak_wall_sign[facing=north, waterlogged=true]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH, water=True))[1:])
-        self.assertEqual([
-            'setblock 1 ~2 ^3 oak_wall_sign[facing=north]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH))[1:])
-        self.assertEqual(['setblock 1 ~2 ^3 spruce_wall_sign[facing=north]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-                         text_lines(WallSign((None, 'hi', 'there'), wood='spruce').place(
-                             (1, r(2), d(3)), NORTH))[1:])
-        self.assertEqual([
-            'setblock 1 ~2 ^3 oak_wall_sign[facing=north]{Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), ROTATION_180))[1:])
-        self.assertEqual([
-            'setblock 1 ~2 ^3 oak_wall_sign[facing=north]{Text1: \'{"clickEvent": ' '{"action": "run_command", "value": "/say hi"}, "text": ""}\', Text2: ' '\'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(WallSign((None, 'hi', 'there'), (say('hi'),)).place((1, r(2), d(3)), NORTH))[1:])
-        self.assertEqual([
-            'setblock 1 ~2 ^3 oak_wall_sign[facing=north]{Text1: \'{"clickEvent": ' '{"action": "run_command", "value": "/data merge entity @s {Command: \\\\"say ' 'hi\\\\"}"}, "text": ""}\', Text2: \'"hi"\', Text3: \'"there"\'}\n'],
-            text_lines(WallSign(
-                (None, 'hi', 'there'), (data().merge(s(), {'Command': 'say hi'}),)).place((1, r(2), d(3)), NORTH))[1:])
+            'setblock 1 ~2 ^3 water\n',
+            """setblock 1 ~2 ^3 oak_wall_sign[facing=north, waterlogged=true]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH, water=True)))
 
     def test_book(self):
         book = Book('My Title', 'Me', 'My Name')
