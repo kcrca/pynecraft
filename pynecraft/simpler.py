@@ -145,17 +145,6 @@ class Sign(Block):
             return data().merge(pos, {face: (cls.lines_nbt(messages, commands))})
         return cmds
 
-    @classmethod
-    def message(cls, txt: SignMessage) -> str:
-        """
-        Text fit for a sign's ``Text`` fields  It simply puts double quotes around the text, and escapes pre-existing
-        double quotes. This is simple text values, not for full JSON text options; for that see the JsonText class.
-        """
-        if txt is None:
-            txt = ''
-        if isinstance(txt, str):
-            txt = JsonText.text(txt)
-        return str(txt)
 
     def _kind_name(self, wood):
         return f'{wood}_hanging_sign' if self.hanging else f'{wood}_sign'

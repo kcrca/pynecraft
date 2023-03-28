@@ -17,9 +17,6 @@ class TestSimpler(unittest.TestCase):
         shutil.rmtree(self.tmp_path)
 
     def test_sign(self):
-        self.assertEqual('{"text": ""}', Sign.message(None))
-        self.assertEqual('{"text": ""}', Sign.message(""))
-        self.assertEqual('{"text": "foo"}', Sign.message("foo"))
         self.assertEqual(
             """{messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}""",
             str(Sign.lines_nbt(("one", "two", "three", "four"))))
