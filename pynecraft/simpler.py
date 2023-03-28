@@ -78,18 +78,52 @@ class Sign(Block):
         if nbt:
             self.merge_nbt(nbt)
 
-    def front(self, text: SignMessages, /, commands: SignCommands = ()) -> Sign:
-        """Sets the text for the front of the sign."""
-        self.merge_nbt({'front_text': (Sign.lines_nbt(text, commands))})
+    def front(self, text: SignMessages, /, commands: SignCommands = (), glowing=None, color=None) -> Sign:
+        """Sets the text attributes for the front of the sign."""
+        self.messages(text, commands, front=True)
+        if color:
+            self.color(color, front=True)
+        if glowing is not None:
+            self.glowing(glowing, front=True)
         return self
 
-    def back(self, text: SignMessages, /, commands: SignCommands = ()) -> Sign:
-        """Sets the text for the back of the sign."""
-        self.merge_nbt({'back_text': (Sign.lines_nbt(text, commands))})
+    def back(self, text: SignMessages, /, commands: SignCommands = (), glowing=None, color=None) -> Sign:
+        """Sets the text attributes for the back of the sign."""
+        self.messages(text, commands, front=False)
+        if color:
+            self.color(color, front=False)
+        if glowing is not None:
+            self.glowing(glowing, front=False)
+        return self
+
+    def messages(self, texts: SignMessages, commands: SignCommands = (), front: bool = None) -> Sign:
+        """Set the text for the front, back, or both if ``front`` is None."""
+        messages = self.lines_nbt(texts, commands)
+        if front or front is None:
+            self.merge_nbt({'front_text': messages})
+        if front == False or front is None:
+            self.merge_nbt({'back_text': messages})
+        return self
+
+    def glowing(self, v: bool, front: bool = None) -> Sign:
+        """Set whether the text will be glowing for the front, back, or both if ``front`` is None."""
+        if front or front is None:
+            self.merge_nbt({'front_text': {'glowing': v}})
+        if front == False or front is None:
+            self.merge_nbt({'back_text': {'glowing': v}})
+        return self
+
+    def color(self, color: str = BLACK, front: bool = None) -> Sign:
+        """Set the text will color for the front, back, or both if ``front`` is None."""
+        color = _in_group(COLORS, color)
+        if front or front is None:
+            self.merge_nbt({'front_text': {'color': color}})
+        if front == False or front is None:
+            self.merge_nbt({'back_text': {'color': color}})
         return self
 
     def wax(self, on=True):
-        """Sets the sign to be waxed or not. The default is True (ignoring Sign.waxed)"""
+        """Sets the sign to be waxed or not. The default is True (ignores ``Sign.waxed``)"""
         self.merge_nbt({'is_waxed': on})
         return self
 
@@ -114,6 +148,9 @@ class Sign(Block):
             messages.append(cls.line_nbt(texts[i], commands[i]))
 
         return Nbt({'messages': messages})
+
+    def _kind_name(self, wood):
+        return f'{wood}_hanging_sign' if self.hanging else f'{wood}_sign'
 
     @classmethod
     def line_nbt(cls, text: SignMessage = None, command: SignCommand = None) -> Nbt:
@@ -144,26 +181,6 @@ class Sign(Block):
         if len(cmds) == 4:
             return data().merge(pos, {face: (cls.lines_nbt(messages, commands))})
         return cmds
-
-    def _kind_name(self, wood):
-        return f'{wood}_hanging_sign' if self.hanging else f'{wood}_sign'
-
-    def glowing(self, v: bool, front: bool = None) -> Sign:
-        """Set the text will be glowing or not."""
-        if front or front is None:
-            self.merge_nbt({'front_text': {'glowing': v}})
-        if front == False or front is None:
-            self.merge_nbt({'back_text': {'glowing': v}})
-        return self
-
-    def color(self, color: str = BLACK, front: bool = None) -> Sign:
-        """Set the overall text color."""
-        color = _in_group(COLORS, color)
-        if front or front is None:
-            self.merge_nbt({'front_text': {'color': color}})
-        if front == False or front is None:
-            self.merge_nbt({'back_text': {'color': color}})
-        return self
 
     def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
               clear=True) -> Commands | Command:
