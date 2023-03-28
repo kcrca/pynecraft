@@ -145,19 +145,24 @@ class Sign(Block):
             return data().merge(pos, {face: (cls.lines_nbt(messages, commands))})
         return cmds
 
-
     def _kind_name(self, wood):
         return f'{wood}_hanging_sign' if self.hanging else f'{wood}_sign'
 
-    def glowing(self, v: bool) -> Sign:
+    def glowing(self, v: bool, front: bool = None) -> Sign:
         """Set the text will be glowing or not."""
-        self.merge_nbt({'front_text': {'glowing': v}, 'back_text': {'glowing': v}})
+        if front or front is None:
+            self.merge_nbt({'front_text': {'glowing': v}})
+        if front == False or front is None:
+            self.merge_nbt({'back_text': {'glowing': v}})
         return self
 
-    def color(self, color: str = BLACK) -> Sign:
+    def color(self, color: str = BLACK, front: bool = None) -> Sign:
         """Set the overall text color."""
         color = _in_group(COLORS, color)
-        self.merge_nbt({'front_text': {'color': color}, 'back_text': {'color': color}})
+        if front or front is None:
+            self.merge_nbt({'front_text': {'color': color}})
+        if front == False or front is None:
+            self.merge_nbt({'back_text': {'color': color}})
         return self
 
     def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
