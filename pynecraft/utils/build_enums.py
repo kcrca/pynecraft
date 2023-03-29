@@ -111,9 +111,10 @@ class PageEnumDesc(EnumDesc):
                     name = re.sub(r'[^\w\s]', '', display_name)
                     name = name.upper().replace(' ', '_')
                     name = self.replace(name, value)
-                    if desc[-1] not in '.?!':
-                        desc += '.'
-                    desc = re.sub(r'\s+', ' ', desc)
+                    if desc:
+                        if desc[-1] not in '.?!':
+                            desc += '.'
+                        desc = re.sub(r'\s+', ' ', desc)
                     if name in found:
                         raise KeyError(f'{name}: Duplicate name: ({value}, {found[name]})')
                     found[name] = (value, desc, display_name)
@@ -375,6 +376,33 @@ class Particle(PageEnumDesc):
         return name, value, desc
 
 
+class PotteryShard(PageEnumDesc):
+    """Generates the PotteryShard" enum."""
+
+    def __init__(self):
+        super().__init__('PotteryShard', WIKI + 'Pottery_Shard', 'Pottery Shards')
+        self.value_col = None
+        self.desc_col = None
+        self.done = False
+
+    def find_tables(self, soup):
+        v = soup.select('table')[:1]
+        return v
+
+    def header(self, col: int, text: str):
+        if text.endswith('Item'):
+            self.value_col = col
+        elif 'Bedrock' in text:
+            self.done = True
+
+    def extract(self, cols) -> tuple[str, str, str]:
+        if self.done:
+            return None
+        name = clean(cols[self.value_col])
+        value = name.lower().replace(' ', '_')
+        return name, value, ''
+
+
 class ScoreCriteria(PageEnumDesc):
     """ Generates the 'ScoreCriteria' enum. """
 
@@ -429,7 +457,8 @@ if __name__ == '__main__':
         out.writelines(top)
         with redirect_stdout(out):
             for tab in (
-                    Advancement(), BiomeIds(), Effect(), Enchantment(), GameRule(), ScoreCriteria(), Particle()):
+                    Advancement(), BiomeIds(), Effect(), Enchantment(), GameRule(), ScoreCriteria(), Particle(),
+                    PotteryShard()):
                 fields = tab.generate()
                 print()
                 print()
@@ -441,7 +470,8 @@ if __name__ == '__main__':
                     value, desc, name = fields[key]
                     names[key] = name
                     print(f'    {key} = "{value}"')
-                    print(f'    """{desc}"""')
+                    if desc:
+                        print(f'    """{desc}"""')
 
                 map_name = f'_{tab.name.lower()}_display'
                 print()

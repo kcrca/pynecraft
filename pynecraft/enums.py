@@ -687,7 +687,7 @@ class Enchantment(ValueEnum):
     BLAST_PROTECTION = "blast_protection"
     """Reduces explosion damage and knockback."""
     CHANNELING = "channeling"
-    """During thunderstorms, tridents can strike enemies with a lightning bolt."""
+    """During thunderstorms, trident summons a lightning bolt on the target when hitting it."""
     CLEAVING = "cleaving"
     """Increases damage and shield stunning."""
     CURSE_OF_BINDING = "curse_of_binding"
@@ -1237,3 +1237,54 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.VIBRATION: "Vibration", Particle.WARPED_SPORE: "Warped Spore",
                      Particle.WAX_OFF: "Wax Off", Particle.WAX_ON: "Wax On", Particle.WHITE_ASH: "White Ash",
                      Particle.WITCH: "Witch"}
+
+
+# noinspection SpellCheckingInspection,GrazieInspection
+@enum.unique
+class PotteryShard(ValueEnum):
+    ANGLER_POTTERY_SHARD = "angler_pottery_shard"
+    ARCHER_POTTERY_SHARD = "archer_pottery_shard"
+    ARMS_UP_POTTERY_SHARD = "arms_up_pottery_shard"
+    BLADE_POTTERY_SHARD = "blade_pottery_shard"
+    BREWER_POTTERY_SHARD = "brewer_pottery_shard"
+    BURN_POTTERY_SHARD = "burn_pottery_shard"
+    DANGER_POTTERY_SHARD = "danger_pottery_shard"
+    EXPLORER_POTTERY_SHARD = "explorer_pottery_shard"
+    FRIEND_POTTERY_SHARD = "friend_pottery_shard"
+    HEART_POTTERY_SHARD = "heart_pottery_shard"
+    HEARTBREAK_POTTERY_SHARD = "heartbreak_pottery_shard"
+    HOWL_POTTERY_SHARD = "howl_pottery_shard"
+    MINER_POTTERY_SHARD = "miner_pottery_shard"
+    MOURNER_POTTERY_SHARD = "mourner_pottery_shard"
+    PLENTY_POTTERY_SHARD = "plenty_pottery_shard"
+    PRIZE_POTTERY_SHARD = "prize_pottery_shard"
+    SHEAF_POTTERY_SHARD = "sheaf_pottery_shard"
+    SHELTER_POTTERY_SHARD = "shelter_pottery_shard"
+    SKULL_POTTERY_SHARD = "skull_pottery_shard"
+    SNORT_POTTERY_SHARD = "snort_pottery_shard"
+
+    def display_name(self) -> str:
+        return _potteryshard_display[self]
+
+
+# noinspection SpellCheckingInspection,GrazieInspection
+_potteryshard_display = {PotteryShard.ANGLER_POTTERY_SHARD: "Angler Pottery Shard",
+                         PotteryShard.ARCHER_POTTERY_SHARD: "Archer Pottery Shard",
+                         PotteryShard.ARMS_UP_POTTERY_SHARD: "Arms Up Pottery Shard",
+                         PotteryShard.BLADE_POTTERY_SHARD: "Blade Pottery Shard",
+                         PotteryShard.BREWER_POTTERY_SHARD: "Brewer Pottery Shard",
+                         PotteryShard.BURN_POTTERY_SHARD: "Burn Pottery Shard",
+                         PotteryShard.DANGER_POTTERY_SHARD: "Danger Pottery Shard",
+                         PotteryShard.EXPLORER_POTTERY_SHARD: "Explorer Pottery Shard",
+                         PotteryShard.FRIEND_POTTERY_SHARD: "Friend Pottery Shard",
+                         PotteryShard.HEART_POTTERY_SHARD: "Heart Pottery Shard",
+                         PotteryShard.HEARTBREAK_POTTERY_SHARD: "Heartbreak Pottery Shard",
+                         PotteryShard.HOWL_POTTERY_SHARD: "Howl Pottery Shard",
+                         PotteryShard.MINER_POTTERY_SHARD: "Miner Pottery Shard",
+                         PotteryShard.MOURNER_POTTERY_SHARD: "Mourner Pottery Shard",
+                         PotteryShard.PLENTY_POTTERY_SHARD: "Plenty Pottery Shard",
+                         PotteryShard.PRIZE_POTTERY_SHARD: "Prize Pottery Shard",
+                         PotteryShard.SHEAF_POTTERY_SHARD: "Sheaf Pottery Shard",
+                         PotteryShard.SHELTER_POTTERY_SHARD: "Shelter Pottery Shard",
+                         PotteryShard.SKULL_POTTERY_SHARD: "Skull Pottery Shard",
+                         PotteryShard.SNORT_POTTERY_SHARD: "Snort Pottery Shard"}
