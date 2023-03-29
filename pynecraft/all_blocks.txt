@@ -328,6 +328,9 @@ Exposed Cut Copper Slab
 Exposed Cut Copper Stairs
 Farmland
 Fern
+File:Calibrated Sculk Sensor.png Calibrated Sculk Sensor [x] / File:Calibrated Sculk Sensor.png Calibrated Sculk Sensor
+File:Pitcher Crop.png Pitcher Crop [x] / File:Pitcher Crop.png Pitcher Crop
+File:Suspicious Gravel.png Suspicious Gravel [x] / File:Suspicious Gravel.png Suspicious Gravel
 Fire
 Fire Coral
 Fire Coral Block
@@ -588,6 +591,7 @@ Pink Terracotta
 Pink Tulip
 Pink Wool
 Piston
+Pitcher Plant [x] / Pitcher Plant
 Player Head
 Podzol
 Pointed Dripstone
@@ -718,6 +722,7 @@ Smooth Sandstone Slab
 Smooth Sandstone Stairs
 Smooth Stone
 Smooth Stone Slab
+Sniffer Egg [x] / Sniffer Egg
 Snow
 Snow Block
 Soul Campfire

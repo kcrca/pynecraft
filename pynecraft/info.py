@@ -10,6 +10,7 @@ from packaging.version import Version
 
 from .base import COLORS, Nbt, Parameters, parameters, to_id, to_name
 from .commands import Block, Entity, good_color_num
+from .enums import PotteryShard
 from .simpler import Item
 from .utils.fetch_things import ItemFetcher
 
@@ -428,11 +429,13 @@ tropical_fish = {
 trim_materials = sorted((
     'emerald', 'redstone', 'lapis', 'amethyst', 'quartz', 'netherite', 'diamond', 'gold', 'iron', 'copper'))
 
-trim_patterns = sorted(('coast', 'dune', 'eye', 'rib', 'sentry', 'snout', 'spire', 'tide', 'vex', 'ward', 'wild'))
+trim_patterns = sorted(
+    ('coast', 'dune', 'eye', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire', 'tide', 'vex',
+     'ward', 'wayfinder', 'wild'))
 
 armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 
-shards = tuple(f'pottery_shard_{shard}' for shard in ('arms_up', 'archer', 'prize', 'skull'))
+shards = tuple(x.value for x in PotteryShard)
 
 
 def _version_change_handler(_: Version, version: Version):

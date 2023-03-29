@@ -2,10 +2,11 @@ Acacia Boat
 Acacia Boat with Chest / Acacia Chest Boat
 Allay Spawn Egg
 Amethyst Shard
+Angler Pottery Shard
 Apple
-Archer Pottery Shard / Pottery Shard Archer
+Archer Pottery Shard
 Armor Stand
-Arms Up Pottery Shard / Pottery Shard Arms Up
+Arms Up Pottery Shard
 Arrow
 Axolotl Spawn Egg
 Baked Potato
@@ -20,6 +21,7 @@ Beetroot Soup
 Birch Boat
 Birch Boat with Chest / Birch Chest Boat
 Black Dye
+Blade Pottery Shard
 Blaze Powder
 Blaze Rod
 Blaze Spawn Egg
@@ -33,6 +35,7 @@ Bottle o' Enchanting / Experience Bottle
 Bow
 Bowl
 Bread
+Brewer Pottery Shard
 Brick
 Brown Dye
 Brush
@@ -44,6 +47,7 @@ Bucket of Salmon / Salmon Bucket
 Bucket of Tadpole / Tadpole Bucket
 Bucket of Tropical Fish / Tropical Fish Bucket
 Bundle
+Burn Pottery Shard
 Camel Spawn Egg
 Carrot
 Carrot on a Stick
@@ -79,6 +83,7 @@ Creeper / Creeper Banner Pattern
 Creeper Spawn Egg
 Crossbow
 Cyan Dye
+Danger Pottery Shard
 Dark Oak Boat
 Dark Oak Boat with Chest / Dark Oak Chest Boat
 Debug Stick
@@ -116,6 +121,7 @@ Ender Pearl
 Enderman Spawn Egg
 Endermite Spawn Egg
 Evoker Spawn Egg
+Explorer Pottery Shard
 Eye Armor Trim / Eye Armor Trim Smithing Template
 Eye of Ender / Ender Eye
 Feather
@@ -128,6 +134,7 @@ Flint
 Flint and Steel
 Flower / Flower Banner Pattern
 Fox Spawn Egg
+Friend Pottery Shard
 Frog Spawn Egg
 Ghast Spawn Egg
 Ghast Tear
@@ -159,11 +166,15 @@ Gray Dye
 Green Dye
 Guardian Spawn Egg
 Gunpowder
+Heart Pottery Shard
 Heart of the Sea
+Heartbreak Pottery Shard
 Hoglin Spawn Egg
 Honey Bottle
 Honeycomb
 Horse Spawn Egg
+Host Armor Trim / Host Armor Trim Smithing Template
+Howl Pottery Shard
 Husk Spawn Egg
 Ink Sac
 Ink Sac
@@ -217,7 +228,9 @@ Minecart with Command Block / Command Block Minecart
 Minecart with Furnace / Furnace Minecart
 Minecart with Hopper / Hopper Minecart
 Minecart with TNT / TNT Minecart
+Miner Pottery Shard
 Mooshroom Spawn Egg
+Mourner Pottery Shard
 Mule Spawn Egg
 Mushroom Stew
 Music Disc 11
@@ -268,6 +281,8 @@ Piglin Brute Spawn Egg
 Piglin Spawn Egg
 Pillager Spawn Egg
 Pink Dye
+Pitcher Pod
+Plenty Pottery Shard
 Poisonous Potato
 Polar Bear Spawn Egg
 Popped Chorus Fruit
@@ -275,7 +290,7 @@ Potato
 Powder Snow Bucket
 Prismarine Crystals
 Prismarine Shard
-Prize Pottery Shard / Pottery Shard Prize
+Prize Pottery Shard
 Pufferfish
 Pufferfish Spawn Egg
 Pumpkin Pie
@@ -285,6 +300,7 @@ Rabbit Hide
 Rabbit Spawn Egg
 Rabbit Stew
 Rabbit's Foot / Rabbit Foot
+Raiser Armor Trim / Raiser Armor Trim Smithing Template
 Ravager Spawn Egg
 Raw Beef / Beef
 Raw Chicken / Chicken
@@ -305,19 +321,24 @@ Saddle
 Salmon Spawn Egg
 Scute
 Sentry Armor Trim / Sentry Armor Trim Smithing Template
+Shaper Armor Trim / Shaper Armor Trim Smithing Template
+Sheaf Pottery Shard
 Shears
 Sheep Spawn Egg
+Shelter Pottery Shard
 Shield
 Shulker Shell
 Shulker Spawn Egg
+Silence Armor Trim / Silence Armor Trim Smithing Template
 Silverfish Spawn Egg
 Skeleton Horse Spawn Egg
 Skeleton Spawn Egg
 Skull / Skull Banner Pattern
-Skull Pottery Shard / Pottery Shard Skull
+Skull Pottery Shard
 Slime Spawn Egg
 Slimeball / Slime Ball
 Sniffer Spawn Egg
+Snort Pottery Shard
 Snout / Piglin Banner Pattern
 Snow Golem Spawn Egg
 Snowball
@@ -367,6 +388,7 @@ Ward Armor Trim / Ward Armor Trim Smithing Template
 Warden Spawn Egg
 Warped Fungus on a Stick
 Water Bucket
+Wayfinder Armor Trim / Wayfinder Armor Trim Smithing Template
 Wheat
 Wheat Seeds
 White Dye

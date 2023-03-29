@@ -65,7 +65,7 @@ class BlockFetcher(Fetcher):
         super().__init__('blocks', 'https://minecraft.fandom.com/wiki/Block#List_of_blocks')
 
     def get_start(self, page):
-        return page.find('h2', text='List of blocks')
+        return page.find('h2', string='List of blocks')
 
     def is_end(self, elem):
         return elem.name == 'h2' or 'Technical blocks' in elem.text
@@ -127,7 +127,7 @@ class ItemFetcher(Fetcher):
         super().__init__('items', 'https://minecraft.fandom.com/wiki/Item?so=search#List_of_items')
 
     def get_start(self, page):
-        return page.find('h2', text='List of items')
+        return page.find('h2', string='List of items')
 
     def is_end(self, elem):
         return elem.name == 'h2' or 'Education Edition' in elem.text
@@ -150,8 +150,6 @@ class ItemFetcher(Fetcher):
             id = id.replace(' Trim', ' Trim Smithing Template')
         elif 'Netherite Upgrade' in id:
             id = 'Netherite Upgrade Smithing Template'
-        elif 'Pottery Shard' in id:
-            id = re.sub(r'(.*) (Pottery Shard)', r'\2 \1', id)
         id = re.sub(r'\s*[([].*', '', id)
         desc = re.sub(r'\s*[([].*', '', desc)
 
@@ -203,7 +201,7 @@ class MobFetcher(Fetcher):
         super().__init__('mobs', 'https://minecraft.fandom.com/wiki/Mob?so=search#List_of_mobs')
 
     def get_start(self, page):
-        return page.find('h2', text='List of mobs')
+        return page.find('h2', string='List of mobs')
 
     def is_end(self, elem):
         return elem.name == 'h2' or 'Unused mobs' in elem.text
