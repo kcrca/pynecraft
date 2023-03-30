@@ -64,7 +64,7 @@ class Sign(Block):
     """Whether signs are waxed by default."""
 
     def __init__(self, text: SignMessages = (), /, commands: SignCommands = (), wood='oak', state: Mapping = None,
-                 nbt: NbtDef = None, hanging=False):
+                 nbt: NbtDef = None, hanging=False, front=True):
         """
         Creates a sign object. The text and commands are passed to front().
         """
@@ -73,7 +73,7 @@ class Sign(Block):
         super().__init__(self._kind_name(wood), state=state, nbt=nbt)
         self.wood = wood
         if text or commands:
-            self.front(text, commands)
+            self.messages(text, commands, front)
         self.merge_nbt({'is_waxed': Sign.waxed})
         if nbt:
             self.merge_nbt(nbt)
@@ -168,18 +168,25 @@ class Sign(Block):
 
     @classmethod
     def change(cls, pos: Position, messages: SignMessages = None, commands: SignCommands = None,
-               back=False) -> Commands:
+               front=True) -> Commands:
         messages = messages if messages else (None, None, None, None)
         commands = commands if commands else (None, None, None, None)
         cmds = []
-        face = 'back_text' if back else 'front_text'
-        for i, desc in enumerate(zip(messages, commands)):
-            msg, cmd = desc
-            if msg is None and cmd is None:
+        for f in ('front', 'back'):
+            if f == 'front' and front is False:
                 continue
-            cmds.append(data().modify(pos, f'{face}.messages[{i}]').set().value(str(cls.line_nbt(msg, cmd))))
-        if len(cmds) == 4:
-            return data().merge(pos, {face: (cls.lines_nbt(messages, commands))})
+            elif f == 'back' and front is True:
+                continue
+            face = f'{f}_text'
+            added = 0
+            for i, desc in enumerate(zip(messages, commands)):
+                msg, cmd = desc
+                if msg is None and cmd is None:
+                    continue
+                cmds.append(data().modify(pos, f'{face}.messages[{i}]').set().value(str(cls.line_nbt(msg, cmd))))
+                added += 1
+            if added == 4:
+                cmds[-4:] = [data().merge(pos, {face: (cls.lines_nbt(messages, commands))})]
         return cmds
 
     def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
