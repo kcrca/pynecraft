@@ -2960,12 +2960,18 @@ class NbtHolder(Command):
         self._name = name
 
     @property
-    def sign_nbt(self) -> Nbt:
+    def sign_nbt(self, front=True) -> Nbt:
         """The NBT you would use in a sign describing this entity, based on ``full_text``."""
         messages = []
         for i in range(4):
             messages.append(JsonText.text(self.full_text[i]))
-        return Nbt({'front_text': {'messages': messages}})
+        msgs = {'messages': messages}
+        nbt = Nbt()
+        if front is not False:
+            nbt = nbt.merge({'front_text': msgs})
+        if front is not True:
+            nbt = nbt.merge({'back_text': msgs})
+        return nbt
 
     def __str__(self):
         added = ''

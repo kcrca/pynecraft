@@ -398,8 +398,8 @@ class Loop(Function):
             return Loop._prefix_override(i)
         return execute().if_().score(self.score).matches(i).run('')
 
-    def loop(self, body_func: Callable[[Step], Commands] | Callable[[Step], Command] | None, items: Iterable[Any],
-             bounce=False, replace=False) -> Loop:
+    def loop(self, body_func: Callable[[Step], Union[Commands, Command, str, Iterable[Union[Commands, Command, str]]]] | None, items: Iterable[Any],
+             bounce: object = False, replace: object = False) -> Loop:
         """
         Define the loop itself.
 
