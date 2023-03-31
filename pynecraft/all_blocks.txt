@@ -145,6 +145,7 @@ Budding Amethyst
 Cactus
 Cake
 Calcite
+Calibrated Sculk Sensor
 Campfire
 Candle
 Carrots
@@ -328,9 +329,6 @@ Exposed Cut Copper Slab
 Exposed Cut Copper Stairs
 Farmland
 Fern
-File:Calibrated Sculk Sensor.png Calibrated Sculk Sensor [x] / File:Calibrated Sculk Sensor.png Calibrated Sculk Sensor
-File:Pitcher Crop.png Pitcher Crop [x] / File:Pitcher Crop.png Pitcher Crop
-File:Suspicious Gravel.png Suspicious Gravel [x] / File:Suspicious Gravel.png Suspicious Gravel
 Fire
 Fire Coral
 Fire Coral Block
@@ -591,6 +589,7 @@ Pink Terracotta
 Pink Tulip
 Pink Wool
 Piston
+Pitcher Crop / Pitcher Pod
 Pitcher Plant [x] / Pitcher Plant
 Player Head
 Podzol
@@ -783,6 +782,7 @@ Structure Block
 Structure Void
 Sugar Cane
 Sunflower
+Suspicious Gravel
 Suspicious Sand [x] / Suspicious Sand
 Sweet Berry Bush
 TNT
