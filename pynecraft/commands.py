@@ -18,7 +18,7 @@ from abc import ABC
 from collections import UserDict, UserList
 from functools import wraps
 from pathlib import Path
-from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
+from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union, List
 
 from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GE, GREEN, IntColumn, JSON_COLORS, \
     JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, \
@@ -31,7 +31,7 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GE, G
     good_item_stack, good_name, good_names, good_nbt_path, good_pitch, good_range, good_resource, good_resource_path, \
     good_resources, \
     good_yaw, parameters, to_id, \
-    to_name
+    to_name, FacingDef, Facing
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 
@@ -153,7 +153,7 @@ def good_position(pos: Position) -> Position:
 
 
 def good_user(name: str) -> str:
-    """Checks if the argument is a valid user name.
+    """Checks if the argument is a valid username.
 
     :param name: The (probable) user name.
     :return: The input value.
@@ -3046,16 +3046,20 @@ class Entity(NbtHolder):
         passengers.append(e_nbt)
         return self
 
-    def summon(self, pos: Position, nbt=None, facing: str = None) -> str:
-        """Summons an instance of this entity, optionally with added NBT and a specified facing direction."""
+    def _summon_clean(self, nbt: NbtDef, facing: FacingDef) -> Tuple[Nbt, Facing]:
+        if not nbt:
+            nbt = Nbt()
+        else:
+            nbt = Nbt.as_nbt(nbt)
         if facing:
-            if not nbt:
-                nbt = Nbt()
-            else:
-                nbt = Nbt.as_nbt(nbt)
-            info = good_facing(facing)
+            facing = good_facing(facing)
             # Item frames use 'facing' instead of rotation, which they use for something else (natch).
-            nbt = nbt.merge({'Rotation': info.rotation, 'Facing': info.number})
+            nbt = nbt.merge({'Rotation': facing.rotation, 'Facing': facing.number})
+        return nbt, facing
+
+    def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = None)-> str:
+        """Summons an instance of this entity, optionally with added NBT and a specified facing direction."""
+        nbt, facing = self._summon_clean(nbt,facing)
         return summon(self, pos, nbt)
 
     def full_id(self):
@@ -3387,12 +3391,12 @@ class JsonText(UserDict, JsonHolder):
         return cls({'text': txt})
 
     @classmethod
-    def html_text(cls, txt: str) -> JsonText:
+    def html_text(cls, txt: str) -> List[JsonText]:
         """Returns a JSON text node populated from some HTML."""
         parser = _ToMinecraftText()
         parser.feed(txt)
         parser.close()
-        return cls({'text': parser.json()})
+        return parser.json()
 
     @classmethod
     def translate(cls, translation_id: str, *texts: str) -> JsonText:

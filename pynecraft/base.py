@@ -1006,19 +1006,21 @@ class Facing:
     """This class represents information about facing in a given direction."""
 
     def __init__(self, name: str, delta: Tuple[float, float, float], rotation: Tuple[float, float], number: int,
-                 sign_rotation: int = 0):
+                 h_number: int | None, sign_rotation: int = 0):
         """Creates a Facing object.
 
         :param name: The name of the direction, such as ``NORTH`` or ``SW``.
         :param delta: The amount to add to coordinates to move in the direction.
         :param rotation: The values to use as a ``Rotation`` NBT value.
-        :param number: The number used by most blocks and entities for this rotation, or NaN if none.
+        :param number: The number used by most blocks and entities for this rotation, or NaN if none. 0 is up, etc.
+        :param: h_number: The number used by entites that only can be horizintal, that is, paintings. 0 is north, etc.
         :param sign_rotation: The number used for rotation for a sign.
         """
         self.delta = delta
         self.name = name
         self.rotation = rotation
         self.number = number
+        self.h_number = h_number
         self.sign_rotation = sign_rotation
 
     def __str__(self):
@@ -1080,9 +1082,9 @@ class Facing:
         return good_facing(rotation_aid[rotation_aid.index(self.name) + rot])
 
 
-_facing = {NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2), EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5),
-           SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3), WEST: Facing(WEST, (-1, 0, 0), (90.0, 0.0), 4),
-           UP: Facing(UP, (0, 1, 0), (0.0, 270.0), 1), DOWN: Facing(DOWN, (0, -1, 0), (0.0, 90.0), 0)}
+_facing = {NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2, 0), EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5, 1),
+           SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3, 2), WEST: Facing(WEST, (-1, 0, 0), (90.0, 0.0), 4, 3),
+           UP: Facing(UP, (0, 1, 0), (0.0, 270.0), 1, None), DOWN: Facing(DOWN, (0, -1, 0), (0.0, 90.0), 0, None)}
 _facing[ROTATION_0] = _facing[SOUTH]
 _facing[ROTATION_90] = _facing[EAST]
 _facing[ROTATION_180] = _facing[NORTH]

@@ -4,6 +4,7 @@ from pynecraft import info
 from pynecraft.base import parameters
 from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id, mobs, mobs_by_id, \
     must_give_items, must_give_items_by_id
+from pynecraft.simpler import Painting
 
 
 class TestInfo(unittest.TestCase):
@@ -72,3 +73,5 @@ class TestInfo(unittest.TestCase):
         finally:
             parameters.version = orig_version
 
+    def test_painting(self):
+        self.assertEqual('bust', Painting('bust').nbt['variant'])

@@ -116,7 +116,7 @@ block_items = _ItemForBlockDict({
     'Tripwire': Item('String'),
     'Water': Item('Water Bucket'),
 })
-"""Items for each kind of block. By default, this is simply ``Item(key)``, but there are some special cases where 
+"""Items for each kind of block. By default, this is simply ``Item(key)``, but there are some special cases where
 there is no item for a block. This map takes a reasonable guess at the most reasonable item."""
 
 

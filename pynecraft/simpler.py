@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Callable, Iterable, Mapping, Tuple, Union
+from typing import Callable, Iterable, Mapping, Tuple, Union, Sequence
 
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, d, good_facing, r, to_id, BLACK
+    _to_list, d, good_facing, r, to_id, BLACK, NORTH
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignMessages, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock, Target, execute, \
-    data, s, \
-    e, SignMessage, SignCommand
+    SignMessages, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock, data, SignMessage, \
+    SignCommand
 from .enums import Pattern
 
 ARMORER = 'Armorer'
@@ -101,7 +100,7 @@ class Sign(Block):
         messages = self.lines_nbt(texts, commands)
         if front or front is None:
             self.merge_nbt({'front_text': messages})
-        if front == False or front is None:
+        if front is False or front is None:
             self.merge_nbt({'back_text': messages})
         return self
 
@@ -109,7 +108,7 @@ class Sign(Block):
         """Set whether the text will be glowing for the front, back, or both if ``front`` is None."""
         if front or front is None:
             self.merge_nbt({'front_text': {'glowing': v}})
-        if front == False or front is None:
+        if front is False or front is None:
             self.merge_nbt({'back_text': {'glowing': v}})
         return self
 
@@ -118,7 +117,7 @@ class Sign(Block):
         color = _in_group(COLORS, color)
         if front or front is None:
             self.merge_nbt({'front_text': {'color': color}})
-        if front == False or front is None:
+        if front is False or front is None:
             self.merge_nbt({'back_text': {'color': color}})
         return self
 
@@ -298,36 +297,50 @@ class Book:
         return jt
 
 
-class TextDisplay(Entity):
-    """An object that represents a text_display entity."""
+class Display(Entity):
+    """
+    A class for the various "display" objects: text_display, item_display, and block_display. The main feature is that
+    it makes transformation modifications work on the summon command; see https://bugs.mojang.com/browse/MC-259838.
+    """
+    INIT_TRANSFORMATION = Nbt(
+        {'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
+                            'right_rotation': [0.0, 0.0, 0.0, 1.0], 'scale': [1.0, 1.0, 1.0]}})
 
-    def __init__(self, text: str | None, nbt: NbtDef = None):
-        super().__init__('text_display', nbt)
-        if text is not None:
-            self.merge_nbt({'text': JsonText.text(text)})
-        self._tags = []
+    def __init__(self, id: str, nbt=None, name=None):
+        super().__init__(id, nbt, name)
+        # Without this, a simple change to the transform cannot be given at summon time.
+        # Crazily, this is "as intended": https://bugs.mojang.com/browse/MC-259838
+        self.merge_nbt(Display.INIT_TRANSFORMATION)
 
-    def tag(self, *tags: str) -> Entity:
-        self._tags.extend(tags)
-        return super().tag(*tags)
-
-    def scale(self, value: float) -> TextDisplay:
-        self.merge_nbt({'transformation': {'scale': [value, value, value]}})
+    def scale(self, value: float | Tuple[float, float, float]) -> Display:
+        """
+        Sets the scale transformation. If only given one value, it uses that for all three scale values. Otherwise,
+        it must be given the three values.
+        """
+        if isinstance(value, float):
+            value = [value, value, value]
+        self.merge_nbt({'transformation': {'scale': value}})
         return self
 
-    def transform(self, target: Target) -> str | None:
-        if 'transformation' not in self.nbt:
-            return None
-        return execute().as_(target).run(data().merge(s(), {'transformation': self.nbt['transformation']}))
 
-    def summon(self, pos: Position, nbt=None, facing: str = None) -> Tuple[str, ...]:
-        summon = super().summon(pos, nbt, facing)
-        if len(self._tags) == 0:
-            return (summon,)
-        return (
-            summon,
-            self.transform(e().tag(*self._tags))
-        )
+class TextDisplay(Display):
+    """An object that represents a text_display entity."""
+
+    def __init__(self, text: str | JsonText | Sequence[JsonText] = None, nbt: NbtDef = None):
+        """
+        Creates a TextDisplay with the given text, if any. The text can be a string, a JsonText object, or a list or
+        tuple of JsonText objects.
+        """
+        super().__init__('text_display', nbt)
+        self.text(text)
+
+    def text(self, text):
+        if isinstance(text, str):
+            text = JsonText.text(text)
+        elif isinstance(text, (JsonText, Sequence)):
+            text = str(text).replace("'", '"')
+        if text is not None:
+            self.merge_nbt({'text': text})
 
 
 class Item(Entity):
@@ -542,7 +555,7 @@ class Offset:
     """
 
     CoordsIn = Union[float, RelCoord]
-    # This is so complicated because some functions take specific-length tuples so we want to declare that we produce
+    # This is so complicated because some functions take specific-length tuples, so we want to declare that we produce
     # them to make the type checker happier.
     CoordsOut = Union[
         RelCoord, Tuple[RelCoord, RelCoord], Tuple[IntRelCoord, IntRelCoord], Tuple[RelCoord, RelCoord, RelCoord],
@@ -759,3 +772,153 @@ class Villager(Entity):
             item_nbt['Count'] = i[1]
             inventory.append(Nbt(item_nbt))
         return self
+
+
+@dataclasses.dataclass
+class PaintingInfo:
+    """
+    Class that holds detailed information on each painting, available from a Painting object's ``info`` field, or the
+    Painting.INFO map.
+    """
+    id: str
+    name: str
+    size: Tuple[int, int]
+    added: str
+    desc: str
+    original_artist: str = 'None'
+    based_on: str = None
+    source: str = None
+    artist: str = 'Kristoffer Zetterstrand'
+    used: bool = True
+
+
+class Painting(Entity):
+    """
+    Represents a painting. This understands its different "facing" numbering, and the PaintingInfo objects
+    """
+    INFO = {
+        'alban': PaintingInfo('alban', 'Albanian', (1, 1), 'Indev 20100223',
+                              """A man wearing a fez next to a house and a bush. As the name of the painting
+                              suggests, it may be a landscape in Albania"""),
+        'aztec': PaintingInfo('aztec', 'de_aztec', (1, 1), 'Indev 20100223',
+                              """Free-look perspective of the map 'de_aztec' from the video game 
+                              <i>Counter-Strike.</i>""",
+                              based_on='de_aztec', source='Counter-Strike'),
+        'aztec2': PaintingInfo('aztec', 'de_aztec', (1, 1), 'Indev 20100223',
+                               """Free-look perspective of the map 'de_aztec' from the video game 
+                               <i>Counter-Strike.</i>""",
+                               based_on='de_aztec', source='Counter-Strike'),
+        'bomb': PaintingInfo('bomb', 'Target Successfully Bombed', (1, 1), 'Indev 20100223',
+                             """The map 'de_dust2' from the video game <i>Counter-Strike,</i> named “target 
+                             successfully bombed" in reference to the game.""",
+                             based_on='de_dust2', source='Counter-Strike'),
+        'kebab': PaintingInfo('kebab', 'Kebab med tre pepperoni', (1, 1), 'Indev 20100223',
+                              """A kebab with three green chili peppers."""),
+        'plant': PaintingInfo('plant', 'Paradisträd', (1, 1), 'Indev 20100223',
+                              """Still life of two plants in pots. "Paradisträd" is Swedish for "money tree",
+                              which is a common name for the depicted species in Scandinavia."""),
+        'wasteland': PaintingInfo('wasteland', 'Wasteland', (1, 1), 'Indev 20100223',
+                                  """Some wastelands; a small animal (presumably a rabbit) is sitting on the window
+                                  ledge."""),
+        'courbet': PaintingInfo('courbet', 'Bonjour Monsieur Courbet', (2, 1), 'Indev 20100223',
+                                """Two hikers with pointy beards seemingly greeting each other. This painting is
+                                based on Gustave Courbet's painting <i>The Meeting</i> or <i>"Bonjour,
+                                Monsieur Courbet"</i>.""",
+                                based_on='Bonjour Monsieur Courbet', original_artist='Gustave Courbet'),
+        'pool': PaintingInfo('pool', 'The Pool', (2, 1), 'Indev 20100223',
+                             """Some men and women skinny-dipping in a pool over a cube of sorts. Also there is an
+                             old man resting in the lower-right edge."""),
+        'sea': PaintingInfo('sea', 'Seaside', (2, 1), 'Indev 20100223 / Alpha v1.1.1',
+                            """Mountains and a lake, with a small photo of a mountain and a bright-colored plant on
+                            the window ledge."""),
+        'creebet': PaintingInfo("creebet", 'Creebet', (2, 1), 'Alpha v1.1.1',
+                                """Mountains and a lake, with a small photo of a mountain and a creeper looking at
+                                the viewer through a window."""),
+        'sunset': PaintingInfo('sunset', 'Sunset Dense', (2, 1), 'Indev 20100223', """Mountains at sunset."""),
+        'graham': PaintingInfo('graham', 'Graham', (1, 2), 'Alpha v1.1.1',
+                               """King Graham, the player character in the video game series <i>King's Quest<i>.""",
+                               based_on='Still Life with Quince, Cabbage, Melon, and Cucumber',
+                               original_artist='Juan Sánchez Cotán', source='King\'s Quest'),
+        'wanderer': PaintingInfo('wanderer', 'Wanderer', (1, 2), 'Indev 20100223',
+                                 """A version of Caspar David Friedrich's famous painting Wanderer above the Sea of 
+                                 Fog.""",
+                                 based_on='Wanderer above the Sea of Fog', original_artist='Caspar David Friedrich'),
+        'bust': PaintingInfo('bust', 'Bust', (2, 2), 'Indev 20100223',
+                             """Bust of Marcus Aurelius surrounded by fire."""),
+        'match': PaintingInfo('match', 'Match', (2, 2), 'Indev 20100223',
+                              """A hand holding a match, causing fire on a white cubic gas fireplace."""),
+        'skull_and_roses': PaintingInfo('skull_and_roses', 'Skull and Roses', (2, 2), 'Indev 20100223',
+                                        """A skeleton at night with red flowers in the foreground."""),
+        'stage': PaintingInfo('stage', 'The Stage is Set', (2, 2), 'Indev 20100223 / Alpha v1.1.1',
+                              """Scenery from Space Quest I, with the character Graham from the video game series
+                              King's Quest.""",
+                              source='Space Quest I / King\'s Quest'),
+        'void': PaintingInfo('void', 'The void', (2, 2), 'Indev 20100223',
+                             """An angel praying into a void with fire below."""),
+        'wither': PaintingInfo('wither', 'Wither', (2, 2), 'Java Edition 1.4.2',
+                               """The creation of a wither. This is the only painting not based on a real painting.""",
+                               artist='Jens Bergensten'),
+        'fighters': PaintingInfo('fighters', 'Fighters', (4, 2), 'Indev 20100223',
+                                 """Two men poised to fight. Paper versions of fighters from the game
+                                 <i>International Karate +</i>.""",
+                                 source='International Karate +'),
+        'donkey_kong': PaintingInfo('donkey_kong', 'Kong', (4, 3), 'Alpha v1.1.1',
+                                    """Level 100 from the arcade game <i>Donkey Kong.</i>""", source='Donkey Kong'),
+        'skeleton': PaintingInfo('skeleton', 'Mortal Coil', (4, 3), 'Alpha v1.1.1',
+                                 """Bruno Martinez from the adventure game <i>Grim Fandango.</i>""",
+                                 source='Grim Fandango'),
+        'burning_skull': PaintingInfo('burning_skull', 'Skull on Fire', (4, 4), 'Beta 1.2_01 / Beta 1.3',
+                                      """A Skull on fire; in the background there is a moon in a clear night sky.
+                                      Based on a <i>Minecraft</i> screenshot, with grass blocks and a 3D skull added
+                                      on top.""",
+                                      source='Minecraft'),
+        'pigscene': PaintingInfo('pigscene', 'Pigscene', (4, 4), 'Alpha v1.1.1',
+                                 """A girl pointing to a pig on a canvas.""", based_on='The Artist\'s Studio',
+                                 original_artist='Jacob van Oost'),
+        'pointer': PaintingInfo('pointer', 'Pointer', (4, 4), 'Indev 20100223',
+                                """The main character of the game <i>International Karate +</i> in a fighting stance
+                                touching a large hand. It can be interpreted as a play on Michelangelo's famous
+                                painting "The Creation of Adam".""",
+                                source='International Karate +'),
+        'earth': PaintingInfo('earth', 'Earth', (2, 2), '22w16a', """The classical element Earth""", used=False),
+        'fire': PaintingInfo('fire', 'Fire', (2, 2), '22w16a', """The classical element Fire""", used=False),
+        'water': PaintingInfo('water', 'Water', (2, 2), '22w16a', """The classical element Water""", used=False),
+        'wind': PaintingInfo('wind', 'Wind', (2, 2), '22w16a', """The classical element Wind""", used=False),
+    }
+    """PaintingInfo objects for paintings"""
+
+    def __init__(self, variant: str):
+        variant = to_id(variant)
+        if variant not in self.INFO:
+            raise ValueError(f'{variant}: Unknown painting variant')
+        self.variant = variant
+        super().__init__('painting', nbt={'variant': variant})
+
+    @property
+    def info(self):
+        return Painting.INFO.get(self.variant)
+
+    def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = None, ll=False) -> str:
+        """
+        Overrides to add ``ll`` parameter which, if true, uses the lower-left corner consistently for all sizes of
+        paintings.
+        """
+        nbt, facing = self._summon_clean(nbt, facing)
+        if facing:
+            nbt['facing'] = facing.h_number
+        del nbt['Facing']
+        del nbt['Rotation']
+        nbt['variant'] = self.variant
+        if ll:
+            if not facing:
+                facing = good_facing(NORTH)
+            movement = facing.turn(90)
+            x, y = self.info.size
+            pos = _to_list(pos)
+            if x > 2:
+                adj = x - 3
+                pos[0] += adj * movement.dx
+                pos[2] += adj * movement.dz
+            if y > 2:
+                pos[1] += 1
+        return super().summon(pos, nbt)

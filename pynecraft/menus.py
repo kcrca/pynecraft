@@ -50,7 +50,7 @@ class Menu:
 
         When the menu has been defined, you use place() to put it in the world. You provide the home entity,
         the starting position, and the direction the signs will face. This generates all the needed functions.
-        The same menu can be placed in many places in the same world. Each locatoin needs its own home.
+        The same menu can be placed in many places in the same world. Each location needs its own home.
         The factory function can produce unique function names for each placement or not.
 
         :param function_factory: Returns a function given a name.
