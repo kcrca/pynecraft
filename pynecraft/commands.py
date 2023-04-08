@@ -2750,7 +2750,10 @@ def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) ->
     cmd._add('summon', to_summon.id)
     cmd._add_opt_pos(pos)
     e_nbt = Nbt(to_summon.nbt) if to_summon.nbt else Nbt()
+    tags = e_nbt['Tags'] if 'Tags' in e_nbt else ()
     e_nbt = e_nbt.merge(nbt)
+    if 'Tags' in e_nbt:
+        e_nbt['Tags'].extend(tags)
     if len(e_nbt) > 0:
         cmd._add_opt(e_nbt)
     return str(cmd)
