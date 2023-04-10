@@ -1006,7 +1006,7 @@ class Facing:
     """This class represents information about facing in a given direction."""
 
     def __init__(self, name: str, delta: Tuple[float, float, float], rotation: Tuple[float, float], number: int,
-                 h_number: int | None, sign_rotation: int = 0):
+                 h_number: int | None):
         """Creates a Facing object.
 
         :param name: The name of the direction, such as ``NORTH`` or ``SW``.
@@ -1021,7 +1021,10 @@ class Facing:
         self.rotation = rotation
         self.number = number
         self.h_number = h_number
-        self.sign_rotation = sign_rotation
+
+    @property
+    def sign_rotation(self):
+        return self.h_number
 
     def __str__(self):
         return self.name
@@ -1096,11 +1099,11 @@ _facing[W] = _facing[WEST]
 for __i, __r in enumerate(SIGN_DIRECTIONS):
     # One motivation for this logic is to keep deltas as ints where possible.
     if __r in _facing:
-        _facing[__r].sign_rotation = __i
+        _facing[__r].h_number = __i
         _facing[__i] = _facing[__r]
     elif __i in _facing:
         # This affects only zero.
-        _facing[__i].sign_rotation = __i
+        _facing[__i].h_number = __i
         _facing[__r] = _facing[__i]
     else:
         __deg = round((0 + __i * 22.5 + 720) % 360, 1)
