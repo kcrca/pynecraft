@@ -192,8 +192,7 @@ class TestCommands(unittest.TestCase):
             self.assertEqual('{"text": "hi"}', str(JsonText.text('hi')))
             self.assertEqual('{"text": "hi\\n"}', str(JsonText.text('hi\n')))
             self.assertEqual((
-                '{"text": [{"text": "hi", "bold": "true", "italic": "true"}, {"text": " there", "bold": "true"},'
-                ' {"text": " friend"}]}'),
+                "[{'text': 'hi', 'bold': 'true', 'italic': 'true'}, {'text': ' there', 'bold': 'true'}, {'text': ' friend'}]"),
                 str(JsonText.html_text('<b><i>hi</i> there</b> friend')))
             self.assertEqual('{"translate": "m.id", "with": ["t1", "t2"]}',
                              str(JsonText.translate('m.id', 't1', 't2')))

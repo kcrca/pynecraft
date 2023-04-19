@@ -23,8 +23,8 @@ MASON = 'Mason'
 NITWIT = 'Nitwit'
 SHEPHERD = 'Shepherd'
 TOOLSMITH = 'Toolsmith'
-UNEMPLOYED = 'Unemployed'
 WEAPONSMITH = 'Weaponsmith'
+NONE = 'None'
 CHILD = 'Child'
 VILLAGER_PROFESSIONS = (
     ARMORER,
@@ -41,7 +41,7 @@ VILLAGER_PROFESSIONS = (
     SHEPHERD,
     TOOLSMITH,
     WEAPONSMITH,
-    UNEMPLOYED,
+    NONE,
 )
 """Villager professions."""
 
@@ -737,7 +737,7 @@ class Villager(Entity):
         if profession == 'Child':
             if self.zombie:
                 raise ValueError('Child: Invalid zombie villager profession')
-            profession = UNEMPLOYED
+            profession = NONE
             self.merge_nbt({'Age': -2147483648})
         self.merge_nbt({'VillagerData': {'profession': _in_group(VILLAGER_PROFESSIONS, profession).lower()}})
         return self

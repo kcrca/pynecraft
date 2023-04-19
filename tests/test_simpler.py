@@ -2,7 +2,7 @@ import shutil
 import tempfile
 import unittest
 
-from pynecraft.base import DARK_AQUA, N, NORTH, SW
+from pynecraft.base import DARK_AQUA, N, SW
 from pynecraft.commands import *
 from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines
@@ -248,7 +248,7 @@ class TestSimpler(unittest.TestCase):
     def test_villager(self):
         self.assertEqual(Nbt({'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
                          Villager(MASON, JUNGLE).nbt)
-        self.assertEqual(Nbt({'Age': -2147483648, 'VillagerData': {'profession': 'unemployed', 'type': 'plains'}}),
+        self.assertEqual(Nbt({'Age': -2147483648, 'VillagerData': {'profession': 'none', 'type': 'plains'}}),
                          Villager(CHILD, 'plains').nbt)
         self.assertEqual(Nbt({
             'Offers': {'Recipes': [
