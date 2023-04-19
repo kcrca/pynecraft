@@ -1014,7 +1014,6 @@ class Facing:
         :param rotation: The values to use as a ``Rotation`` NBT value.
         :param number: The number used by most blocks and entities for this rotation, or NaN if none. 0 is up, etc.
         :param: h_number: The number used by entites that only can be horizintal, that is, paintings. 0 is north, etc.
-        :param sign_rotation: The number used for rotation for a sign.
         """
         self.delta = delta
         self.name = name
