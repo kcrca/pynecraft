@@ -22,16 +22,10 @@ from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union, List
 
 from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GE, GREEN, IntColumn, JSON_COLORS, \
     JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, \
-    WHITE, \
-    YELLOW, \
-    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, \
-    good_column, \
-    good_duration, \
-    good_facing, \
-    good_item_stack, good_name, good_names, good_nbt_path, good_pitch, good_range, good_resource, good_resource_path, \
-    good_resources, \
-    good_yaw, parameters, to_id, \
-    to_name, FacingDef, Facing
+    WHITE, YELLOW, _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, \
+    good_column, good_duration, good_facing, good_item_stack, good_name, good_names, good_nbt_path, good_pitch, \
+    good_range, good_resource, good_resource_path, good_resources, good_yaw, parameters, to_id, to_name, FacingDef, \
+    Facing
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 
@@ -981,6 +975,11 @@ class Selector(TargetSpec):
         return self._multi_args('nbt', Nbt.as_nbt(nbt), (Nbt.as_nbt(x) for x in nbts))
 
     @_fluent
+    def not_nbt(self, nbt: NbtDef, *nbts: NbtDef) -> Selector:
+        """Add NBT criteria to the selector."""
+        return self._multi_args('nbt', f'!{Nbt.as_nbt(nbt)}', (Nbt.as_nbt(x) for x in nbts))
+
+    @_fluent
     def advancements(self, advancement: _AdvancementCriteria, *advancements: _AdvancementCriteria) -> Selector:
         """Add advancements to the selector."""
         adv = [advancement]
@@ -1385,8 +1384,8 @@ class _CloneClause(Command):
 class _CloneFromDimMod(Command):
     def from_(self, dimension: str, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
         self.dimension = dimension
-        self._start_pos = start_pos
-        self._end_pos = end_pos
+        self.start_pos = start_pos
+        self.end_pos = end_pos
         return _CloneToDimMod(self)
 
 
@@ -1397,8 +1396,8 @@ class _CloneToDimMod(Command):
 
     def to(self, dimension: str, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
         f = self._from_
-        dest_pos = _clone_dest(f._start_pos, f._end_pos, dest_pos, dest_type)
-        self._add('clone', 'from', f.dimension, *f._start_pos, *f._end_pos, 'to', dimension, *dest_pos)
+        dest_pos = _clone_dest(f.start_pos, f.end_pos, dest_pos, dest_type)
+        self._add('clone', 'from', f.dimension, *f.start_pos, *f.end_pos, 'to', dimension, *dest_pos)
         return self._start(_CloneClause())
 
 
@@ -2453,7 +2452,7 @@ def function(path: str | object) -> str:
     """Runs a function."""
     cmd = Command()
     try:
-        # This will work if it is a Function, but I can't import Function so we just duck type it
+        # This will work if it is a Function, but I can't import Function, so we just duck type it
         # noinspection PyUnresolvedReferences
         path = path.full_name
     except AttributeError:
@@ -2606,11 +2605,11 @@ def publish_1_19(port: int = None) -> str:
     return str(cmd)
 
 
-def publish_1_19_3(allowCommands: bool = None, gamemode: str = None, port: int = None) -> str:
+def publish_1_19_3(allow_commands: bool = None, gamemode: str = None, port: int = None) -> str:
     """Opens single-player dir to local network."""
     cmd = Command()
     cmd._add('publish')
-    cmd._add_opt(_bool(allowCommands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
+    cmd._add_opt(_bool(allow_commands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
     return str(cmd)
 
 
@@ -3049,7 +3048,8 @@ class Entity(NbtHolder):
         passengers.append(e_nbt)
         return self
 
-    def _summon_clean(self, nbt: NbtDef, facing: FacingDef) -> Tuple[Nbt, Facing]:
+    @staticmethod
+    def _summon_clean(nbt: NbtDef, facing: FacingDef) -> Tuple[Nbt, Facing]:
         if not nbt:
             nbt = Nbt()
         else:
@@ -3060,9 +3060,9 @@ class Entity(NbtHolder):
             nbt = nbt.merge({'Rotation': facing.rotation, 'Facing': facing.number})
         return nbt, facing
 
-    def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = None)-> str:
+    def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = None) -> str:
         """Summons an instance of this entity, optionally with added NBT and a specified facing direction."""
-        nbt, facing = self._summon_clean(nbt,facing)
+        nbt, facing = self._summon_clean(nbt, facing)
         return summon(self, pos, nbt)
 
     def full_id(self):
@@ -3077,7 +3077,7 @@ class Block(NbtHolder):
 
     def __init__(self, id: str, state=None, nbt=None, name=None):
         """Creates a new block object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``. Block
-        state is represented as an nbt object. """
+        state is represented as an NBT object. """
         super().__init__(id, name)
         if state is None:
             state = {}
@@ -3206,8 +3206,8 @@ class Expression:
     """Represents an expression of scores, or a single score, and operations upon it that can be used to generate a
     series of commands that will evaluate it.
 
-    Evaluating expressions often require some intermediate scratch values. These will be created in "the scratch objective",
-    which by default is '__scratch', though you can change that. They will be reused where possible.
+    Evaluating expressions often require some intermediate scratch values. These will be created in "the scratch
+    objective", which by default is '__scratch', though you can change that. They will be reused where possible.
 
     The operators supported are ``+``, ``-``, ``*``, ``//``, and ``%``, and are supported against scores and
     constants in any order, and the assignment versions as well (``+=``, etc.). Unary ``+`` and ``-`` are also
