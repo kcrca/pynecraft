@@ -2,11 +2,11 @@ Acacia Boat
 Acacia Boat with Chest / Acacia Chest Boat
 Allay Spawn Egg
 Amethyst Shard
-Angler Pottery Shard
+Angler Pottery Sherd
 Apple
-Archer Pottery Shard
+Archer Pottery Sherd
 Armor Stand
-Arms Up Pottery Shard
+Arms Up Pottery Sherd
 Arrow
 Axolotl Spawn Egg
 Baked Potato
@@ -21,7 +21,7 @@ Beetroot Soup
 Birch Boat
 Birch Boat with Chest / Birch Chest Boat
 Black Dye
-Blade Pottery Shard
+Blade Pottery Sherd
 Blaze Powder
 Blaze Rod
 Blaze Spawn Egg
@@ -35,7 +35,7 @@ Bottle o' Enchanting / Experience Bottle
 Bow
 Bowl
 Bread
-Brewer Pottery Shard
+Brewer Pottery Sherd
 Brick
 Brown Dye
 Brush
@@ -47,7 +47,7 @@ Bucket of Salmon / Salmon Bucket
 Bucket of Tadpole / Tadpole Bucket
 Bucket of Tropical Fish / Tropical Fish Bucket
 Bundle
-Burn Pottery Shard
+Burn Pottery Sherd
 Camel Spawn Egg
 Carrot
 Carrot on a Stick
@@ -83,7 +83,7 @@ Creeper / Creeper Banner Pattern
 Creeper Spawn Egg
 Crossbow
 Cyan Dye
-Danger Pottery Shard
+Danger Pottery Sherd
 Dark Oak Boat
 Dark Oak Boat with Chest / Dark Oak Chest Boat
 Debug Stick
@@ -121,7 +121,7 @@ Ender Pearl
 Enderman Spawn Egg
 Endermite Spawn Egg
 Evoker Spawn Egg
-Explorer Pottery Shard
+Explorer Pottery Sherd
 Eye Armor Trim / Eye Armor Trim Smithing Template
 Eye of Ender / Ender Eye
 Feather
@@ -134,7 +134,7 @@ Flint
 Flint and Steel
 Flower / Flower Banner Pattern
 Fox Spawn Egg
-Friend Pottery Shard
+Friend Pottery Sherd
 Frog Spawn Egg
 Ghast Spawn Egg
 Ghast Tear
@@ -166,15 +166,15 @@ Gray Dye
 Green Dye
 Guardian Spawn Egg
 Gunpowder
-Heart Pottery Shard
+Heart Pottery Sherd
 Heart of the Sea
-Heartbreak Pottery Shard
+Heartbreak Pottery Sherd
 Hoglin Spawn Egg
 Honey Bottle
 Honeycomb
 Horse Spawn Egg
 Host Armor Trim / Host Armor Trim Smithing Template
-Howl Pottery Shard
+Howl Pottery Sherd
 Husk Spawn Egg
 Ink Sac
 Ink Sac
@@ -228,9 +228,9 @@ Minecart with Command Block / Command Block Minecart
 Minecart with Furnace / Furnace Minecart
 Minecart with Hopper / Hopper Minecart
 Minecart with TNT / TNT Minecart
-Miner Pottery Shard
+Miner Pottery Sherd
 Mooshroom Spawn Egg
-Mourner Pottery Shard
+Mourner Pottery Sherd
 Mule Spawn Egg
 Mushroom Stew
 Music Disc 11
@@ -282,7 +282,7 @@ Piglin Spawn Egg
 Pillager Spawn Egg
 Pink Dye
 Pitcher Pod
-Plenty Pottery Shard
+Plenty Pottery Sherd
 Poisonous Potato
 Polar Bear Spawn Egg
 Popped Chorus Fruit
@@ -290,7 +290,7 @@ Potato
 Powder Snow Bucket
 Prismarine Crystals
 Prismarine Shard
-Prize Pottery Shard
+Prize Pottery Sherd
 Pufferfish
 Pufferfish Spawn Egg
 Pumpkin Pie
@@ -322,10 +322,10 @@ Salmon Spawn Egg
 Scute
 Sentry Armor Trim / Sentry Armor Trim Smithing Template
 Shaper Armor Trim / Shaper Armor Trim Smithing Template
-Sheaf Pottery Shard
+Sheaf Pottery Sherd
 Shears
 Sheep Spawn Egg
-Shelter Pottery Shard
+Shelter Pottery Sherd
 Shield
 Shulker Shell
 Shulker Spawn Egg
@@ -334,11 +334,11 @@ Silverfish Spawn Egg
 Skeleton Horse Spawn Egg
 Skeleton Spawn Egg
 Skull / Skull Banner Pattern
-Skull Pottery Shard
+Skull Pottery Sherd
 Slime Spawn Egg
 Slimeball / Slime Ball
 Sniffer Spawn Egg
-Snort Pottery Shard
+Snort Pottery Sherd
 Snout / Piglin Banner Pattern
 Snow Golem Spawn Egg
 Snowball
