@@ -107,9 +107,9 @@ class Sign(Block):
     def glowing(self, v: bool, front: bool = None) -> Sign:
         """Set whether the text will be glowing for the front, back, or both if ``front`` is None."""
         if front or front is None:
-            self.merge_nbt({'front_text': {'glowing': v}})
+            self.merge_nbt({'front_text': {'has_glowing_text': v}})
         if front is False or front is None:
-            self.merge_nbt({'back_text': {'glowing': v}})
+            self.merge_nbt({'back_text': {'has_glowing_text': v}})
         return self
 
     def color(self, color: str = BLACK, front: bool = None) -> Sign:
