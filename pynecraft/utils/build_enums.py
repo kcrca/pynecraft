@@ -376,11 +376,11 @@ class Particle(PageEnumDesc):
         return name, value, desc
 
 
-class PotteryShard(PageEnumDesc):
-    """Generates the PotteryShard" enum."""
+class PotterySherd(PageEnumDesc):
+    """Generates the PotterySherd" enum."""
 
     def __init__(self):
-        super().__init__('PotteryShard', WIKI + 'Pottery_Shard', 'Pottery Shards')
+        super().__init__('PotterySherd', WIKI + 'Pottery_Sherd', 'Pottery Sherds')
         self.value_col = None
         self.desc_col = None
         self.done = False
@@ -458,7 +458,7 @@ if __name__ == '__main__':
         with redirect_stdout(out):
             for tab in (
                     Advancement(), BiomeIds(), Effect(), Enchantment(), GameRule(), ScoreCriteria(), Particle(),
-                    PotteryShard()):
+                    PotterySherd()):
                 fields = tab.generate()
                 print()
                 print()

@@ -2639,6 +2639,12 @@ def reload() -> str:
     return str(cmd)
 
 
+def return_(value: int) -> str:
+    cmd = Command()
+    cmd._add('return', value)
+    return str(cmd)
+
+
 def ride(target: Target) -> _RideMod:
     """Allows entities to mount or dismount other entities. """
     parameters.check_version(GE, Parameters.VERSION_1_19_4)

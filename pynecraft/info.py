@@ -10,7 +10,7 @@ from packaging.version import Version
 
 from .base import COLORS, Nbt, Parameters, parameters, to_id, to_name
 from .commands import Block, Entity, good_color_num
-from .enums import PotteryShard
+from .enums import PotterySherd
 from .simpler import Item
 from .utils.fetch_things import ItemFetcher
 
@@ -33,7 +33,7 @@ must_give_items_by_id: dict[str, Item] = {}
 
 def pre_1_19_4_filter(x):
     return not re.search(
-        r'(Bamboo|Camel|Hanging|Chiseled Book|Piglin Head|Cherry|Pink Petal|Decorated|Supicious|Torchflower|Brush|Shard|Smithing|Trim\b)',
+        r'(Bamboo|Camel|Hanging|Chiseled Book|Piglin Head|Cherry|Pink Petal|Decorated|Supicious|Torchflower|Brush|Sh[ae]rd|Smithing|Trim\b)',
         x)
 
 
@@ -435,7 +435,7 @@ trim_patterns = sorted(
 
 armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 
-shards = tuple(x.value for x in PotteryShard)
+sherds = tuple(x.value for x in PotterySherd)
 
 
 def _version_change_handler(_: Version, version: Version):
@@ -445,7 +445,7 @@ def _version_change_handler(_: Version, version: Version):
     if version >= Parameters.VERSION_1_19_3_X:
         if 'Bamboo' not in woods:
             w = list(woods)
-            w.insert( woods.index('Birch'), 'Bamboo')
+            w.insert(woods.index('Birch'), 'Bamboo')
             woods = tuple(w)
     else:
         if 'Bamboo' in woods:
@@ -453,7 +453,7 @@ def _version_change_handler(_: Version, version: Version):
     if version >= Parameters.VERSION_1_19_4_X:
         if 'Cherry' not in woods:
             w = list(woods)
-            w.insert( woods.index('Jungle'), 'Cherry')
+            w.insert(woods.index('Jungle'), 'Cherry')
             woods = tuple(w)
     else:
         if 'Cherry' in woods:

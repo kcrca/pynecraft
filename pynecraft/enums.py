@@ -1018,6 +1018,8 @@ class Particle(ValueEnum):
     """Smoke produced by campfires and soul campfires."""
     CAMPFIRE_SIGNAL_SMOKE = "campfire_signal_smoke"
     """Smoke produced by campfires and soul campfires when above a hay bale."""
+    CHERRY_LEAVES = "cherry_leaves"
+    """Falling petals from the cherry leaves."""
     CLOUD = "cloud"
     """After jumping into water while on fire in Bedrock Edition or an entity dies in Java Edition."""
     COMPOSTER = "composter"
@@ -1034,8 +1036,6 @@ class Particle(ValueEnum):
     """Trails behind swimming dolphins."""
     DRAGON_BREATH = "dragon_breath"
     """An ender dragon's breath and dragon fireballs."""
-    DRIPPING_CHERRY_LEAVES = "dripping_cherry_leaves"
-    """Dripping leaves from the cherry leaves."""
     DRIPPING_DRIPSTONE_LAVA = "dripping_dripstone_lava"
     """Dripping lava from the pointed dripstone."""
     DRIPPING_DRIPSTONE_WATER = "dripping_dripstone_water"
@@ -1070,8 +1070,6 @@ class Particle(ValueEnum):
     """Explosions, ghast fireballs, wither skulls, ender dragon death, shearing mooshrooms."""
     EXPLOSION_EMITTER = "explosion_emitter"
     """Explosions, ender dragon death."""
-    FALLING_CHERRY_LEAVES = "falling_cherry_leaves"
-    """Falling leaves from the cherry leaves."""
     FALLING_DRIPSTONE_LAVA = "falling_dripstone_lava"
     """Falling lava particles from the pointed dripstone."""
     FALLING_DRIPSTONE_WATER = "falling_dripstone_water"
@@ -1114,8 +1112,6 @@ class Particle(ValueEnum):
     """Jumping slimes."""
     ITEM_SNOWBALL = "item_snowball"
     """Thrown snowballs, creating withers, creating iron golems."""
-    LANDING_CHERRY_LEAVES = "landing_cherry_leaves"
-    """Landing leaves from the cherry leaves."""
     LANDING_HONEY = "landing_honey"
     """Dripping honey through blocks that has fallen to the ground."""
     LANDING_LAVA = "landing_lava"
@@ -1196,11 +1192,11 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.ASH: "Ash", Particle.BLOCK: "Block", Particle.BLOCK_MARKER: "Block Marker",
                      Particle.BUBBLE: "Bubble", Particle.BUBBLE_COLUMN_UP: "Bubble Column Up",
                      Particle.BUBBLE_POP: "Bubble Pop", Particle.CAMPFIRE_COSY_SMOKE: "Campfire Cosy Smoke",
-                     Particle.CAMPFIRE_SIGNAL_SMOKE: "Campfire Signal Smoke", Particle.CLOUD: "Cloud",
-                     Particle.COMPOSTER: "Composter", Particle.CRIMSON_SPORE: "Crimson Spore", Particle.CRIT: "Crit",
-                     Particle.CURRENT_DOWN: "Current Down", Particle.DAMAGE_INDICATOR: "Damage Indicator",
-                     Particle.DOLPHIN: "Dolphin", Particle.DRAGON_BREATH: "Dragon Breath",
-                     Particle.DRIPPING_CHERRY_LEAVES: "Dripping Cherry Leaves",
+                     Particle.CAMPFIRE_SIGNAL_SMOKE: "Campfire Signal Smoke", Particle.CHERRY_LEAVES: "Cherry Leaves",
+                     Particle.CLOUD: "Cloud", Particle.COMPOSTER: "Composter", Particle.CRIMSON_SPORE: "Crimson Spore",
+                     Particle.CRIT: "Crit", Particle.CURRENT_DOWN: "Current Down",
+                     Particle.DAMAGE_INDICATOR: "Damage Indicator", Particle.DOLPHIN: "Dolphin",
+                     Particle.DRAGON_BREATH: "Dragon Breath",
                      Particle.DRIPPING_DRIPSTONE_LAVA: "Dripping Dripstone Lava",
                      Particle.DRIPPING_DRIPSTONE_WATER: "Dripping Dripstone Water",
                      Particle.DRIPPING_HONEY: "Dripping Honey", Particle.DRIPPING_LAVA: "Dripping Lava",
@@ -1211,7 +1207,6 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.ENCHANT: "Enchant", Particle.ENCHANTED_HIT: "Enchanted Hit", Particle.END_ROD: "End Rod",
                      Particle.ENTITY_EFFECT: "Entity Effect", Particle.EXPLOSION: "Explosion",
                      Particle.EXPLOSION_EMITTER: "Explosion Emitter",
-                     Particle.FALLING_CHERRY_LEAVES: "Falling Cherry Leaves",
                      Particle.FALLING_DRIPSTONE_LAVA: "Falling Dripstone Lava",
                      Particle.FALLING_DRIPSTONE_WATER: "Falling Dripstone Water", Particle.FALLING_DUST: "Falling Dust",
                      Particle.FALLING_HONEY: "Falling Honey", Particle.FALLING_LAVA: "Falling Lava",
@@ -1222,15 +1217,15 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.HAPPY_VILLAGER: "Happy Villager", Particle.HEART: "Heart",
                      Particle.INSTANT_EFFECT: "Instant Effect", Particle.ITEM: "Item",
                      Particle.ITEM_SLIME: "Item Slime", Particle.ITEM_SNOWBALL: "Item Snowball",
-                     Particle.LANDING_CHERRY_LEAVES: "Landing Cherry Leaves", Particle.LANDING_HONEY: "Landing Honey",
-                     Particle.LANDING_LAVA: "Landing Lava", Particle.LANDING_OBSIDIAN_TEAR: "Landing Obsidian Tear",
-                     Particle.LARGE_SMOKE: "Large Smoke", Particle.LAVA: "Lava", Particle.MYCELIUM: "Mycelium",
-                     Particle.NAUTILUS: "Nautilus", Particle.NOTE: "Note", Particle.POOF: "Poof",
-                     Particle.PORTAL: "Portal", Particle.RAIN: "Rain", Particle.SCRAPE: "Scrape",
-                     Particle.SCULK_CHARGE: "Sculk Charge", Particle.SCULK_CHARGE_POP: "Sculk Charge Pop",
-                     Particle.SCULK_SOUL: "Sculk Soul", Particle.SHRIEK: "Shriek", Particle.SMOKE: "Smoke",
-                     Particle.SNEEZE: "Sneeze", Particle.SNOWFLAKE: "Snowflake", Particle.SONIC_BOOM: "Sonic Boom",
-                     Particle.SOUL: "Soul", Particle.SOUL_FIRE_FLAME: "Soul Fire Flame", Particle.SPIT: "Spit",
+                     Particle.LANDING_HONEY: "Landing Honey", Particle.LANDING_LAVA: "Landing Lava",
+                     Particle.LANDING_OBSIDIAN_TEAR: "Landing Obsidian Tear", Particle.LARGE_SMOKE: "Large Smoke",
+                     Particle.LAVA: "Lava", Particle.MYCELIUM: "Mycelium", Particle.NAUTILUS: "Nautilus",
+                     Particle.NOTE: "Note", Particle.POOF: "Poof", Particle.PORTAL: "Portal", Particle.RAIN: "Rain",
+                     Particle.SCRAPE: "Scrape", Particle.SCULK_CHARGE: "Sculk Charge",
+                     Particle.SCULK_CHARGE_POP: "Sculk Charge Pop", Particle.SCULK_SOUL: "Sculk Soul",
+                     Particle.SHRIEK: "Shriek", Particle.SMOKE: "Smoke", Particle.SNEEZE: "Sneeze",
+                     Particle.SNOWFLAKE: "Snowflake", Particle.SONIC_BOOM: "Sonic Boom", Particle.SOUL: "Soul",
+                     Particle.SOUL_FIRE_FLAME: "Soul Fire Flame", Particle.SPIT: "Spit",
                      Particle.SPORE_BLOSSOM_AIR: "Spore Blossom Air", Particle.SPLASH: "Splash",
                      Particle.SQUID_INK: "Squid Ink", Particle.SWEEP_ATTACK: "Sweep Attack",
                      Particle.TOTEM_OF_UNDYING: "Totem Of Undying", Particle.UNDERWATER: "Underwater",
@@ -1241,50 +1236,50 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
 
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
-class PotteryShard(ValueEnum):
-    ANGLER_POTTERY_SHARD = "angler_pottery_shard"
-    ARCHER_POTTERY_SHARD = "archer_pottery_shard"
-    ARMS_UP_POTTERY_SHARD = "arms_up_pottery_shard"
-    BLADE_POTTERY_SHARD = "blade_pottery_shard"
-    BREWER_POTTERY_SHARD = "brewer_pottery_shard"
-    BURN_POTTERY_SHARD = "burn_pottery_shard"
-    DANGER_POTTERY_SHARD = "danger_pottery_shard"
-    EXPLORER_POTTERY_SHARD = "explorer_pottery_shard"
-    FRIEND_POTTERY_SHARD = "friend_pottery_shard"
-    HEART_POTTERY_SHARD = "heart_pottery_shard"
-    HEARTBREAK_POTTERY_SHARD = "heartbreak_pottery_shard"
-    HOWL_POTTERY_SHARD = "howl_pottery_shard"
-    MINER_POTTERY_SHARD = "miner_pottery_shard"
-    MOURNER_POTTERY_SHARD = "mourner_pottery_shard"
-    PLENTY_POTTERY_SHARD = "plenty_pottery_shard"
-    PRIZE_POTTERY_SHARD = "prize_pottery_shard"
-    SHEAF_POTTERY_SHARD = "sheaf_pottery_shard"
-    SHELTER_POTTERY_SHARD = "shelter_pottery_shard"
-    SKULL_POTTERY_SHARD = "skull_pottery_shard"
-    SNORT_POTTERY_SHARD = "snort_pottery_shard"
+class PotterySherd(ValueEnum):
+    ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
+    ARCHER_POTTERY_SHERD = "archer_pottery_sherd"
+    ARMS_UP_POTTERY_SHERD = "arms_up_pottery_sherd"
+    BLADE_POTTERY_SHERD = "blade_pottery_sherd"
+    BREWER_POTTERY_SHERD = "brewer_pottery_sherd"
+    BURN_POTTERY_SHERD = "burn_pottery_sherd"
+    DANGER_POTTERY_SHERD = "danger_pottery_sherd"
+    EXPLORER_POTTERY_SHERD = "explorer_pottery_sherd"
+    FRIEND_POTTERY_SHERD = "friend_pottery_sherd"
+    HEART_POTTERY_SHERD = "heart_pottery_sherd"
+    HEARTBREAK_POTTERY_SHERD = "heartbreak_pottery_sherd"
+    HOWL_POTTERY_SHERD = "howl_pottery_sherd"
+    MINER_POTTERY_SHERD = "miner_pottery_sherd"
+    MOURNER_POTTERY_SHERD = "mourner_pottery_sherd"
+    PLENTY_POTTERY_SHERD = "plenty_pottery_sherd"
+    PRIZE_POTTERY_SHERD = "prize_pottery_sherd"
+    SHEAF_POTTERY_SHERD = "sheaf_pottery_sherd"
+    SHELTER_POTTERY_SHERD = "shelter_pottery_sherd"
+    SKULL_POTTERY_SHERD = "skull_pottery_sherd"
+    SNORT_POTTERY_SHERD = "snort_pottery_sherd"
 
     def display_name(self) -> str:
-        return _potteryshard_display[self]
+        return _potterysherd_display[self]
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_potteryshard_display = {PotteryShard.ANGLER_POTTERY_SHARD: "Angler Pottery Shard",
-                         PotteryShard.ARCHER_POTTERY_SHARD: "Archer Pottery Shard",
-                         PotteryShard.ARMS_UP_POTTERY_SHARD: "Arms Up Pottery Shard",
-                         PotteryShard.BLADE_POTTERY_SHARD: "Blade Pottery Shard",
-                         PotteryShard.BREWER_POTTERY_SHARD: "Brewer Pottery Shard",
-                         PotteryShard.BURN_POTTERY_SHARD: "Burn Pottery Shard",
-                         PotteryShard.DANGER_POTTERY_SHARD: "Danger Pottery Shard",
-                         PotteryShard.EXPLORER_POTTERY_SHARD: "Explorer Pottery Shard",
-                         PotteryShard.FRIEND_POTTERY_SHARD: "Friend Pottery Shard",
-                         PotteryShard.HEART_POTTERY_SHARD: "Heart Pottery Shard",
-                         PotteryShard.HEARTBREAK_POTTERY_SHARD: "Heartbreak Pottery Shard",
-                         PotteryShard.HOWL_POTTERY_SHARD: "Howl Pottery Shard",
-                         PotteryShard.MINER_POTTERY_SHARD: "Miner Pottery Shard",
-                         PotteryShard.MOURNER_POTTERY_SHARD: "Mourner Pottery Shard",
-                         PotteryShard.PLENTY_POTTERY_SHARD: "Plenty Pottery Shard",
-                         PotteryShard.PRIZE_POTTERY_SHARD: "Prize Pottery Shard",
-                         PotteryShard.SHEAF_POTTERY_SHARD: "Sheaf Pottery Shard",
-                         PotteryShard.SHELTER_POTTERY_SHARD: "Shelter Pottery Shard",
-                         PotteryShard.SKULL_POTTERY_SHARD: "Skull Pottery Shard",
-                         PotteryShard.SNORT_POTTERY_SHARD: "Snort Pottery Shard"}
+_potterysherd_display = {PotterySherd.ANGLER_POTTERY_SHERD: "Angler Pottery Sherd",
+                         PotterySherd.ARCHER_POTTERY_SHERD: "Archer Pottery Sherd",
+                         PotterySherd.ARMS_UP_POTTERY_SHERD: "Arms Up Pottery Sherd",
+                         PotterySherd.BLADE_POTTERY_SHERD: "Blade Pottery Sherd",
+                         PotterySherd.BREWER_POTTERY_SHERD: "Brewer Pottery Sherd",
+                         PotterySherd.BURN_POTTERY_SHERD: "Burn Pottery Sherd",
+                         PotterySherd.DANGER_POTTERY_SHERD: "Danger Pottery Sherd",
+                         PotterySherd.EXPLORER_POTTERY_SHERD: "Explorer Pottery Sherd",
+                         PotterySherd.FRIEND_POTTERY_SHERD: "Friend Pottery Sherd",
+                         PotterySherd.HEART_POTTERY_SHERD: "Heart Pottery Sherd",
+                         PotterySherd.HEARTBREAK_POTTERY_SHERD: "Heartbreak Pottery Sherd",
+                         PotterySherd.HOWL_POTTERY_SHERD: "Howl Pottery Sherd",
+                         PotterySherd.MINER_POTTERY_SHERD: "Miner Pottery Sherd",
+                         PotterySherd.MOURNER_POTTERY_SHERD: "Mourner Pottery Sherd",
+                         PotterySherd.PLENTY_POTTERY_SHERD: "Plenty Pottery Sherd",
+                         PotterySherd.PRIZE_POTTERY_SHERD: "Prize Pottery Sherd",
+                         PotterySherd.SHEAF_POTTERY_SHERD: "Sheaf Pottery Sherd",
+                         PotterySherd.SHELTER_POTTERY_SHERD: "Shelter Pottery Sherd",
+                         PotterySherd.SKULL_POTTERY_SHERD: "Skull Pottery Sherd",
+                         PotterySherd.SNORT_POTTERY_SHERD: "Snort Pottery Sherd"}
