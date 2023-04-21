@@ -8,7 +8,7 @@ from importlib.resources import files
 
 from packaging.version import Version
 
-from .base import COLORS, Nbt, Parameters, parameters, to_id, to_name
+from .base import COLORS, Nbt, Parameters, parameters, to_id, to_name, NbtDef
 from .commands import Block, Entity, good_color_num
 from .enums import PotterySherd
 from .simpler import Item
@@ -219,11 +219,14 @@ class Horse(Entity):
 
     # Variants
 
-    def __init__(self, name: str = None, color: int | Color = Color.WHITE, markings: int | Markings = Markings.NONE):
+    def __init__(self, name: str = None, color: int | Color = Color.WHITE, markings: int | Markings = Markings.NONE,
+                 nbt: NbtDef = None):
         self.color = Horse.Color(color)
         self.markings = Horse.Markings(markings)
         self.variant = int(color) + int(markings)
         super().__init__('horse', name=name, nbt={'Variant': self.variant})
+        if nbt:
+            self.merge_nbt(nbt)
         self.tag_name = f'{to_id(name)}_horses'
 
 
