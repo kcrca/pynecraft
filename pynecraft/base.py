@@ -1013,7 +1013,7 @@ class Facing:
         :param delta: The amount to add to coordinates to move in the direction.
         :param rotation: The values to use as a ``Rotation`` NBT value.
         :param number: The number used by most blocks and entities for this rotation, or NaN if none. 0 is up, etc.
-        :param: h_number: The number used by entites that only can be horizintal, that is, paintings. 0 is north, etc.
+        :param: h_number: The number used by entities that only can be horizontal, that is, paintings. 0 is north, etc.
         """
         self.delta = delta
         self.name = name
