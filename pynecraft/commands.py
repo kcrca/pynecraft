@@ -23,8 +23,8 @@ from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union, List
 from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GE, GREEN, IntColumn, JSON_COLORS, \
     JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, \
     WHITE, YELLOW, _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, \
-    good_column, good_duration, good_facing, good_item_stack, good_name, good_names, good_nbt_path, good_pitch, \
-    good_range, good_resource, good_resource_path, good_resources, good_yaw, parameters, to_id, to_name, FacingDef, \
+    as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, \
+    as_range, as_resource, as_resource_path, as_resources, as_yaw, parameters, to_id, to_name, FacingDef, \
     Facing
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
@@ -38,27 +38,27 @@ def _fluent(method):
     return inner
 
 
-def good_biome(biome: Biome, allow_not: bool = False) -> str:
+def as_biome(biome: Biome, allow_not: bool = False) -> str:
     """
     Returns a string version of the given biome. A string version is preferred because new biome types can be added
     by datapacks.
     """
     if isinstance(biome, BiomeId):
         return str(biome)
-    return good_resource(biome, allow_not=allow_not)
+    return as_resource(biome, allow_not=allow_not)
 
 
-def good_single(target: Target) -> TargetSpec | None:
+def as_single(target: Target) -> TargetSpec | None:
     orig = target
     if target is None:
         return None
-    target = good_target(target)
+    target = as_target(target)
     if not target.is_single():
         raise ValueError(f'{str(orig)}: Not a single target')
     return target
 
 
-def good_target(target: Target) -> TargetSpec | None:
+def as_target(target: Target) -> TargetSpec | None:
     """Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or usernames,
     or None. If not, it raises a ValueError.
 
@@ -79,56 +79,56 @@ def good_target(target: Target) -> TargetSpec | None:
             raise ValueError(f'{target}: Invalid target')
 
 
-def good_data_target(target: DataTarget | None) -> Iterable[any] | None:
+def as_data_target(target: DataTarget | None) -> Iterable[any] | None:
     """Checks if the argument is a valid data target for commands like ``data merge``, or None. If not, it raises ValueError.
 
-    A tuple or list argument is presumed to be intended as a position on which good_position will be called; a
+    A tuple or list argument is presumed to be intended as a position on which as_position will be called; a
     TargetSpec is an entity target, and a string is presumed to be intended as a resource path.
 
     :param target: The (probable) data target.
     :return: A tuple, whose first value is 'block', 'entity', or 'storage', and whose second element is an appropriate
-        object: the result of good_position for 'block', the TargetSpec input for 'entity', the result of
-        good_resource_path() on a string. A None argument returns None.
+        object: the result of as_position for 'block', the TargetSpec input for 'entity', the result of
+        as_resource_path() on a string. A None argument returns None.
     """
-    return _good_data_target(target, good_target)
+    return _as_data_target(target, as_target)
 
 
-def good_data_single(target: DataTarget | None) -> Iterable[any] | None:
-    """Like good_data_target, but an entity target must be a single target"""
-    return _good_data_target(target, good_single)
+def as_data_single(target: DataTarget | None) -> Iterable[any] | None:
+    """Like as_data_target, but an entity target must be a single target"""
+    return _as_data_target(target, as_single)
 
 
-def _good_data_target(target: DataTarget | None, checker: Callable) -> Iterable[any] | None:
+def _as_data_target(target: DataTarget | None, checker: Callable) -> Iterable[any] | None:
     if target is None:
         return None
     if isinstance(target, (tuple, list)):
-        return 'block', *good_position(target)
+        return 'block', *as_position(target)
     if isinstance(target, TargetSpec):
         return 'entity', checker(target)
     if isinstance(target, str):
-        return 'storage', good_resource_path(target)
+        return 'storage', as_resource_path(target)
     raise ValueError(f'{target}: Invalid data target (must be position, entity selector, or resource name)')
 
 
 def data_target_str(data_target: DataTarget) -> str:
-    """Returns a single string for a target, as returned by good_data_target.
+    """Returns a single string for a target, as returned by as_data_target.
 
     :param data_target: The data target.
     :return: A single string, such as 'block 1 2 3'.
     """
-    return _data_target_str(data_target, good_data_target)
+    return _data_target_str(data_target, as_data_target)
 
 
 def data_single_str(data_target: DataTarget) -> str:
     """Like data_target_str(), but requires a single target."""
-    return _data_target_str(data_target, good_data_single)
+    return _data_target_str(data_target, as_data_single)
 
 
 def _data_target_str(data_target: DataTarget, checker: Callable) -> str:
     return ' '.join(str(x) for x in checker(data_target))
 
 
-def good_position(pos: Position) -> Position:
+def as_position(pos: Position) -> Position:
     """Checks if the argument is a valid position.
 
     A valid position is a tuple or list of three numbers and/or RelCoords.
@@ -146,7 +146,7 @@ def good_position(pos: Position) -> Position:
     raise ValueError(f'{str(pos)}: Invalid position')
 
 
-def good_user(name: str) -> str:
+def as_user(name: str) -> str:
     """Checks if the argument is a valid username.
 
     :param name: The (probable) user name.
@@ -157,7 +157,7 @@ def good_user(name: str) -> str:
     return name
 
 
-def good_uuid(uuid: str) -> str:
+def as_uuid(uuid: str) -> str:
     """Checks if the string is a valid UUID as four numbers separated by dashes.
 
     :param uuid: The (probable) uuid.
@@ -168,7 +168,7 @@ def good_uuid(uuid: str) -> str:
     return uuid
 
 
-def good_team(team: str) -> str | None:
+def as_team(team: str) -> str | None:
     """Checks if the argument is a valid team name, or None.
 
     :param team: The (probable) team name.
@@ -181,7 +181,7 @@ def good_team(team: str) -> str | None:
     return team
 
 
-def good_block(block: BlockDef | None) -> Block | None:
+def as_block(block: BlockDef | None) -> Block | None:
     """Checks if the argument is a valid block specification, or None.
 
     "Valid" means a string block name, or valid arguments to the Block constructor.
@@ -198,7 +198,7 @@ def good_block(block: BlockDef | None) -> Block | None:
     return block
 
 
-def good_entity(entity: EntityDef | None) -> Entity | None:
+def as_entity(entity: EntityDef | None) -> Entity | None:
     """Checks if the argument is a valid entity specification, or None.
 
     "Valid" means a string entity name, or valid arguments to the Entity constructor.
@@ -215,7 +215,7 @@ def good_entity(entity: EntityDef | None) -> Entity | None:
     return entity
 
 
-def good_score(score: ScoreName | None) -> Score | None:
+def as_score(score: ScoreName | None) -> Score | None:
     """Checks if the argument is a valid score, or None.
 
     "Valid" means a Score object, or a target/objective pair in a tuple or list.
@@ -232,11 +232,11 @@ def good_score(score: ScoreName | None) -> Score | None:
     raise ValueError(f'{str(score)}: Invalid score')
 
 
-def good_color_num(color: int | str | None) -> int | None:
+def as_color_num(color: int | str | None) -> int | None:
     """Checks if the argument is a valid color number specification, or None.
 
     "Valid" means an int, or a string that names a known color from which a color number can be inferred.
-    Color numbers range from 0 to 15. (See good_color() for a documentation on color names.)
+    Color numbers range from 0 to 15. (See as_color() for a documentation on color names.)
 
     :param color:
     :return:
@@ -253,7 +253,7 @@ def good_color_num(color: int | str | None) -> int | None:
     return color
 
 
-def good_color(color: int | str | None) -> str | None:
+def as_color(color: int | str | None) -> str | None:
     """Checks if the argument is a valid color name, or None.
 
     "Valid" means one of the 16 known colors, such as those used for wool. These are stored in the
@@ -264,11 +264,11 @@ def good_color(color: int | str | None) -> str | None:
     """
     if color is None:
         return None
-    color_num = good_color_num(color)
+    color_num = as_color_num(color)
     return COLORS[color_num]
 
 
-def good_slot(slot: str | None) -> str | None:
+def as_slot(slot: str | None) -> str | None:
     """Checks if the argument is a valid slot specification, or None.
 
     "Valid" means valid for the ``item`` command.
@@ -569,12 +569,12 @@ T = TypeVar('T', bound=Command)
 class _ScoreClause(Command):
     @_fluent
     def is_(self, relation: str, score: ScoreName) -> _ExecuteMod:
-        self._add(_in_group(RELATION, relation), good_score(score))
+        self._add(_in_group(RELATION, relation), as_score(score))
         return self._start(_ExecuteMod())
 
     @_fluent
     def matches(self, range: Range) -> _ExecuteMod:
-        self._add('matches', good_range(range))
+        self._add('matches', as_range(range))
         return self._start(_ExecuteMod())
 
 
@@ -585,7 +585,7 @@ class _AdvancementCriteria(Command):
         if isinstance(criteria, bool):
             self._add(f'{advancement}={_bool(criteria)}')
         else:
-            self._add(f'{advancement}={{{good_resource_path(criteria[0])}={_bool(criteria[1])}}}')
+            self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')
 
 
 class _JsonTextMod:
@@ -602,7 +602,7 @@ class _JsonTextHoverAction(_JsonTextMod):
 
     def show_item(self, id: str, count: int = None, tag: str = None) -> JsonText:
         self._ev['action'] = 'show_item'
-        self._ev['id'] = good_resource(id)
+        self._ev['id'] = as_resource(id)
         if count is not None:
             self._ev['count'] = count
         if tag is not None:
@@ -611,8 +611,8 @@ class _JsonTextHoverAction(_JsonTextMod):
 
     def show_entity(self, type: str, uuid: str, name: JsonText | str = None) -> JsonText:
         self._ev['action'] = 'show_entity'
-        self._ev['type'] = good_resource(type)
-        self._ev['id'] = good_uuid(uuid)
+        self._ev['type'] = as_resource(type)
+        self._ev['id'] = as_uuid(uuid)
         if name is not None:
             self._ev['name'] = name
         return self._jt
@@ -629,13 +629,13 @@ class _JsonTextClickEventAction(_JsonTextMod):
         return self._jt
 
     @staticmethod
-    def _good_command(command):
+    def _as_command(command):
         if not isinstance(command, str):
             command = str(command)
         return command.strip()
 
     def run_command(self, command: str | Command) -> JsonText:
-        command = self._good_command(command)
+        command = self._as_command(command)
         # The '/' is optional for signs, but required every else, so this is safest
         if command[0] != '/':
             command = '/' + command
@@ -643,7 +643,7 @@ class _JsonTextClickEventAction(_JsonTextMod):
         return self._jt
 
     def suggest_command(self, chat: str | Command) -> JsonText:
-        self._good_command(chat)
+        self._as_command(chat)
         self._ev.update({'action': 'suggest_command', 'value': chat})
         return self._jt
 
@@ -668,7 +668,7 @@ class User(TargetSpec):
 
     def __init__(self, name: str):
         super().__init__()
-        self.name = good_user(name)
+        self.name = as_user(name)
         self._add(name)
 
     def is_single(self):
@@ -876,7 +876,7 @@ class Selector(TargetSpec):
     @_fluent
     def distance(self, distance: Range) -> Selector:
         """Add a distance (radius) to the selector."""
-        return self._unique_arg('distance', good_range(distance))
+        return self._unique_arg('distance', as_range(distance))
 
     @_fluent
     def volume(self, deltas: Tuple[float, float, float]) -> Selector:
@@ -892,22 +892,22 @@ class Selector(TargetSpec):
     @_fluent
     def tag(self, tag: str, *tags: str) -> Selector:
         """Add one or more tags to the selector. You can use '!' for 'not'."""
-        return self._multi_args('tag', good_name(tag, allow_not=True), good_names(*tags, allow_not=True))
+        return self._multi_args('tag', as_name(tag, allow_not=True), as_names(*tags, allow_not=True))
 
     @_fluent
     def not_tag(self, tag: str, *tags: str) -> Selector:
         """Add one or more 'not' tags to the selector. You need not specify the '!' in the string."""
-        return self.tag(_not_ify(good_name(tag, allow_not=True)), *_not_ify(good_names(*tags, allow_not=True)))
+        return self.tag(_not_ify(as_name(tag, allow_not=True)), *_not_ify(as_names(*tags, allow_not=True)))
 
     @_fluent
     def team(self, team: str) -> Selector:
         """Add a team to the selector."""
-        return self._unique_arg('team', good_name(team, allow_not=True))
+        return self._unique_arg('team', as_name(team, allow_not=True))
 
     @_fluent
     def not_team(self, team: str, *teams) -> Selector:
         """Add one or more 'not' teams to the selector. You need not specify the '!' in the string."""
-        return self._not_args('team', good_name(team, allow_not=True), good_names(*teams, allow_not=True))
+        return self._not_args('team', as_name(team, allow_not=True), as_names(*teams, allow_not=True))
 
     @_fluent
     def sort(self, sorting: str) -> Selector:
@@ -923,7 +923,7 @@ class Selector(TargetSpec):
     @_fluent
     def level(self, level_range: Range) -> Selector:
         """Add a level range to the selector."""
-        return self._unique_arg('level', good_range(level_range))
+        return self._unique_arg('level', as_range(level_range))
 
     @_fluent
     def gamemode(self, mode: str) -> Selector:
@@ -941,33 +941,33 @@ class Selector(TargetSpec):
     @_fluent
     def name(self, name: str) -> Selector:
         """Add a name criteria to the selector."""
-        return self._unique_arg('name', good_name(name, allow_not=True))
+        return self._unique_arg('name', as_name(name, allow_not=True))
 
     @_fluent
     def not_name(self, name: str, *names: str) -> Selector:
         """Add one or more 'not' names to the selector. You need to specify the '!' in the string."""
-        return self._not_args('name', good_name(name, allow_not=True), good_names(*names, allow_not=True))
+        return self._not_args('name', as_name(name, allow_not=True), as_names(*names, allow_not=True))
 
     @_fluent
     def x_rotation(self, rot_range: Range) -> Selector:
         """Add an X rotation to the selector."""
-        return self._unique_arg('x_rotation', good_range(rot_range))
+        return self._unique_arg('x_rotation', as_range(rot_range))
 
     @_fluent
     def y_rotation(self, rot_range: Range) -> Selector:
         """Add a Y rotation to the selector."""
-        self._unique_arg('y_rotation', good_range(rot_range))
+        self._unique_arg('y_rotation', as_range(rot_range))
         return self
 
     @_fluent
     def type(self, type_: str) -> Selector:
         """Add a type to the selector."""
-        return self._unique_arg('type', good_resource(type_, allow_not=True))
+        return self._unique_arg('type', as_resource(type_, allow_not=True))
 
     @_fluent
     def not_type(self, type_: str, *types: str):
         """Add one or more 'not' types to the selector. You need to specify the '!' in the string."""
-        return self._not_args('type', good_resource(type_, allow_not=True), good_resources(*types, allow_not=True))
+        return self._not_args('type', as_resource(type_, allow_not=True), as_resources(*types, allow_not=True))
 
     @_fluent
     def nbt(self, nbt: NbtDef, *nbts: NbtDef) -> Selector:
@@ -1002,7 +1002,7 @@ class _IfDataMod(Command):
 
     @_fluent
     def entity(self, target: Target, nbt_path: str) -> _ExecuteMod:
-        self._add('entity', good_target(target), nbt_path)
+        self._add('entity', as_target(target), nbt_path)
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1015,12 +1015,12 @@ class _IfClause(Command):
     @_fluent
     def biome(self, pos: Position, biome: Biome) -> _ExecuteMod:
         parameters.check_version(GE, Parameters.VERSION_1_19_3)
-        self._add('biome', *pos, good_biome(biome))
+        self._add('biome', *pos, as_biome(biome))
         return self._start(_ExecuteMod())
 
     @_fluent
     def block(self, pos: Position, block: BlockDef) -> _ExecuteMod:
-        self._add('block', *pos, good_block(block))
+        self._add('block', *pos, as_block(block))
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1035,7 +1035,7 @@ class _IfClause(Command):
 
     @_fluent
     def entity(self, target: Target) -> _ExecuteMod:
-        self._add('entity', good_target(target))
+        self._add('entity', as_target(target))
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1045,7 +1045,7 @@ class _IfClause(Command):
 
     @_fluent
     def score(self, score: ScoreName) -> _ScoreClause:
-        self._add('score', good_score(score))
+        self._add('score', as_score(score))
         return self._start(_ScoreClause())
 
     def loaded(self, pos: Position) -> _ExecuteMod:
@@ -1067,17 +1067,17 @@ class _StoreClause(Command):
 
     @_fluent
     def entity(self, target: Target, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
-        self._add('entity', good_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
+        self._add('entity', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
     def score(self, score: ScoreName) -> _ExecuteMod:
-        self._add('score', good_score(score))
+        self._add('score', as_score(score))
         return self._start(_ExecuteMod())
 
     @_fluent
     def storage(self, target: Target, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
-        self._add('storage', good_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
+        self._add('storage', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
 
@@ -1096,12 +1096,12 @@ class _ExecuteMod(Command):
 
     @_fluent
     def as_(self, target: Target) -> _ExecuteMod:
-        self._add('as', good_target(target))
+        self._add('as', as_target(target))
         return self
 
     @_fluent
     def at(self, target: Target) -> _ExecuteMod:
-        self._add('at', good_target(target))
+        self._add('at', as_target(target))
         return self
 
     @_fluent
@@ -1111,7 +1111,7 @@ class _ExecuteMod(Command):
 
     @_fluent
     def facing_entity(self, target: Target, anchor: str) -> _ExecuteMod:
-        self._add('facing entity', good_target(target), _in_group(ENTITY_ANCHOR, anchor))
+        self._add('facing entity', as_target(target), _in_group(ENTITY_ANCHOR, anchor))
         return self
 
     @_fluent
@@ -1126,7 +1126,7 @@ class _ExecuteMod(Command):
 
     @_fluent
     def positioned_as(self, target: Target) -> _ExecuteMod:
-        self._add('positioned as', good_target(target))
+        self._add('positioned as', as_target(target))
         return self
 
     def positioned_over(self, heightmap: str) -> _ExecuteMod:
@@ -1135,12 +1135,12 @@ class _ExecuteMod(Command):
 
     @_fluent
     def rotated(self, yaw: Angle, pitch: float) -> _ExecuteMod:
-        self._add('rotated', good_yaw(yaw), good_pitch(pitch))
+        self._add('rotated', as_yaw(yaw), as_pitch(pitch))
         return self
 
     @_fluent
     def rotated_as(self, target: Target) -> _ExecuteMod:
-        self._add('rotated as', good_target(target))
+        self._add('rotated as', as_target(target))
         return self
 
     @_fluent
@@ -1169,7 +1169,7 @@ class _ExecuteMod(Command):
         return self
 
     def summon(self, entity: EntityDef) -> _ExecuteMod:
-        self._add('summon', good_entity(entity))
+        self._add('summon', as_entity(entity))
         return self
 
     @_fluent
@@ -1210,17 +1210,17 @@ class _AttributeBaseAct(Command):
 class _AttributeModifierAct(Command):
     @_fluent
     def add(self, uuid: str, name: str, value: float) -> str:
-        self._add('add', good_uuid(uuid), f'"{name}"', value)
+        self._add('add', as_uuid(uuid), f'"{name}"', value)
         return str(self)
 
     @_fluent
     def remove(self, uuid: str) -> str:
-        self._add('remove', good_uuid(uuid))
+        self._add('remove', as_uuid(uuid))
         return str(self)
 
     @_fluent
     def value(self, uuid: str, scale: float = None) -> str:
-        self._add('value get', good_uuid(uuid))
+        self._add('value get', as_uuid(uuid))
         if scale:
             self._add(scale)
         return str(self)
@@ -1300,7 +1300,7 @@ class _BossbarSet(Command):
 
     @_fluent
     def players(self, *targets: Target) -> str:
-        targets = (good_target(x) for x in targets)
+        targets = (as_target(x) for x in targets)
         self._add('players', *targets)
         return str(self)
 
@@ -1323,12 +1323,12 @@ class _BossbarSet(Command):
 class _BossbarMod(Command):
     @_fluent
     def add(self, id: str, name: str) -> str:
-        self._add('add', good_resource(id), _quote(name))
+        self._add('add', as_resource(id), _quote(name))
         return str(self)
 
     @_fluent
     def get(self, id: str) -> _BossbarGet:
-        self._add('get', good_resource(id))
+        self._add('get', as_resource(id))
         return self._start(_BossbarGet())
 
     @_fluent
@@ -1338,12 +1338,12 @@ class _BossbarMod(Command):
 
     @_fluent
     def remove(self, id: str) -> str:
-        self._add('remove', good_resource(id))
+        self._add('remove', as_resource(id))
         return str(self)
 
     @_fluent
     def set(self, id: str) -> _BossbarSet:
-        self._add('set', good_resource(id))
+        self._add('set', as_resource(id))
         return self._start(_BossbarSet())
 
 
@@ -1375,7 +1375,7 @@ class _CloneClause(Command):
 
     @_fluent
     def filtered(self, block: BlockDef, flag: str = None) -> str:
-        self._add('filtered', good_block(block))
+        self._add('filtered', as_block(block))
         self._flag(flag)
         return str(self)
 
@@ -1408,7 +1408,7 @@ class _End(Command):
 class _FromOrValue(Command):
     @_fluent
     def from_(self, data_target: DataTarget, nbt_path: str) -> str:
-        self._add('from', data_single_str(data_target), good_nbt_path(nbt_path))
+        self._add('from', data_single_str(data_target), as_nbt_path(nbt_path))
         return str(self)
 
     @_fluent
@@ -1421,13 +1421,13 @@ class _FromOrValue(Command):
     def string(self, data_target: DataTarget, nbt_path: str = None, start: int = None, end: int = None) -> str:
         parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('string', data_single_str(data_target))
-        self._add_opt(good_nbt_path(nbt_path), start, end)
+        self._add_opt(as_nbt_path(nbt_path), start, end)
         return str(self)
 
 
 class _DamageByMod(Command):
     def from_(self, target: Target) -> str:
-        self._add('from', good_target(target))
+        self._add('from', as_target(target))
         return str(self)
 
 
@@ -1437,7 +1437,7 @@ class _DamageMod(Command):
         return str(self)
 
     def by(self, target: Target) -> _DamageByMod:
-        self._add('by', good_target(target))
+        self._add('by', as_target(target))
         return self._start(_DamageByMod())
 
 
@@ -1514,7 +1514,7 @@ class _DatapackOrder(Command):
 class _DatapackMod(Command):
     @_fluent
     def disable(self, name: str) -> str:
-        self._add('disable', good_name(name))
+        self._add('disable', as_name(name))
         return str(self)
 
     @_fluent
@@ -1543,7 +1543,7 @@ class _DebugMod(Command):
 
     @_fluent
     def function(self, name: str) -> str:
-        self._add('function', good_resource_path(name))
+        self._add('function', as_resource_path(name))
         return str(self)
 
 
@@ -1563,7 +1563,7 @@ class _EffectAction(Command):
             seconds_range = range(MAX_EFFECT_SECONDS + 1)
             if duration not in seconds_range:
                 raise ValueError(f'{duration}: Not in range {seconds_range}')
-        self._add('give', good_target(target), Effect(effect))
+        self._add('give', as_target(target), Effect(effect))
         self._add_opt(duration, amplifier, _bool(hide_particles))
         return str(self)
 
@@ -1574,26 +1574,26 @@ class _EffectAction(Command):
         self._add('clear')
         if isinstance(effect, str):
             effect = Effect(effect)
-        self._add_opt(good_target(target), effect)
+        self._add_opt(as_target(target), effect)
         return str(self)
 
 
 class _ExperienceMod(Command):
     @_fluent
     def add(self, target: Target, amount: int, which: str) -> str:
-        self._add('add', good_target(target), amount, _in_group(EXPERIENCE_POINTS, which))
+        self._add('add', as_target(target), amount, _in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
     @_fluent
     def set(self, target: Target, amount: int, which: str = None) -> str:
         if which is None:
             which = POINTS
-        self._add('set', good_target(target), amount, _in_group(EXPERIENCE_POINTS, which))
+        self._add('set', as_target(target), amount, _in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
     @_fluent
     def query(self, target: Target, which: str) -> str:
-        self._add('query', good_single(target), _in_group(EXPERIENCE_POINTS, which))
+        self._add('query', as_single(target), _in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
 
@@ -1628,7 +1628,7 @@ class _FilterClause(Command):
 class _BiomeFilterClause(Command):
     @_fluent
     def replace(self, biome: Biome | str) -> str:
-        self._add('replace', good_biome(biome))
+        self._add('replace', as_biome(biome))
         return str(self)
 
 
@@ -1668,13 +1668,13 @@ class _ItemTarget(Command):
 
     @_fluent
     def block(self, pos: Position, slot: str, modifier: str = None) -> T:
-        self._add('block', *pos, good_slot(slot))
+        self._add('block', *pos, as_slot(slot))
         self._modifier(modifier)
         return self._start(self.follow)
 
     @_fluent
     def entity(self, target: Target, slot: str, modifier: str = None) -> T:
-        self._add('entity', good_target(target), good_slot(slot))
+        self._add('entity', as_target(target), as_slot(slot))
         self._modifier(modifier)
         return self._start(self.follow)
 
@@ -1687,7 +1687,7 @@ class _ItemTarget(Command):
 class _ItemReplace(Command):
     @_fluent
     def with_(self, item: EntityDef, count: int = None) -> str:
-        self._add('with', good_entity(item))
+        self._add('with', as_entity(item))
         self._add_opt(count)
         return str(self)
 
@@ -1730,23 +1730,23 @@ class _LootSource(Command):
     @_fluent
     def fish(self, loot_table: str, pos: Position, thing: str) -> str:
         # the 'hand' keywords are also valid resource names, so no separate test is meaningful
-        self._add('fish', good_resource_path(loot_table), *pos, good_resource(thing))
+        self._add('fish', as_resource_path(loot_table), *pos, as_resource(thing))
         return str(self)
 
     @_fluent
     def loot(self, loot_table: str) -> str:
-        self._add('loot', good_resource_path(loot_table))
+        self._add('loot', as_resource_path(loot_table))
         return str(self)
 
     @_fluent
     def kill(self, target: Target) -> str:
-        self._add('kill', good_target(target))
+        self._add('kill', as_target(target))
         return str(self)
 
     @_fluent
     def mine(self, pos: Position, thing: str) -> str:
         # the 'hand' keywords are also valid resource names, so no separate test is meaningful
-        self._add('mine', *pos, good_resource(thing))
+        self._add('mine', *pos, as_resource(thing))
         return str(self)
 
 
@@ -1759,7 +1759,7 @@ class _LootReplaceTarget(Command):
 
     @_fluent
     def entity(self, target: Target, slot: int, count: int = None) -> _LootSource:
-        self._add('entity', good_target(target), slot)
+        self._add('entity', as_target(target), slot)
         self._add_opt(count)
         return self._start(_LootSource())
 
@@ -1767,7 +1767,7 @@ class _LootReplaceTarget(Command):
 class _LootTarget(Command):
     @_fluent
     def give(self, target: Target) -> _LootSource:
-        self._add('give', good_single(target))
+        self._add('give', as_single(target))
         return self._start(_LootSource())
 
     @_fluent
@@ -1789,19 +1789,19 @@ class _LootTarget(Command):
 class _ScoreboardCriteria(Command):
     def __init__(self, criterion: str | ScoreCriteria, *criteria: str | ScoreCriteria):
         super().__init__()
-        self._good_criteria(criterion)
+        self._as_criteria(criterion)
         self._add(criterion)
         if criteria:
-            self._good_criteria(*criteria)
+            self._as_criteria(*criteria)
             self._add('.' + '.'.join(str(x) for x in criteria), space=False)
 
     @staticmethod
-    def _good_criteria(*criteria):
+    def _as_criteria(*criteria):
         for c in criteria:
             try:
                 ScoreCriteria(c)
             except ValueError:
-                good_resource(c)
+                as_resource(c)
 
 
 class _ScoreboardObjectivesMod(Command):
@@ -1817,13 +1817,13 @@ class _ScoreboardObjectivesMod(Command):
             score_criteria = ScoreCriteria(score_criteria)
         except ValueError:
             score_criteria = _ScoreboardCriteria(score_criteria)
-        self._add('add', good_name(objective), score_criteria)
-        self._add_opt(good_name(display_name))
+        self._add('add', as_name(objective), score_criteria)
+        self._add_opt(as_name(display_name))
         return str(self)
 
     @_fluent
     def remove(self, objective: str) -> str:
-        self._add('remove', good_name(objective))
+        self._add('remove', as_name(objective))
         return str(self)
 
     @_fluent
@@ -1831,14 +1831,14 @@ class _ScoreboardObjectivesMod(Command):
         if not slot.startswith(SIDEBAR_TEAM):
             _in_group(DISPLAY_SLOTS, slot)
         self._add('setdisplay', slot)
-        self._add_opt(good_name(objective))
+        self._add_opt(as_name(objective))
         return str(self)
 
     @_fluent
     def modify(self, objective: str, which: str, value: str) -> str:
         if which == RENDER_TYPE:
             _in_group(SCOREBOARD_RENDER_TYPES, value)
-        self._add('modify', good_name(objective), _in_group(SCOREBOARD_OBJECTIVES_MODIFIABLE, which), value)
+        self._add('modify', as_name(objective), _in_group(SCOREBOARD_OBJECTIVES_MODIFIABLE, which), value)
         return str(self)
 
 
@@ -1847,52 +1847,52 @@ class _ScoreboardPlayersMod(Command):
     @_fluent
     def list(self, target: Target = None) -> str:
         self._add('list')
-        self._add_opt(good_target(target))
+        self._add_opt(as_target(target))
         return str(self)
 
     @_fluent
     def get(self, score: ScoreName) -> str:
-        self._add('get', good_score(score))
+        self._add('get', as_score(score))
         return str(self)
 
     @_fluent
     def set(self, score: ScoreName, value: int) -> str:
-        self._add('set', good_score(score), value)
+        self._add('set', as_score(score), value)
         return str(self)
 
     @_fluent
     def add(self, score: ScoreName, value: int) -> str:
-        self._add('add', good_score(score), value)
+        self._add('add', as_score(score), value)
         return str(self)
 
     @_fluent
     def remove(self, score: ScoreName, value: int) -> str:
-        self._add('remove', good_score(score), value)
+        self._add('remove', as_score(score), value)
         return str(self)
 
     @_fluent
     def reset(self, score: ScoreName | Target | tuple[Target, None]) -> str:
         self._add('reset')
         try:
-            score = good_score(score)
+            score = as_score(score)
             self._add(score)
         except (TypeError, ValueError):
             # if not a valid full score name, it must be just a target
             if isinstance(score, (str, TargetSpec)):
-                self._add(good_target(score))
+                self._add(as_target(score))
             elif isinstance(score, str):
                 self._add(score)
             else:
                 if len(score) == 1 or (len(score) == 2 and score[1] is None):
-                    self._add(good_target(score[0]))
+                    self._add(as_target(score[0]))
                 else:
-                    # An invalid argument to good_score will be most descriptive
+                    # An invalid argument to as_score will be most descriptive
                     raise
         return str(self)
 
     @_fluent
     def enable(self, score: ScoreName) -> str:
-        self._add('enable', good_score(score))
+        self._add('enable', as_score(score))
         return str(self)
 
     @_fluent
@@ -1901,7 +1901,7 @@ class _ScoreboardPlayersMod(Command):
         # 'MAX' is used elsewhere, this special-cases it
         if op == MAX:
             op = '>'
-        self._add('operation', good_score(score), op, good_score(source))
+        self._add('operation', as_score(score), op, as_score(source))
         return str(self)
 
 
@@ -1920,26 +1920,26 @@ class _ScoreboardMod(Command):
 class _PlaceMod(Command):
     @_fluent
     def feature(self, feature: str, pos: Position = None) -> str:
-        self._add('feature', good_resource(feature))
+        self._add('feature', as_resource(feature))
         self._add_opt_pos(pos)
         return str(self)
 
     @_fluent
     def jigsaw(self, pool: str, target_pool: str, max_depth: int, pos: Position = None) -> str:
-        self._add('jigsaw', good_resource(pool), good_resource(target_pool), max_depth)
+        self._add('jigsaw', as_resource(pool), as_resource(target_pool), max_depth)
         self._add_opt_pos(pos)
         return str(self)
 
     @_fluent
     def structure(self, structure: str, /, pos: Position = None) -> str:
-        self._add('structure', good_resource(structure))
+        self._add('structure', as_resource(structure))
         self._add_opt_pos(pos)
         return str(self)
 
 
 class _RideMod(Command):
     def mount(self, target: Target) -> str:
-        self._add('mount', good_single(target))
+        self._add('mount', as_single(target))
         return str(self)
 
     def dismount(self) -> str:
@@ -1955,19 +1955,19 @@ class _ScheduleMod(Command):
             path = path.full_name
         except AttributeError:
             pass
-        self._add('function', good_resource_path(path), good_duration(time), _in_group(SCHEDULE_ACTIONS, action))
+        self._add('function', as_resource_path(path), as_duration(time), _in_group(SCHEDULE_ACTIONS, action))
         return str(self)
 
     @_fluent
     def clear(self, path: str) -> str:
-        self._add('clear', good_resource_path(path))
+        self._add('clear', as_resource_path(path))
         return str(self)
 
 
 class _TagMod(Command):
     @_fluent
     def add(self, tag: str) -> str:
-        self._add('add', good_name(tag))
+        self._add('add', as_name(tag))
         return str(self)
 
     @_fluent
@@ -1977,7 +1977,7 @@ class _TagMod(Command):
 
     @_fluent
     def remove(self, tag: str) -> str:
-        self._add('remove', good_name(tag))
+        self._add('remove', as_name(tag))
         return str(self)
 
 
@@ -1985,34 +1985,34 @@ class _TeamMod(Command):
     @_fluent
     def list(self, team: str = None) -> str:
         self._add('list')
-        self._add_opt(good_team(team))
+        self._add_opt(as_team(team))
         return str(self)
 
     @_fluent
     def add(self, team: str, display_name: str = None) -> str:
-        self._add('add', good_team(team))
-        self._add_opt(good_name(display_name))
+        self._add('add', as_team(team))
+        self._add_opt(as_name(display_name))
         return str(self)
 
     @_fluent
     def remove(self, team: str) -> str:
-        self._add('remove', good_team(team))
+        self._add('remove', as_team(team))
         return str(self)
 
     @_fluent
     def empty(self, team: str) -> str:
-        self._add('empty', good_team(team))
+        self._add('empty', as_team(team))
         return str(self)
 
     @_fluent
     def join(self, team: str, target: Target = None) -> str:
-        self._add('join', good_team(team))
-        self._add_opt(good_target(target))
+        self._add('join', as_team(team))
+        self._add_opt(as_target(target))
         return str(self)
 
     @_fluent
     def leave(self, team: str, target: Target = None) -> str:
-        self._add('leave', good_team(team), good_target(target))
+        self._add('leave', as_team(team), as_target(target))
         return str(self)
 
     @_fluent
@@ -2028,7 +2028,7 @@ class _TeamMod(Command):
         else:
             if value not in value_type:
                 raise ValueError(f'{value}: Must be one of {value_type}')
-        self._add('modify', good_team(team), option, value)
+        self._add('modify', as_team(team), option, value)
         return str(self)
 
 
@@ -2040,7 +2040,7 @@ class _FacingMod(Command):
 
     @_fluent
     def facing_entity(self, target: Target) -> str:
-        self._add('facing', 'entity', good_target(target))
+        self._add('facing', 'entity', as_target(target))
         return str(self)
 
 
@@ -2050,7 +2050,7 @@ class _TeleportMod(Command):
         self._add('facing')
         is_entity = False
         try:
-            facing = good_target(facing)
+            facing = as_target(facing)
             is_entity = True
             self._add('entity', facing)
             if anchor:
@@ -2059,7 +2059,7 @@ class _TeleportMod(Command):
             # Check if the error was from the entity or the anchor
             if is_entity:
                 raise
-            self._add(*good_position(facing))
+            self._add(*as_position(facing))
             if anchor is not None:
                 raise ValueError('anchor not allowed when facing coordinates')
         return str(self)
@@ -2068,7 +2068,7 @@ class _TeleportMod(Command):
     def pos(self, pos: Position, /, target: Target = None,
             rotation: float = None) -> str | _FacingMod:
         if target:
-            self._add(good_target(target), *pos)
+            self._add(as_target(target), *pos)
         else:
             self._add(*pos)
         self._add_opt(rotation)
@@ -2081,7 +2081,7 @@ class _TeleportMod(Command):
 class _TimeMod(Command):
     @_fluent
     def add(self, amount: DurationDef) -> str:
-        self._add('add', good_duration(amount))
+        self._add('add', as_duration(amount))
         return str(self)
 
     @_fluent
@@ -2094,7 +2094,7 @@ class _TimeMod(Command):
         try:
             _in_group(TIME_SPEC, new_time)
         except ValueError:
-            new_time = good_duration(new_time)
+            new_time = as_duration(new_time)
         self._add('set', new_time)
         return str(self)
 
@@ -2122,7 +2122,7 @@ class _TitleMod(Command):
 
     @_fluent
     def times(self, fade_in: DurationDef, stay: DurationDef, fade_out: DurationDef) -> str:
-        self._add('times', good_duration(fade_in), good_duration(stay), good_duration(fade_out))
+        self._add('times', as_duration(fade_in), as_duration(stay), as_duration(fade_out))
         return str(self)
 
 
@@ -2171,7 +2171,7 @@ class _WorldBorderMod(Command):
 
     @_fluent
     def center(self, pos: IntColumn) -> str:
-        self._add('center', *good_column(pos))
+        self._add('center', *as_column(pos))
         return str(self)
 
     @_fluent
@@ -2265,7 +2265,7 @@ def advancement(action: str, target: Selector) -> _AdvancementMod:
 def attribute(target: Target, attribute: str) -> _AttributeMod:
     """Queries, adds, removes, or sets an entity attribute."""
     cmd = Command()
-    cmd._add('attribute', good_single(target), good_resource(attribute))
+    cmd._add('attribute', as_single(target), as_resource(attribute))
     return cmd._start(_AttributeMod())
 
 
@@ -2279,7 +2279,7 @@ def bossbar() -> _BossbarMod:
 def clear(target: Target) -> _ClearClause:
     """Clears items from player inventory."""
     cmd = Command()
-    cmd._add('clear', good_target(target))
+    cmd._add('clear', as_target(target))
     return cmd._start(_ClearClause())
 
 
@@ -2337,8 +2337,8 @@ def damage(target: Target, amount: int, type: str = None) -> _DamageMod:
     """Applies a set amount of damage to the specified entities."""
     parameters.check_version(GE, Parameters.VERSION_1_19_4)
     cmd = Command()
-    cmd._add('damage', good_target(target), amount)
-    cmd._add_opt(good_resource(type))
+    cmd._add('damage', as_target(target), amount)
+    cmd._add_opt(as_resource(type))
     return cmd._start(_DamageMod())
 
 
@@ -2395,7 +2395,7 @@ def effect() -> _EffectAction:
 def enchant(target: Target, enchantment: Enchantment | str | int, level: int = None) -> str:
     """Adds an enchantment to a player's selected item."""
     cmd = Command()
-    cmd._add('enchant', good_target(target))
+    cmd._add('enchant', as_target(target))
     if isinstance(enchantment, str):
         enchantment = Enchantment(enchantment)
     cmd._add(enchantment)
@@ -2428,14 +2428,14 @@ xp = experience
 def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClause | str:
     """Fills a region with a specific block."""
     cmd = Command()
-    cmd._add('fill', *start_pos, *end_pos, good_block(block))
+    cmd._add('fill', *start_pos, *end_pos, as_block(block))
     return cmd._start(_FilterClause())
 
 
 def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
     parameters.check_version(GE, Parameters.VERSION_1_19_3)
     cmd = Command()
-    cmd._add('fillbiome', *start_pos, *end_pos, good_biome(biome))
+    cmd._add('fillbiome', *start_pos, *end_pos, as_biome(biome))
     return cmd._start(_BiomeFilterClause())
     pass
 
@@ -2457,7 +2457,7 @@ def function(path: str | object) -> str:
         path = path.full_name
     except AttributeError:
         pass
-    cmd._add('function', good_resource_path(path))
+    cmd._add('function', as_resource_path(path))
     return str(cmd)
 
 
@@ -2465,7 +2465,7 @@ def gamemode(gamemode: str, target: Target = None) -> str:
     """Sets the gamemode for some set of players."""
     cmd = Command()
     cmd._add('gamemode', _in_group(GAMEMODE, gamemode))
-    cmd._add_opt(good_target(target))
+    cmd._add_opt(as_target(target))
     return str(cmd)
 
 
@@ -2492,7 +2492,7 @@ def gamerule(rule: GameRule | str, value: bool | int = None) -> str:
 def give(target: Target, item: EntityDef | BlockDef, count: int = None) -> str:
     """Gives an item to a player."""
     cmd = Command()
-    cmd._add('give', good_target(target), item)
+    cmd._add('give', as_target(target), item)
     cmd._add_opt(count)
     return str(cmd)
 
@@ -2522,7 +2522,7 @@ def kill(target: Target = None) -> str:
     """Kills entities (players, mobs, items, etc.)."""
     cmd = Command()
     cmd._add('kill')
-    cmd._add_opt(good_target(target))
+    cmd._add_opt(as_target(target))
     return str(cmd)
 
 
@@ -2557,7 +2557,7 @@ def me(msg: str, *msgs: str) -> str:
 def op(target: Target) -> str:
     """Grants operator status to a player."""
     cmd = Command()
-    cmd._add('op', good_target(target))
+    cmd._add('op', as_target(target))
     return str(cmd)
 
 
@@ -2591,7 +2591,7 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
               volume: float = None, pitch: float = None, min_volume: float = None) -> str:
     """Plays a sound."""
     cmd = Command()
-    cmd._add('playsound', good_resource_path(sound), good_resource_path(source), good_target(target))
+    cmd._add('playsound', as_resource_path(sound), as_resource_path(source), as_target(target))
     cmd._add_opt_pos(pos)
     cmd._add_opt(volume, pitch, min_volume)
     return str(cmd)
@@ -2626,9 +2626,9 @@ def recipe(action: str, target: Target, recipe_name: str) -> str:
     """Gives or takes player recipes."""
     action = _to_donate(action, GIVE_TAKE)
     if recipe_name != '*':
-        recipe_name = good_resource_path(recipe_name)
+        recipe_name = as_resource_path(recipe_name)
     cmd = Command()
-    cmd._add('recipe', action, good_target(target), recipe_name)
+    cmd._add('recipe', action, as_target(target), recipe_name)
     return str(cmd)
 
 
@@ -2649,7 +2649,7 @@ def ride(target: Target) -> _RideMod:
     """Allows entities to mount or dismount other entities. """
     parameters.check_version(GE, Parameters.VERSION_1_19_4)
     cmd = Command()
-    cmd._add('ride', good_single(target))
+    cmd._add('ride', as_single(target))
     return cmd._start(_RideMod())
 
 
@@ -2685,7 +2685,7 @@ def setblock(pos: Position, block: BlockDef, action: str = None) -> _BlockMod:
     """Changes a block to another block."""
     if isinstance(block, str) and str(block)[0] == '#':
         raise ValueError(f'{block}: Block tag not allowed here')
-    block = good_block(block)
+    block = as_block(block)
     cmd = Command()
     cmd._add('setblock', *pos, block)
     if action:
@@ -2705,7 +2705,7 @@ def setworldspawn(pos: Position = None, yaw: float | str = None) -> str:
     cmd = Command()
     cmd._add('setworldspawn')
     cmd._add_opt_pos(pos)
-    cmd._add_opt(good_yaw(yaw))
+    cmd._add_opt(as_yaw(yaw))
     return str(cmd)
 
 
@@ -2713,17 +2713,17 @@ def spawnpoint(target: Target = None, pos: Position = None, yaw: Angle | str = N
     """Sets the spawn point for a player."""
     cmd = Command()
     cmd._add('spawnpoint')
-    cmd._add_opt(good_target(target))
+    cmd._add_opt(as_target(target))
     cmd._add_opt_pos(pos)
-    cmd._add_opt(good_yaw(yaw))
+    cmd._add_opt(as_yaw(yaw))
     return str(cmd)
 
 
 def spectate(target: Target = None, watched: Target = None) -> str:
     """Make one player in spectator mode spectate an entity."""
     cmd = Command()
-    cmd._add('spectate', good_single(target))
-    cmd._add_opt(good_target(watched))
+    cmd._add('spectate', as_single(target))
+    cmd._add_opt(as_target(watched))
     return str(cmd)
 
 
@@ -2736,21 +2736,21 @@ def spreadplayers(center: Position, distance: float, max_range: float, respect_t
     cmd._add('spreadplayers', *center, distance, max_range)
     if max_height is not None:
         cmd._add_opt('under', max_height)
-    cmd._add(_bool(respect_teams), good_target(target))
+    cmd._add(_bool(respect_teams), as_target(target))
     return str(cmd)
 
 
 def stopsound(target: Target, /, source: str = None, sound: str = None) -> str:
     """Stops a sound."""
     cmd = Command()
-    cmd._add('stopsound', good_target(target))
-    cmd._add_opt(good_resource_path(source), good_resource_path(sound))
+    cmd._add('stopsound', as_target(target))
+    cmd._add_opt(as_resource_path(source), as_resource_path(sound))
     return str(cmd)
 
 
 def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) -> str:
     """Summons an entity."""
-    to_summon = good_entity(to_summon)
+    to_summon = as_entity(to_summon)
     cmd = Command()
     cmd._add('summon', to_summon.id)
     cmd._add_opt_pos(pos)
@@ -2767,7 +2767,7 @@ def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) ->
 def tag(target: Target) -> _TagMod:
     """Controls entity tags."""
     cmd = Command()
-    cmd._add('tag', good_target(target))
+    cmd._add('tag', as_target(target))
     return cmd._start(_TagMod())
 
 
@@ -2795,19 +2795,19 @@ def teleport(who_or_to: Target | Position, to: Target | Position = None,
     cmd._add('tp')
     try:
         if to is None:
-            cmd._add(good_single(who_or_to))
+            cmd._add(as_single(who_or_to))
         else:
-            cmd._add(good_target(who_or_to))
+            cmd._add(as_target(who_or_to))
     except ValueError:
-        cmd._add(*good_position(who_or_to))
+        cmd._add(*as_position(who_or_to))
     if to is None:
         if rotation is not None:
             raise ValueError('Rotation not allowed without two arguments')
     else:
         try:
-            cmd._add(good_single(to))
+            cmd._add(as_single(to))
         except ValueError:
-            cmd._add(*good_position(to))
+            cmd._add(*as_position(to))
         if rotation is not None:
             cmd._add(_float(rotation))
             return str(cmd)
@@ -2820,7 +2820,7 @@ tp = teleport
 def tell(target: Target, message: str, *msgs: str) -> str:
     """Displays a private message to other players."""
     cmd = Command()
-    cmd._add('tell', good_target(target), message, *msgs)
+    cmd._add('tell', as_target(target), message, *msgs)
     return str(cmd)
 
 
@@ -2854,14 +2854,14 @@ def time() -> _TimeMod:
 def title(target: Target) -> _TitleMod:
     """Manages screen titles."""
     cmd = Command()
-    cmd._add('title', good_target(target))
+    cmd._add('title', as_target(target))
     return cmd._start(_TitleMod())
 
 
 def trigger(objective: str):
     """Sets a trigger to be activated."""
     cmd = Command()
-    cmd._add('trigger', good_name(objective))
+    cmd._add('trigger', as_name(objective))
     return cmd._start(_TriggerMod())
 
 
@@ -2869,7 +2869,7 @@ def weather(weather_name: str, duration: DurationDef = None) -> str:
     """Sets the weather."""
     cmd = Command()
     cmd._add('weather', _in_group(WEATHER_TYPES, weather_name))
-    cmd._add_opt(good_duration(duration))
+    cmd._add_opt(as_duration(duration))
     return str(cmd)
 
 
@@ -2944,7 +2944,7 @@ class NbtHolder(Command):
         if name and not id:
             id = to_id(name)
 
-        self.id = good_item_stack(id)
+        self.id = as_item_stack(id)
         self.nbt = Nbt()
         self._add(id)
         self.sign_text = tuple(name.split('|'))
@@ -3061,7 +3061,7 @@ class Entity(NbtHolder):
         else:
             nbt = Nbt.as_nbt(nbt)
         if facing:
-            facing = good_facing(facing)
+            facing = as_facing(facing)
             # Item frames use 'facing' instead of rotation, which they use for something else (natch).
             nbt = nbt.merge({'Rotation': facing.rotation, 'Facing': facing.number})
         return nbt, facing
@@ -3308,8 +3308,8 @@ class Score(Command, Expression):
         super().__init__()
         if target is None or objective is None:
             raise ValueError('Must give both target and objective')
-        self.target = good_target(target)
-        self.objective = good_name(objective)
+        self.target = as_target(target)
+        self.objective = as_name(objective)
         self._add(target, objective)
 
     def __eq__(self, other: Score) -> bool:
@@ -3419,7 +3419,7 @@ class JsonText(UserDict, JsonHolder):
     @classmethod
     def score(cls, score: ScoreName, value=None) -> JsonText:
         """Returns a JSON text score node."""
-        score = good_score(score)
+        score = as_score(score)
         jt = cls({'score': {'name': str(score.target), 'objective': score.objective, }})
         if value:
             jt['score']['value'] = value
@@ -3446,7 +3446,7 @@ class JsonText(UserDict, JsonHolder):
             separator: str = None) -> JsonText:
         """Returns a JSON text NBt node."""
         target_key, target_value = data_target_str(data_target).split(' ', 1)
-        jt = cls({'nbt': good_resource_path(resource_path), target_key: target_value})
+        jt = cls({'nbt': as_resource_path(resource_path), target_key: target_value})
         if interpret is not None:
             jt['interpret'] = interpret
         if separator is not None:
@@ -3469,7 +3469,7 @@ class JsonText(UserDict, JsonHolder):
 
     def font(self, font: str) -> JsonText:
         """Adds a ``font`` field to a JSON node."""
-        self['font'] = good_resource_path(font)
+        self['font'] = as_resource_path(font)
         return self
 
     def bold(self) -> JsonText:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import FacingDef, good_facing, Position, Facing, ROTATION_270, DOWN, r, UP
+from pynecraft.base import FacingDef, as_facing, Position, Facing, ROTATION_270, DOWN, r, UP
 from pynecraft.commands import fill, BlockDef, function, execute, Selector, e
 from pynecraft.function import Function
 from pynecraft.simpler import WallSign
@@ -66,7 +66,7 @@ class Menu:
         self.action_factory = action_factory
         self.wood = wood
         self.selected_wood = selected_wood
-        dir = good_facing(dir)
+        dir = as_facing(dir)
         if dir not in (UP, DOWN):
             raise ValueError(f'{dir}: only UP and DOWN are allowed')
         self.dir = dir
@@ -108,10 +108,10 @@ class Menu:
         :param facing: Direction the signs face.
         :return:
         """
-        _Placement(self, home, pos, good_facing(facing), self.dir).place()
+        _Placement(self, home, pos, as_facing(facing), self.dir).place()
 
     def end(self, pos: Position, facing: FacingDef) -> Position:
-        facing = good_facing(facing)
+        facing = as_facing(facing)
         dim = self._dim()
         return (pos[0] + (dim[0] - 1) * facing.dx,
                 pos[1] + (dim[1] - 1) * self.dir.dy,
@@ -151,7 +151,7 @@ class _Placement:
         self.pos = pos
         self.facing = facing
         self.placing = facing.turn(ROTATION_270)
-        self.dir = good_facing(dir)
+        self.dir = as_facing(dir)
 
     def place(self):
         if not self.menu._entries:

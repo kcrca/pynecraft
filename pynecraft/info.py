@@ -9,7 +9,7 @@ from importlib.resources import files
 from packaging.version import Version
 
 from .base import COLORS, Nbt, Parameters, parameters, to_id, to_name, NbtDef
-from .commands import Block, Entity, good_color_num
+from .commands import Block, Entity, as_color_num
 from .enums import PotterySherd
 from .simpler import Item
 from .utils.fetch_things import ItemFetcher
@@ -335,7 +335,7 @@ class Fish(Entity):
         :param pattern_color: The pattern color, as either a name or an index in the COLORS tuple.
         """
 
-        return int(small) | which_body << 8 | good_color_num(body_color) << 16 | good_color_num(pattern_color) << 24
+        return int(small) | which_body << 8 | as_color_num(body_color) << 16 | as_color_num(pattern_color) << 24
 
     @classmethod
     def _to_kind(cls, kind):

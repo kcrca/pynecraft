@@ -136,14 +136,14 @@ class TestCommands(unittest.TestCase):
             _StoreClause().storage(s(), '{}', 'foo', 1.9)
 
     def test_range(self):
-        self.assertEqual('3', good_range(3))
-        self.assertEqual('1..3', good_range((1, 3)))
-        self.assertEqual('..3', good_range((None, 3)))
-        self.assertEqual('1..', good_range((1, None)))
-        self.assertEqual('0..', good_range((0, None)))
-        self.assertEqual('..0', good_range((None, 0)))
-        self.assertEqual('0', good_range(0))
-        self.assertEqual('2', good_range(2))
+        self.assertEqual('3', as_range(3))
+        self.assertEqual('1..3', as_range((1, 3)))
+        self.assertEqual('..3', as_range((None, 3)))
+        self.assertEqual('1..', as_range((1, None)))
+        self.assertEqual('0..', as_range((0, None)))
+        self.assertEqual('..0', as_range((None, 0)))
+        self.assertEqual('0', as_range(0))
+        self.assertEqual('2', as_range(2))
 
     def test_coords(self):
         self.assertEqual('~1', str(r(1)))
@@ -291,11 +291,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('* foo', str(Score(Star(), 'foo')))
         self.assertEqual('@a bar', str(Score(a(), 'bar')))
 
-    def test_good_score(self):
-        self.assertIsNone(good_score(None))
-        self.assertEqual(Score(a(), 'bar'), good_score(Score(a(), 'bar')))
-        self.assertEqual(Score(a(), 'bar'), good_score((a(), 'bar')))
-        self.assertEqual(Score('foo', 'bar'), good_score(('foo', 'bar')))
+    def test_as_score(self):
+        self.assertIsNone(as_score(None))
+        self.assertEqual(Score(a(), 'bar'), as_score(Score(a(), 'bar')))
+        self.assertEqual(Score(a(), 'bar'), as_score((a(), 'bar')))
+        self.assertEqual(Score('foo', 'bar'), as_score(('foo', 'bar')))
 
     def test_target_pos(self):
         self.assertEqual('@a[x=1,y=2,z=3]', str(a().pos((1, 2, 3))))
@@ -996,39 +996,39 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tellraw @s {"text": "howdy"}', tellraw(s(), 'howdy'))
 
     def test_resource_checks(self):
-        self.assertEqual('xyzzy', good_resource('xyzzy'))
-        self.assertEqual('m:xyzzy', good_resource('m:xyzzy'))
-        self.assertEqual('xyzzy', good_resource_path('xyzzy'))
-        self.assertEqual('m:xyzzy', good_resource_path('m:xyzzy'))
-        self.assertEqual('a/b/c', good_resource_path('a/b/c'))
-        self.assertEqual('/a/b/c', good_resource_path('/a/b/c'))
-        self.assertEqual('m:a/b/c', good_resource_path('m:a/b/c'))
-        self.assertEqual('m:/a/b/c', good_resource_path('m:/a/b/c'))
+        self.assertEqual('xyzzy', as_resource('xyzzy'))
+        self.assertEqual('m:xyzzy', as_resource('m:xyzzy'))
+        self.assertEqual('xyzzy', as_resource_path('xyzzy'))
+        self.assertEqual('m:xyzzy', as_resource_path('m:xyzzy'))
+        self.assertEqual('a/b/c', as_resource_path('a/b/c'))
+        self.assertEqual('/a/b/c', as_resource_path('/a/b/c'))
+        self.assertEqual('m:a/b/c', as_resource_path('m:a/b/c'))
+        self.assertEqual('m:/a/b/c', as_resource_path('m:/a/b/c'))
         with self.assertRaises(ValueError):
-            good_resource('%')
+            as_resource('%')
         with self.assertRaises(ValueError):
-            good_resource('m:xyzzy', allow_namespace=False)
+            as_resource('m:xyzzy', allow_namespace=False)
         with self.assertRaises(ValueError):
-            good_resource_path('/')
+            as_resource_path('/')
         with self.assertRaises(ValueError):
-            good_resource_path('a//b')
+            as_resource_path('a//b')
         with self.assertRaises(ValueError):
-            good_resource_path('/a/b: c')
+            as_resource_path('/a/b: c')
         with self.assertRaises(ValueError):
-            good_resource_path('//a/b/c')
+            as_resource_path('//a/b/c')
 
     def test_tag_checks(self):
-        self.assertEqual('xyzzy', good_name('xyzzy'))
-        self.assertEqual('a+b', good_name('a+b'))
-        self.assertEqual('!a+b', good_name('!a+b', allow_not=True))
-        self.assertEqual(('_', 'b-3'), good_names('_', 'b-3'))
-        self.assertEqual(('_', '!b-3'), good_names('_', '!b-3', allow_not=True))
+        self.assertEqual('xyzzy', as_name('xyzzy'))
+        self.assertEqual('a+b', as_name('a+b'))
+        self.assertEqual('!a+b', as_name('!a+b', allow_not=True))
+        self.assertEqual(('_', 'b-3'), as_names('_', 'b-3'))
+        self.assertEqual(('_', '!b-3'), as_names('_', '!b-3', allow_not=True))
         with self.assertRaises(ValueError):
-            good_name('x&y')
+            as_name('x&y')
         with self.assertRaises(ValueError):
-            good_name('!foo')
+            as_name('!foo')
         with self.assertRaises(ValueError):
-            good_names('_', '!b-3')
+            as_names('_', '!b-3')
 
     def test_commands(self):
         self.assertEqual('help\nhelp foo\nfunction m:b/c', commands(help(), help('foo'), function('m:b/c')))

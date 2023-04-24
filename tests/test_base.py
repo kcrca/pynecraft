@@ -5,7 +5,7 @@ from parameterized import parameterized
 from pynecraft.base import Coord, EAST, IntRelCoord, NORTH, Nbt, ROTATION_0, ROTATION_180, ROTATION_270, \
     ROTATION_90, RelCoord, SOUTH, \
     TimeSpec, WEST, \
-    parameters, r, rotated_facing, good_facing, string, d
+    parameters, r, rotate_facing, as_facing, string, d
 from pynecraft.commands import setblock
 
 
@@ -21,11 +21,11 @@ class TestBase(unittest.TestCase):
         Nbt.use_spaces = self.orig_spaces
 
     def test_rotated_facing(self):
-        self.assertEqual((0, 0, -3), good_facing(NORTH).scale(3))
-        self.assertEqual(good_facing(NORTH), rotated_facing(NORTH, ROTATION_0))
-        self.assertEqual(good_facing(NORTH), rotated_facing(EAST, ROTATION_270))
-        self.assertEqual(good_facing(NORTH), rotated_facing(SOUTH, ROTATION_180))
-        self.assertEqual(good_facing(NORTH), rotated_facing(WEST, ROTATION_90))
+        self.assertEqual((0, 0, -3), as_facing(NORTH).scale(3))
+        self.assertEqual(as_facing(NORTH), rotate_facing(NORTH, ROTATION_0))
+        self.assertEqual(as_facing(NORTH), rotate_facing(EAST, ROTATION_270))
+        self.assertEqual(as_facing(NORTH), rotate_facing(SOUTH, ROTATION_180))
+        self.assertEqual(as_facing(NORTH), rotate_facing(WEST, ROTATION_90))
 
     def test_string(self):
         self.assertEqual('', string(''))

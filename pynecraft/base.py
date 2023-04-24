@@ -165,7 +165,7 @@ def _to_tuple(data):
 def _strip_namespace(path):
     parts = path.split(':', 1)
     if len(parts) > 1:
-        good_resource(parts[0])
+        as_resource(parts[0])
         path = parts[1]
     return path
 
@@ -211,7 +211,7 @@ def _ensure_size(lst: Iterable[any, ...], size: int, fill=None) -> list:
     return lst
 
 
-def good_nbt_key(key: str) -> str:
+def as_nbt_key(key: str) -> str:
     """Checks if the argument is a good NBT key. If not, it raises KeyError.
 
     :param key: The (probable) key.
@@ -222,13 +222,13 @@ def good_nbt_key(key: str) -> str:
     return key
 
 
-def good_nbt_path(path: str) -> str:
+def as_nbt_path(path: str) -> str:
     if _nbt_path_re.fullmatch(path) is None:
         raise ValueError(f'{path}: Invalid NBT path')
     return path
 
 
-def good_resource(name: str | None, allow_namespace=True, allow_not=False) -> str | None:
+def as_resource(name: str | None, allow_namespace=True, allow_not=False) -> str | None:
     """Checks if the argument is a valid resource name, or None. If not, it raises ValueError.
 
     :param name: The (probable) resource name.
@@ -249,19 +249,19 @@ def good_resource(name: str | None, allow_namespace=True, allow_not=False) -> st
     return name
 
 
-def good_resources(*names: str, allow_not=False) -> tuple[str, ...]:
-    """Calls good_resource on each name.
+def as_resources(*names: str, allow_not=False) -> tuple[str, ...]:
+    """Calls as_resource on each name.
 
     :param names: The (probable) resource names .
     :param allow_not: Whether to allow a '!' before any names.
     :return: the input names
     """
     for t in names:
-        good_resource(t, allow_not=allow_not)
+        as_resource(t, allow_not=allow_not)
     return names
 
 
-def good_resource_path(path: str | None, allow_not=False) -> str | None:
+def as_resource_path(path: str | None, allow_not=False) -> str | None:
     """Checks if the argument is a valid resource path, or None.
 
     :param path: The (probable) path.
@@ -281,13 +281,13 @@ def good_resource_path(path: str | None, allow_not=False) -> str | None:
         raise ValueError(f'{orig}: Invalid empty resource')
     for part in path.split('/'):
         try:
-            good_resource(part, allow_namespace=False)
+            as_resource(part, allow_namespace=False)
         except ValueError:
             raise ValueError(f'{part}: Invalid resource location in dir {path}')
     return orig
 
 
-def good_item_stack(item: str):
+def as_item_stack(item: str):
     """
     Checks if the argument is a valid item stack specification. This only checks the resource part of the item stack.
 
@@ -295,11 +295,11 @@ def good_item_stack(item: str):
     :return: the input value
     """
     resource, *_ = item.split('{')
-    good_resource(resource)
+    as_resource(resource)
     return item
 
 
-def good_name(name: str | None, allow_not=False) -> str | None:
+def as_name(name: str | None, allow_not=False) -> str | None:
     """Checks if the argument is a valid name, such as for a user, or None.
 
     :param name: The (probable) name.
@@ -316,19 +316,19 @@ def good_name(name: str | None, allow_not=False) -> str | None:
     return orig
 
 
-def good_names(*names: str, allow_not=False) -> tuple[str, ...]:
-    """Calls good_name on each name
+def as_names(*names: str, allow_not=False) -> tuple[str, ...]:
+    """Calls as_name on each name
 
     :param names: The (probable) names.
     :param allow_not: Whether to allow a '!' before any names.
     :return: the input values.
     """
     for t in names:
-        good_name(t, allow_not)
+        as_name(t, allow_not)
     return names
 
 
-def good_column(col: IntColumn) -> IntColumn:
+def as_column(col: IntColumn) -> IntColumn:
     """Checks if the argument is a valid column position.
 
     A valid column position is a tuple or list of two ints and/or IntRelCoords.
@@ -346,7 +346,7 @@ def good_column(col: IntColumn) -> IntColumn:
     raise ValueError(f'{str(col)}: Invalid column position')
 
 
-def good_angle(angle: Angle) -> Angle:
+def as_angle(angle: Angle) -> Angle:
     """Checks if the angle is a valid one. "Valid" means a float or a tilde relative coordinate (such as ``~45``).
 
     :param angle: The (probable) angle.
@@ -362,10 +362,10 @@ def good_angle(angle: Angle) -> Angle:
         raise ValueError(f'{angle}: Invalid angle')
 
 
-def good_yaw(yaw: Angle | str | None) -> Angle | None:
+def as_yaw(yaw: Angle | str | None) -> Angle | None:
     """Checks if the angle is a valid yaw value, or None.
 
-     "Valid" means a value that good_facing() or good_angle() accepts. If it is a number or RelCoord, it must be in
+     "Valid" means a value that as_facing() or as_angle() accepts. If it is a number or RelCoord, it must be in
      the range [-180, 180).
 
     :param yaw: The (probable) yaw angle.
@@ -373,32 +373,32 @@ def good_yaw(yaw: Angle | str | None) -> Angle | None:
     """
     if yaw is not None:
         if isinstance(yaw, str):
-            yaw = good_facing(yaw).rotation[0]
+            yaw = as_facing(yaw).rotation[0]
         else:
-            yaw = good_angle(yaw)
+            yaw = as_angle(yaw)
             yv = yaw.value if isinstance(yaw, RelCoord) else yaw
             if not -180 <= yv < 180:
                 raise ValueError(f'{yv}: must be in range [-180.0, 180.0)')
     return yaw
 
 
-def good_pitch(pitch: Angle | None) -> Angle | None:
+def as_pitch(pitch: Angle | None) -> Angle | None:
     """Checks if the angle is a valid pitch value, or None.
 
-     "Valid" means a value that good_angle() accepts, and that is the range [-90, 90).
+     "Valid" means a value that as_angle() accepts, and that is the range [-90, 90).
 
     :param pitch: The (probable) pitch angle.
     :return: The input value.
     """
     if pitch is not None:
-        pitch = good_angle(pitch)
+        pitch = as_angle(pitch)
         yv = pitch.value if isinstance(pitch, RelCoord) else pitch
         if not -90 <= yv < 90:
             raise ValueError(f'{yv}: must be in range [-90.0, 90.0)')
     return pitch
 
 
-def good_version(version: Version | str) -> Version:
+def as_version(version: Version | str) -> Version:
     if isinstance(version, Version):
         return version
     return Version(version)
@@ -429,7 +429,7 @@ class _JsonEncoder(JSONEncoder):
 _VALID_NBT_ARRAY_TYPES = ('I', 'L', 'B')
 
 
-def _good_array_type(elem_type):
+def _as_array_type(elem_type):
     if not elem_type.upper() in _VALID_NBT_ARRAY_TYPES:
         raise ValueError(f'{elem_type}: Must be one of {_VALID_NBT_ARRAY_TYPES}')
     return elem_type.upper()
@@ -457,7 +457,7 @@ class Nbt(UserDict):
         # noinspection PyShadowingBuiltins
         def __init__(self, type: str, init_list=None):
             super().__init__(init_list)
-            self.type = _good_array_type(type)
+            self.type = _as_array_type(type)
 
         def __str__(self):
             sout = StringIO()
@@ -475,7 +475,7 @@ class Nbt(UserDict):
     def __setitem__(self, key, value):
         if isinstance(value, Mapping) and not isinstance(value, (Nbt, JsonHolder)):
             value = Nbt.as_nbt(value)
-        super().__setitem__(good_nbt_key(key), value)
+        super().__setitem__(as_nbt_key(key), value)
 
     def __str__(self):
         sout = StringIO()
@@ -714,7 +714,7 @@ class Parameters:
 
     @version.setter
     def version(self, version: Version | str):
-        version = good_version(version)
+        version = as_version(version)
         if version < Parameters.FIRST_VERSION or version > Parameters.LATEST_VERSION:
             raise ValueError(f'{version}: Unsupported version')
         orig = self._version
@@ -732,7 +732,7 @@ class Parameters:
         if relation == NE:
             relation = '!='
         _in_group(Parameters._VERSION_RELATION, relation)
-        version = good_version(version)
+        version = as_version(version)
         if not Parameters._comparator[relation](self.version, version):
             raise ValueError(f'{self.version}: Invalid version (expected {relation} {version})')
 
@@ -1029,7 +1029,7 @@ class Facing:
         return self.name
 
     def __eq__(self, other):
-        other = good_facing(other)
+        other = as_facing(other)
         return self.rotation == other.rotation
 
     @property
@@ -1081,7 +1081,7 @@ class Facing:
         else:
             rotation_aid = SIGN_DIRECTIONS + SIGN_DIRECTIONS
             rot *= 4
-        return good_facing(rotation_aid[rotation_aid.index(self.name) + rot])
+        return as_facing(rotation_aid[rotation_aid.index(self.name) + rot])
 
 
 _facing = {NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2, 0), EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5, 1),
@@ -1123,18 +1123,18 @@ def _in_group(group: list | tuple, name: str | int | None, allow_none=True):
     return name
 
 
-def rotated_facing(facing: FacingDef, rotated_by: int) -> Facing:
-    """Returns the value of turn(rotated_by) invoked on facing, or on good_facing(facing).
+def rotate_facing(facing: FacingDef, rotated_by: int) -> Facing:
+    """Returns the value of turn(rotated_by) invoked on facing, or on as_facing(facing).
 
     For example ``rotated_Facing(NORTH, ROTATION_90)`` is ``EAST``. This allows your code to use relative operations,
     such as placing a sign to the right of an entity, no matter which way it is facing."""
-    return good_facing(facing).turn(rotated_by)
+    return as_facing(facing).turn(rotated_by)
 
 
-def good_facing(facing: FacingDef) -> Facing:
+def as_facing(facing: FacingDef) -> Facing:
     """Checks if the argument is a valid 'facing' specification.
 
-    "Valid" means a Facing object, a known direction name, or a valid sign direction (see good_sign_facing()).
+    "Valid" means a Facing object, a known direction name, or a valid sign direction (see as_sign_facing()).
 
     :param facing: The (probable) facing specification.
     :return: the appropriate Facing object.
@@ -1146,7 +1146,7 @@ def good_facing(facing: FacingDef) -> Facing:
     return _facing[facing]
 
 
-def good_duration(duration: DurationDef) -> TimeSpec | None:
+def as_duration(duration: DurationDef) -> TimeSpec | None:
     """Checks if the argument is a valid duration specification, or None.
 
     If the input is None, it is returned. Otherwise, this returns Duration(duration).
@@ -1156,7 +1156,7 @@ def good_duration(duration: DurationDef) -> TimeSpec | None:
     return TimeSpec(duration)
 
 
-def good_range(spec: Range) -> str:
+def as_range(spec: Range) -> str:
     """Checks if the argument is a valid numeric range.
 
      "Valid" means a single number or bool, or a two-element list or tuple that define the endpoints. If a bool, it will

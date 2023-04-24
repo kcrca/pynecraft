@@ -52,7 +52,7 @@ def text_lines(*orig: any) -> Iterable[str]:
     return result
 
 
-def good_function_name(name: str):
+def as_function_name(name: str):
     """
     Checks if the name is a valid function name.
 
@@ -78,7 +78,7 @@ class Function:
     _LOAD_INFO = '# __internal_load: '
 
     def __init__(self, name: str, base_name: str = None):
-        self.name = good_function_name(name)
+        self.name = as_function_name(name)
         self.base_name = base_name if base_name else name
         self._add_to = []
         self.parent = None
@@ -282,7 +282,7 @@ class Loop(Function):
         :param base_name: The base name for the function. It can be useful to name the function 'foo_main' to run the
         function on the "main" clock, for example. If so, the base name would typically be 'foo'.
         """
-        score = good_score(score)
+        score = as_score(score)
         if not name:
             if isinstance(score.target, (str, User)):
                 name = str(score.target)
@@ -688,7 +688,7 @@ class FunctionSet:
         FunctionSet.
         :param pack_or_parent: The parent of this set.
         """
-        self.name = good_name(name)
+        self.name = as_name(name)
         if isinstance(pack_or_parent, FunctionSet):
             self.pack = pack_or_parent.pack
             self.parent = pack_or_parent

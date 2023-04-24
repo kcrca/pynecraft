@@ -4,9 +4,9 @@ import dataclasses
 from typing import Callable, Iterable, Mapping, Tuple, Union, Sequence
 
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, d, good_facing, r, to_id, BLACK, NORTH
+    _to_list, d, as_facing, r, to_id, BLACK, NORTH
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignMessages, SomeMappings, fill, fillbiome, good_biome, good_block, good_color_num, setblock, data, SignMessage, \
+    SignMessages, SomeMappings, fill, fillbiome, as_biome, as_block, as_color_num, setblock, data, SignMessage, \
     SignCommand
 from .enums import Pattern
 
@@ -194,7 +194,7 @@ class Sign(Block):
         Place the sign.
 
         :param pos: The position.
-        :param facing: The direction the sign if facing. See good_facing() for useful parameters.
+        :param facing: The direction the sign if facing. See as_facing() for useful parameters.
         :param water: Whether the sign is waterlogged.
         :param nbt: Any extra NBT for the sign.
         :return: The commands to place the sign.
@@ -213,7 +213,7 @@ class Sign(Block):
             return setblock(pos, self)
 
     def _orientation(self, facing):
-        self.merge_state({'rotation': good_facing(facing).sign_rotation})
+        self.merge_state({'rotation': as_facing(facing).sign_rotation})
 
 
 class WallSign(Sign):
@@ -223,10 +223,10 @@ class WallSign(Sign):
         return f'{wood}_wall_hanging_sign' if self.hanging else f'{wood}_wall_sign'
 
     def _orientation(self, facing):
-        self.merge_state({'facing': good_facing(facing).name})
+        self.merge_state({'facing': as_facing(facing).name})
 
     def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None, clear=True) -> Commands:
-        """When placing a wall sign, the orientations are different, but also can be found in good_facing()."""
+        """When placing a wall sign, the orientations are different, but also can be found in as_facing()."""
         return super().place(pos, facing, water, nbt, clear)
 
 
@@ -355,7 +355,7 @@ class Item(Entity):
     @classmethod
     def nbt_for(cls, item: BlockDef, nbt=None) -> Nbt:
         """The nbt for this item."""
-        item = good_block(item)
+        item = as_block(item)
         item_id = item.id
         if item_id.find(':') < 0:
             item_id = 'minecraft:' + item_id
@@ -389,7 +389,7 @@ class Shield(Item):
 
     def add_pattern(self, pattern: str, color: int | str) -> Shield:
         """Add a pattern to the shield."""
-        color = good_color_num(color)
+        color = as_color_num(color)
         patterns = self.nbt['tag']['BlockEntityTag'].get_list('Patterns')
         patterns.append(Nbt({'Pattern': Pattern(pattern), 'Color': color}))
         return self
@@ -456,15 +456,15 @@ class Region:
         Returns a command that will fill the region with a block. If a second block is given, it will be the filter;
         only this kind of block will be replaced. This can, of course, be a tag.
         """
-        f = fill(self.start, self.end, good_block(new))
+        f = fill(self.start, self.end, as_block(new))
         if replace:
             f = f.replace(replace)
         yield f
 
     def fillbiome(self, biome: Biome, replace: Biome = None) -> Command:
-        f = fillbiome(self.start, self.end, good_biome(biome))
+        f = fillbiome(self.start, self.end, as_biome(biome))
         if replace:
-            f = f.replace(good_biome(replace))
+            f = f.replace(as_biome(replace))
         yield f
 
     def replace(self, new: BlockDef, old: BlockDef, states: SomeMappings = None,
@@ -477,8 +477,8 @@ class Region:
         new_states = _to_list(new_states) if new_states else [{}]
         if not shared_states:
             shared_states = {}
-        new = good_block(new)
-        old = good_block(old)
+        new = as_block(new)
+        old = as_block(old)
 
         if not states and not new_states and not shared_states:
             yield from self.fill(new, old)
@@ -605,14 +605,14 @@ class ItemFrame(Entity):
     """A class for item frames."""
 
     def __init__(self, facing: int | str, *, glowing: bool = None, nbt: NbtDef = None, name: str = None):
-        """Creates an ItemFrame object facing in the given direction. See good_facing() for useful values."""
+        """Creates an ItemFrame object facing in the given direction. See as_facing() for useful values."""
         nbt = Nbt.as_nbt(nbt) if nbt else Nbt({})
-        nbt = nbt.merge({'Facing': good_facing(facing).number, 'Fixed': True})
+        nbt = nbt.merge({'Facing': as_facing(facing).number, 'Fixed': True})
         super().__init__('glow_item_frame' if glowing else 'item_frame', nbt=nbt, name=name)
 
     def item(self, item: BlockDef) -> ItemFrame:
         """Sets the item that is in the frame."""
-        block = good_block(item)
+        block = as_block(item)
         self.merge_nbt({'Item': Item.nbt_for(block)})
         return self
 
@@ -622,7 +622,7 @@ class ItemFrame(Entity):
 
     def named(self, name: BlockDef = None) -> ItemFrame:
         """Sets the name displayed for the item in the frame."""
-        block = good_block(name)
+        block = as_block(name)
         if block is None:
             try:
                 del self.nbt['Item']['tag']['display']['Name']
@@ -679,8 +679,8 @@ class Trade:
 
 def _to_def(block) -> tuple[Block, int]:
     if isinstance(block, tuple):
-        return good_block(block[0]).id, block[1]
-    return good_block(block).id, 1
+        return as_block(block[0]).id, block[1]
+    return as_block(block).id, 1
 
 
 class Villager(Entity):
@@ -768,7 +768,7 @@ class Villager(Entity):
         for i in items:
             if not isinstance(i, tuple):
                 i = (i, 1)
-            item_nbt = Item.nbt_for(good_block(i[0]))
+            item_nbt = Item.nbt_for(as_block(i[0]))
             item_nbt['Count'] = i[1]
             inventory.append(Nbt(item_nbt))
         return self
@@ -911,7 +911,7 @@ class Painting(Entity):
         nbt['variant'] = self.variant
         if ll:
             if not facing:
-                facing = good_facing(NORTH)
+                facing = as_facing(NORTH)
             movement = facing.turn(90)
             x, y = self.info.size
             pos = _to_list(pos)
