@@ -294,6 +294,7 @@ class Loop(Function):
         self.to_incr = Score('_to_incr', score.objective)
         self.max_score = Score(self.score.target, f'{self.score.objective}_max')
         self.setup = ()
+        self.adjuster = None
         self.before = []
         self.body = ()
         self.after = []
@@ -388,8 +389,8 @@ class Loop(Function):
         return (
             execute().unless().score(self.score).matches((0, None)).run(function(
                 f'{self.score.target}_init')),
-            execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1))),
             self.max_score.set(loop_size),
+            execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1))),
             self.score.operation(MOD, self.max_score),
         )
 
@@ -398,7 +399,9 @@ class Loop(Function):
             return Loop._prefix_override(i)
         return execute().if_().score(self.score).matches(i).run('')
 
-    def loop(self, body_func: Callable[[Step], Union[Commands, Command, str, Iterable[Union[Commands, Command, str]]]] | None, items: Iterable[Any],
+    def loop(self,
+             body_func: Callable[[Step], Union[Commands, Command, str, Iterable[Union[Commands, Command, str]]]] | None,
+             items: Iterable[Any],
              bounce: object = False, replace: object = False) -> Loop:
         """
         Define the loop itself.
@@ -448,6 +451,15 @@ class Loop(Function):
             function(self.full_name),
             self.to_incr.set(1),
         )
+
+    def adjust(self, adjuster: Command | Commands | None) -> Loop:
+        """
+        Execute a command or commands after the loop value is incremented but before it is constrainted to the max
+        value. This can be used, for example, to skip a value in the middle if it is not compatible with another
+        loop's value.
+        """
+        self.adjuster = adjuster
+        return self
 
 
 def _pack_version_rep(spec: str):
