@@ -2639,7 +2639,8 @@ def reload() -> str:
     return str(cmd)
 
 
-def return_(value: int) -> str:
+def return_(value: int = 0) -> str:
+    """Returns from a function (stop executing it) with a given result. If non provided, 0 is returned."""
     cmd = Command()
     cmd._add('return', value)
     return str(cmd)
