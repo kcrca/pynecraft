@@ -388,14 +388,14 @@ class Loop(Function):
     def _setup_for(self, loop_size: int):
         if Loop._setup_override:
             return _to_tuple(Loop._setup_override())
-        return (
+        setup = [
             execute().unless().score(self.score).matches((0, None)).run(function(
                 f'{self.score.target}_init')),
             self.max_score.set(loop_size),
-            execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1))),
-            self.adjuster,
-            self.score.operation(MOD, self.max_score),
-        )
+            execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1)))]
+        setup.extend(self.adjuster)
+        setup.append(self.score.operation(MOD, self.max_score))
+        return tuple(setup)
 
     def _prefix_for(self, i):
         if Loop._prefix_override:
