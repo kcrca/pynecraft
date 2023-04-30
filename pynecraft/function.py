@@ -294,7 +294,7 @@ class Loop(Function):
         self.to_incr = Score('_to_incr', score.objective)
         self.max_score = Score(self.score.target, f'{self.score.objective}_max')
         self.setup = ()
-        self.adjuster = None
+        self.adjuster = ()
         self.before = []
         self.body = ()
         self.after = []
@@ -307,6 +307,7 @@ class Loop(Function):
         loop.looped = load_info['looped']
 
         lines = [x.rstrip() for x in lines]
+        loop.adjuster = tuple(cls._pop_lines(lines, load_info['adjuster_len']))
         loop.setup = tuple(cls._pop_lines(lines, load_info['setup_len']))
         loop.before = cls._pop_lines(lines, load_info['before_len'])
         loop.body = tuple(cls._pop_lines(lines, load_info['body_len']))
@@ -339,6 +340,7 @@ class Loop(Function):
             'looped': self.looped,
             'score': (str(self.score.target), self.score.objective),
             'before_len': len(self.before),
+            'adjuster_len': len(self.adjuster),
             'setup_len': len(self.setup),
             'body_len': len(self.body),
             'iterations': self._iterations,
@@ -391,6 +393,7 @@ class Loop(Function):
                 f'{self.score.target}_init')),
             self.max_score.set(loop_size),
             execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1))),
+            self.adjuster,
             self.score.operation(MOD, self.max_score),
         )
 
@@ -452,7 +455,7 @@ class Loop(Function):
             self.to_incr.set(1),
         )
 
-    def adjust(self, adjuster: Command | Commands | None) -> Loop:
+    def adjust(self, *adjuster: [Command | str]) -> Loop:
         """
         Execute a command or commands after the loop value is incremented but before it is constrainted to the max
         value. This can be used, for example, to skip a value in the middle if it is not compatible with another
