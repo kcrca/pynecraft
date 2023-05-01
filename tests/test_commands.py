@@ -5,11 +5,12 @@ from contextlib import contextmanager
 from distutils.version import Version
 
 from pynecraft import info
-from pynecraft.base import DARK_GREEN, GAMETIME, LT, THE_NETHER, d, days, r, seconds, ticks
+from pynecraft.base import DARK_GREEN, GAMETIME, LT, THE_NETHER, d, days, r, seconds, ticks, WEST, NORTH
 from pynecraft.commands import *
-from pynecraft.commands import _AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
+from pynecraft.commands import AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
     _ScoreboardCriteria, _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
 from pynecraft.enums import BiomeId
+from pynecraft.function import Function
 
 
 def commands(*cmds: str | Command) -> str:
@@ -59,6 +60,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(uuid1, Uuid.from_most_least(-2297048576818329846, -5256598933532376638))
         self.assertEqual(uuid1, Uuid.from_most_least_dict(
             {'UUIDMost': -2297048576818329846, 'UUIDLeast': -5256598933532376638}))
+        self.assertEquals(
+            {'UUIDMost': -2297048576818329846, 'UUIDLeast': -5256598933532376638}, uuid1.most_least_dict)
         self.assertEqual((-534823299, 1525499658, -1223897314, -535100990), uuid1.ints)
         self.assertEqual('e01f3e7d-5aed-470a-b70c-cf1ee01b01c2', uuid1.hex_str)
         self.assertEqual((-2297048576818329846, -5256598933532376638), uuid1.most_least)
@@ -74,52 +77,74 @@ class TestCommands(unittest.TestCase):
         self.assertEqual((-1, -2, 3, 4), Uuid.from_most_least(0xfffffffffffffffe, 0x300000004).ints)
 
     def test_execute_mod(self):
-        self.assertEqual('align xz', str(_ExecuteMod().align('xz')))
-        self.assertEqual('anchored eyes', str(_ExecuteMod().anchored(EYES)))
-        self.assertEqual('as @s[tag=robin]', str(_ExecuteMod().as_(s().tag('robin'))))
-        self.assertEqual('at [1, 3, 5, 7]', str(_ExecuteMod().at(Uuid(1, 3, 5, 7))))
-        self.assertEqual('facing 1 ~2 ^3', str(_ExecuteMod().facing((1, r(2), d(3)))))
-        self.assertEqual('facing entity robin feet', str(_ExecuteMod().facing_entity(User('robin'), FEET)))
-        self.assertEqual('in the_nether', str(_ExecuteMod().in_(THE_NETHER)))
-        self.assertEqual('if block 1 ~2 ^3 stone', str(_ExecuteMod().if_().block((1, r(2), d(3)), 'stone')))
-        self.assertEqual('unless block 1 ~2 ^3 stone', str(_ExecuteMod().unless().block((1, r(2), d(3)), 'stone')))
-        self.assertEqual('store result block 1 ~2 ^3 {} short 1.3', str(
-            _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT,
-                                              1.3)))
-        self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
-        with self.assertRaises(ValueError):
-            _ExecuteMod().align('foo')
-        with self.assertRaises(ValueError):
-            _ExecuteMod().anchored('foo')
-        with self.assertRaises(ValueError):
-            _ExecuteMod().facing_entity(User('robin'), 'foo')
-        with self.assertRaises(ValueError):
-            _ExecuteMod().in_('foo')
-        with self.assertRaises(TypeError):
-            _ExecuteMod().store().block((1, r(2), d(3)), '{}', 'foo', 1.3)
+        v = Parameters.version
+        try:
+            Parameters.version = Parameters.VERSION_1_20
+
+            self.assertEqual('align xz', str(_ExecuteMod().align('xz')))
+            self.assertEqual('anchored eyes', str(_ExecuteMod().anchored(EYES)))
+            self.assertEqual('positioned 1 ~2 ^3', str(_ExecuteMod().positioned((1, r(2), d(3)))))
+            self.assertEqual('positioned as @e[type=bee]', str(_ExecuteMod().positioned_as(e().type('bee'))))
+            self.assertEqual('positioned over ocean_floor', str(_ExecuteMod().positioned_over(OCEAN_FLOOR)))
+            self.assertEqual('rotated 90.0 22', str(_ExecuteMod().rotated(WEST, 22)))
+            self.assertEqual('rotated as @e[tag=foo]', str(_ExecuteMod().rotated_as(e().tag('foo'))))
+            self.assertEqual('dimension overworld', str(_ExecuteMod().dimension('overworld')))
+            self.assertEqual('on vehicle', str(_ExecuteMod().on(VEHICLE)))
+            self.assertEqual('as @s[tag=robin]', str(_ExecuteMod().as_(s().tag('robin'))))
+            self.assertEqual('at [1, 3, 5, 7]', str(_ExecuteMod().at(Uuid(1, 3, 5, 7))))
+            self.assertEqual('facing 1 ~2 ^3', str(_ExecuteMod().facing((1, r(2), d(3)))))
+            self.assertEqual('facing entity robin feet', str(_ExecuteMod().facing_entity(User('robin'), FEET)))
+            self.assertEqual('in the_nether', str(_ExecuteMod().in_(THE_NETHER)))
+            self.assertEqual('if block 1 ~2 ^3 stone', str(_ExecuteMod().if_().block((1, r(2), d(3)), 'stone')))
+            self.assertEqual('unless block 1 ~2 ^3 stone', str(_ExecuteMod().unless().block((1, r(2), d(3)), 'stone')))
+            self.assertEqual('store result block 1 ~2 ^3 {} short 1.3', str(
+                _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT,
+                                                  1.3)))
+            self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
+            with self.assertRaises(ValueError):
+                _ExecuteMod().align('foo')
+            with self.assertRaises(ValueError):
+                _ExecuteMod().anchored('foo')
+            with self.assertRaises(ValueError):
+                _ExecuteMod().facing_entity(User('robin'), 'foo')
+            with self.assertRaises(ValueError):
+                _ExecuteMod().in_('foo')
+            with self.assertRaises(TypeError):
+                _ExecuteMod().store().block((1, r(2), d(3)), '{}', 'foo', 1.3)
+        finally:
+            Parameters.version = v
 
     def test_run(self):
         self.assertEqual('execute run foo', str(execute().run('foo')))
         self.assertEqual('execute run execute', str(execute().run(execute())))
         self.assertEqual('execute run time', str(execute().run(time())))
+        self.assertEqual(('execute run time', 'execute run say hi'), execute().run((time(), say('hi'))))
 
     def test_if_clause(self):
-        self.assertEqual('blocks 1 2 3 4 5 6 7 8 9 masked',
-                         str(_IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), MASKED)))
-        self.assertEqual('data block 1 ~2 ^3 {}', str(_IfClause().data().block((1, r(2), d(3)), '{}')))
-        self.assertEqual('data entity @a {}', str(_IfClause().data().entity(a(), '{}')))
-        self.assertEqual('data storage stone {}', str(_IfClause().data().storage('stone', '{}')))
-        self.assertEqual('predicate foo', str(_IfClause().predicate('foo')))
-        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, ('up', 'down'))))
-        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, Score('up', 'down'))))
-        self.assertEqual('score * bar matches ..10', str(_IfClause().score(('*', 'bar')).matches((None, 10))))
-        self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar')).matches((1, None))))
-        self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
-        self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar')).matches(3)))
-        with self.assertRaises(ValueError):
-            _IfClause().score(('*', 'bar')).is_('foo', ('up', 'down'))
-        with self.assertRaises(ValueError):
-            _IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), 'foo')
+        v = Parameters.version
+        try:
+            Parameters.version = Parameters.VERSION_1_20
+            self.assertEqual('blocks 1 2 3 4 5 6 7 8 9 masked',
+                             str(_IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), MASKED)))
+            self.assertEqual('data block 1 ~2 ^3 {}', str(_IfClause().data().block((1, r(2), d(3)), '{}')))
+            self.assertEqual('data entity @a {}', str(_IfClause().data().entity(a(), '{}')))
+            self.assertEqual('data storage stone {}', str(_IfClause().data().storage('stone', '{}')))
+            self.assertEqual('predicate foo', str(_IfClause().predicate('foo')))
+            self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, ('up', 'down'))))
+            self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, Score('up', 'down'))))
+            self.assertEqual('score * bar matches ..10', str(_IfClause().score(('*', 'bar')).matches((None, 10))))
+            self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar')).matches((1, None))))
+            self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
+            self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar')).matches(3)))
+            self.assertEqual('biome 1 ~2 ^3 desert', str(_IfClause().biome((1, r(2), d(3)), BiomeId.DESERT)))
+            self.assertEqual('entity @e[tag=foo]', str(_IfClause().entity(e().tag('foo'))))
+            self.assertEqual('loaded 1 ~2 ^3', str(_IfClause().loaded((1, r(2), d(3)))))
+            with self.assertRaises(ValueError):
+                _IfClause().score(('*', 'bar')).is_('foo', ('up', 'down'))
+            with self.assertRaises(ValueError):
+                _IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), 'foo')
+        finally:
+            Parameters.version = v
 
     def test_store_clause(self):
         self.assertEqual('block 1 ~2 ^3 {} short 1.3', str(_StoreClause().block((1, r(2), d(3)), '{}', SHORT, 1.3)))
@@ -184,6 +209,14 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('minecraft:bat', Entity('bat').full_id())
         self.assertEqual('minecraft:bat', Entity('minecraft:bat').full_id())
         self.assertEqual('dp:mouse', Entity('dp:mouse').full_id())
+        self.assertEqual(Nbt({}), Entity('bat', name='Fred').nbt)
+        self.assertEqual(Nbt({'Tags': ['t1', 't2']}), Entity('bat', name='Fred').tag('t1').tag('t2').nbt)
+        self.assertEqual(Nbt({'CustomName': 'Fred', 'CustomNameVisible': False}),
+                         Entity('bat', name='Fred').custom_name(True).nbt)
+        self.assertEqual(Nbt({'CustomName': 'Fred', 'CustomNameVisible': True}),
+                         Entity('bat', name='Fred').custom_name(True).custom_name_visible(True).nbt)
+        self.assertEqual('summon bat 1 ~2 ^3 {Facing: 2, Rotation: [180.0f, 0.0f]}',
+                         Entity('bat', name='Fred').summon((1, r(2), d(3)), facing=NORTH))
 
     def test_json_text(self):
         sort_keys = Nbt.sort_keys
@@ -290,12 +323,30 @@ class TestCommands(unittest.TestCase):
     def test_score(self):
         self.assertEqual('* foo', str(Score(Star(), 'foo')))
         self.assertEqual('@a bar', str(Score(a(), 'bar')))
+        x = Score('x', 'score')
+        self.assertEqual(('scoreboard objectives add score dummy', 'scoreboard players set x score 17'), x.init(17))
+        self.assertEqual('scoreboard players get x score', x.get())
+        self.assertEqual('scoreboard players set x score 17', x.set(17))
+        self.assertEqual('scoreboard players add x score 17', x.add(17))
+        self.assertEqual('scoreboard players remove x score 17', x.remove(17))
+        self.assertEqual('scoreboard players reset x score', x.reset())
+        self.assertEqual('scoreboard players enable x score', x.enable())
 
     def test_as_score(self):
         self.assertIsNone(as_score(None))
         self.assertEqual(Score(a(), 'bar'), as_score(Score(a(), 'bar')))
         self.assertEqual(Score(a(), 'bar'), as_score((a(), 'bar')))
         self.assertEqual(Score('foo', 'bar'), as_score(('foo', 'bar')))
+
+    def test_as_yaw(self):
+        self.assertIsNone(as_yaw(None))
+        self.assertEqual(90, as_yaw(WEST))
+        self.assertEqual(32, as_yaw(32))
+
+    def test_as_pitch(self):
+        self.assertIsNone(as_pitch(None))
+        self.assertEqual(90, as_yaw(WEST))
+        self.assertEqual(32, as_pitch(32))
 
     def test_target_pos(self):
         self.assertEqual('@a[x=1,y=2,z=3]', str(a().pos((1, 2, 3))))
@@ -324,6 +375,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[tag=foo]', str(a().tag('foo')))
         self.assertEqual('@a[tag=foo, tag=bar]', str(a().tag('foo', 'bar')))
         self.assertEqual('@a[tag=foo, tag=bar]', str(a().tag('foo').tag('bar')))
+        self.assertEqual('@a[tag=!foo]', str(a().not_tag('foo')))
+        self.assertEqual('@a[tag=!foo, tag=!bar]', str(a().not_tag('foo', 'bar')))
+        self.assertEqual('@a[tag=!foo, tag=bar]', str(a().not_tag('foo').tag('bar')))
+
+    def test_target_literal(self):
+        self.assertEqual('@a[blahblah<->]', str(a().literal('blahblah<->')))
 
     def test_target_team(self):
         self.assertEqual('@a[team=foo]', str(a().team('foo')))
@@ -416,12 +473,18 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[nbt={a: 17}]', str(a().nbt({'a': 17})))
         self.assertEqual('@a[nbt={a: 17}, nbt={b: "hi there"}]', str(a().nbt({'a': 17}, {'b': 'hi there'})))
         self.assertEqual('@a[nbt={a: 17}, nbt={b: "hi there"}]', str(a().nbt({'a': 17}).nbt({'b': 'hi there'})))
+        self.assertEqual('@a[nbt=!{a: 17}, nbt=!{b: "hi there"}]',
+                         str(a().not_nbt({'a': 17}).not_nbt({'b': 'hi there'})))
 
     def test_target_advancements(self):
         self.assertEqual('@a[advancements={husbandry/wax_on=true}]', str(a().advancements(
-            _AdvancementCriteria(Advancement.WAX_ON, True))))
-        self.assertEqual('@a[advancements={husbandry/wax_on={stuff=false}}]', str(a().advancements(_AdvancementCriteria(
+            AdvancementCriteria(Advancement.WAX_ON, True))))
+        self.assertEqual('@a[advancements={husbandry/wax_on={stuff=false}}]', str(a().advancements(AdvancementCriteria(
             Advancement.WAX_ON, ('stuff', False)))))
+        self.assertEqual('@a[advancements={husbandry/wax_on={stuff=false},story/smelt_iron={stuff=false}}]',
+                         str(a().advancements(
+                             AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
+                             AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
 
     def test_target_predicate(self):
         self.assertEqual('@a[predicate=foo]', str(a().predicate('foo')))
@@ -437,7 +500,7 @@ class TestCommands(unittest.TestCase):
             str(a().pos((1, 2, 3)).distance((None, 15.5)).volume((4.4, 5.5, 6.6)).scores().tag("one").team('slug').sort(
                 ARBITRARY).limit(15).level((3, 15)).gamemode(SURVIVAL).name('Robin').x_rotation(9).y_rotation(
                 (None, 24)).type('cougar').nbt({"hi": "there"}).advancements(
-                _AdvancementCriteria(Advancement.A_SEEDY_PLACE, True)).predicate("nada")))
+                AdvancementCriteria(Advancement.A_SEEDY_PLACE, True)).predicate("nada")))
         self.assertEqual(
             '@a[team=!Raiders, name=!GRBX, gamemode=!creative, type=!worm]',
             str(a().not_team('Raiders').not_name("GRBX").not_gamemode(CREATIVE).not_type("worm")))
@@ -574,47 +637,78 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('data get entity @s', data().get(s()))
 
     def test_effect(self):
-        self.assertEqual('effect give @s speed', effect().give(s(), Effect.SPEED))
-        self.assertEqual('effect give @s speed 100', effect().give(s(), Effect.SPEED, 100))
-        self.assertEqual('effect give @s speed 100 2', effect().give(s(), Effect.SPEED, 100, 2))
-        self.assertEqual('effect give @s speed 100 2 true', effect().give(s(), Effect.SPEED, 100, 2, True))
-        self.assertEqual('effect clear', effect().clear())
-        self.assertEqual('effect clear @s', effect().clear(s()))
-        self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
-        with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, -1)
-        with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, MAX_EFFECT_SECONDS + 100)
-        with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, None, 2)
-        with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, None, None, True)
-        with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, 100, None, True)
-        with self.assertRaises(ValueError):
-            effect().clear(None, Effect.SPEED)
+        v = Parameters.version
+        try:
+            Parameters.version = Parameters.VERSION_1_19_4
+            self.assertEqual('effect give @s speed', effect().give(s(), Effect.SPEED))
+            self.assertEqual('effect give @s speed 100', effect().give(s(), Effect.SPEED, 100))
+            self.assertEqual('effect give @s speed 100 2', effect().give(s(), Effect.SPEED, 100, 2))
+            self.assertEqual('effect give @s speed 100 2 true', effect().give(s(), Effect.SPEED, 100, 2, True))
+            self.assertEqual('effect give @s speed infinite', effect().give(s(), Effect.SPEED, INFINITE))
+            self.assertEqual('effect clear', effect().clear())
+            self.assertEqual('effect clear @s', effect().clear(s()))
+            self.assertEqual('effect clear @s speed', effect().clear(s(), 'speed'))
+            self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
+            with self.assertRaises(ValueError):
+                effect().give(s(), Effect.SPEED, -1)
+            with self.assertRaises(ValueError):
+                effect().give(s(), Effect.SPEED, MAX_EFFECT_SECONDS + 100)
+            with self.assertRaises(ValueError):
+                effect().give(s(), Effect.SPEED, None, 2)
+            with self.assertRaises(ValueError):
+                effect().give(s(), Effect.SPEED, None, None, True)
+            with self.assertRaises(ValueError):
+                effect().give(s(), Effect.SPEED, 100, None, True)
+            with self.assertRaises(ValueError):
+                effect().clear(None, Effect.SPEED)
+            with self.assertRaises(ValueError):
+                effect().give(s(), Effect.SPEED, 'foo')
+        finally:
+            Parameters.version = v
 
     def test_enchant(self):
         self.assertEqual('enchant @s lure', enchant(s(), Enchantment.LURE))
+        self.assertEqual('enchant @s lure', enchant(s(), 'lure'))
         self.assertEqual('enchant @s lure 2', enchant(s(), Enchantment.LURE, 2))
         self.assertEqual('enchant @s 12', enchant(s(), 12))
         self.assertEqual('enchant @s 12 2', enchant(s(), 12, 2))
         with self.assertRaises(ValueError):
             enchant(s(), Enchantment.LURE, 17)
 
+    def test_jfr(self):
+        self.assertEqual('jfr start', jfr(START))
+        self.assertEqual('jfr stop', jfr(STOP))
+
+    def test_perf(self):
+        self.assertEqual('perf start', perf(START))
+        self.assertEqual('perf stop', perf(STOP))
+
+    def test_return(self):
+        self.assertEqual('return 17', return_(17))
+        self.assertEqual('return 0', return_())
+
+    def test_setidletimeout(self):
+        self.assertEqual('setidletimeout 17', setidletimeout(17))
+
     def test_experience(self):
         self.assertEqual('experience add @s 3 levels', experience().add(s(), 3, LEVELS))
         self.assertEqual('experience add @s 3 points', experience().add(s(), 3, POINTS))
         self.assertEqual('experience set @s 3 levels', experience().set(s(), 3, LEVELS))
         self.assertEqual('experience set @s 3 points', experience().set(s(), 3, POINTS))
+        self.assertEqual('experience set @s 3', experience().set(s(), 3))
         self.assertEqual('experience query @s points', experience().query(s(), POINTS))
+        self.assertEqual('experience query @s levels', experience().query(s(), LEVELS))
         self.assertEqual('experience query @s points', xp().query(s(), POINTS))
 
     def test_fill(self):
-        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone hollow', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').hollow()))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone')))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace air',
                          fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace('air'))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone hollow', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').hollow()))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone destroy', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').destroy()))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone keep', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').keep()))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone outline', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').outline()))
 
     def test_fillbiome(self):
         orig_version = info.parameters.version
@@ -644,11 +738,46 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             _DataMod().get((1, r(2), d(3)), None, 2.2)
 
+    def test_data_modify(self):
+        orig_version = Parameters.version
+        try:
+            Parameters.version = Parameters.VERSION_1_20
+            self.assertEqual('modify entity @p path append from entity @s path2',
+                             str(_DataMod().modify(p(), 'path').append().from_(s(), 'path2')))
+            self.assertEqual('modify entity @p path append from block ~1 ~2 ~3 path2',
+                             str(_DataMod().modify(p(), 'path').append().from_(r(1, 2, 3), 'path2')))
+            self.assertEqual('modify entity @p path append from storage store path2',
+                             str(_DataMod().modify(p(), 'path').append().from_('store', 'path2')))
+            self.assertEqual('modify entity @p path append string entity @s path2',
+                             str(_DataMod().modify(p(), 'path').append().string(s(), 'path2')))
+            self.assertEqual('modify entity @p path append string entity @s path2 10',
+                             str(_DataMod().modify(p(), 'path').append().string(s(), 'path2', 10)))
+            self.assertEqual('modify entity @p path append string entity @s path2 10 20',
+                             str(_DataMod().modify(p(), 'path').append().string(s(), 'path2', 10, 20)))
+            self.assertEqual('modify entity @p path append value 1.9f',
+                             str(_DataMod().modify(p(), 'path').append().value(1.9)))
+            self.assertEqual('modify entity @p path insert 2 value 1.9f',
+                             str(_DataMod().modify(p(), 'path').insert(2).value(1.9)))
+            self.assertEqual('modify entity @p path merge value 1.9f',
+                             str(_DataMod().modify(p(), 'path').merge().value(1.9)))
+            self.assertEqual('modify entity @p path prepend value 1.9f',
+                             str(_DataMod().modify(p(), 'path').prepend().value(1.9)))
+            self.assertEqual('modify entity @p path set value 1.9f',
+                             str(_DataMod().modify(p(), 'path').set().value(1.9)))
+            with self.assertRaises(ValueError):
+                _DataMod().modify(e().tag('foo'), 'path').append().from_(e().tag('foo'), 'path2')
+        finally:
+            Parameters.version = orig_version
+
     def test_datapack(self):
         self.assertEqual('datapack disable robin', str(datapack().disable('robin')))
         self.assertEqual('datapack enable robin', str(datapack().enable('robin')))
         self.assertEqual('datapack enable robin first', datapack().enable('robin').first())
+        self.assertEqual('datapack enable robin last', datapack().enable('robin').last())
         self.assertEqual('datapack enable robin before kelly', datapack().enable('robin').before('kelly'))
+        self.assertEqual('datapack enable robin after kelly', datapack().enable('robin').after('kelly'))
+        self.assertEqual('datapack list', datapack().list())
+        self.assertEqual('datapack list enabled', datapack().list(ENABLED))
 
     def test_forceload(self):
         self.assertEqual('forceload add 1 ~2', forceload().add((1, r(2))))
@@ -778,8 +907,15 @@ class TestCommands(unittest.TestCase):
         finally:
             Parameters.version = v
 
+    def test_debug(self):
+        self.assertEqual('debug start', debug().start())
+        self.assertEqual('debug stop', debug().stop())
+        self.assertEqual('debug function foo', debug().function('foo'))
+        self.assertEqual('debug function foo', debug().function(Function('foo')))
+
     def test_scoreboard(self):
         self.assertEqual('scoreboard objectives add obj food', scoreboard().objectives().add('obj', ScoreCriteria.FOOD))
+        self.assertEqual('scoreboard objectives add obj drink', scoreboard().objectives().add('obj', 'drink'))
         self.assertEqual('list', _ScoreboardObjectivesMod().list())
         self.assertEqual('add obj food', _ScoreboardObjectivesMod().add('obj', ScoreCriteria.FOOD))
         self.assertEqual('add obj food howdy', _ScoreboardObjectivesMod().add('obj', ScoreCriteria.FOOD, 'howdy'))
@@ -806,6 +942,8 @@ class TestCommands(unittest.TestCase):
                          _ScoreboardPlayersMod().operation((Star(), 'obj'), PLUS, Score(random(), 'obj2')))
         self.assertEqual('operation * obj += @r obj2',
                          _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), PLUS, Score(random(), 'obj2')))
+        self.assertEqual('operation * obj > @r obj2',
+                         _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), MAX, Score(random(), 'obj2')))
 
         self.assertEqual('reset @a obj', _ScoreboardPlayersMod().reset((a(), 'obj')))
         self.assertEqual('reset @a obj', _ScoreboardPlayersMod().reset(Score(a(), 'obj')))
@@ -886,6 +1024,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('summon m:z', summon('m:z'))
         self.assertEqual('summon m:z 1 ~2 ^3', summon('m:z', (1, r(2), d(3))))
         self.assertEqual('summon m:z 1 ~2 ^3 {NoAI: true}', summon('m:z', (1, r(2), d(3)), Nbt({'NoAI': True})))
+        self.assertEqual('summon m:z 1 ~2 ^3 {Tags: [t2, t1]}',
+                         summon(Entity('m:z', {'Tags': ['t1']}), (1, r(2), d(3)), Nbt({'Tags': ['t2']})))
 
     def test_tag_command(self):
         self.assertEqual('tag @s add foo', tag(s()).add('foo'))
@@ -939,6 +1079,105 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tp @r @s facing entity @a eyes', teleport(random(), s()).facing(a(), EYES))
         with self.assertRaises(ValueError):
             teleport((1, 2, 3), None, 2.4)
+        with self.assertRaises(ValueError):
+            # Target must be singleton
+            teleport(e())
+        with self.assertRaises(ValueError):
+            # Target must be singleton
+            teleport(s(), e())
+
+    def test_as_single(self):
+        with self.assertRaises(ValueError):
+            as_single(e())
+        self.assertTrue(as_single(p()))
+        self.assertTrue(as_single(s()))
+        self.assertTrue(as_single(e().limit(1)))
+
+    def test_as_data_target(self):
+        self.assertIsNone(as_data_target(None))
+        self.assertEqual(('block', *r(1, 2, 3)), as_data_target(r(1, 2, 3)))
+        self.assertTrue('entity @s[tag=foo]', str(as_data_target(e().tag('foo'))))
+        self.assertTrue('data path', str(as_data_target('path')))
+
+    def test_as_position(self):
+        self.assertEqual(r(1, 2, 3), as_position(r(1, 2, 3)))
+        with self.assertRaises(ValueError):
+            as_position(r(1, 2))
+        with self.assertRaises(Exception):
+            as_position(r(1, (), 3))
+
+    def test_as_user(self):
+        self.assertEqual('foo', as_user('foo'))
+        with self.assertRaises(ValueError):
+            as_user(',17')
+
+    def test_as_uuid(self):
+        self.assertEqual('a-b-c-d', as_uuid('a-b-c-d'))
+        with self.assertRaises(ValueError):
+            as_uuid(',17')
+
+    def test_as_team(self):
+        self.assertEqual('foo1', as_team('foo1'))
+        with self.assertRaises(ValueError):
+            as_uuid(',17')
+
+    def test_as_block(self):
+        self.assertIsNone(as_block(None))
+        self.assertEqual(Block('foo'), as_block('foo'))
+        self.assertEqual(Block('foo'), as_block(Block('foo')))
+        self.assertEqual(Block('foo', {'state': True}, {'nbt': 1}), as_block(('foo', {'state': True}, {'nbt': 1})))
+        with self.assertRaises(ValueError):
+            as_block(',17')
+
+    def test_as_entity(self):
+        self.assertIsNone(as_entity(None))
+        self.assertEqual(Entity('foo'), as_entity('foo'))
+        self.assertEqual(Entity('foo'), as_entity(Entity('foo')))
+        self.assertEqual(Entity('foo', {'nbt': 1}), as_entity(('foo', {'nbt': 1})))
+        with self.assertRaises(ValueError):
+            as_entity(',17')
+
+    def test_nbt_holder(self):
+        self.assertEqual('foo', NbtHolder(name='foo').name)
+        self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]}},
+                         NbtHolder(name='Foo|Bar').sign_nbt())
+        self.assertEqual({'back_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]}},
+                         NbtHolder(name='Foo|Bar').sign_nbt(front=False))
+        self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]},
+                          'back_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]}},
+                         NbtHolder(name='Foo|Bar').sign_nbt(front=None))
+        with self.assertRaises(ValueError):
+            NbtHolder()
+
+    def test_as_color_num(self):
+        self.assertIsNone(as_color_num(None))
+        self.assertEqual(15, as_color_num(15))
+        self.assertEqual(15, as_color_num('black'))
+        self.assertEqual(15, as_color_num('Black'))
+        with self.assertRaises(ValueError):
+            as_color_num(16)
+        with self.assertRaises(ValueError):
+            as_color_num('ecru')
+
+    def test_as_color(self):
+        self.assertIsNone(as_color(None))
+        self.assertEqual('black', as_color(15))
+        self.assertEqual('black', as_color('black'))
+        self.assertEqual('black', as_color('Black'))
+        with self.assertRaises(ValueError):
+            as_color(16)
+        with self.assertRaises(ValueError):
+            as_color('ecru')
+
+    def test_as_slot(self):
+        self.assertIsNone(as_slot(None))
+        self.assertEqual('foo.1', as_slot('foo.1'))
+        with self.assertRaises(ValueError):
+            as_slot('foo.12.12')
+
+    def test_as_biome(self):
+        self.assertEqual('desert', str(as_biome(BiomeId.DESERT)))
+        self.assertEqual('dessert', str(as_biome('dessert')))
 
     def test_time_command(self):
         self.assertEqual('time add 9', time().add(9))
@@ -1048,7 +1287,6 @@ class TestCommands(unittest.TestCase):
                           'scoreboard players operation x score += t01 __scratch'], x.set(3 + x))
         self.assertEqual(['scoreboard players add x score 3',
                           'scoreboard players add x score 5'], x.set(x + 3 + 5))
-        self.assertEqual(['scoreboard players add x score 8'], x.set(x + (3 + 5)))
         self.assertEqual(['scoreboard players operation x score += y score'], x.set(x + y))
         self.assertEqual([objective,
                           'scoreboard players operation t01 __scratch = x score',
@@ -1056,6 +1294,8 @@ class TestCommands(unittest.TestCase):
                           'scoreboard players operation x score += t01 __scratch'], x.set(y + x))
         self.assertEqual(['scoreboard players operation x score = y score',
                           'scoreboard players operation x score += z score'], x.set(y + z))
+        self.assertEqual(['scoreboard players operation x score = y score',
+                          'scoreboard players operation x score -= z score'], x.set(y - z))
         self.assertEqual(['scoreboard players operation x score = y score',
                           'scoreboard players operation x score += z score',
                           'scoreboard players add x score 3'], x.set(y + z + 3))

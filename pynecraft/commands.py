@@ -501,7 +501,7 @@ def _to_donate(action: str, group_list: list[str]):
         return group_list[0]
     elif action in _CLEARLIKE:
         return group_list[1]
-    _in_group(group_list, action)
+    return _in_group(group_list, action)
 
 
 class Command:
@@ -578,7 +578,7 @@ class _ScoreClause(Command):
         return self._start(_ExecuteMod())
 
 
-class _AdvancementCriteria(Command):
+class AdvancementCriteria(Command):
     def __init__(self, advancement: Advancement | str, criteria: bool | tuple[str, bool]):
         super().__init__()
         advancement = Advancement(advancement)
@@ -820,14 +820,9 @@ class Selector(TargetSpec):
         return self._single
 
     def __str__(self):
-        if len(self._args) == 0:
+        if not self._rep:
             return self._selector
         return self._selector + '[' + super().__str__() + ']'
-
-    @_fluent
-    def literal(self, string: str):
-        """Allow user to add literal text in the selector arguments. No checks."""
-        self._append(string)
 
     def _add_arg(self, key: str, value: any):
         v = str(value)
@@ -872,6 +867,12 @@ class Selector(TargetSpec):
     def pos(self, pos: Position) -> Selector:
         """Add an x,y,z position to the selector."""
         return self._unique_arg('pos', f'x={pos[0]},y={pos[1]},z={pos[2]}')
+
+    @_fluent
+    def literal(self, string: str):
+        """Allow user to add literal text in the selector arguments. No checks."""
+        self._append(string)
+        return self
 
     @_fluent
     def distance(self, distance: Range) -> Selector:
@@ -980,7 +981,7 @@ class Selector(TargetSpec):
         return self._multi_args('nbt', f'!{Nbt.as_nbt(nbt)}', (Nbt.as_nbt(x) for x in nbts))
 
     @_fluent
-    def advancements(self, advancement: _AdvancementCriteria, *advancements: _AdvancementCriteria) -> Selector:
+    def advancements(self, advancement: AdvancementCriteria, *advancements: AdvancementCriteria) -> Selector:
         """Add advancements to the selector."""
         adv = [advancement]
         for a in advancements:
@@ -1134,7 +1135,7 @@ class _ExecuteMod(Command):
         return self
 
     @_fluent
-    def rotated(self, yaw: Angle, pitch: float) -> _ExecuteMod:
+    def rotated(self, yaw: Angle, pitch: Angle) -> _ExecuteMod:
         self._add('rotated', as_yaw(yaw), as_pitch(pitch))
         return self
 
@@ -1165,7 +1166,7 @@ class _ExecuteMod(Command):
 
     def on(self, relationship: str) -> _ExecuteMod:
         parameters.check_version(GE, Parameters.VERSION_1_19_4)
-        self._add(_in_group(RELATIONSHIPS, relationship))
+        self._add('on', _in_group(RELATIONSHIPS, relationship))
         return self
 
     def summon(self, entity: EntityDef) -> _ExecuteMod:
@@ -1405,7 +1406,7 @@ class _End(Command):
     pass
 
 
-class _FromOrValue(Command):
+class _DataSource(Command):
     @_fluent
     def from_(self, data_target: DataTarget, nbt_path: str) -> str:
         self._add('from', data_single_str(data_target), as_nbt_path(nbt_path))
@@ -1413,8 +1414,6 @@ class _FromOrValue(Command):
 
     @_fluent
     def value(self, v: str | float | Nbt | Iterable[str | float | Mapping]) -> str:
-        if isinstance(v, float):
-            v = _float(v)
         self._add('value', Nbt.to_str(v))
         return str(self)
 
@@ -1442,29 +1441,29 @@ class _DamageMod(Command):
 
 
 class _DataModifyClause(Command):
-    def _keyword(self, keyword: str) -> _FromOrValue:
+    def _keyword(self, keyword: str) -> _DataSource:
         self._add(keyword)
-        return self._start(_FromOrValue())
+        return self._start(_DataSource())
 
     @_fluent
-    def append(self) -> _FromOrValue:
+    def append(self) -> _DataSource:
         return self._keyword('append')
 
     @_fluent
-    def insert(self, index: int) -> _FromOrValue:
+    def insert(self, index: int) -> _DataSource:
         self._add('insert', index)
-        return self._start(_FromOrValue())
+        return self._start(_DataSource())
 
     @_fluent
-    def merge(self) -> _FromOrValue:
+    def merge(self) -> _DataSource:
         return self._keyword('merge')
 
     @_fluent
-    def prepend(self) -> _FromOrValue:
+    def prepend(self) -> _DataSource:
         return self._keyword('prepend')
 
     @_fluent
-    def set(self) -> _FromOrValue:
+    def set(self) -> _DataSource:
         return self._keyword('set')
 
 
@@ -1525,8 +1524,7 @@ class _DatapackMod(Command):
     @_fluent
     def list(self, filter: str = None) -> str:
         self._add('list')
-        if filter:
-            self._add_opt(_in_group(DATAPACK_FILTERS, filter))
+        self._add_opt(_in_group(DATAPACK_FILTERS, filter))
         return str(self)
 
 
@@ -1542,8 +1540,8 @@ class _DebugMod(Command):
         return str(self)
 
     @_fluent
-    def function(self, name: str) -> str:
-        self._add('function', as_resource_path(name))
+    def function(self, path: str | object) -> str:
+        self._add('function', as_resource_path(_as_function_path(path)))
         return str(self)
 
 
@@ -1580,15 +1578,15 @@ class _EffectAction(Command):
 
 class _ExperienceMod(Command):
     @_fluent
-    def add(self, target: Target, amount: int, which: str) -> str:
-        self._add('add', as_target(target), amount, _in_group(EXPERIENCE_POINTS, which))
+    def add(self, target: Target, amount: int, which: str = None) -> str:
+        self._add('add', as_target(target), amount)
+        self._add_opt(_in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
     @_fluent
     def set(self, target: Target, amount: int, which: str = None) -> str:
-        if which is None:
-            which = POINTS
-        self._add('set', as_target(target), amount, _in_group(EXPERIENCE_POINTS, which))
+        self._add('set', as_target(target), amount)
+        self._add_opt(_in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
     @_fluent
@@ -1707,23 +1705,6 @@ class _ItemMod(Command):
     def replace(self) -> _ItemTarget:
         self._add('replace')
         return self._start(_ItemTarget(_ItemReplace()))
-
-
-class _LocateMod(Command):
-    @_fluent
-    def structure(self, name: str) -> str:
-        self._add('structure', name)
-        return str(self)
-
-    @_fluent
-    def biome(self, name: str) -> str:
-        self._add('biome', name)
-        return str(self)
-
-    @_fluent
-    def poi(self, name: str) -> str:
-        self._add('poi', name)
-        return str(self)
 
 
 class _LootSource(Command):
@@ -1880,8 +1861,6 @@ class _ScoreboardPlayersMod(Command):
             # if not a valid full score name, it must be just a target
             if isinstance(score, (str, TargetSpec)):
                 self._add(as_target(score))
-            elif isinstance(score, str):
-                self._add(score)
             else:
                 if len(score) == 1 or (len(score) == 2 and score[1] is None):
                     self._add(as_target(score[0]))
@@ -2032,18 +2011,6 @@ class _TeamMod(Command):
         return str(self)
 
 
-class _FacingMod(Command):
-    @_fluent
-    def facing(self, pos: Position) -> str:
-        self._add('facing', *pos)
-        return str(self)
-
-    @_fluent
-    def facing_entity(self, target: Target) -> str:
-        self._add('facing', 'entity', as_target(target))
-        return str(self)
-
-
 class _TeleportMod(Command):
     @_fluent
     def facing(self, facing: Target | Position, anchor: str = None) -> str:
@@ -2063,19 +2030,6 @@ class _TeleportMod(Command):
             if anchor is not None:
                 raise ValueError('anchor not allowed when facing coordinates')
         return str(self)
-
-    @_fluent
-    def pos(self, pos: Position, /, target: Target = None,
-            rotation: float = None) -> str | _FacingMod:
-        if target:
-            self._add(as_target(target), *pos)
-        else:
-            self._add(*pos)
-        self._add_opt(rotation)
-        if rotation is not None:
-            return str(self)
-        else:
-            return self._start(_FacingMod())
 
 
 class _TimeMod(Command):
@@ -2396,8 +2350,11 @@ def enchant(target: Target, enchantment: Enchantment | str | int, level: int = N
     """Adds an enchantment to a player's selected item."""
     cmd = Command()
     cmd._add('enchant', as_target(target))
-    if isinstance(enchantment, str):
-        enchantment = Enchantment(enchantment)
+    if isinstance(enchantment, (str, int)):
+        try:
+            enchantment = Enchantment(enchantment)
+        except ValueError:
+            pass
     cmd._add(enchantment)
     if level is not None:
         if type(enchantment) == Enchantment:
@@ -2451,14 +2408,19 @@ def forceload() -> _ForceloadMod:
 def function(path: str | object) -> str:
     """Runs a function."""
     cmd = Command()
+    cmd._add('function', _as_function_path(path))
+    return str(cmd)
+
+
+def _as_function_path(path: str | object) -> str:
     try:
         # This will work if it is a Function, but I can't import Function, so we just duck type it
         # noinspection PyUnresolvedReferences
         path = path.full_name
     except AttributeError:
         pass
-    cmd._add('function', as_resource_path(path))
-    return str(cmd)
+    path = as_resource_path(path)
+    return path
 
 
 def gamemode(gamemode: str, target: Target = None) -> str:
@@ -2910,7 +2872,7 @@ def literal(text: str):
 class NbtHolder(Command):
     """This class represents a thing that has NBT values. These include blocks and entities."""
 
-    def __init__(self, id: str = None, name=None):
+    def __init__(self, id: str = None, name: str = None):
         """Creates a holder.
 
         Typically, the ID is an in-game ID, such as 'air' or 'minecraft:smooth_stone', and the name is derived
@@ -2930,7 +2892,7 @@ class NbtHolder(Command):
         :param name: The name to display to your user, derived from ID if not provided.
         """
         super().__init__()
-        if not id and not name == (None, None):
+        if (id, name) == (None, None):
             raise ValueError('Must specify at least one of id or name')
         if id:
             id = id.strip()
@@ -2968,7 +2930,6 @@ class NbtHolder(Command):
     def name(self, name: str):
         self._name = name
 
-    @property
     def sign_nbt(self, front=True) -> Nbt:
         """The NBT you would use in a sign describing this entity, based on ``full_text``."""
         messages = []
@@ -3324,9 +3285,7 @@ class Score(Command, Expression):
     def init(self, value: int = 0) -> Iterable[str]:
         """Initializes the score by ensure the objective exists, and setting its value to the provided value."""
         # noinspection PyArgumentList
-        return (
-            scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY),
-            execute().unless().score(self).matches(0).run().scoreboard().players().add(self, value))
+        return ((scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(value)))
 
     def get(self) -> str:
         """Return a 'get' command for the score."""
