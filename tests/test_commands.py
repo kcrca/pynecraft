@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import unittest
-from contextlib import contextmanager
-from distutils.version import Version
 
-from pynecraft import info
 from pynecraft.base import DARK_GREEN, GAMETIME, LT, THE_NETHER, d, days, r, seconds, ticks, WEST, NORTH
 from pynecraft.commands import *
 from pynecraft.commands import AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
@@ -16,11 +13,6 @@ from pynecraft.function import Function
 def commands(*cmds: str | Command) -> str:
     """Return a single multiline string for all the commands in the input."""
     return '\n'.join(str(x) for x in cmds)
-
-
-@contextmanager
-def version(v: Version):
-    cur_version = Parameters.version
 
 
 class TestCommands(unittest.TestCase):
@@ -77,42 +69,36 @@ class TestCommands(unittest.TestCase):
         self.assertEqual((-1, -2, 3, 4), Uuid.from_most_least(0xfffffffffffffffe, 0x300000004).ints)
 
     def test_execute_mod(self):
-        v = Parameters.version
-        try:
-            Parameters.version = Parameters.VERSION_1_20
-
-            self.assertEqual('align xz', str(_ExecuteMod().align('xz')))
-            self.assertEqual('anchored eyes', str(_ExecuteMod().anchored(EYES)))
-            self.assertEqual('positioned 1 ~2 ^3', str(_ExecuteMod().positioned((1, r(2), d(3)))))
-            self.assertEqual('positioned as @e[type=bee]', str(_ExecuteMod().positioned_as(e().type('bee'))))
-            self.assertEqual('positioned over ocean_floor', str(_ExecuteMod().positioned_over(OCEAN_FLOOR)))
-            self.assertEqual('rotated 90.0 22', str(_ExecuteMod().rotated(WEST, 22)))
-            self.assertEqual('rotated as @e[tag=foo]', str(_ExecuteMod().rotated_as(e().tag('foo'))))
-            self.assertEqual('dimension overworld', str(_ExecuteMod().dimension('overworld')))
-            self.assertEqual('on vehicle', str(_ExecuteMod().on(VEHICLE)))
-            self.assertEqual('as @s[tag=robin]', str(_ExecuteMod().as_(s().tag('robin'))))
-            self.assertEqual('at [1, 3, 5, 7]', str(_ExecuteMod().at(Uuid(1, 3, 5, 7))))
-            self.assertEqual('facing 1 ~2 ^3', str(_ExecuteMod().facing((1, r(2), d(3)))))
-            self.assertEqual('facing entity robin feet', str(_ExecuteMod().facing_entity(User('robin'), FEET)))
-            self.assertEqual('in the_nether', str(_ExecuteMod().in_(THE_NETHER)))
-            self.assertEqual('if block 1 ~2 ^3 stone', str(_ExecuteMod().if_().block((1, r(2), d(3)), 'stone')))
-            self.assertEqual('unless block 1 ~2 ^3 stone', str(_ExecuteMod().unless().block((1, r(2), d(3)), 'stone')))
-            self.assertEqual('store result block 1 ~2 ^3 {} short 1.3', str(
-                _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT,
-                                                  1.3)))
-            self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
-            with self.assertRaises(ValueError):
-                _ExecuteMod().align('foo')
-            with self.assertRaises(ValueError):
-                _ExecuteMod().anchored('foo')
-            with self.assertRaises(ValueError):
-                _ExecuteMod().facing_entity(User('robin'), 'foo')
-            with self.assertRaises(ValueError):
-                _ExecuteMod().in_('foo')
-            with self.assertRaises(TypeError):
-                _ExecuteMod().store().block((1, r(2), d(3)), '{}', 'foo', 1.3)
-        finally:
-            Parameters.version = v
+        self.assertEqual('align xz', str(_ExecuteMod().align('xz')))
+        self.assertEqual('anchored eyes', str(_ExecuteMod().anchored(EYES)))
+        self.assertEqual('positioned 1 ~2 ^3', str(_ExecuteMod().positioned((1, r(2), d(3)))))
+        self.assertEqual('positioned as @e[type=bee]', str(_ExecuteMod().positioned_as(e().type('bee'))))
+        self.assertEqual('positioned over ocean_floor', str(_ExecuteMod().positioned_over(OCEAN_FLOOR)))
+        self.assertEqual('rotated 90.0 22', str(_ExecuteMod().rotated(WEST, 22)))
+        self.assertEqual('rotated as @e[tag=foo]', str(_ExecuteMod().rotated_as(e().tag('foo'))))
+        self.assertEqual('dimension overworld', str(_ExecuteMod().dimension('overworld')))
+        self.assertEqual('on vehicle', str(_ExecuteMod().on(VEHICLE)))
+        self.assertEqual('as @s[tag=robin]', str(_ExecuteMod().as_(s().tag('robin'))))
+        self.assertEqual('at [1, 3, 5, 7]', str(_ExecuteMod().at(Uuid(1, 3, 5, 7))))
+        self.assertEqual('facing 1 ~2 ^3', str(_ExecuteMod().facing((1, r(2), d(3)))))
+        self.assertEqual('facing entity robin feet', str(_ExecuteMod().facing_entity(User('robin'), FEET)))
+        self.assertEqual('in the_nether', str(_ExecuteMod().in_(THE_NETHER)))
+        self.assertEqual('if block 1 ~2 ^3 stone', str(_ExecuteMod().if_().block((1, r(2), d(3)), 'stone')))
+        self.assertEqual('unless block 1 ~2 ^3 stone', str(_ExecuteMod().unless().block((1, r(2), d(3)), 'stone')))
+        self.assertEqual('store result block 1 ~2 ^3 {} short 1.3', str(
+            _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT,
+                                              1.3)))
+        self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
+        with self.assertRaises(ValueError):
+            _ExecuteMod().align('foo')
+        with self.assertRaises(ValueError):
+            _ExecuteMod().anchored('foo')
+        with self.assertRaises(ValueError):
+            _ExecuteMod().facing_entity(User('robin'), 'foo')
+        with self.assertRaises(ValueError):
+            _ExecuteMod().in_('foo')
+        with self.assertRaises(TypeError):
+            _ExecuteMod().store().block((1, r(2), d(3)), '{}', 'foo', 1.3)
 
     def test_run(self):
         self.assertEqual('execute run foo', str(execute().run('foo')))
@@ -121,30 +107,25 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(('execute run time', 'execute run say hi'), execute().run((time(), say('hi'))))
 
     def test_if_clause(self):
-        v = Parameters.version
-        try:
-            Parameters.version = Parameters.VERSION_1_20
-            self.assertEqual('blocks 1 2 3 4 5 6 7 8 9 masked',
-                             str(_IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), MASKED)))
-            self.assertEqual('data block 1 ~2 ^3 {}', str(_IfClause().data().block((1, r(2), d(3)), '{}')))
-            self.assertEqual('data entity @a {}', str(_IfClause().data().entity(a(), '{}')))
-            self.assertEqual('data storage stone {}', str(_IfClause().data().storage('stone', '{}')))
-            self.assertEqual('predicate foo', str(_IfClause().predicate('foo')))
-            self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, ('up', 'down'))))
-            self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, Score('up', 'down'))))
-            self.assertEqual('score * bar matches ..10', str(_IfClause().score(('*', 'bar')).matches((None, 10))))
-            self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar')).matches((1, None))))
-            self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
-            self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar')).matches(3)))
-            self.assertEqual('biome 1 ~2 ^3 desert', str(_IfClause().biome((1, r(2), d(3)), BiomeId.DESERT)))
-            self.assertEqual('entity @e[tag=foo]', str(_IfClause().entity(e().tag('foo'))))
-            self.assertEqual('loaded 1 ~2 ^3', str(_IfClause().loaded((1, r(2), d(3)))))
-            with self.assertRaises(ValueError):
-                _IfClause().score(('*', 'bar')).is_('foo', ('up', 'down'))
-            with self.assertRaises(ValueError):
-                _IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), 'foo')
-        finally:
-            Parameters.version = v
+        self.assertEqual('blocks 1 2 3 4 5 6 7 8 9 masked',
+                         str(_IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), MASKED)))
+        self.assertEqual('data block 1 ~2 ^3 {}', str(_IfClause().data().block((1, r(2), d(3)), '{}')))
+        self.assertEqual('data entity @a {}', str(_IfClause().data().entity(a(), '{}')))
+        self.assertEqual('data storage stone {}', str(_IfClause().data().storage('stone', '{}')))
+        self.assertEqual('predicate foo', str(_IfClause().predicate('foo')))
+        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, ('up', 'down'))))
+        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, Score('up', 'down'))))
+        self.assertEqual('score * bar matches ..10', str(_IfClause().score(('*', 'bar')).matches((None, 10))))
+        self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar')).matches((1, None))))
+        self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
+        self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar')).matches(3)))
+        self.assertEqual('biome 1 ~2 ^3 desert', str(_IfClause().biome((1, r(2), d(3)), BiomeId.DESERT)))
+        self.assertEqual('entity @e[tag=foo]', str(_IfClause().entity(e().tag('foo'))))
+        self.assertEqual('loaded 1 ~2 ^3', str(_IfClause().loaded((1, r(2), d(3)))))
+        with self.assertRaises(ValueError):
+            _IfClause().score(('*', 'bar')).is_('foo', ('up', 'down'))
+        with self.assertRaises(ValueError):
+            _IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), 'foo')
 
     def test_store_clause(self):
         self.assertEqual('block 1 ~2 ^3 {} short 1.3', str(_StoreClause().block((1, r(2), d(3)), '{}', SHORT, 1.3)))
@@ -506,8 +487,8 @@ class TestCommands(unittest.TestCase):
             str(a().not_team('Raiders').not_name("GRBX").not_gamemode(CREATIVE).not_type("worm")))
 
     def test_comment(self):
-        long_line = 'This is a long line of text that would be wrapped if it were asked to be wrapped, and we use it to' \
-                    ' test if wrapping does or does not happen.'
+        long_line = 'This is a long line of text that would be wrapped if it were asked to be wrapped, and we use it' \
+                    ' to test if wrapping does or does not happen.'
         self.assertEqual('# hi', str(comment('hi')))
         self.assertEqual('# hi', str(comment(' hi ')))
         self.assertEqual('# hi\n# there', str(comment('hi\nthere')))
@@ -586,22 +567,16 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('clone 1 2 3 4 5 6 4 5 6', str(clone((1, 2, 3), (4, 5, 6), (7, 8, 9), LAST)))
         self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~4 ~5 ~6', str(clone(r(1, 2, 3), r(4, 5, 6), r(7, 8, 9), LAST)))
         self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~11 ~2 ~13', str(clone(r(1, 2, 3), r(4, 5, 6), (10, 0, 10), DELTA)))
-
-        v = Parameters.version
-        try:
-            Parameters.version = Parameters.VERSION_1_19_4
-            self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9',
-                             str(clone().from_('overworld', (1, r(2), d(3)), (4, 5, 6)).to('the_end', (7, 8, 9))))
-            self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9 replace',
-                             str(clone()
-                                 .from_('overworld', (1, r(2), d(3)), (4, 5, 6))
-                                 .to('the_end', (7, 8, 9)).replace()))
-            self.assertEqual('clone from overworld ~1 ~2 ~3 ~4 ~5 ~6 to the_end ~11 ~2 ~13',
-                             str(clone().from_('overworld', r(1, 2, 3), r(4, 5, 6)).to('the_end', (10, 0, 10), DELTA)))
-            with self.assertRaises(ValueError):
-                clone(r(1, 2, 3))
-        finally:
-            Parameters.version = v
+        self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9',
+                         str(clone().from_('overworld', (1, r(2), d(3)), (4, 5, 6)).to('the_end', (7, 8, 9))))
+        self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9 replace',
+                         str(clone()
+                             .from_('overworld', (1, r(2), d(3)), (4, 5, 6))
+                             .to('the_end', (7, 8, 9)).replace()))
+        self.assertEqual('clone from overworld ~1 ~2 ~3 ~4 ~5 ~6 to the_end ~11 ~2 ~13',
+                         str(clone().from_('overworld', r(1, 2, 3), r(4, 5, 6)).to('the_end', (10, 0, 10), DELTA)))
+        with self.assertRaises(ValueError):
+            clone(r(1, 2, 3))
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3), r(4, 5, 6), d(1, 2, 3), LAST)
         with self.assertRaises(TypeError):
@@ -610,23 +585,13 @@ class TestCommands(unittest.TestCase):
             clone(r(1, 2, 3), d(4, 5, 6), d(1, 2, 3), DELTA)
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3), d(4, 5, 6), r(1, 2, 3), DELTA)
-        with self.assertRaises(ValueError):
-            clone()
 
     def test_damage(self):
-        with self.assertRaises(ValueError):
-            damage(s(), 15)
-
-        v = Parameters.version
-        try:
-            Parameters.version = Parameters.VERSION_1_19_4
-            self.assertEqual('damage @s 15', str(damage(s(), 15)))
-            self.assertEqual('damage @s 15 a:b', str(damage(s(), 15, 'a:b')))
-            self.assertEqual('damage @a 27 at 1 ~2 ^3', str(damage(a(), 27).at((1, r(2), d(3)))))
-            self.assertEqual('damage @a 27 by @s', str(damage(a(), 27).by(s())))
-            self.assertEqual('damage @a 27 by @s from @p', str(damage(a(), 27).by(s()).from_(p())))
-        finally:
-            Parameters.version = v
+        self.assertEqual('damage @s 15', str(damage(s(), 15)))
+        self.assertEqual('damage @s 15 a:b', str(damage(s(), 15, 'a:b')))
+        self.assertEqual('damage @a 27 at 1 ~2 ^3', str(damage(a(), 27).at((1, r(2), d(3)))))
+        self.assertEqual('damage @a 27 by @s', str(damage(a(), 27).by(s())))
+        self.assertEqual('damage @a 27 by @s from @p', str(damage(a(), 27).by(s()).from_(p())))
 
     def test_data_target(self):
         self.assertEqual('block 1 ~2 ^3', data_target_str((1, r(2), d(3))))
@@ -637,34 +602,29 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('data get entity @s', data().get(s()))
 
     def test_effect(self):
-        v = Parameters.version
-        try:
-            Parameters.version = Parameters.VERSION_1_19_4
-            self.assertEqual('effect give @s speed', effect().give(s(), Effect.SPEED))
-            self.assertEqual('effect give @s speed 100', effect().give(s(), Effect.SPEED, 100))
-            self.assertEqual('effect give @s speed 100 2', effect().give(s(), Effect.SPEED, 100, 2))
-            self.assertEqual('effect give @s speed 100 2 true', effect().give(s(), Effect.SPEED, 100, 2, True))
-            self.assertEqual('effect give @s speed infinite', effect().give(s(), Effect.SPEED, INFINITE))
-            self.assertEqual('effect clear', effect().clear())
-            self.assertEqual('effect clear @s', effect().clear(s()))
-            self.assertEqual('effect clear @s speed', effect().clear(s(), 'speed'))
-            self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
-            with self.assertRaises(ValueError):
-                effect().give(s(), Effect.SPEED, -1)
-            with self.assertRaises(ValueError):
-                effect().give(s(), Effect.SPEED, MAX_EFFECT_SECONDS + 100)
-            with self.assertRaises(ValueError):
-                effect().give(s(), Effect.SPEED, None, 2)
-            with self.assertRaises(ValueError):
-                effect().give(s(), Effect.SPEED, None, None, True)
-            with self.assertRaises(ValueError):
-                effect().give(s(), Effect.SPEED, 100, None, True)
-            with self.assertRaises(ValueError):
-                effect().clear(None, Effect.SPEED)
-            with self.assertRaises(ValueError):
-                effect().give(s(), Effect.SPEED, 'foo')
-        finally:
-            Parameters.version = v
+        self.assertEqual('effect give @s speed', effect().give(s(), Effect.SPEED))
+        self.assertEqual('effect give @s speed 100', effect().give(s(), Effect.SPEED, 100))
+        self.assertEqual('effect give @s speed 100 2', effect().give(s(), Effect.SPEED, 100, 2))
+        self.assertEqual('effect give @s speed 100 2 true', effect().give(s(), Effect.SPEED, 100, 2, True))
+        self.assertEqual('effect give @s speed infinite', effect().give(s(), Effect.SPEED, INFINITE))
+        self.assertEqual('effect clear', effect().clear())
+        self.assertEqual('effect clear @s', effect().clear(s()))
+        self.assertEqual('effect clear @s speed', effect().clear(s(), 'speed'))
+        self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
+        with self.assertRaises(ValueError):
+            effect().give(s(), Effect.SPEED, -1)
+        with self.assertRaises(ValueError):
+            effect().give(s(), Effect.SPEED, MAX_EFFECT_SECONDS + 100)
+        with self.assertRaises(ValueError):
+            effect().give(s(), Effect.SPEED, None, 2)
+        with self.assertRaises(ValueError):
+            effect().give(s(), Effect.SPEED, None, None, True)
+        with self.assertRaises(ValueError):
+            effect().give(s(), Effect.SPEED, 100, None, True)
+        with self.assertRaises(ValueError):
+            effect().clear(None, Effect.SPEED)
+        with self.assertRaises(ValueError):
+            effect().give(s(), Effect.SPEED, 'foo')
 
     def test_enchant(self):
         self.assertEqual('enchant @s lure', enchant(s(), Enchantment.LURE))
@@ -711,14 +671,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone outline', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').outline()))
 
     def test_fillbiome(self):
-        orig_version = info.parameters.version
-        try:
-            info.parameters.version = '1.19.3'
-            self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach', str(fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH)))
-            self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach replace m:ice',
-                             fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH).replace('m:ice'))
-        finally:
-            parameters.version = orig_version
+        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach', str(fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH)))
+        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach replace m:ice',
+                         fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH).replace('m:ice'))
 
     def test_data_mod(self):
         self.assertEqual('get entity @s', str(_DataMod().get(s())))
@@ -739,35 +694,30 @@ class TestCommands(unittest.TestCase):
             _DataMod().get((1, r(2), d(3)), None, 2.2)
 
     def test_data_modify(self):
-        orig_version = Parameters.version
-        try:
-            Parameters.version = Parameters.VERSION_1_20
-            self.assertEqual('modify entity @p path append from entity @s path2',
-                             str(_DataMod().modify(p(), 'path').append().from_(s(), 'path2')))
-            self.assertEqual('modify entity @p path append from block ~1 ~2 ~3 path2',
-                             str(_DataMod().modify(p(), 'path').append().from_(r(1, 2, 3), 'path2')))
-            self.assertEqual('modify entity @p path append from storage store path2',
-                             str(_DataMod().modify(p(), 'path').append().from_('store', 'path2')))
-            self.assertEqual('modify entity @p path append string entity @s path2',
-                             str(_DataMod().modify(p(), 'path').append().string(s(), 'path2')))
-            self.assertEqual('modify entity @p path append string entity @s path2 10',
-                             str(_DataMod().modify(p(), 'path').append().string(s(), 'path2', 10)))
-            self.assertEqual('modify entity @p path append string entity @s path2 10 20',
-                             str(_DataMod().modify(p(), 'path').append().string(s(), 'path2', 10, 20)))
-            self.assertEqual('modify entity @p path append value 1.9f',
-                             str(_DataMod().modify(p(), 'path').append().value(1.9)))
-            self.assertEqual('modify entity @p path insert 2 value 1.9f',
-                             str(_DataMod().modify(p(), 'path').insert(2).value(1.9)))
-            self.assertEqual('modify entity @p path merge value 1.9f',
-                             str(_DataMod().modify(p(), 'path').merge().value(1.9)))
-            self.assertEqual('modify entity @p path prepend value 1.9f',
-                             str(_DataMod().modify(p(), 'path').prepend().value(1.9)))
-            self.assertEqual('modify entity @p path set value 1.9f',
-                             str(_DataMod().modify(p(), 'path').set().value(1.9)))
-            with self.assertRaises(ValueError):
-                _DataMod().modify(e().tag('foo'), 'path').append().from_(e().tag('foo'), 'path2')
-        finally:
-            Parameters.version = orig_version
+        self.assertEqual('modify entity @p path append from entity @s path2',
+                         str(_DataMod().modify(p(), 'path').append().from_(s(), 'path2')))
+        self.assertEqual('modify entity @p path append from block ~1 ~2 ~3 path2',
+                         str(_DataMod().modify(p(), 'path').append().from_(r(1, 2, 3), 'path2')))
+        self.assertEqual('modify entity @p path append from storage store path2',
+                         str(_DataMod().modify(p(), 'path').append().from_('store', 'path2')))
+        self.assertEqual('modify entity @p path append string entity @s path2',
+                         str(_DataMod().modify(p(), 'path').append().string(s(), 'path2')))
+        self.assertEqual('modify entity @p path append string entity @s path2 10',
+                         str(_DataMod().modify(p(), 'path').append().string(s(), 'path2', 10)))
+        self.assertEqual('modify entity @p path append string entity @s path2 10 20',
+                         str(_DataMod().modify(p(), 'path').append().string(s(), 'path2', 10, 20)))
+        self.assertEqual('modify entity @p path append value 1.9f',
+                         str(_DataMod().modify(p(), 'path').append().value(1.9)))
+        self.assertEqual('modify entity @p path insert 2 value 1.9f',
+                         str(_DataMod().modify(p(), 'path').insert(2).value(1.9)))
+        self.assertEqual('modify entity @p path merge value 1.9f',
+                         str(_DataMod().modify(p(), 'path').merge().value(1.9)))
+        self.assertEqual('modify entity @p path prepend value 1.9f',
+                         str(_DataMod().modify(p(), 'path').prepend().value(1.9)))
+        self.assertEqual('modify entity @p path set value 1.9f',
+                         str(_DataMod().modify(p(), 'path').set().value(1.9)))
+        with self.assertRaises(ValueError):
+            _DataMod().modify(e().tag('foo'), 'path').append().from_(e().tag('foo'), 'path2')
 
     def test_datapack(self):
         self.assertEqual('datapack disable robin', str(datapack().disable('robin')))
@@ -896,16 +846,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('recipe give @s m:/a/b', recipe(GIVE, s(), 'm:/a/b'))
 
     def test_ride(self):
-        with self.assertRaises(ValueError):
-            ride(s())
-
-        v = Parameters.version
-        try:
-            Parameters.version = Parameters.VERSION_1_19_4
-            self.assertEqual('ride @s mount @e[tag=vehicle, limit=1]', ride(s()).mount(e().tag('vehicle').limit(1)))
-            self.assertEqual('ride @s dismount', ride(s()).dismount())
-        finally:
-            Parameters.version = v
+        self.assertEqual('ride @s mount @e[tag=vehicle, limit=1]', ride(s()).mount(e().tag('vehicle').limit(1)))
+        self.assertEqual('ride @s dismount', ride(s()).dismount())
 
     def test_debug(self):
         self.assertEqual('debug start', debug().start())
@@ -960,16 +902,9 @@ class TestCommands(unittest.TestCase):
 
     def test_publish_command(self):
         self.assertEqual('publish', publish())
-        self.assertEqual('publish 17', publish(17))
-        orig_version = parameters.version
-        try:
-            parameters.version = "1.19.3"
-            self.assertEqual('publish', publish())
-            self.assertEqual('publish true', publish(True))
-            self.assertEqual('publish false spectator', publish(False, SPECTATOR))
-            self.assertEqual('publish false spectator 106', publish(False, SPECTATOR, 106))
-        finally:
-            parameters.version = orig_version
+        self.assertEqual('publish true', publish(True))
+        self.assertEqual('publish false spectator', publish(False, SPECTATOR))
+        self.assertEqual('publish false spectator 106', publish(False, SPECTATOR, 106))
 
     def test_schedule_command(self):
         self.assertEqual('schedule function m:b/c 1.3d append', schedule().function('m:b/c', days(1.3), APPEND))

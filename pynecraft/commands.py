@@ -20,11 +20,11 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union, List
 
-from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GE, GREEN, IntColumn, JSON_COLORS, \
-    JsonHolder, Nbt, NbtDef, PINK, PURPLE, Parameters, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, \
+from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN, IntColumn, JSON_COLORS, \
+    JsonHolder, Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, \
     WHITE, YELLOW, _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, \
     as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, \
-    as_range, as_resource, as_resource_path, as_resources, as_yaw, parameters, to_id, to_name, FacingDef, \
+    as_range, as_resource, as_resource_path, as_resources, as_yaw, to_id, to_name, FacingDef, \
     Facing
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
@@ -80,7 +80,9 @@ def as_target(target: Target) -> TargetSpec | None:
 
 
 def as_data_target(target: DataTarget | None) -> Iterable[any] | None:
-    """Checks if the argument is a valid data target for commands like ``data merge``, or None. If not, it raises ValueError.
+    """
+    Checks if the argument is a valid data target for commands like ``data merge``, or None. If not,
+    it raises ValueError.
 
     A tuple or list argument is presumed to be intended as a position on which as_position will be called; a
     TargetSpec is an entity target, and a string is presumed to be intended as a resource path.
@@ -1015,7 +1017,6 @@ class _IfDataMod(Command):
 class _IfClause(Command):
     @_fluent
     def biome(self, pos: Position, biome: Biome) -> _ExecuteMod:
-        parameters.check_version(GE, Parameters.VERSION_1_19_3)
         self._add('biome', *pos, as_biome(biome))
         return self._start(_ExecuteMod())
 
@@ -1050,7 +1051,6 @@ class _IfClause(Command):
         return self._start(_ScoreClause())
 
     def loaded(self, pos: Position) -> _ExecuteMod:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('loaded', *pos)
         return self._start(_ExecuteMod())
 
@@ -1160,12 +1160,10 @@ class _ExecuteMod(Command):
         return self._start(_StoreClause())
 
     def dimension(self, dimension: str) -> _ExecuteMod:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('dimension', dimension)
         return self
 
     def on(self, relationship: str) -> _ExecuteMod:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('on', _in_group(RELATIONSHIPS, relationship))
         return self
 
@@ -1418,7 +1416,6 @@ class _DataSource(Command):
         return str(self)
 
     def string(self, data_target: DataTarget, nbt_path: str = None, start: int = None, end: int = None) -> str:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         self._add('string', data_single_str(data_target))
         self._add_opt(as_nbt_path(nbt_path), start, end)
         return str(self)
@@ -1554,7 +1551,6 @@ class _EffectAction(Command):
         if hide_particles is not None and amplifier is None:
             raise ValueError('must give amplifier to use hide_particles')
         if isinstance(duration, str):
-            parameters.check_version(GE, Parameters.VERSION_1_19_4)
             if duration != INFINITE:
                 raise ValueError(f'{duration}: Invalid duration')
         elif duration is not None:
@@ -2277,7 +2273,6 @@ def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Positi
     cmd = Command()
 
     if start_pos is None:
-        parameters.check_version(GE, Parameters.VERSION_1_19_4)
         return cmd._start(_CloneFromDimMod())
     if end_pos is None or dest_pos is None:
         raise ValueError('Must give all positions or none of them')
@@ -2289,7 +2284,6 @@ def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Positi
 
 def damage(target: Target, amount: int, type: str = None) -> _DamageMod:
     """Applies a set amount of damage to the specified entities."""
-    parameters.check_version(GE, Parameters.VERSION_1_19_4)
     cmd = Command()
     cmd._add('damage', as_target(target), amount)
     cmd._add_opt(as_resource(type))
@@ -2390,7 +2384,6 @@ def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClau
 
 
 def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
-    parameters.check_version(GE, Parameters.VERSION_1_19_3)
     cmd = Command()
     cmd._add('fillbiome', *start_pos, *end_pos, as_biome(biome))
     return cmd._start(_BiomeFilterClause())
@@ -2559,29 +2552,11 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
     return str(cmd)
 
 
-def publish_1_19(port: int = None) -> str:
-    """Opens single-player dir to local network."""
-    cmd = Command()
-    cmd._add('publish')
-    cmd._add_opt(port)
-    return str(cmd)
-
-
-def publish_1_19_3(allow_commands: bool = None, gamemode: str = None, port: int = None) -> str:
-    """Opens single-player dir to local network."""
+def publish(allow_commands: bool = None, gamemode: str = None, port: int = None) -> str:
     cmd = Command()
     cmd._add('publish')
     cmd._add_opt(_bool(allow_commands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
     return str(cmd)
-
-
-def publish(*args, **kwargs) -> str:
-    """Opens single-player dir to local network. The syntax depends on the version: See publish_1_19 for the
-    original syntax, and publish_1_19_3 for the post 1.19.3 syntax."""
-    if parameters.version < Parameters.VERSION_1_19_3:
-        return publish_1_19(*args, **kwargs)
-    else:
-        return publish_1_19_3(*args, **kwargs)
 
 
 def recipe(action: str, target: Target, recipe_name: str) -> str:
@@ -2610,7 +2585,6 @@ def return_(value: int = 0) -> str:
 
 def ride(target: Target) -> _RideMod:
     """Allows entities to mount or dismount other entities. """
-    parameters.check_version(GE, Parameters.VERSION_1_19_4)
     cmd = Command()
     cmd._add('ride', as_single(target))
     return cmd._start(_RideMod())

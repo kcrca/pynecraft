@@ -63,7 +63,6 @@ class TestSimpler(unittest.TestCase):
             Sign().front(('hi',)).back(('there',)).wax().nbt)
 
     def test_wall_sign(self):
-
         self.assertEqual([
             'setblock 1 ~2 ^3 air\n',
             """setblock 1 ~2 ^3 oak_wall_sign[facing=north]{front_text: """ +
@@ -228,13 +227,7 @@ class TestSimpler(unittest.TestCase):
             f'fill ~1 ~2 ~3 ^4 ^5 ^6 oak_sign[rotation={i}] replace #signs[rotation={i}]' for i in range(16)
         ), lines(v.replace_rotation('oak_sign', '#signs')))
 
-        orig_version = parameters.version
-        try:
-            parameters.version = Parameters.VERSION_1_19_3
-            self.assertEqual(['fillbiome ~1 ~2 ~3 ^4 ^5 ^6 plains replace poi'],
-                             lines(v.fillbiome(BiomeId.PLAINS, 'poi')))
-        finally:
-            parameters.version = orig_version
+        self.assertEqual(['fillbiome ~1 ~2 ~3 ^4 ^5 ^6 plains replace poi'], lines(v.fillbiome(BiomeId.PLAINS, 'poi')))
 
     def test_offset(self):
         self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(0, 0, 0))

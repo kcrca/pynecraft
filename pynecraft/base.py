@@ -20,8 +20,6 @@ from io import StringIO
 from json import JSONEncoder
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
-from packaging.version import Version
-
 _jed_resource = r'a-zA-Z0-9_.-'
 _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
                                ([{_jed_resource}]+:)?         # an optional namespace
@@ -398,12 +396,6 @@ def as_pitch(pitch: Angle | None) -> Angle | None:
     return pitch
 
 
-def as_version(version: Version | str) -> Version:
-    if isinstance(version, Version):
-        return version
-    return Version(version)
-
-
 class JsonHolder(ABC):
     """Base class for a holder of JSON."""
 
@@ -670,29 +662,9 @@ class _ToMinecraftText(HTMLParser):
 
 class Parameters:
     """Manage general parameters. Use the 'parameters' variable to adjust the parameters."""
-    VERSION_1_19_3 = Version('1.19.3')
-    VERSION_1_19_3_X = Version('1.19.3+x')
-    VERSION_1_19_4 = Version('1.19.4')
-    VERSION_1_19_4_X = Version('1.19.4+x')
-    VERSION_1_20 = Version('1.20')
-    FIRST_VERSION = Version('1.19')
-    """The first (earliest) version of Minecraft supported by pynecraft."""
-    LATEST_VERSION = VERSION_1_20
-    """The most recent version of Minecraft supported by pynecraft."""
-
-    _VERSION_RELATION = RELATION + ['!=']
-    _comparator = {
-        LT: lambda x, y: x < y,
-        LE: lambda x, y: x <= y,
-        EQ: lambda x, y: x == y,
-        '!=': lambda x, y: x != y,
-        GE: lambda x, y: x >= y,
-        GT: lambda x, y: x > y,
-    }
 
     def __init__(self):
         self._float_precision = 3
-        self._version = Version('1.19')
         self._handlers = set()
 
     @property
@@ -705,44 +677,6 @@ class Parameters:
         if precision < 1:
             raise ValueError(f'{precision}: Precision must be positive')
         self._float_precision = precision
-
-    @property
-    def version(self) -> Version:
-        """The minecraft version commands are being generated for. By default, this is FIRST_VERSION, but
-        can be set to any value."""
-        return self._version
-
-    @version.setter
-    def version(self, version: Version | str):
-        version = as_version(version)
-        if version < Parameters.FIRST_VERSION or version > Parameters.LATEST_VERSION:
-            raise ValueError(f'{version}: Unsupported version')
-        orig = self._version
-        self._version = version
-        for h in self._handlers:
-            h(orig, version)
-
-    def check_version(self, relation: str, version: Version | str):
-        """
-        Checks if the current version has the expected relation to the given one, raising a ValueError if it is not.
-
-        Note that a relation of "not equal" can be specified by either '!=' or 'NE', which is technically
-        "ne" (northeast), but which is natural to use, so it is translated to '!=' if provided.
-        """
-        if relation == NE:
-            relation = '!='
-        _in_group(Parameters._VERSION_RELATION, relation)
-        version = as_version(version)
-        if not Parameters._comparator[relation](self.version, version):
-            raise ValueError(f'{self.version}: Invalid version (expected {relation} {version})')
-
-    def add_version_change_handler(self, handler: Callable[[Version, Version], None]):
-        """
-        Adds a callback that will be invoked when the version changed. Code should initially assume that the version
-        is FIRST_VERSION. The handler will be invoked with the original version and the new version. It will be
-        invoked after the version has been set.
-        """
-        self._handlers.add(handler)
 
 
 parameters = Parameters()

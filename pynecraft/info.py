@@ -6,9 +6,7 @@ from collections import UserDict
 from enum import Enum
 from importlib.resources import files
 
-from packaging.version import Version
-
-from .base import COLORS, Nbt, Parameters, parameters, to_id, to_name, NbtDef
+from .base import COLORS, Nbt, to_id, to_name, NbtDef
 from .commands import Block, Entity, as_color_num
 from .enums import PotterySherd
 from .simpler import Item
@@ -31,23 +29,12 @@ must_give_items_by_id: dict[str, Item] = {}
 """Items that are not in the creative inventory, by ID."""
 
 
-def pre_1_19_4_filter(x):
-    return not re.search(
-        r'(Bamboo|Camel|Hanging|Chiseled Book|Piglin Head|Cherry|Pink Petal|Decorated|Supicious|Torchflower|Brush|Sh[ae]rd|Smithing|Trim\b)',
-        x)
-
-
 def __read_things(which: str, ctor):
     all_things = {}
-    filter = lambda x: True
-    if parameters.version < Parameters.VERSION_1_19_3_X:
-        filter = pre_1_19_4_filter
     with (files(__package__).joinpath(f'all_{which}.txt')).open() as fp:
         for name in fp.readlines():
             name = name.strip()
             if not name or name[0] == '#':
-                continue
-            if not filter(name):
                 continue
             try:
                 desc, id = re.split(r'\s*/\s*', name)
@@ -162,9 +149,11 @@ class Instrument:
     def __init__(self, id, name, exemplar):
         """
         Creates a new instrument.
+
         :param id: The ID used in the note block's NBT
         :param name: The human-friendly name for the instrument.
-        :param exemplar: One block you can put under the note block to get this instrument. Some instruments have several.
+        :param exemplar: One block you can put under the note block to get this instrument. Some instruments have
+            several.
         """
         self.id = id
         self.name = name
@@ -247,7 +236,7 @@ other_horses = (
     Entity('Zombie Horse'),
 )
 """The non-horse horses."""
-woods = ('Acacia', 'Birch', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Spruce')
+woods = ('Acacia', 'Bamboo', 'Birch', 'Cherry', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Spruce')
 """The kinds of wood."""
 stems = ('Warped', 'Crimson')
 """The kinds of stems."""
@@ -439,29 +428,3 @@ trim_patterns = sorted(
 armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 
 sherds = tuple(x.value for x in PotterySherd)
-
-
-def _version_change_handler(_: Version, version: Version):
-    if version == Parameters.version:
-        return
-    global woods
-    if version >= Parameters.VERSION_1_19_3_X:
-        if 'Bamboo' not in woods:
-            w = list(woods)
-            w.insert(woods.index('Birch'), 'Bamboo')
-            woods = tuple(w)
-    else:
-        if 'Bamboo' in woods:
-            woods = filter(lambda x: x != 'Bamboo', woods)
-    if version >= Parameters.VERSION_1_19_4_X:
-        if 'Cherry' not in woods:
-            w = list(woods)
-            w.insert(woods.index('Jungle'), 'Cherry')
-            woods = tuple(w)
-    else:
-        if 'Cherry' in woods:
-            woods = filter(lambda x: x != 'Cherry', woods)
-    __read_lists()
-
-
-parameters.add_version_change_handler(_version_change_handler)

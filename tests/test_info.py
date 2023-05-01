@@ -1,7 +1,5 @@
 import unittest
 
-from pynecraft import info
-from pynecraft.base import parameters
 from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id, mobs, mobs_by_id, \
     must_give_items, must_give_items_by_id
 from pynecraft.simpler import Painting
@@ -56,22 +54,6 @@ class TestInfo(unittest.TestCase):
             self.assertEqual(items[key], value)
         for key, value in must_give_items_by_id.items():
             self.assertEqual(items_by_id[key], value)
-
-    def test_versions(self):
-        orig_version = parameters.version
-        try:
-            parameters.version = "1.19"
-            self.assertNotIn('Bamboo', info.woods)
-            parameters.version = "1.19.2"
-            self.assertNotIn('Bamboo', info.woods)
-            parameters.version = "1.19.3"
-            self.assertNotIn('Bamboo', info.woods)
-            parameters.version = "1.19.3+x"
-            self.assertIn('Bamboo', info.woods)
-            parameters.version = "1.19"
-            self.assertNotIn('Bamboo', info.woods)
-        finally:
-            parameters.version = orig_version
 
     def test_painting(self):
         self.assertEqual('bust', Painting('bust').nbt['variant'])

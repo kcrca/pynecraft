@@ -8,8 +8,6 @@ import shutil
 from re import Pattern
 from typing import Any
 
-from packaging.version import Version
-
 from .base import _JsonEncoder, _ensure_size, _in_group, _to_list, _to_tuple
 from .commands import *
 
@@ -220,8 +218,8 @@ class Loop(Function):
     execute if score foo funcs matches 2 run say 2: Blue
     ```
 
-    You can have a function that is much more complicated than this lambda, one that might (for example) use ``step.i`` to
-    craft each loop iteration. It's up to you.
+    You can have a function that is much more complicated than this lambda, one that might (for example) use
+    ``step.i`` to craft each loop iteration. It's up to you.
 
     The loop has four parts: ``setup`` which handles the loop increments; ``before`` which is run before the loop body;
     ``body`` which is the loop body; and ``after`` which is run after the rest. These parts are available as
@@ -477,7 +475,8 @@ LATEST_PACK_VERSION = 12
 
 class DataPack:
     """
-    A datapack. This maintains a datapack directory. If it is being stored in a world save, it knows how to find its location therein.
+    A datapack. This maintains a datapack directory. If it is being stored in a world save, it knows how to find its
+    location therein.
     """
 
     def __init__(self, name: str, format_version: int = LATEST_PACK_VERSION, /,
@@ -797,16 +796,3 @@ class FunctionSet:
     def add_child(self, child: FunctionSet):
         """Adds a child FunctionSet."""
         self._kids.append(child)
-
-
-def _version_change_handler(_: Version, version: Version):
-    global LATEST_PACK_VERSION
-    if version >= Parameters.VERSION_1_19_4:
-        LATEST_PACK_VERSION = 12
-    if version >= Parameters.VERSION_1_19_3:
-        LATEST_PACK_VERSION = 11
-    else:
-        LATEST_PACK_VERSION = 10
-
-
-parameters.add_version_change_handler(_version_change_handler)
