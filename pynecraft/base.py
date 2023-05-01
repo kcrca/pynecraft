@@ -204,7 +204,7 @@ def string(obj):
 def _ensure_size(lst: Iterable[any, ...], size: int, fill=None) -> list:
     lst = _to_list(lst)
     if len(lst) > size:
-        raise ValueError('More than 4 values in sign input')
+        raise ValueError('Too many values in list')
     lst.extend([fill] * (size - len(lst)))
     return lst
 
@@ -456,7 +456,7 @@ class Nbt(UserDict):
             Nbt._to_str(self, sout)
             return str(sout.getvalue())
 
-    _json_tags = tuple([f'Text{x}' for x in range(1, 5)] + ['CustomName', 'Pages'])
+    _json_tags = ('CustomName', 'Pages')
     _forced_type_tags = {'Motion': 'd', 'Rotation': 'f',
                          'LeftArm': 'f', 'RightArm': 'f', 'LeftLeg': 'f', 'RightLeg': 'f', 'Head': 'f', 'Body': 'f'}
 
@@ -584,7 +584,7 @@ class Nbt(UserDict):
         else:
             sout.write(_quote(str(elem)))
 
-    def merge(self, nbt: NbtDef) -> Nbt:
+    def merge(self, nbt: NbtDef | None) -> Nbt:
         """Merge another Nbt into this one.
 
         For simple key/value pairs with the same key, the value is replaced, absent keys are set from the other nbt.
@@ -765,9 +765,6 @@ class RelCoord:
             return self
         return self._v(-self.value)
 
-    def __index__(self: U) -> U:
-        return self._v(int(self.value))
-
     def __neg__(self: U) -> U:
         return self._v(-self.value)
 
@@ -895,6 +892,9 @@ class TimeSpec:
                     self.days = value
                 else:
                     raise ValueError(f'{suffix}: Unknown suffix')
+
+    def __eq__(self, other):
+        return self.ticks == other.ticks
 
     def __str__(self):
         if self._units == 't':
@@ -1080,7 +1080,7 @@ def as_facing(facing: FacingDef) -> Facing:
     return _facing[facing]
 
 
-def as_duration(duration: DurationDef) -> TimeSpec | None:
+def as_duration(duration: DurationDef|None) -> TimeSpec | None:
     """Checks if the argument is a valid duration specification, or None.
 
     If the input is None, it is returned. Otherwise, this returns Duration(duration).
@@ -1109,7 +1109,7 @@ def as_range(spec: Range) -> str:
             raise ValueError(f'{v}: Must be None or a number')
     s = '' if spec[0] is None else spec[0]
     e = '' if spec[1] is None else spec[1]
-    if isinstance(s, float) and isinstance(e, float) and s > e:
+    if isinstance(s, (float, int)) and isinstance(e, (float, int)) and s > e:
         raise ValueError('Start is greater than end')
     return str(s) + '..' + str(e)
 

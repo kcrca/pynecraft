@@ -288,9 +288,6 @@ class TestCommands(unittest.TestCase):
                     's').hover_event()
                     .show_item('bundle').color(GREEN)))
 
-            # The sign's Text1, etc., keys always contain json text, check that this works
-            self.assertEqual('{Text2: \'"howdy"\'}', str(Nbt({'Text2': 'howdy'})))
-            self.assertEqual('{Text2: \'{"text": "boo"}\'}', str(Nbt({'Text2': {'text': 'boo'}})))
         finally:
             Nbt.sort_keys = sort_keys
 
