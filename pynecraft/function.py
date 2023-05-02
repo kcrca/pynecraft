@@ -8,7 +8,7 @@ import shutil
 from re import Pattern
 from typing import Any
 
-from .base import _JsonEncoder, _ensure_size, _in_group, _to_list, _to_tuple
+from .base import _JsonEncoder, _in_group, _to_list, _to_tuple
 from .commands import *
 
 BLOCKS = 'blocks'
@@ -180,12 +180,6 @@ class Function:
         return self._add_to
 
 
-def _instantiate(items):
-    if isinstance(items, (tuple, list)):
-        return items
-    return [].extend(items)
-
-
 class Loop(Function):
     """
     A loop function. This does the following:
@@ -305,8 +299,14 @@ class Loop(Function):
         loop.looped = load_info['looped']
 
         lines = [x.rstrip() for x in lines]
-        loop.adjuster = tuple(cls._pop_lines(lines, load_info['adjuster_len']))
         loop.setup = tuple(cls._pop_lines(lines, load_info['setup_len']))
+        adjuster_len = load_info['adjuster_len']
+        if not adjuster_len:
+            loop.adjuster = ()
+        else:
+            adjuster_pos = -1 - adjuster_len
+            loop.adjuster = loop.setup[adjuster_pos:-1]
+            loop.setup = loop.setup[0:adjuster_pos] + loop.setup[-1:-1]
         loop.before = cls._pop_lines(lines, load_info['before_len'])
         loop.body = tuple(cls._pop_lines(lines, load_info['body_len']))
         loop.after = lines
@@ -459,15 +459,8 @@ class Loop(Function):
         value. This can be used, for example, to skip a value in the middle if it is not compatible with another
         loop's value.
         """
-        self.adjuster = adjuster
+        self.adjuster = tuple(lines(adjuster))
         return self
-
-
-def _pack_version_rep(spec: str):
-    ver_rep = 0
-    for pack_num in _ensure_size(spec.split('.'), 3, 0):
-        ver_rep = ver_rep * 1000 + int(pack_num)
-    return ver_rep
 
 
 LATEST_PACK_VERSION = 12
@@ -704,20 +697,32 @@ class FunctionSet:
         """
         self.name = as_name(name)
         if isinstance(pack_or_parent, FunctionSet):
-            self.pack = pack_or_parent.pack
+            # self.pack = pack_or_parent.pack
             self.parent = pack_or_parent
             self.parent.add_child(self)
             if self.parent.parent:
                 raise ValueError(f'Only two levels of groups (sigh): {pack_or_parent.name} has a parent')
         elif isinstance(pack_or_parent, DataPack):
-            self.pack = pack_or_parent
+            self._pack = pack_or_parent
             self.parent = None
         else:
-            self.pack = None
+            self._pack = None
             self.parent = None
 
         self._functions = FunctionSet._Functions(self)
         self._kids: list[FunctionSet] = []
+
+    @property
+    def pack(self):
+        if self._pack:
+            return self._pack
+        elif self.parent:
+            return self.parent.pack
+        return None
+
+    @pack.setter
+    def pack(self, pack: DataPack | None):
+        self._pack = pack
 
     @property
     def full_name(self):
@@ -804,3 +809,4 @@ class FunctionSet:
     def add_child(self, child: FunctionSet):
         """Adds a child FunctionSet."""
         self._kids.append(child)
+        child.parent = self

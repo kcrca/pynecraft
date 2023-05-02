@@ -281,7 +281,7 @@ class TestFunctions(unittest.TestCase):
         self.assertIsNone(sub_set.parent)
         self.assertIsNone(sub_func.parent)
 
-        set.add_subset(sub_set)
+        set.add_child(sub_set)
         set.add(func)
         sub_set.add(sub_func)
 
@@ -295,8 +295,10 @@ class TestFunctions(unittest.TestCase):
         self.assertIs(set, sub_set.parent)
         self.assertIs(sub_set, sub_func.parent)
 
-        self.assertEqual('', set.full_name)
-        self.assertEqual('dir/sub_func', sub_func.full_name)
+        self.assertEqual('packer:', set.full_name)
+        self.assertEqual('packer:func', func.full_name)
+        self.assertEqual('packer:dir', sub_set.full_name)
+        self.assertEqual('packer:dir/sub_func', sub_func.full_name)
         self.assertEqual('sub_func', sub_func.name)
 
 
