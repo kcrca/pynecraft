@@ -98,8 +98,17 @@ class TestFunctions(unittest.TestCase):
         self.assertTrue(os.path.exists(save_dir))
         return save_dir
 
+    def test_as_function(self):
+        self.assertEqual('foo', as_function_name('foo'))
+        with self.assertRaises(ValueError):
+            as_function_name('++')
+
     def test_function(self):
+        pack = DataPack('pack')
         self.assertEqual(('say hi',), tuple(Function('foo').add(say('hi')).commands()))
+        self.assertEqual('foo', Function('foo').full_name)
+        with self.assertRaises(ValueError):
+            function('++')
 
     def test_function_save(self):
         os.chdir(self.tmp_path)
@@ -184,6 +193,26 @@ class TestFunctions(unittest.TestCase):
             Loop.test_controls().set_prefix_override(None)
             Loop.test_controls().set_setup_override(None)
 
+    def test_adjuster_load(self):
+        os.chdir(self.tmp_path)
+        score = Score('foo', 'obj')
+
+        saved = Loop(score, 'loop').add('before').loop(loop_func, range(0, 3)).add('after')
+        saved.save('foo')
+        loaded = Loop.load('foo')
+        self.assertEqual(saved.adjuster, loaded.adjuster)
+
+        saved = Loop(score, 'loop').adjust('adjuster').add('before').loop(loop_func, range(0, 3)).add('after')
+        saved.save('foo')
+        loaded = Loop.load('foo')
+        self.assertEqual(saved.adjuster, loaded.adjuster)
+
+        saved = Loop(score, 'loop').adjust(('adj1', 'adj2', 'adj23')).add('before').loop(loop_func, range(0, 3)).add('after')
+        saved.save('foo')
+        loaded = Loop.load('foo')
+        self.assertEqual(saved.adjuster, loaded.adjuster)
+
+
     def check_save(self, save_path: str | Path | None, func_name: str, expected: str | Path):
         expected = expected if isinstance(expected, Path) else Path(expected)
         path = Function(func_name).add('say hi').save(save_path)
@@ -195,7 +224,8 @@ class TestFunctions(unittest.TestCase):
     def test_function_set_save(self):
         os.chdir(self.tmp_path)
         fs = FunctionSet('my_set')
-        fs.add(Function('f1').add('say hi'))
+        f1 = Function('f1')
+        fs.add(f1.add('say hi'))
         fs.add(Function('f2').add('say there'))
         expected = Path('my_set')
         self.assertFalse(expected.exists())
@@ -203,6 +233,7 @@ class TestFunctions(unittest.TestCase):
         self.assertTrue(expected.is_dir())
         self.assertTrue((expected / 'f1.mcfunction').exists())
         self.assertTrue((expected / 'f2.mcfunction').exists())
+        self.assertEqual('my_set/f1', f1.full_name)
 
         # Now replace the set with an overlapping set. Old stuff should vanish, and new stuff appear
         fs = FunctionSet('my_set')
@@ -227,6 +258,47 @@ class TestFunctions(unittest.TestCase):
         self.assertTrue(expected.is_dir())
         self.assertTrue((expected / 'f1.mcfunction').exists())
         self.assertTrue((expected / 'f2.mcfunction').exists())
+
+    def test_function_heirarchy(self):
+        """
+        pack -> [internal set] -----> func
+                                \---> sub_set -----> sub_func
+        :return:
+        """
+        pack = DataPack('packer')
+        set = pack.function_set
+        func = Function('func')
+        sub_set = FunctionSet('dir')
+        sub_func = Function('sub_func')
+
+        self.assertIs(set.pack, pack)
+        self.assertIsNone(func.pack)
+        self.assertIsNone(sub_set.pack)
+        self.assertIsNone(sub_func.pack)
+
+        self.assertIsNone(set.parent)
+        self.assertIsNone(func.parent)
+        self.assertIsNone(sub_set.parent)
+        self.assertIsNone(sub_func.parent)
+
+        set.add_subset(sub_set)
+        set.add(func)
+        sub_set.add(sub_func)
+
+        self.assertIs(pack, set.pack)
+        self.assertIs(pack, func.pack)
+        self.assertIs(pack, sub_set.pack)
+        self.assertIs(pack, sub_func.pack)
+
+        self.assertIsNone(set.parent)
+        self.assertIs(set, func.parent)
+        self.assertIs(set, sub_set.parent)
+        self.assertIs(sub_set, sub_func.parent)
+
+        self.assertEqual('', set.full_name)
+        self.assertEqual('dir/sub_func', sub_func.full_name)
+        self.assertEqual('sub_func', sub_func.name)
+
 
     def test_function_datapack_save_and_load(self):
         pack = DataPack('packer')

@@ -707,20 +707,28 @@ class FunctionSet:
             self.pack = pack_or_parent.pack
             self.parent = pack_or_parent
             self.parent.add_child(self)
-            self.full_name = pack_or_parent.full_name + ':' + self.name
             if self.parent.parent:
                 raise ValueError(f'Only two levels of groups (sigh): {pack_or_parent.name} has a parent')
         elif isinstance(pack_or_parent, DataPack):
             self.pack = pack_or_parent
-            self.full_name = self.pack.name
             self.parent = None
         else:
             self.pack = None
-            self.full_name = self.name
             self.parent = None
 
         self._functions = FunctionSet._Functions(self)
         self._kids: list[FunctionSet] = []
+
+    @property
+    def full_name(self):
+        if self.parent:
+            parent_name = self.parent.full_name
+            if not parent_name.endswith(':'):
+                parent_name += '/'
+            return f'{parent_name}{self.name}'
+        if self.pack:
+            return f'{self.pack.name}:'
+        return self.name
 
     @classmethod
     def load(cls, path: Path | str, pack_or_parent: DataPack | FunctionSet = None, name=None) -> FunctionSet:
