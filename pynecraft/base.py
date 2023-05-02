@@ -479,6 +479,24 @@ class Nbt(UserDict):
         self[key] = nbt
         return nbt
 
+    def set_or_clear(self, path: str, v: int | bool | None) -> Nbt:
+        path = path.split('.')
+        if v:
+            part = self
+            for p in path[:-1]:
+                part = part[p]
+            part[path[-1]] = v
+        else:
+            part = self
+            parts = []
+            for p in path[:-1]:
+                if p not in part:
+                    return self
+                part = part[p]
+            part.pop(path[-1])
+        return self
+
+
     @classmethod
     def to_str(cls, obj) -> str:
         """
@@ -1080,7 +1098,7 @@ def as_facing(facing: FacingDef) -> Facing:
     return _facing[facing]
 
 
-def as_duration(duration: DurationDef|None) -> TimeSpec | None:
+def as_duration(duration: DurationDef | None) -> TimeSpec | None:
     """Checks if the argument is a valid duration specification, or None.
 
     If the input is None, it is returned. Otherwise, this returns Duration(duration).

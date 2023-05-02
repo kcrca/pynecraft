@@ -2,7 +2,7 @@ import shutil
 import tempfile
 import unittest
 
-from pynecraft.base import DARK_AQUA, N, SW
+from pynecraft.base import DARK_AQUA, N, SW, CYAN, EAST, SOUTH
 from pynecraft.commands import *
 from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines
@@ -16,7 +16,7 @@ class TestSimpler(unittest.TestCase):
     def tearDown(self) -> None:
         shutil.rmtree(self.tmp_path)
 
-    def test_sign(self):
+    def test_sign_lines(self):
         self.assertEqual(
             """{messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}""",
             str(Sign.lines_nbt(("one", "two", "three", "four"))))
@@ -30,19 +30,29 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual([
             'setblock 1 ~2 ^3 air\n',
             """setblock 1 ~2 ^3 oak_sign[rotation=2]{front_text: """ +
-            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}}""" + '\n'],
             text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW)))
         self.assertEqual([
+            'setblock 1 ~2 ^3 air\n',
+            """setblock 1 ~2 ^3 oak_sign[rotation=2]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: true}""" +
+            '\n'],
+            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, nbt={'is_waxed': True})))
+        self.assertEqual([
+            """setblock 1 ~2 ^3 oak_sign[rotation=2]{front_text: """ +
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}}""" + '\n'],
+            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, clear=False)))
+        self.assertEqual([
             """setblock 1 ~2 ^3 oak_sign[rotation=2, waterlogged=true]{front_text: """ +
-            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}}""" + '\n'],
             text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, water=True))[1:])
         self.assertEqual([
             """setblock 1 ~2 ^3 oak_sign[rotation=8]{front_text: """ +
-            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}}""" + '\n'],
             text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH))[1:])
         self.assertEqual([
             """setblock 1 ~2 ^3 spruce_sign[rotation=8]{front_text: """ +
-            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}}""" + '\n'],
             text_lines(Sign((None, 'hi', 'there'), wood='spruce').place((1, r(2), d(3)), N))[1:])
 
         self.assertEqual({'messages': [
@@ -55,6 +65,11 @@ class TestSimpler(unittest.TestCase):
             {'text': '', 'clickEvent': {'action': 'run_command', 'value': '/tell @a hoo'}},
             {'text': ''}]},
             Sign.lines_nbt(('hi', 'there'), (say('boo'), None, tell(a(), 'hoo'))))
+        self.assertEqual({'messages': [
+            {'text': '', 'clickEvent': {'action': 'run_command', 'value': '/say hi'}},
+            {'text': '', 'clickEvent': {'action': 'run_command', 'value': '/say there'}},
+            {'text': ''}, {'text': ''}]},
+            Sign.lines_nbt((), (say('hi'), lambda x: say('there'))))
 
         self.assertEqual(Nbt({
             'front_text': {'messages': [{'text': 'hi'}, {'text': ''}, {'text': ''}, {'text': ''}]},
@@ -62,16 +77,104 @@ class TestSimpler(unittest.TestCase):
             'is_waxed': True}),
             Sign().front(('hi',)).back(('there',)).wax().nbt)
 
+        with self.assertRaises(ValueError):
+            Sign.lines_nbt((None, 'foo', 'bar', 'baz', 'bobble'))
+
+    def test_sign_change(self):
+        self.assertEqual(["""data modify block ~0 ~0 ~0 front_text.messages[1] set value '{"text": "hi"}'"""],
+                         Sign.change(r(0, 0, 0), (None, 'hi')))
+        self.assertEqual([
+            """data modify block ~0 ~0 ~0 front_text.messages[0] set value '{"text": "two"}'""",
+            """data modify block ~0 ~0 ~0 front_text.messages[1] set value '{"text": "things"}'"""
+        ],
+            Sign.change(r(0, 0, 0), ('two', 'things')))
+        self.assertEqual([
+            """data modify block ~0 ~0 ~0 front_text.messages[0] set value '{"text": "", "clickEvent": {"action": "run_command", "value": "/say two"}}'""",
+            """data modify block ~0 ~0 ~0 front_text.messages[1] set value '{"text": "", "clickEvent": {"action": "run_command", "value": "/say things"}}'"""
+        ],
+            Sign.change(r(0, 0, 0), (), (say('two'), say('things'))))
+        self.assertEqual([
+            """data modify block ~0 ~0 ~0 front_text.messages[0] set value '{"text": "two", "clickEvent": {"action": "run_command", "value": "/say two"}}'""",
+            """data modify block ~0 ~0 ~0 front_text.messages[1] set value '{"text": "three", "clickEvent": {"action": "run_command", "value": "/say things"}}'"""
+        ],
+            Sign.change(r(0, 0, 0), ('two', 'three'), (say('two'), say('things'))))
+
+        self.assertEqual(["""data modify block ~0 ~0 ~0 front_text.messages[1] set value '{"text": "hi"}'"""],
+                         Sign.change(r(0, 0, 0), (None, 'hi'), front=True))
+        self.assertEqual(["""data modify block ~0 ~0 ~0 back_text.messages[1] set value '{"text": "hi"}'"""],
+                         Sign.change(r(0, 0, 0), (None, 'hi'), front=False))
+        self.assertEqual([
+            """data modify block ~0 ~0 ~0 front_text.messages[1] set value '{"text": "hi"}'""",
+            """data modify block ~0 ~0 ~0 back_text.messages[1] set value '{"text": "hi"}'"""],
+            Sign.change(r(0, 0, 0), (None, 'hi'), front=None))
+
+        self.assertEqual([
+            """data merge block ~0 ~0 ~0 {front_text: {messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}}"""],
+            Sign.change(r(0, 0, 0), ("one", "two", "three", "four")))
+        self.assertEqual([
+            """data merge block ~0 ~0 ~0 {back_text: {messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}}"""],
+            Sign.change(r(0, 0, 0), ("one", "two", "three", "four"), front=False))
+        self.assertEqual([
+            """data merge block ~0 ~0 ~0 {back_text: {messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}, front_text: {messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}}"""],
+            Sign.change(r(0, 0, 0), ("one", "two", "three", "four"), front=None))
+
+    def test_sign(self):
+        self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'hi'}, {'text': ''}, {'text': ''}]}},
+                         Sign((None, 'hi')).nbt)
+        self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'hi'}, {'text': ''}, {'text': ''}]},
+                          'is_waxed': True}, Sign((None, 'hi'), nbt={'is_waxed': True}).nbt)
+        self.assertEqual({'back_text': {
+            'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]},
+            'front_text': {'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]}},
+            Sign().messages((None, None, 'Both Sides')).nbt)
+        self.assertEqual(
+            {'back_text': {'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]},
+             'front_text': {'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]}},
+            Sign().messages((None, None, 'Both Sides'), front=None).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]}},
+            Sign().messages((None, None, 'Both Sides'), front=True).nbt)
+        self.assertEqual(
+            {'back_text': {'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]}},
+            Sign().messages((None, None, 'Both Sides'), front=False).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]}},
+            Sign().front((None, None, 'Both Sides')).nbt)
+        self.assertEqual(
+            {'back_text': {'messages': [{'text': ''}, {'text': ''}, {'text': 'Both Sides'}, {'text': ''}]}},
+            Sign().back((None, None, 'Both Sides')).nbt)
+
+        self.assertEqual({'front_text': {'color': 'blue'}, 'back_text': {'color': 'blue'}}, Sign(()).color(BLUE).nbt)
+        self.assertEqual({'front_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=True).nbt)
+        self.assertEqual({'back_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=False).nbt)
+        self.assertEqual({}, Sign(()).color(None).nbt)
+        self.assertEqual({'front_text': {'has_glowing_text': True}, 'back_text': {'has_glowing_text': True}},
+                         Sign().glowing(True).nbt)
+        self.assertEqual({}, Sign(()).glowing(False).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': [{'text': 'hi'}, {'text': ''}, {'text': ''}, {'text': ''}], 'color': 'blue'}},
+            Sign(('hi',)).color(BLUE, front=True).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': [{'text': 'hi'}, {'text': ''}, {'text': ''}, {'text': ''}]}},
+            Sign(('hi',)).color(BLUE, front=True).color(None, front=True).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': [{'text': 'hi'}, {'text': ''}, {'text': ''}, {'text': ''}],
+                            'has_glowing_text': True}},
+            Sign(('hi',)).glowing(True, front=True).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': [{'text': 'hi'}, {'text': ''}, {'text': ''}, {'text': ''}]}},
+            Sign(('hi',)).glowing(True, front=True).glowing(False, front=True).nbt)
+
     def test_wall_sign(self):
         self.assertEqual([
             'setblock 1 ~2 ^3 air\n',
             """setblock 1 ~2 ^3 oak_wall_sign[facing=north]{front_text: """ +
-            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}}""" + '\n'],
             text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH)))
         self.assertEqual([
             'setblock 1 ~2 ^3 water\n',
             """setblock 1 ~2 ^3 oak_wall_sign[facing=north, waterlogged=true]{front_text: """ +
-            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}, is_waxed: false}""" + '\n'],
+            """{messages: ['{"text": ""}', '{"text": "hi"}', '{"text": "there"}', '{"text": ""}']}}""" + '\n'],
             text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH, water=True)))
 
     def test_book(self):
@@ -158,6 +261,20 @@ class TestSimpler(unittest.TestCase):
             'fill ~1 ~2 ~3 ^4 ^5 ^6 oak[half=bottom, facing=south, shape=outer_right] replace #stairs[half=bottom, facing=south, shape=outer_right]',
         ], lines(v.replace_stairs('oak')))
         self.assertEqual([
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=north, face=ceiling] replace #buttons[facing=north, face=ceiling]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=north, face=floor] replace #buttons[facing=north, face=floor]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=north, face=wall] replace #buttons[facing=north, face=wall]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=east, face=ceiling] replace #buttons[facing=east, face=ceiling]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=east, face=floor] replace #buttons[facing=east, face=floor]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=east, face=wall] replace #buttons[facing=east, face=wall]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=west, face=ceiling] replace #buttons[facing=west, face=ceiling]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=west, face=floor] replace #buttons[facing=west, face=floor]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=west, face=wall] replace #buttons[facing=west, face=wall]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=south, face=ceiling] replace #buttons[facing=south, face=ceiling]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=south, face=floor] replace #buttons[facing=south, face=floor]',
+            'fill ~1 ~2 ~3 ^4 ^5 ^6 stone[facing=south, face=wall] replace #buttons[facing=south, face=wall]'],
+            lines(v.replace_buttons('stone')))
+        self.assertEqual([
             'fill ~1 ~2 ~3 ^4 ^5 ^6 oak_door[half=lower, facing=east, open=false, hinge=left] replace #doors[half=lower, facing=east, open=false, hinge=left]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 oak_door[half=lower, facing=east, open=false, hinge=right] replace #doors[half=lower, facing=east, open=false, hinge=right]',
             'fill ~1 ~2 ~3 ^4 ^5 ^6 oak_door[half=lower, facing=east, open=true, hinge=left] replace #doors[half=lower, facing=east, open=true, hinge=left]',
@@ -234,33 +351,133 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual(d(1, 2, 3), Offset(1, 2, 3).d(0, 0, 0))
         self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(*r(0, 0, 0)))
         self.assertEqual(d(1, 2, 3), Offset(1, 2, 3).d(*d(0, 0, 0)))
+        self.assertEqual(r(0), Offset(7).r(-7))
         with self.assertRaises(ValueError):
             Offset(1, 2, 3).r(5)
+        with self.assertRaises(ValueError):
             Offset(1, 2, 3).r(d(1), 2, 3)
 
+    def test_item_frame(self):
+        self.assertEqual('item_frame', ItemFrame(EAST).id)
+        self.assertEqual('glow_item_frame', ItemFrame(EAST, glowing=True).id)
+        self.assertEqual('Item Frame', ItemFrame(EAST).name)
+        self.assertEqual('Fred', ItemFrame(EAST, name='Fred').name)
+        self.assertEqual({'Facing': 5, 'Fixed': True}, ItemFrame(EAST).nbt)
+        self.assertEqual({'Facing': 5}, ItemFrame(EAST).fixed(False).nbt)
+        self.assertEqual(
+            {'Facing': 5, 'Fixed': True, 'Item': {'Count': 1, 'id': 'minecraft:my_name',
+                                                  'tag': {'display': {'Name': {'text': 'My Name'}}}}},
+            ItemFrame(EAST).named('My Name').nbt)
+        self.assertEqual({'Facing': 5, 'Fixed': True, 'foo': 12}, ItemFrame(EAST, nbt={'foo': 12}).nbt)
+        self.assertEqual({'Facing': 5, 'Fixed': True, 'Item': {'id': 'minecraft:obsidian', 'Count': 1}},
+                         ItemFrame(EAST).item('obsidian').nbt)
+
     def test_villager(self):
-        self.assertEqual(Nbt({'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+        self.assertEqual(Nbt({'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
                          Villager(MASON, JUNGLE).nbt)
-        self.assertEqual(Nbt({'Age': -2147483648, 'VillagerData': {'profession': 'none', 'type': 'plains'}}),
-                         Villager(CHILD, 'plains').nbt)
+        self.assertEqual(
+            Nbt({'Age': -2147483648, 'VillagerData': {'profession': 'none', 'type': 'plains', 'xp': 0, 'level': 0}}),
+            Villager(CHILD, 'plains').nbt)
         self.assertEqual(Nbt({
             'Offers': {'Recipes': [
                 {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
             ]},
-            'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+            'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon')).nbt)
         self.assertEqual(Nbt({
+            'Offers': {'Recipes': [{'buy': {'Count': 1, 'id': 'stone'}, 'buyB': {'Count': 1, 'id': 'melon'},
+                                    'rewardExp': True, 'sell': {'Count': 1, 'id': 'torch'}}]},
+            'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
+            Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon', 'torch')).nbt)
+        self.assertEqual(Nbt(
+            {'Offers': {'Recipes': [{'buy': {'id': 'stone', 'Count': 1},
+                                     'rewardExp': True, 'sell': {'id': 'iron_axe', 'Count': {'damage': 12}}}]},
+             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
+            Villager(MASON, JUNGLE).add_trade(Trade('stone', ('iron_axe', {'damage': 12}))).nbt)
+        self.assertEqual(Nbt({
             'Offers': {'Recipes': [
                 {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
                 {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
             ]},
-            'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+            'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon'), Trade('stone', 'melon').nbt()).nbt)
         self.assertEqual(Nbt({
             'Inventory': [{'id': 'minecraft:iron_hoe', 'Count': 1},
                           {'id': 'minecraft:wheat', 'Count': 25}],
-            'VillagerData': {'profession': 'mason', 'type': 'jungle'}}),
+            'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).inventory('iron_hoe', ('wheat', 25)).nbt)
+
+        v = Villager(BUTCHER, SWAMP).xp(175)
+        self.assertEqual({'VillagerData': {'profession': 'butcher', 'type': 'swamp', 'xp': 175, 'level': 3}}, v.nbt)
+        self.assertEqual(3, v.level)
+        self.assertEqual('Expert', v.level_name)
 
         with self.assertRaises(ValueError):
             Villager(CHILD, JUNGLE, zombie=True)
+
+    def test_display(self):
+        self.assertEqual(
+            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
+            str(TextDisplay('foo').summon(r(0, 0, 0), facing=NORTH)))
+        self.assertEqual(
+            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [0.5f, 0.5f, 0.5f], translation: [0.0f, 0.0f, 0.0f]}}""",
+            str(TextDisplay('foo').scale(0.5).summon(r(0, 0, 0), facing=NORTH)))
+        self.assertEqual(
+            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 2.0f, 3.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
+            str(TextDisplay('foo').scale((1, 2, 3)).summon(r(0, 0, 0), facing=NORTH)))
+
+    def test_text_display(self):
+        self.assertEqual(
+            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
+            str(TextDisplay('foo').summon(r(0, 0, 0), facing=NORTH)))
+        self.assertEqual(
+            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: {text: bar}, transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
+            str(TextDisplay('foo').text('bar').summon(r(0, 0, 0), facing=NORTH)))
+        self.assertEqual({'text': '[{"text": "foo", "italic": "true"}]',
+                          'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0],
+                                             'right_rotation': [0.0, 0.0, 0.0, 1.0],
+                                             'scale': [1.0, 1.0, 1.0], 'translation': [0.0, 0.0, 0.0]}},
+                         TextDisplay(JsonText.html_text('<i>foo</i>')).nbt)
+
+    def test_item(self):
+        self.assertEqual('dirt', Item('dirt').id)
+        self.assertEqual({'id': 'dirt', 'Count': 1}, Item('dirt').nbt)
+        self.assertEqual({'id': 'dirt', 'Count': 1, 'foo': 17}, Item('dirt', nbt={'foo': 17}).nbt)
+        self.assertEqual({'id': 'minecraft:filled_map', 'Count': 1}, Item.nbt_for('filled_map'))
+
+    def test_shield(self):
+        shield = Shield()
+        self.assertEqual({'id': 'shield', 'Count': 1, 'tag': {'BlockEntityTag': {'Patterns': []}}}, shield.nbt)
+        shield.add_pattern('drs', CYAN)
+        self.assertEqual(
+            {'Count': 1, 'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9}]}}},
+            shield.nbt)
+        shield.add_pattern(Pattern.BRICK, PURPLE)
+        self.assertEqual(
+            {'Count': 1, 'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9},
+                                                                                 {'Pattern': 'bri', 'Color': 10}]}}},
+            shield.nbt)
+        shield.clear_patterns()
+        self.assertEqual({'id': 'shield', 'Count': 1, 'tag': {'BlockEntityTag': {'Patterns': []}}}, shield.nbt)
+
+    def test_painting(self):
+        self.assertEqual({'variant': 'stage'}, Painting('stage').nbt)
+        info = Painting('stage').info
+        self.assertEqual('stage', info.id)
+        self.assertIn('Stage', info.name)
+        self.assertIsInstance(info.size, tuple)
+        self.assertIn('.', info.added)
+        self.assertEqual(
+            'summon painting ~0 ~0 ~0 {facing: 0, variant: pointer}',
+            Painting('pointer').summon(r(0, 0, 0), facing=SOUTH))
+        self.assertEqual(
+            'summon painting ~-1 ~1 ~0 {facing: 0, variant: pointer}',
+            Painting('pointer').summon(r(0, 0, 0), facing=SOUTH, lower_left=True))
+        self.assertEqual(
+            'summon painting ~1 ~1 ~0 {facing: 8, variant: pointer}',
+            Painting('pointer').summon(r(0, 0, 0), lower_left=True))
+        self.assertEqual(
+            'summon painting ~0 ~0 ~0 {facing: 0, foo: 12, variant: pointer}',
+            Painting('pointer').summon(r(0, 0, 0), nbt={'foo': 12}, facing=SOUTH))
+        with self.assertRaises(ValueError):
+            Painting('foo')

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Callable, Iterable, Mapping, Tuple, Union, Sequence
+from typing import Callable, Mapping, Tuple, Union, Sequence
 
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, d, as_facing, r, to_id, BLACK, NORTH
+    _to_list, d, as_facing, r, to_id, NORTH
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
     SignMessages, SomeMappings, fill, fillbiome, as_biome, as_block, as_color_num, setblock, data, SignMessage, \
     SignCommand
@@ -72,27 +72,19 @@ class Sign(Block):
         super().__init__(self._kind_name(wood), state=state, nbt=nbt)
         self.wood = wood
         if text or commands:
-            self.messages(text, commands, front)
-        self.merge_nbt({'is_waxed': Sign.waxed})
+            self.messages(text, commands, front=front)
+        self.wax(Sign.waxed)
         if nbt:
             self.merge_nbt(nbt)
 
-    def front(self, text: SignMessages, /, commands: SignCommands = (), glowing=None, color=None) -> Sign:
+    def front(self, text: SignMessages, /, commands: SignCommands = ()) -> Sign:
         """Sets the text attributes for the front of the sign."""
         self.messages(text, commands, front=True)
-        if color:
-            self.color(color, front=True)
-        if glowing is not None:
-            self.glowing(glowing, front=True)
         return self
 
-    def back(self, text: SignMessages, /, commands: SignCommands = (), glowing=None, color=None) -> Sign:
+    def back(self, text: SignMessages, /, commands: SignCommands = ()) -> Sign:
         """Sets the text attributes for the back of the sign."""
         self.messages(text, commands, front=False)
-        if color:
-            self.color(color, front=False)
-        if glowing is not None:
-            self.glowing(glowing, front=False)
         return self
 
     def messages(self, texts: SignMessages, commands: SignCommands = (), front: bool = None) -> Sign:
@@ -107,23 +99,23 @@ class Sign(Block):
     def glowing(self, v: bool, front: bool = None) -> Sign:
         """Set whether the text will be glowing for the front, back, or both if ``front`` is None."""
         if front or front is None:
-            self.merge_nbt({'front_text': {'has_glowing_text': v}})
+            self.nbt.set_or_clear('front_text.has_glowing_text', v)
         if front is False or front is None:
-            self.merge_nbt({'back_text': {'has_glowing_text': v}})
+            self.nbt.set_or_clear('back_text.has_glowing_text', v)
         return self
 
-    def color(self, color: str = BLACK, front: bool = None) -> Sign:
+    def color(self, color: str = None, front: bool = None) -> Sign:
         """Set the text will color for the front, back, or both if ``front`` is None."""
         color = _in_group(COLORS, color)
         if front or front is None:
-            self.merge_nbt({'front_text': {'color': color}})
+            self.nbt.set_or_clear('front_text.color', color)
         if front is False or front is None:
-            self.merge_nbt({'back_text': {'color': color}})
+            self.nbt.set_or_clear('back_text.color', color)
         return self
 
     def wax(self, on=True):
         """Sets the sign to be waxed or not. The default is True (ignores ``Sign.waxed``)"""
-        self.merge_nbt({'is_waxed': on})
+        self.nbt.set_or_clear('is_waxed', on)
         return self
 
     @classmethod
@@ -185,7 +177,16 @@ class Sign(Block):
                 cmds.append(data().modify(pos, f'{face}.messages[{i}]').set().value(str(cls.line_nbt(msg, cmd))))
                 added += 1
             if added == 4:
-                cmds[-4:] = [data().merge(pos, {face: (cls.lines_nbt(messages, commands))})]
+                # If everything is being changed, this is much more efficient
+                change_all = (cls.lines_nbt(messages, commands))
+                to_merge = Nbt()
+                if front is None:
+                    to_merge['front_text'] = change_all
+                    to_merge['back_text'] = change_all
+                else:
+                    to_merge[face] = change_all
+                cmds = [data().merge(pos, to_merge)]
+                break
         return cmds
 
     def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
@@ -318,7 +319,9 @@ class Display(Entity):
         it must be given the three values.
         """
         if isinstance(value, float):
-            value = [value, value, value]
+            value = [float(value), float(value), float(value)]
+        else:
+            value = tuple(float(x) for x in value)
         self.merge_nbt({'transformation': {'scale': value}})
         return self
 
@@ -334,13 +337,14 @@ class TextDisplay(Display):
         super().__init__('text_display', nbt)
         self.text(text)
 
-    def text(self, text):
+    def text(self, text) -> TextDisplay:
         if isinstance(text, str):
             text = JsonText.text(text)
         elif isinstance(text, (JsonText, Sequence)):
             text = str(text).replace("'", '"')
         if text is not None:
             self.merge_nbt({'text': text})
+        return self
 
 
 class Item(Entity):
@@ -387,11 +391,13 @@ class Shield(Item):
         super().__init__('shield')
         self.merge_nbt({'tag': {'BlockEntityTag': {'Patterns': []}}})
 
-    def add_pattern(self, pattern: str, color: int | str) -> Shield:
+    def add_pattern(self, pattern: str | Pattern, color: int | str) -> Shield:
         """Add a pattern to the shield."""
         color = as_color_num(color)
         patterns = self.nbt['tag']['BlockEntityTag'].get_list('Patterns')
-        patterns.append(Nbt({'Pattern': Pattern(pattern), 'Color': color}))
+        if isinstance(pattern, str):
+            pattern = Pattern(pattern)
+        patterns.append(Nbt({'Pattern': str(pattern), 'Color': color}))
         return self
 
     def clear_patterns(self) -> Shield:
@@ -575,14 +581,6 @@ class Offset:
         """ Returns the result of base.d() with the input, with each return value added to this object's offset. """
         return self._rel_coord(d, *values)
 
-    def abs(self, *values: float | int | Iterable[float | int]) -> float | int | Iterable[float | int]:
-        if len(values) != len(self.position):
-            raise ValueError(f'{len(values)}: Expected {len(self.position)} values')
-        result = tuple(sum(p) for p in zip(values, self.position))
-        if len(values) == 1:
-            return result[0]
-        return result
-
     def _rel_coord(self, f, *values: CoordsIn) -> RelCoord | Tuple[RelCoord, ...]:
         if len(values) != len(self.position):
             raise ValueError(f'{len(values)} != position length ({len(self.position)})')
@@ -604,7 +602,7 @@ class Offset:
 class ItemFrame(Entity):
     """A class for item frames."""
 
-    def __init__(self, facing: int | str, *, glowing: bool = None, nbt: NbtDef = None, name: str = None):
+    def __init__(self, facing: int | str, *, glowing: bool = False, nbt: NbtDef = None, name: str = None):
         """Creates an ItemFrame object facing in the given direction. See as_facing() for useful values."""
         nbt = Nbt.as_nbt(nbt) if nbt else Nbt({})
         nbt = nbt.merge({'Facing': as_facing(facing).number, 'Fixed': True})
@@ -617,7 +615,7 @@ class ItemFrame(Entity):
         return self
 
     def fixed(self, value: bool) -> ItemFrame:
-        self.nbt['Fixed'] = value
+        self.nbt.set_or_clear('Fixed', value)
         return self
 
     def named(self, name: BlockDef = None) -> ItemFrame:
@@ -665,15 +663,14 @@ class Trade:
 
     def nbt(self):
         """Returns the nbt for this trade."""
-        values = {
+        values = Nbt({
             'buy': {'id': self.buy[0][0], 'Count': self.buy[0][1]},
             'sell': {'id': self.sell[0], 'Count': self.sell[1]},
             'rewardExp': self.reward_exp
-        }
+        })
         if len(self.buy) > 1:
             values['buyB'] = {'id': self.buy[1][0], 'Count': self.buy[1][1]}
-        if self.max_uses:
-            values['maxUses'] = self.max_uses
+        values.set_or_clear('maxUses', self.max_uses)
         return values
 
 
@@ -702,11 +699,13 @@ class Villager(Entity):
         self.zombie = zombie
         self.profession(profession)
         self.biome(biome)
+        self.xp(0)
         self._trades: list[Trade] = []
 
     def xp(self, xp: int) -> Villager:
         """Sets the villager's experience."""
-        self.merge_nbt({'VillagerData': {'Xp': xp, 'level': self.level}})
+        self.nbt['VillagerData']['xp'] = xp
+        self.merge_nbt({'VillagerData': {'xp': xp, 'level': self.level}})
         return self
 
     @property
@@ -723,7 +722,7 @@ class Villager(Entity):
 
     def _lookup_level(self):
         try:
-            xp = self.nbt()['VillagerData']['Xp']
+            xp = self.nbt['VillagerData']['xp']
         except KeyError:
             xp = 0
         for i, (n, r) in enumerate(Villager.level_xp.items()):
@@ -791,6 +790,11 @@ class PaintingInfo:
     artist: str = 'Kristoffer Zetterstrand'
     used: bool = True
 
+
+#         'stage': PaintingInfo('stage', 'The Stage is Set', (2, 2), 'Indev 20100223 / Alpha v1.1.1',
+#                               """Scenery from Space Quest I, with the character Graham from the video game series
+#                               King's Quest.""",
+#                               source='Space Quest I / King\'s Quest'),
 
 class Painting(Entity):
     """
@@ -896,9 +900,9 @@ class Painting(Entity):
 
     @property
     def info(self):
-        return Painting.INFO.get(self.variant)
+        return Painting.INFO[self.variant]
 
-    def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = None, ll=False) -> str:
+    def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = NORTH, lower_left=False) -> str:
         """
         Overrides to add ``ll`` parameter which, if true, uses the lower-left corner consistently for all sizes of
         paintings.
@@ -909,9 +913,7 @@ class Painting(Entity):
         del nbt['Facing']
         del nbt['Rotation']
         nbt['variant'] = self.variant
-        if ll:
-            if not facing:
-                facing = as_facing(NORTH)
+        if lower_left:
             movement = facing.turn(90)
             x, y = self.info.size
             pos = _to_list(pos)

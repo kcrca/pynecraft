@@ -222,6 +222,13 @@ class TestBase(unittest.TestCase):
         self.assertEqual(simple_nbt, simple_nbt.clone())
         self.assertEqual(Nbt(), Nbt()['One'])
 
+    def test_set_or_clear(self):
+        self.assertEqual({'key': 12}, Nbt().set_or_clear('key', 12))
+        self.assertEqual({}, Nbt(key=12).set_or_clear('key', 0))
+        self.assertEqual({'o1': {'o2': {'o3': {'key': True}}}}, Nbt().set_or_clear('o1.o2.o3.key', True))
+        self.assertEqual({'o1': {'o2': {'o3': {}}}},
+                         Nbt({'o1': {'o2': {'o3': {'key': True}}}}).set_or_clear('o1.o2.o3.key', False))
+
     def test_nbt_str(self):
         self.assertEqual('{}', Nbt.to_str({}))
         self.assertEqual('{}', Nbt.to_str(Nbt({})))
