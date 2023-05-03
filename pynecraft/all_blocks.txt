@@ -145,7 +145,7 @@ Budding Amethyst
 Cactus
 Cake
 Calcite
-Calibrated Sculk Sensor
+Calibrated Sculk Sensor [x] / Calibrated Sculk Sensor
 Campfire
 Candle
 Carrots
@@ -589,7 +589,7 @@ Pink Terracotta
 Pink Tulip
 Pink Wool
 Piston
-Pitcher Crop / Pitcher Pod
+Pitcher Crop [x] / Pitcher Crop
 Pitcher Plant [x] / Pitcher Plant
 Player Head
 Podzol
@@ -782,7 +782,7 @@ Structure Block
 Structure Void
 Sugar Cane
 Sunflower
-Suspicious Gravel
+Suspicious Gravel [x] / Suspicious Gravel
 Suspicious Sand [x] / Suspicious Sand
 Sweet Berry Bush
 TNT
