@@ -565,6 +565,7 @@ class Offset:
     # them to make the type checker happier.
     CoordsOut = Union[
         RelCoord, Tuple[RelCoord, RelCoord], Tuple[IntRelCoord, IntRelCoord], Tuple[RelCoord, RelCoord, RelCoord],
+        float, Tuple[float, float], Tuple[int, int], Tuple[float, float, float], Tuple[int, int, int],
         Tuple[RelCoord, ...]]
 
     def __init__(self, *position: float):
@@ -580,6 +581,10 @@ class Offset:
     def d(self, *values: CoordsIn) -> CoordsOut:
         """ Returns the result of base.d() with the input, with each return value added to this object's offset. """
         return self._rel_coord(d, *values)
+
+    def p(self, *values: CoordsIn) -> CoordsOut:
+        """ Returns the result of offseting the input, with each return value added to this object's coordinates. """
+        return tuple(sum(i) for i in zip(values, self.position))
 
     def _rel_coord(self, f, *values: CoordsIn) -> RelCoord | Tuple[RelCoord, ...]:
         if len(values) != len(self.position):
