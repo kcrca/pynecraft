@@ -705,7 +705,7 @@ def to_id(name: str) -> str:
     Returns an ID from the passed-in name. If it's already an ID, it is just returned. Otherwise, it lower-cases the
     name, and replaces both ' ' and '| with '_'.
     """
-    return re.sub(r'\s+|\|', '_', name.strip().lower())
+    return re.sub(r'\s+|\'|\|', '_', name.strip().lower())
 
 
 def to_name(id: str) -> str:

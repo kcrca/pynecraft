@@ -7,6 +7,11 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    pass
+
 import copy
 import dataclasses
 import functools
@@ -997,23 +1002,6 @@ class Selector(TargetSpec):
         return self._multi_args('predicate', predicate, predicates)
 
 
-class _IfDataMod(Command):
-    @_fluent
-    def block(self, pos: Position, nbt_path: str) -> _ExecuteMod:
-        self._add('block', *pos, nbt_path)
-        return self._start(_ExecuteMod())
-
-    @_fluent
-    def entity(self, target: Target, nbt_path: str) -> _ExecuteMod:
-        self._add('entity', as_target(target), nbt_path)
-        return self._start(_ExecuteMod())
-
-    @_fluent
-    def storage(self, source: str, nbt_path: str) -> _ExecuteMod:
-        self._add('storage', source, nbt_path)
-        return self._start(_ExecuteMod())
-
-
 class _IfClause(Command):
     @_fluent
     def biome(self, pos: Position, biome: Biome) -> _ExecuteMod:
@@ -1031,9 +1019,9 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def data(self) -> _IfDataMod:
-        self._add('data')
-        return self._start(_IfDataMod())
+    def data(self, data_target: DataTarget, nbt_path: str) -> _ExecuteMod:
+        self._add('data', data_target_str(data_target), nbt_path)
+        return self._start(_ExecuteMod())
 
     @_fluent
     def entity(self, target: Target) -> _ExecuteMod:
@@ -1062,23 +1050,23 @@ class _StoreClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def bossbar(self, id: str, param: str) -> _ExecuteMod:
-        self._add('bossbar', id, _in_group(BOSSBAR, param))
-        return self._start(_ExecuteMod())
-
-    @_fluent
     def entity(self, target: Target, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
         self._add('entity', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
-    def score(self, score: ScoreName) -> _ExecuteMod:
-        self._add('score', as_score(score))
+    def storage(self, target: Target, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
+        self._add('storage', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
-    def storage(self, target: Target, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
-        self._add('storage', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
+    def bossbar(self, id: str, param: str) -> _ExecuteMod:
+        self._add('bossbar', id, _in_group(BOSSBAR, param))
+        return self._start(_ExecuteMod())
+
+    @_fluent
+    def score(self, score: ScoreName) -> _ExecuteMod:
+        self._add('score', as_score(score))
         return self._start(_ExecuteMod())
 
 

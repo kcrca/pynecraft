@@ -43,7 +43,7 @@ class TestInfo(unittest.TestCase):
         self.assertIn('zombie', mobs_by_id)
 
         self.maxDiff = None
-        self.assertSequenceEqual(tuple(blocks.values()), sorted(blocks.values()))
+        self.assertSequenceEqual(list(blocks.values()), sorted(blocks.values()))
         self.assertSequenceEqual(tuple(items.values()), sorted(items.values()))
         self.assertSequenceEqual(tuple(mobs.values()), sorted(mobs.values()))
         self.assertSequenceEqual(tuple(blocks_by_id.values()), sorted(blocks.values(), key=lambda t: t.id))
