@@ -159,7 +159,7 @@ class Sign(Block):
 
     @classmethod
     def change(cls, pos: Position, messages: SignMessages = None, commands: SignCommands = None,
-               front=True) -> Commands:
+               front=True, start=0) -> Commands:
         messages = messages if messages else (None, None, None, None)
         commands = commands if commands else (None, None, None, None)
         cmds = []
@@ -174,9 +174,10 @@ class Sign(Block):
                 msg, cmd = desc
                 if msg is None and cmd is None:
                     continue
-                cmds.append(data().modify(pos, f'{face}.messages[{i}]').set().value(str(cls.line_nbt(msg, cmd))))
+                cmds.append(
+                    data().modify(pos, f'{face}.messages[{i + start}]').set().value(str(cls.line_nbt(msg, cmd))))
                 added += 1
-            if added == 4:
+            if added == 4 and start == 0:
                 # If everything is being changed, this is much more efficient
                 change_all = (cls.lines_nbt(messages, commands))
                 to_merge = Nbt()
@@ -198,6 +199,7 @@ class Sign(Block):
         :param facing: The direction the sign if facing. See as_facing() for useful parameters.
         :param water: Whether the sign is waterlogged.
         :param nbt: Any extra NBT for the sign.
+        :param clear: Clear out the block before placing
         :return: The commands to place the sign.
         """
         self._orientation(facing)
