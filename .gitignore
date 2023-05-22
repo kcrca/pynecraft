@@ -16,3 +16,4 @@ logs/
 /pynecraft/.??*
 .coverage
 .enum_cache
+htmlcov
