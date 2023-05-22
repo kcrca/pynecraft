@@ -118,6 +118,16 @@ class ItemFetcher(Fetcher):
         'Minecart with Command Block',
         'Spawner',
     ]
+    operator_menu = [
+        'Barrier',
+        'Command Block',
+        'Minecart with Command Block',
+        'Debug Stick',
+        'Jigsaw',
+        'Light',
+        'Structure Block',
+        'Structure Void',
+    ]
 
     id_replace = {'Redstone Dust': 'Redstone', 'Book and Quill': 'Writable Book', 'Empty Map': 'Map',
                   'Steak': 'Cooked Beef', 'Turtle Shell': 'Turtle Helmet', 'Disc Fragment': 'Disc Fragment 5',

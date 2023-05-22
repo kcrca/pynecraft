@@ -27,6 +27,8 @@ must_give_items: dict[str, Item] = {}
 """Items that are not in the creative inventory, by name."""
 must_give_items_by_id: dict[str, Item] = {}
 """Items that are not in the creative inventory, by ID."""
+operator_menu: dict[str, Item] = {}
+"""Items that are only in the creative inventory if the 'Operator Menu' option is turned on."""
 
 
 def __read_things(which: str, ctor):
@@ -47,7 +49,7 @@ def __read_things(which: str, ctor):
 
 
 def __read_lists():
-    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id
+    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id, operator_menu
     blocks, blocks_by_id = __read_things('blocks', Block)
     items, items_by_id = __read_things('items', Block)
     mobs, mobs_by_id = __read_things('mobs', Entity)
@@ -55,6 +57,8 @@ def __read_lists():
     for item_name in ItemFetcher.must_give:
         item = must_give_items[item_name] = items[item_name]
         must_give_items_by_id[item.id] = item
+        if item_name in ItemFetcher.operator_menu:
+            operator_menu[item_name] = items[item_name]
 
 
 __read_lists()
@@ -173,7 +177,7 @@ instruments = (
     Instrument('bell', 'Bell', Block('Gold Block')),
     Instrument('iron_xylophone', 'Iron Xylophone', Block('Iron Block')),
     Instrument('cow_bell', 'Cow Bell', Block('Soul Sand')),
-    Instrument('didgeridoo', 'Digeridoo', Block('Pumpkin')),
+    Instrument('didgeridoo', 'Didgeridoo', Block('Pumpkin')),
     Instrument('bit', 'Bit', Block('Emerald Block')),
     Instrument('banjo', 'Banjo', Block('Hay Block')),
     Instrument('pling', 'Pling', Block('Glowstone')),
