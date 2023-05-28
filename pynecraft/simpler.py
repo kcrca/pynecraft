@@ -615,7 +615,7 @@ class ItemFrame(Entity):
         nbt = nbt.merge({'Facing': as_facing(facing).number, 'Fixed': True})
         super().__init__('glow_item_frame' if glowing else 'item_frame', nbt=nbt, name=name)
 
-    def item(self, item: BlockDef) -> ItemFrame:
+    def item(self, item: BlockDef | Entity) -> ItemFrame:
         """Sets the item that is in the frame."""
         block = as_block(item)
         self.merge_nbt({'Item': Item.nbt_for(block)})
