@@ -52,7 +52,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(uuid1, Uuid.from_most_least(-2297048576818329846, -5256598933532376638))
         self.assertEqual(uuid1, Uuid.from_most_least_dict(
             {'UUIDMost': -2297048576818329846, 'UUIDLeast': -5256598933532376638}))
-        self.assertEquals(
+        self.assertEqual(
             {'UUIDMost': -2297048576818329846, 'UUIDLeast': -5256598933532376638}, uuid1.most_least_dict)
         self.assertEqual((-534823299, 1525499658, -1223897314, -535100990), uuid1.ints)
         self.assertEqual('e01f3e7d-5aed-470a-b70c-cf1ee01b01c2', uuid1.hex_str)
