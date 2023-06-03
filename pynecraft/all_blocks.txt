@@ -589,7 +589,6 @@ Pink Terracotta
 Pink Tulip
 Pink Wool
 Piston
-Pitcher Crop [x] / Pitcher Crop
 Pitcher Plant [x] / Pitcher Plant
 Player Head
 Podzol

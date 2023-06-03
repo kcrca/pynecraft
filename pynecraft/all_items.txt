@@ -244,6 +244,7 @@ Music Disc Mall
 Music Disc Mellohi
 Music Disc Otherside
 Music Disc Pigstep
+Music Disc Relic
 Music Disc Stal
 Music Disc Strad
 Music Disc Wait

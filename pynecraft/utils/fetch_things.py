@@ -71,7 +71,7 @@ class BlockFetcher(Fetcher):
         return elem.name == 'h2' or 'Technical blocks' in elem.text
 
     def get_id(self, raw_id, raw_desc):
-        if 'Ominous' in raw_id or 'Torchflower Crop' in raw_id:
+        if 'Ominous' in raw_id or 'Torchflower Crop' in raw_id or 'Pitcher Crop' in raw_id:
             # This is not really a block at all.
             return None, None
 
