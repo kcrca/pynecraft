@@ -293,7 +293,7 @@ class TestCommands(unittest.TestCase):
 
     def test_known_targets(self):
         self.assertEqual('@p', str(p()))
-        self.assertEqual('@r', str(random()))
+        self.assertEqual('@r', str(rand()))
         self.assertEqual('@a', str(a()))
         self.assertEqual('@e', str(e()))
         self.assertEqual('*', str(Star()))
@@ -878,11 +878,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('remove @a obj 12', _ScoreboardPlayersMod().remove(Score(a(), 'obj'), 12))
         self.assertEqual('enable @a obj', _ScoreboardPlayersMod().enable(Score(a(), 'obj')))
         self.assertEqual('operation * obj += @r obj2',
-                         _ScoreboardPlayersMod().operation((Star(), 'obj'), PLUS, Score(random(), 'obj2')))
+                         _ScoreboardPlayersMod().operation((Star(), 'obj'), PLUS, Score(rand(), 'obj2')))
         self.assertEqual('operation * obj += @r obj2',
-                         _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), PLUS, Score(random(), 'obj2')))
+                         _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), PLUS, Score(rand(), 'obj2')))
         self.assertEqual('operation * obj > @r obj2',
-                         _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), MAX, Score(random(), 'obj2')))
+                         _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), MAX, Score(rand(), 'obj2')))
 
         self.assertEqual('reset @a obj', _ScoreboardPlayersMod().reset((a(), 'obj')))
         self.assertEqual('reset @a obj', _ScoreboardPlayersMod().reset(Score(a(), 'obj')))
@@ -940,7 +940,7 @@ class TestCommands(unittest.TestCase):
 
     def test_spectate_command(self):
         self.assertEqual('spectate @s', spectate(s()))
-        self.assertEqual('spectate @s @r', spectate(s(), random()))
+        self.assertEqual('spectate @s @r', spectate(s(), rand()))
 
     def test_spreadplayers_command(self):
         self.assertEqual('spreadplayers 1 ~2 ^3 1.7 15.3 true @a', spreadplayers((1, r(2), d(3)), 1.7, 15.3, True, a()))
@@ -956,8 +956,10 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('summon m:z', summon('m:z'))
         self.assertEqual('summon m:z 1 ~2 ^3', summon('m:z', (1, r(2), d(3))))
         self.assertEqual('summon m:z 1 ~2 ^3 {NoAI: true}', summon('m:z', (1, r(2), d(3)), Nbt({'NoAI': True})))
-        self.assertEqual('summon m:z 1 ~2 ^3 {Tags: [t2, t1]}',
-                         summon(Entity('m:z', {'Tags': ['t1']}), (1, r(2), d(3)), Nbt({'Tags': ['t2']})))
+        # The replace() is because the order isn't defined, either way is good
+        self.assertEqual('summon m:z 1 ~2 ^3 {Tags: [t1, t2]}',
+                         summon(Entity('m:z', {'Tags': ['t1']}), (1, r(2), d(3)), Nbt({'Tags': ['t2']})).replace(
+                             't2, t1', 't1, t2'))
 
     def test_tag_command(self):
         self.assertEqual('tag @s add foo', tag(s()).add('foo'))
@@ -973,8 +975,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('team remove foo', team().remove('foo'))
         self.assertEqual('team empty foo', team().empty('foo'))
         self.assertEqual('team join foo', team().join('foo'))
-        self.assertEqual('team join foo @r', team().join('foo', random()))
-        self.assertEqual('team leave foo @r', team().leave('foo', random()))
+        self.assertEqual('team join foo @r', team().join('foo', rand()))
+        self.assertEqual('team leave foo @r', team().leave('foo', rand()))
         self.assertEqual('team modify foo displayName bar', team().modify('foo', TeamOption.DISPLAY_NAME, 'bar'))
         self.assertEqual('team modify foo friendlyFire true', team().modify('foo', TeamOption.FRIENDLY_FIRE, True))
         self.assertEqual('team modify foo nametagVisibility hideForOwnTeam',
@@ -1001,14 +1003,14 @@ class TestCommands(unittest.TestCase):
             team().modify('foo', TeamOption.SUFFIX, True)
 
     def test_teleport_commands(self):
-        self.assertEqual('tp @r', str(teleport(random())))
-        self.assertEqual('tp @r @s', str(teleport(random(), s())))
+        self.assertEqual('tp @r', str(teleport(rand())))
+        self.assertEqual('tp @r @s', str(teleport(rand(), s())))
         self.assertEqual('tp 1 ~2 ^3', str(teleport((1, r(2), d(3)))))
-        self.assertEqual('tp @r 1 ~2 ^3', str(teleport(random(), (1, r(2), d(3)))))
-        self.assertEqual('tp @r 1 ~2 ^3 3.4', teleport(random(), (1, r(2), d(3)), 3.4))
-        self.assertEqual('tp @r @s facing 1 ~2 ^3', teleport(random(), s()).facing((1, r(2), d(3))))
-        self.assertEqual('tp @r @s facing entity @a', teleport(random(), s()).facing(a()))
-        self.assertEqual('tp @r @s facing entity @a eyes', teleport(random(), s()).facing(a(), EYES))
+        self.assertEqual('tp @r 1 ~2 ^3', str(teleport(rand(), (1, r(2), d(3)))))
+        self.assertEqual('tp @r 1 ~2 ^3 3.4', teleport(rand(), (1, r(2), d(3)), 3.4))
+        self.assertEqual('tp @r @s facing 1 ~2 ^3', teleport(rand(), s()).facing((1, r(2), d(3))))
+        self.assertEqual('tp @r @s facing entity @a', teleport(rand(), s()).facing(a()))
+        self.assertEqual('tp @r @s facing entity @a eyes', teleport(rand(), s()).facing(a(), EYES))
         with self.assertRaises(ValueError):
             teleport((1, 2, 3), None, 2.4)
         with self.assertRaises(ValueError):
@@ -1259,3 +1261,17 @@ class TestCommands(unittest.TestCase):
                               'scoreboard players operation x score *= t00 __foo'], x.set(-y))
         finally:
             Expression.set_scratch_objective(orig)
+
+    def test_random(self):
+        self.assertEqual('random value 1..2', random().value((1, 2)))
+        self.assertEqual('random value 1..2 fred', random().value((1, 2), 'fred'))
+        self.assertEqual('random roll 1..2', random().roll((1, 2)))
+        self.assertEqual('random roll 1..2 fred', random().roll((1, 2), 'fred'))
+
+        self.assertEqual('random reset *', random().reset('*'))
+        self.assertEqual('random reset fred', random().reset('fred'))
+        self.assertEqual('random reset fred 123', random().reset('fred', 123))
+        self.assertEqual('random reset fred 123 true', random().reset('fred', 123, True))
+        self.assertEqual('random reset fred 123 false', random().reset('fred', 123, False))
+        self.assertEqual('random reset fred 123 true true', random().reset('fred', 123, True, True))
+        self.assertEqual('random reset fred 123 true false', random().reset('fred', 123, True, False))

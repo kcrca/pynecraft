@@ -541,7 +541,9 @@ class Command:
         return copy.deepcopy(self)
 
     def _add(self, *objs: any, space: object = True):
-        to_add = ' '.join(str(x) for x in map(lambda x: _float(x) if isinstance(x, float) else x, objs))
+        to_add = ' '.join(str(x) for x in
+                          map(lambda x: _float(x) if isinstance(x, float) else _bool(x) if isinstance(x, bool) else x,
+                              objs))
         if not self._rep:
             self._rep = ''
         elif space and not self._rep.endswith(' '):
@@ -773,7 +775,7 @@ player = p
 
 
 # noinspection PyProtectedMember
-def random():
+def rand():
     """A target selector for ``@r``. [No single-character version of this exists because it interferes with the r()
     function that returns relative coordinates.] """
     return Selector(Selector._create_key, '@r')
@@ -1474,6 +1476,24 @@ class _DataMod(Command):
     @_fluent
     def remove(self, data_target: DataTarget, nbt_path: str) -> str:
         self._add('remove', data_single_str(data_target), nbt_path)
+        return str(self)
+
+
+class _RandomMod(Command):
+    def roll(self, range: (int, int), sequence: str = None, /, in_chat: bool = True) -> str:
+        self._add('roll' if in_chat else 'value', f'{range[0]}..{range[1]}')
+        self._add_opt(as_name(sequence))
+        return str(self)
+
+    def value(self, range: (int, int), sequence: str = None, /, in_chat: bool = False) -> str:
+        return self.roll(range, sequence, in_chat)
+
+    def reset(self, sequence: str, seed: int = None, include_world_seed=None, include_sequence_id=None, /) -> str:
+        self._add('reset')
+        if sequence != '*':
+            sequence = as_name(sequence)
+        self._add(sequence)
+        self._add_opt(seed, include_world_seed, include_sequence_id)
         return str(self)
 
 
@@ -2545,6 +2565,13 @@ def publish(allow_commands: bool = None, gamemode: str = None, port: int = None)
     cmd._add('publish')
     cmd._add_opt(_bool(allow_commands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
     return str(cmd)
+
+
+def random() -> _RandomMod:
+    """Randomizing values and controlling random sequences."""
+    cmd = Command()
+    cmd._add('random')
+    return cmd._start(_RandomMod())
 
 
 def recipe(action: str, target: Target, recipe_name: str) -> str:
