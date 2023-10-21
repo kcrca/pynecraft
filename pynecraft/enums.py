@@ -115,21 +115,21 @@ class Advancement(ValueEnum):
     MINECRAFT = "story/root"
     """The heart and story of the game."""
     STONE_AGE = "story/mine_stone"
-    """Mine stone with your new pickaxe."""
+    """Mine Stone with your new Pickaxe."""
     GETTING_AN_UPGRADE = "story/upgrade_tools"
-    """Construct a better pickaxe."""
+    """Construct a better Pickaxe."""
     ACQUIRE_HARDWARE = "story/smelt_iron"
-    """Smelt an iron ingot."""
+    """Smelt an Iron Ingot."""
     SUIT_UP = "story/obtain_armor"
     """Protect yourself with a piece of iron armor."""
     HOT_STUFF = "story/lava_bucket"
-    """Fill a bucket with lava."""
+    """Fill a Bucket with lava."""
     ISNT_IT_IRON_PICK = "story/iron_tools"
-    """Upgrade your pickaxe."""
+    """Upgrade your Pickaxe."""
     NOT_TODAY_THANK_YOU = "story/deflect_arrow"
-    """Block a projectile using your shield."""
+    """Deflect a projectile with a Shield."""
     ICE_BUCKET_CHALLENGE = "story/form_obsidian"
-    """Obtain a block of obsidian."""
+    """Obtain a block of Obsidian."""
     DIAMONDS = "story/mine_diamond"
     """Acquire diamonds."""
     WE_NEED_TO_GO_DEEPER = "story/enter_the_nether"
@@ -137,7 +137,7 @@ class Advancement(ValueEnum):
     COVER_ME_WITH_DIAMONDS = "story/shiny_gear"
     """Diamond armor saves lives."""
     ENCHANTER = "story/enchant_item"
-    """Enchant an item at an Enchantment Table."""
+    """Enchant an item at an Enchanting Table."""
     ZOMBIE_DOCTOR = "story/cure_zombie_villager"
     """Weaken and then cure a Zombie Villager."""
     EYE_SPY = "story/follow_ender_eye"
@@ -165,9 +165,9 @@ class Advancement(ValueEnum):
     UNEASY_ALLIANCE = "nether/uneasy_alliance"
     """Rescue a Ghast from the Nether, bring it safely home to the Overworld... and then kill it."""
     WAR_PIGS = "nether/loot_bastion"
-    """Loot a chest in a Bastion Remnant."""
+    """Loot a Chest in a Bastion Remnant."""
     COUNTRY_LODE_TAKE_ME_HOME = "nether/use_lodestone"
-    """Use a compass on a Lodestone."""
+    """Use a Compass on a Lodestone."""
     COVER_ME_IN_DEBRIS = "nether/netherite_armor"
     """Get a full suit of Netherite armor."""
     SPOOKY_SCARY_SKELETON = "nether/get_wither_skull"
@@ -183,13 +183,13 @@ class Advancement(ValueEnum):
     WITHERING_HEIGHTS = "nether/summon_wither"
     """Summon the Wither."""
     LOCAL_BREWERY = "nether/brew_potion"
-    """Brew a potion."""
+    """Brew a Potion."""
     BRING_HOME_THE_BEACON = "nether/create_beacon"
-    """Construct and place a beacon."""
+    """Construct and place a Beacon."""
     A_FURIOUS_COCKTAIL = "nether/all_potions"
     """Have every potion effect applied at the same time."""
     BEACONATOR = "nether/create_full_beacon"
-    """Bring a beacon to full power."""
+    """Bring a Beacon to full power."""
     HOW_DID_WE_GET_HERE = "nether/all_effects"
     """Have every effect applied at the same time."""
     THE_END = "end/root"
@@ -203,45 +203,51 @@ class Advancement(ValueEnum):
     THE_END_AGAIN = "end/respawn_dragon"
     """Respawn the Ender Dragon."""
     YOU_NEED_A_MINT = "end/dragon_breath"
-    """Collect dragon's breath in a glass bottle."""
+    """Collect Dragon's Breath in a Glass Bottle."""
     THE_CITY_AT_THE_END_OF_THE_GAME = "end/find_end_city"
     """Go on in, what could happen?"""
     SKYS_THE_LIMIT = "end/elytra"
-    """Find elytra."""
+    """Find Elytra."""
     GREAT_VIEW_FROM_UP_HERE = "end/levitate"
     """Levitate up 50 blocks from the attacks of a Shulker."""
     ADVENTURE = "adventure/root"
-    """Adventure, exploration, and combat."""
+    """Adventure, exploration and combat."""
     VOLUNTARY_EXILE = "adventure/voluntary_exile"
     """Kill a raid captain.Maybe consider staying away from villages for the time being..."""
     IS_IT_A_BIRD = "adventure/spyglass_at_parrot"
-    """Look at a parrot through a spyglass."""
+    """Look at a Parrot through a Spyglass."""
     MONSTER_HUNTER = "adventure/kill_a_mob"
     """Kill any hostile monster."""
+    THE_POWER_OF_BOOKS = "adventure/read_power_of_chiseled_bookshelf"
+    """Read the power signal of a Chiseled Bookshelf using a Comparator."""
     WHAT_A_DEAL = "adventure/trade"
     """Successfully trade with a Villager."""
+    CRAFTING_A_NEW_LOOK = "adventure/trim_with_any_armor_pattern"
+    """Craft a trimmed armor at a Smithing Table."""
     STICKY_SITUATION = "adventure/honey_block_slide"
     """Jump into a Honey Block to break your fall."""
     OL_BETSY = "adventure/ol_betsy"
-    """Shoot a crossbow."""
+    """Shoot a Crossbow."""
     SURGE_PROTECTOR = "adventure/lightning_rod_with_villager_no_fire"
-    """Protect a villager from an undesired shock without starting a fire."""
+    """Protect a Villager from an undesired shock without starting a fire."""
     CAVES__CLIFFS = "adventure/fall_from_world_height"
     """Free fall from the top of the world (build limit) to the bottom of the world and survive."""
+    RESPECTING_THE_REMNANTS = "adventure/salvage_sherd"
+    """Brush a Suspicious block to obtain a Pottery Sherd."""
     SNEAK_100 = "adventure/avoid_vibration"
     """Sneak near a Sculk Sensor or Warden to prevent it from detecting you."""
     SWEET_DREAMS = "adventure/sleep_in_bed"
-    """Sleep in a bed to change your respawn point."""
+    """Sleep in a Bed to change your respawn point."""
     HERO_OF_THE_VILLAGE = "adventure/hero_of_the_village"
     """Successfully defend a village from a raid."""
     IS_IT_A_BALLOON = "adventure/spyglass_at_ghast"
-    """Look at a ghast through a spyglass."""
+    """Look at a Ghast through a Spyglass."""
     A_THROWAWAY_JOKE = "adventure/throw_trident"
-    """Throw a trident at something."""
+    """Throw a Trident at something.Note: Throwing away your only weapon is not a good idea."""
     IT_SPREADS = "adventure/kill_mob_near_sculk_catalyst"
     """Kill a mob near a Sculk Catalyst."""
     TAKE_AIM = "adventure/shoot_arrow"
-    """Shoot something with an arrow."""
+    """Shoot something with an Arrow."""
     MONSTERS_HUNTED = "adventure/kill_all_mobs"
     """Kill one of every hostile monster."""
     POSTMORTAL = "adventure/totem_of_undying"
@@ -250,20 +256,24 @@ class Advancement(ValueEnum):
     """Summon an Iron Golem to help defend a village."""
     STAR_TRADER = "adventure/trade_at_world_height"
     """Trade with a Villager at the build height limit."""
+    SMITHING_WITH_STYLE = "adventure/trim_with_all_exclusive_armor_patterns"
+    """Apply these smithing templates at least once: Spire, Snout, Rib, Ward, Silence, Vex, Tide, Wayfinder."""
     TWO_BIRDS_ONE_ARROW = "adventure/two_birds_one_arrow"
-    """Kill two Phantoms with a piercing arrow."""
+    """Kill two Phantoms with a piercing Arrow."""
     WHOS_THE_PILLAGER_NOW = "adventure/whos_the_pillager_now"
     """Give a Pillager a taste of their own medicine."""
     ARBALISTIC = "adventure/arbalistic"
     """Kill five unique mobs with one crossbow shot."""
+    CAREFUL_RESTORATION = "adventure/craft_decorated_pot_using_only_sherds"
+    """Make a Decorated Pot out of 4 Pottery Sherds."""
     ADVENTURING_TIME = "adventure/adventuring_time"
     """Discover every biome."""
     SOUND_OF_MUSIC = "adventure/play_jukebox_in_meadows"
     """Make the Meadows come alive with the sound of music from a Jukebox."""
     LIGHT_AS_A_RABBIT = "adventure/walk_on_powder_snow_with_leather_boots"
-    """Walk on powder snow...without sinking in it."""
+    """Walk on Powder Snow... without sinking in it."""
     IS_IT_A_PLANE = "adventure/spyglass_at_dragon"
-    """Look at the Ender Dragon through a spyglass."""
+    """Look at the Ender Dragon through a Spyglass."""
     VERY_VERY_FRIGHTENING = "adventure/very_very_frightening"
     """Strike a Villager with lightning."""
     SNIPER_DUEL = "adventure/sniper_duel"
@@ -273,7 +283,7 @@ class Advancement(ValueEnum):
     HUSBANDRY = "husbandry/root"
     """The world is full of friends and food."""
     BEE_OUR_GUEST = "husbandry/safely_harvest_honey"
-    """Use a Campfire to collect Honey from a Beehive using a Bottle without aggravating the bees."""
+    """Use a Campfire to collect Honey from a Beehive using a Glass Bottle without aggravating the Bees."""
     THE_PARROTS_AND_THE_BATS = "husbandry/breed_an_animal"
     """Breed two animals together."""
     YOUVE_GOT_A_FRIEND_IN_ME = "husbandry/allay_deliver_item_to_player"
@@ -283,13 +293,15 @@ class Advancement(ValueEnum):
     BEST_FRIENDS_FOREVER = "husbandry/tame_an_animal"
     """Tame an animal."""
     GLOW_AND_BEHOLD = "husbandry/make_a_sign_glow"
-    """Make the text of a sign glow."""
+    """Make the text of any kind of sign glow."""
     FISHY_BUSINESS = "husbandry/fishy_business"
     """Catch a fish."""
     TOTAL_BEELOCATION = "husbandry/silk_touch_nest"
-    """Move a Bee Nest, with 3 bees inside, using Silk Touch."""
+    """Move a Bee Nest, with 3 Bees inside, using Silk Touch."""
     BUKKIT_BUKKIT = "husbandry/tadpole_in_a_bucket"
-    """Catch a tadpole in a Bucket."""
+    """Catch a Tadpole in a Bucket."""
+    SMELLS_INTERESTING = "husbandry/obtain_sniffer_egg"
+    """Obtain a Sniffer Egg."""
     A_SEEDY_PLACE = "husbandry/plant_seed"
     """Plant a seed and watch it grow."""
     WAX_ON = "husbandry/wax_on"
@@ -299,21 +311,25 @@ class Advancement(ValueEnum):
     BIRTHDAY_SONG = "husbandry/allay_deliver_cake_to_note_block"
     """Have an Allay drop a Cake at a Note Block."""
     A_COMPLETE_CATALOGUE = "husbandry/complete_catalogue"
-    """Tame all cat variants!"""
+    """Tame all Cat variants!"""
     TACTICAL_FISHING = "husbandry/tactical_fishing"
-    """Catch a fish... without a fishing rod!"""
+    """Catch a Fish... without a Fishing Rod!"""
     WHEN_THE_SQUAD_HOPS_INTO_TOWN = "husbandry/leash_all_frog_variants"
     """Get each Frog variant on a Lead."""
+    LITTLE_SNIFFS = "husbandry/feed_snifflet"
+    """Feed a Snifflet."""
     A_BALANCED_DIET = "husbandry/balanced_diet"
     """Eat everything that is edible, even if it's not good for you."""
     SERIOUS_DEDICATION = "husbandry/obtain_netherite_hoe"
-    """Use a Netherite Ingot to upgrade a hoe, and then reevaluate your life choices."""
+    """Use a Netherite Ingot to upgrade a Hoe, and then reevaluate your life choices."""
     WAX_OFF = "husbandry/wax_off"
     """Scrape Wax off of a Copper block!"""
     THE_CUTEST_PREDATOR = "husbandry/axolotl_in_a_bucket"
-    """Catch an axolotl in a bucket."""
+    """Catch an Axolotl in a Bucket."""
     WITH_OUR_POWERS_COMBINED = "husbandry/froglights"
     """Have all Froglights in your inventory."""
+    PLANTING_THE_PAST = "husbandry/plant_any_sniffer_seed"
+    """Plant any Sniffer seed."""
     THE_HEALING_POWER_OF_FRIENDSHIP = "husbandry/kill_axolotl_target"
     """Team up with an axolotl and win a fight."""
 
@@ -349,7 +365,7 @@ _advancement_display = {Advancement.MINECRAFT: "Minecraft", Advancement.STONE_AG
                         Advancement.WITHERING_HEIGHTS: "Withering Heights", Advancement.LOCAL_BREWERY: "Local Brewery",
                         Advancement.BRING_HOME_THE_BEACON: "Bring Home the Beacon",
                         Advancement.A_FURIOUS_COCKTAIL: "A Furious Cocktail", Advancement.BEACONATOR: "Beaconator",
-                        Advancement.HOW_DID_WE_GET_HERE: "How Did We Get Here?", Advancement.THE_END: "The End?",
+                        Advancement.HOW_DID_WE_GET_HERE: "How Did We Get Here?", Advancement.THE_END: "The End",
                         Advancement.FREE_THE_END: "Free the End",
                         Advancement.THE_NEXT_GENERATION: "The Next Generation",
                         Advancement.REMOTE_GETAWAY: "Remote Getaway", Advancement.THE_END_AGAIN: "The End... Again...",
@@ -359,19 +375,22 @@ _advancement_display = {Advancement.MINECRAFT: "Minecraft", Advancement.STONE_AG
                         Advancement.GREAT_VIEW_FROM_UP_HERE: "Great View From Up Here",
                         Advancement.ADVENTURE: "Adventure", Advancement.VOLUNTARY_EXILE: "Voluntary Exile",
                         Advancement.IS_IT_A_BIRD: "Is It a Bird?", Advancement.MONSTER_HUNTER: "Monster Hunter",
-                        Advancement.WHAT_A_DEAL: "What a Deal!", Advancement.STICKY_SITUATION: "Sticky Situation",
-                        Advancement.OL_BETSY: "Ol' Betsy", Advancement.SURGE_PROTECTOR: "Surge Protector",
-                        Advancement.CAVES__CLIFFS: "Caves & Cliffs", Advancement.SNEAK_100: "Sneak 100",
-                        Advancement.SWEET_DREAMS: "Sweet Dreams",
+                        Advancement.THE_POWER_OF_BOOKS: "The Power of Books", Advancement.WHAT_A_DEAL: "What a Deal!",
+                        Advancement.CRAFTING_A_NEW_LOOK: "Crafting a New Look",
+                        Advancement.STICKY_SITUATION: "Sticky Situation", Advancement.OL_BETSY: "Ol' Betsy",
+                        Advancement.SURGE_PROTECTOR: "Surge Protector", Advancement.CAVES__CLIFFS: "Caves & Cliffs",
+                        Advancement.RESPECTING_THE_REMNANTS: "Respecting the Remnants",
+                        Advancement.SNEAK_100: "Sneak 100", Advancement.SWEET_DREAMS: "Sweet Dreams",
                         Advancement.HERO_OF_THE_VILLAGE: "Hero of the Village",
                         Advancement.IS_IT_A_BALLOON: "Is It a Balloon?",
                         Advancement.A_THROWAWAY_JOKE: "A Throwaway Joke", Advancement.IT_SPREADS: "It Spreads",
                         Advancement.TAKE_AIM: "Take Aim", Advancement.MONSTERS_HUNTED: "Monsters Hunted",
                         Advancement.POSTMORTAL: "Postmortal", Advancement.HIRED_HELP: "Hired Help",
-                        Advancement.STAR_TRADER: "Star Trader", Advancement.TWO_BIRDS_ONE_ARROW: "Two Birds, One Arrow",
+                        Advancement.STAR_TRADER: "Star Trader", Advancement.SMITHING_WITH_STYLE: "Smithing with Style",
+                        Advancement.TWO_BIRDS_ONE_ARROW: "Two Birds, One Arrow",
                         Advancement.WHOS_THE_PILLAGER_NOW: "Who's the Pillager Now?",
-                        Advancement.ARBALISTIC: "Arbalistic", Advancement.ADVENTURING_TIME: "Adventuring Time",
-                        Advancement.SOUND_OF_MUSIC: "Sound of Music",
+                        Advancement.ARBALISTIC: "Arbalistic", Advancement.CAREFUL_RESTORATION: "Careful Restoration",
+                        Advancement.ADVENTURING_TIME: "Adventuring Time", Advancement.SOUND_OF_MUSIC: "Sound of Music",
                         Advancement.LIGHT_AS_A_RABBIT: "Light as a Rabbit", Advancement.IS_IT_A_PLANE: "Is It a Plane?",
                         Advancement.VERY_VERY_FRIGHTENING: "Very Very Frightening",
                         Advancement.SNIPER_DUEL: "Sniper Duel", Advancement.BULLSEYE: "Bullseye",
@@ -382,15 +401,17 @@ _advancement_display = {Advancement.MINECRAFT: "Minecraft", Advancement.STONE_AG
                         Advancement.BEST_FRIENDS_FOREVER: "Best Friends Forever",
                         Advancement.GLOW_AND_BEHOLD: "Glow and Behold!", Advancement.FISHY_BUSINESS: "Fishy Business",
                         Advancement.TOTAL_BEELOCATION: "Total Beelocation", Advancement.BUKKIT_BUKKIT: "Bukkit Bukkit",
+                        Advancement.SMELLS_INTERESTING: "Smells Interesting",
                         Advancement.A_SEEDY_PLACE: "A Seedy Place", Advancement.WAX_ON: "Wax On",
                         Advancement.TWO_BY_TWO: "Two by Two", Advancement.BIRTHDAY_SONG: "Birthday Song",
                         Advancement.A_COMPLETE_CATALOGUE: "A Complete Catalogue",
                         Advancement.TACTICAL_FISHING: "Tactical Fishing",
                         Advancement.WHEN_THE_SQUAD_HOPS_INTO_TOWN: "When the Squad Hops into Town",
-                        Advancement.A_BALANCED_DIET: "A Balanced Diet",
+                        Advancement.LITTLE_SNIFFS: "Little Sniffs", Advancement.A_BALANCED_DIET: "A Balanced Diet",
                         Advancement.SERIOUS_DEDICATION: "Serious Dedication", Advancement.WAX_OFF: "Wax Off",
                         Advancement.THE_CUTEST_PREDATOR: "The Cutest Predator",
                         Advancement.WITH_OUR_POWERS_COMBINED: "With Our Powers Combined!",
+                        Advancement.PLANTING_THE_PAST: "Planting the Past",
                         Advancement.THE_HEALING_POWER_OF_FRIENDSHIP: "The Healing Power of Friendship!"}
 
 
@@ -457,6 +478,8 @@ class BiomeId(ValueEnum):
     """Wooded Badlands."""
     MEADOW = "meadow"
     """Meadow."""
+    CHERRY_GROVE = "cherry_grove"
+    """Cherry Grove."""
     GROVE = "grove"
     """Grove."""
     SNOWY_SLOPES = "snowy_slopes"
@@ -544,13 +567,13 @@ _biomeid_display = {BiomeId.THE_VOID: "The Void", BiomeId.PLAINS: "Plains",
                     BiomeId.JUNGLE: "Jungle", BiomeId.SPARSE_JUNGLE: "Sparse Jungle",
                     BiomeId.BAMBOO_JUNGLE: "Bamboo Jungle", BiomeId.BADLANDS: "Badlands",
                     BiomeId.ERODED_BADLANDS: "Eroded Badlands", BiomeId.WOODED_BADLANDS: "Wooded Badlands",
-                    BiomeId.MEADOW: "Meadow", BiomeId.GROVE: "Grove", BiomeId.SNOWY_SLOPES: "Snowy Slopes",
-                    BiomeId.FROZEN_PEAKS: "Frozen Peaks", BiomeId.JAGGED_PEAKS: "Jagged Peaks",
-                    BiomeId.STONY_PEAKS: "Stony Peaks", BiomeId.RIVER: "River", BiomeId.FROZEN_RIVER: "Frozen River",
-                    BiomeId.BEACH: "Beach", BiomeId.SNOWY_BEACH: "Snowy Beach", BiomeId.STONY_SHORE: "Stony Shore",
-                    BiomeId.WARM_OCEAN: "Warm Ocean", BiomeId.LUKEWARM_OCEAN: "Lukewarm Ocean",
-                    BiomeId.DEEP_LUKEWARM_OCEAN: "Deep Lukewarm Ocean", BiomeId.OCEAN: "Ocean",
-                    BiomeId.DEEP_OCEAN: "Deep Ocean", BiomeId.COLD_OCEAN: "Cold Ocean",
+                    BiomeId.MEADOW: "Meadow", BiomeId.CHERRY_GROVE: "Cherry Grove", BiomeId.GROVE: "Grove",
+                    BiomeId.SNOWY_SLOPES: "Snowy Slopes", BiomeId.FROZEN_PEAKS: "Frozen Peaks",
+                    BiomeId.JAGGED_PEAKS: "Jagged Peaks", BiomeId.STONY_PEAKS: "Stony Peaks", BiomeId.RIVER: "River",
+                    BiomeId.FROZEN_RIVER: "Frozen River", BiomeId.BEACH: "Beach", BiomeId.SNOWY_BEACH: "Snowy Beach",
+                    BiomeId.STONY_SHORE: "Stony Shore", BiomeId.WARM_OCEAN: "Warm Ocean",
+                    BiomeId.LUKEWARM_OCEAN: "Lukewarm Ocean", BiomeId.DEEP_LUKEWARM_OCEAN: "Deep Lukewarm Ocean",
+                    BiomeId.OCEAN: "Ocean", BiomeId.DEEP_OCEAN: "Deep Ocean", BiomeId.COLD_OCEAN: "Cold Ocean",
                     BiomeId.DEEP_COLD_OCEAN: "Deep Cold Ocean", BiomeId.FROZEN_OCEAN: "Frozen Ocean",
                     BiomeId.DEEP_FROZEN_OCEAN: "Deep Frozen Ocean", BiomeId.MUSHROOM_FIELDS: "Mushroom Fields",
                     BiomeId.DRIPSTONE_CAVES: "Dripstone Caves", BiomeId.LUSH_CAVES: "Lush Caves",
@@ -644,7 +667,7 @@ class Effect(ValueEnum):
 
 # noinspection SpellCheckingInspection,GrazieInspection
 _effect_positive = {'speed': True, 'slowness': False, 'haste': True, 'mining_fatigue': False, 'strength': True,
-                    'instant_health': True, 'instant_damage': True, 'jump_boost': True, 'nausea': False,
+                    'instant_health': True, 'instant_damage': False, 'jump_boost': True, 'nausea': False,
                     'regeneration': True, 'resistance': True, 'fire_resistance': True, 'water_breathing': True,
                     'invisibility': True, 'blindness': False, 'night_vision': True, 'hunger': False, 'weakness': False,
                     'poison': False, 'wither': False, 'health_boost': True, 'absorption': True, 'saturation': True,
@@ -848,6 +871,8 @@ class GameRule(ValueEnum):
     """Whether wardens can spawn."""
     DROWNING_DAMAGE = "drowningDamage"
     """Whether the player should take damage when drowning."""
+    ENDER_PEARLS_VANISH_ON_DEATH = "enderPearlsVanishOnDeath"
+    """Controls whether thrown ender pearls vanish when the player dies."""
     FALL_DAMAGE = "fallDamage"
     """Whether the player should take fall damage."""
     FIRE_DAMAGE = "fireDamage"
@@ -871,11 +896,11 @@ class GameRule(ValueEnum):
     MOB_EXPLOSION_DROP_DECAY = "mobExplosionDropDecay"
     """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a mob explosion (e.g. Creeper explosion)."""
     MOB_GRIEFING = "mobGriefing"
-    """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals should be able to change blocks, and whether mobs can pick up items. When mobGriefing is disabled, piglins do not pick up gold ingots, but a player can still barter with them by using the item on the mob. Similarly, villagers do not pick up food items but can still breed until they run out of any food already in their inventory. This also affects the capability of zombie-like creatures like zombified piglins and drowned to pathfind to turtle eggs."""
+    """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals."""
     NATURAL_REGENERATION = "naturalRegeneration"
     """Whether the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)."""
     PLAYERS_SLEEPING_PERCENTAGE = "playersSleepingPercentage"
-    """What percentage of players must sleep to skip the night."""
+    """What percentage of players in the Overworld must sleep to skip the night. A percentage value of 0 or less will allow the night to be skipped by just 1 player, and a percentage value more than 100 will prevent players from ever skipping the night."""
     RANDOM_TICK_SPEED = "randomTickSpeed"
     """How often a random block tick occurs (such as plant growth, leaf decay, etc.) per chunk section per game tick. 0 and negative values disables random ticks, higher numbers increase random ticks. Setting to a high integer results in high speeds of decay and growth. Numbers over 4096 make plant growth or leaf decay instantaneous."""
     REDUCED_DEBUG_INFO = "reducedDebugInfo"
@@ -911,15 +936,15 @@ _gamerule_types = {'announceAdvancements': 'bool', 'blockExplosionDropDecay': 'b
                    'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool',
                    'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool',
                    'doTraderSpawning': 'bool', 'doVinesSpread': 'bool', 'doWeatherCycle': 'bool',
-                   'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'fallDamage': 'bool', 'fireDamage': 'bool',
-                   'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool', 'globalSoundEvents': 'bool',
-                   'keepInventory': 'bool', 'lavaSourceConversion': 'bool', 'logAdminCommands': 'bool',
-                   'maxCommandChainLength': 'int', 'maxEntityCramming': 'int', 'mobExplosionDropDecay': 'bool',
-                   'mobGriefing': 'bool', 'naturalRegeneration': 'bool', 'playersSleepingPercentage': 'int',
-                   'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool', 'sendCommandFeedback': 'bool',
-                   'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int', 'spawnRadius': 'int',
-                   'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool', 'universalAnger': 'bool',
-                   'waterSourceConversion': 'bool'}
+                   'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'enderPearlsVanishOnDeath': 'bool',
+                   'fallDamage': 'bool', 'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool',
+                   'globalSoundEvents': 'bool', 'keepInventory': 'bool', 'lavaSourceConversion': 'bool',
+                   'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int',
+                   'mobExplosionDropDecay': 'bool', 'mobGriefing': 'bool', 'naturalRegeneration': 'bool',
+                   'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool',
+                   'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int',
+                   'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool',
+                   'universalAnger': 'bool', 'waterSourceConversion': 'bool'}
 
 # noinspection SpellCheckingInspection,GrazieInspection
 _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
@@ -935,6 +960,7 @@ _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
                      GameRule.DO_TILE_DROPS: "do Tile Drops", GameRule.DO_TRADER_SPAWNING: "do Trader Spawning",
                      GameRule.DO_VINES_SPREAD: "do Vines Spread", GameRule.DO_WEATHER_CYCLE: "do Weather Cycle",
                      GameRule.DO_WARDEN_SPAWNING: "do Warden Spawning", GameRule.DROWNING_DAMAGE: "drowning Damage",
+                     GameRule.ENDER_PEARLS_VANISH_ON_DEATH: "ender Pearls Vanish On Death",
                      GameRule.FALL_DAMAGE: "fall Damage", GameRule.FIRE_DAMAGE: "fire Damage",
                      GameRule.FORGIVE_DEAD_PLAYERS: "forgive Dead Players", GameRule.FREEZE_DAMAGE: "freeze Damage",
                      GameRule.GLOBAL_SOUND_EVENTS: "global Sound Events", GameRule.KEEP_INVENTORY: "keep Inventory",

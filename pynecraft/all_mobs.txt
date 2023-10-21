@@ -1,8 +1,10 @@
 Allay
+Armadillo
 Axolotl
 Bat
 Bee
 Blaze
+Breeze
 Camel
 Cat
 Cave Spider
@@ -18,6 +20,7 @@ Ender Dragon
 Enderman
 Endermite
 Evoker
+File:BreezeFace.png
 Fox
 Frog
 Ghast

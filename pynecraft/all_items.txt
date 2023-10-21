@@ -29,7 +29,6 @@ Blue Dye
 Bone
 Bone Meal
 Book
-Book
 Book and Quill / Writable Book
 Bottle o' Enchanting / Experience Bottle
 Bow
@@ -112,7 +111,6 @@ Elder Guardian Spawn Egg
 Elytra
 Emerald
 Empty Map / Map
-Enchanted Book
 Enchanted Book
 Enchanted Golden Apple
 End Crystal

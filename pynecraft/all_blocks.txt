@@ -2,7 +2,7 @@ Acacia Button
 Acacia Door
 Acacia Fence
 Acacia Fence Gate
-Acacia Hanging Sign [x] / Acacia Hanging Sign
+Acacia Hanging Sign
 Acacia Leaves
 Acacia Log
 Acacia Planks
@@ -27,21 +27,21 @@ Azalea
 Azalea Leaves
 Azure Bluet
 Bamboo
-Bamboo Button [x] / Bamboo Button
-Bamboo Door [x] / Bamboo Door
-Bamboo Fence Gate [x] / Bamboo Fence Gate
-Bamboo Fence [x] / Bamboo Fence
-Bamboo Hanging Sign [x] / Bamboo Hanging Sign
-Bamboo Mosaic Slab [x] / Bamboo Mosaic Slab
-Bamboo Mosaic Stairs [x] / Bamboo Mosaic Stairs
-Bamboo Mosaic [x] / Bamboo Mosaic
-Bamboo Planks [x] / Bamboo Planks
-Bamboo Pressure Plate [x] / Bamboo Pressure Plate
+Bamboo Button
+Bamboo Door
+Bamboo Fence
+Bamboo Fence Gate
+Bamboo Hanging Sign
+Bamboo Mosaic
+Bamboo Mosaic Slab
+Bamboo Mosaic Stairs
+Bamboo Planks
+Bamboo Pressure Plate
 Bamboo Shoot / Bamboo Sapling
-Bamboo Sign [x] / Bamboo Sign
-Bamboo Slab [x] / Bamboo Slab
-Bamboo Stairs [x] / Bamboo Stairs
-Bamboo Trapdoor [x] / Bamboo Trapdoor
+Bamboo Sign
+Bamboo Slab
+Bamboo Stairs
+Bamboo Trapdoor
 Barrel
 Barrier
 Basalt
@@ -56,7 +56,7 @@ Birch Button
 Birch Door
 Birch Fence
 Birch Fence Gate
-Birch Hanging Sign [x] / Birch Hanging Sign
+Birch Hanging Sign
 Birch Leaves
 Birch Log
 Birch Planks
@@ -85,7 +85,7 @@ Blackstone Stairs
 Blackstone Wall
 Blast Furnace
 Block of Amethyst / Amethyst Block
-Block of Bamboo [x] / Bamboo Block
+Block of Bamboo / Bamboo Block
 Block of Coal / Coal Block
 Block of Copper / Copper Block
 Block of Diamond / Diamond Block
@@ -99,7 +99,7 @@ Block of Raw Copper / Raw Copper Block
 Block of Raw Gold / Raw Gold Block
 Block of Raw Iron / Raw Iron Block
 Block of Redstone / Redstone Block
-Block of Stripped Bamboo [x] / Stripped Bamboo Block
+Block of Stripped Bamboo / Stripped Bamboo Block
 Blue Banner
 Blue Bed
 Blue Candle
@@ -145,7 +145,7 @@ Budding Amethyst
 Cactus
 Cake
 Calcite
-Calibrated Sculk Sensor [x] / Calibrated Sculk Sensor
+Calibrated Sculk Sensor
 Campfire
 Candle
 Carrots
@@ -156,24 +156,24 @@ Cave Air
 Cave Vines
 Chain
 Chain Command Block
-Cherry Button [x] / Cherry Button
-Cherry Door [x] / Cherry Door
-Cherry Fence Gate [x] / Cherry Fence Gate
-Cherry Fence [x] / Cherry Fence
-Cherry Hanging Sign [x] / Cherry Hanging Sign
-Cherry Leaves [x] / Cherry Leaves
-Cherry Log [x] / Cherry Log
-Cherry Planks [x] / Cherry Planks
-Cherry Pressure Plate [x] / Cherry Pressure Plate
-Cherry Sapling [x] / Cherry Sapling
-Cherry Sign [x] / Cherry Sign
-Cherry Slab [x] / Cherry Slab
-Cherry Stairs [x] / Cherry Stairs
-Cherry Trapdoor [x] / Cherry Trapdoor
-Cherry Wood [x] / Cherry Wood
+Cherry Button
+Cherry Door
+Cherry Fence
+Cherry Fence Gate
+Cherry Hanging Sign
+Cherry Leaves
+Cherry Log
+Cherry Planks
+Cherry Pressure Plate
+Cherry Sapling
+Cherry Sign
+Cherry Slab
+Cherry Stairs
+Cherry Trapdoor
+Cherry Wood
 Chest
 Chipped Anvil
-Chiseled Bookshelf [x] / Chiseled Bookshelf
+Chiseled Bookshelf
 Chiseled Deepslate
 Chiseled Nether Bricks
 Chiseled Polished Blackstone
@@ -182,7 +182,7 @@ Chiseled Red Sandstone
 Chiseled Sandstone
 Chiseled Stone Bricks
 Chorus Flower
-Chorus Plant
+Chorus Plant (block)
 Clay
 Coal Ore
 Coarse Dirt
@@ -213,7 +213,7 @@ Crimson Door
 Crimson Fence
 Crimson Fence Gate
 Crimson Fungus
-Crimson Hanging Sign [x] / Crimson Hanging Sign
+Crimson Hanging Sign
 Crimson Hyphae
 Crimson Nylium
 Crimson Planks
@@ -250,7 +250,7 @@ Dark Oak Button
 Dark Oak Door
 Dark Oak Fence
 Dark Oak Fence Gate
-Dark Oak Hanging Sign [x] / Dark Oak Hanging Sign
+Dark Oak Hanging Sign
 Dark Oak Leaves
 Dark Oak Log
 Dark Oak Planks
@@ -281,7 +281,7 @@ Dead Horn Coral Fan
 Dead Tube Coral
 Dead Tube Coral Block
 Dead Tube Coral Fan
-Decorated Pot [x] / Decorated Pot
+Decorated Pot
 Deepslate
 Deepslate Brick Slab
 Deepslate Brick Stairs
@@ -405,7 +405,7 @@ Jungle Button
 Jungle Door
 Jungle Fence
 Jungle Fence Gate
-Jungle Hanging Sign [x] / Jungle Hanging Sign
+Jungle Hanging Sign
 Jungle Leaves
 Jungle Log
 Jungle Planks
@@ -486,7 +486,7 @@ Mangrove Button
 Mangrove Door
 Mangrove Fence
 Mangrove Fence Gate
-Mangrove Hanging Sign [x] / Mangrove Hanging Sign
+Mangrove Hanging Sign
 Mangrove Leaves
 Mangrove Log
 Mangrove Planks
@@ -536,7 +536,7 @@ Oak Button
 Oak Door
 Oak Fence
 Oak Fence Gate
-Oak Hanging Sign [x] / Oak Hanging Sign
+Oak Hanging Sign
 Oak Leaves
 Oak Log
 Oak Planks
@@ -573,7 +573,7 @@ Packed Mud
 Pearlescent Froglight
 Peony
 Petrified Oak Slab
-Piglin Head [x] / Piglin Head
+Piglin Head
 Pink Banner
 Pink Bed
 Pink Candle
@@ -581,7 +581,7 @@ Pink Carpet
 Pink Concrete
 Pink Concrete Powder
 Pink Glazed Terracotta
-Pink Petals [x] / Pink Petals
+Pink Petals
 Pink Shulker Box
 Pink Stained Glass
 Pink Stained Glass Pane
@@ -589,7 +589,7 @@ Pink Terracotta
 Pink Tulip
 Pink Wool
 Piston
-Pitcher Plant [x] / Pitcher Plant
+Pitcher Plant
 Player Head
 Podzol
 Pointed Dripstone
@@ -720,7 +720,7 @@ Smooth Sandstone Slab
 Smooth Sandstone Stairs
 Smooth Stone
 Smooth Stone Slab
-Sniffer Egg [x] / Sniffer Egg
+Sniffer Egg
 Snow
 Snow Block
 Soul Campfire
@@ -735,7 +735,7 @@ Spruce Button
 Spruce Door
 Spruce Fence
 Spruce Fence Gate
-Spruce Hanging Sign [x] / Spruce Hanging Sign
+Spruce Hanging Sign
 Spruce Leaves
 Spruce Log
 Spruce Planks
@@ -761,8 +761,8 @@ Stripped Acacia Log
 Stripped Acacia Wood
 Stripped Birch Log
 Stripped Birch Wood
-Stripped Cherry Log [x] / Stripped Cherry Log
-Stripped Cherry Wood [x] / Stripped Cherry Wood
+Stripped Cherry Log
+Stripped Cherry Wood
 Stripped Crimson Hyphae
 Stripped Crimson Stem
 Stripped Dark Oak Log
@@ -781,8 +781,8 @@ Structure Block
 Structure Void
 Sugar Cane
 Sunflower
-Suspicious Gravel [x] / Suspicious Gravel
-Suspicious Sand [x] / Suspicious Sand
+Suspicious Gravel
+Suspicious Sand
 Sweet Berry Bush
 TNT
 Tall Grass
@@ -791,7 +791,7 @@ Target
 Terracotta
 Tinted Glass
 Torch
-Torchflower [x] / Torchflower
+Torchflower
 Trapped Chest
 Tripwire
 Tripwire Hook
@@ -808,7 +808,7 @@ Warped Door
 Warped Fence
 Warped Fence Gate
 Warped Fungus
-Warped Hanging Sign [x] / Warped Hanging Sign
+Warped Hanging Sign
 Warped Hyphae
 Warped Nylium
 Warped Planks
