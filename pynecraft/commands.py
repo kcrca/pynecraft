@@ -417,7 +417,7 @@ SCOREBOARD_RENDER_TYPES = [HEARTS, INTEGER]
 
 LIST = 'list'
 SIDEBAR = 'sidebar'
-BELOW_NAME = 'belowName'
+BELOW_NAME = 'below_name'
 DISPLAY_SLOTS = [LIST, SIDEBAR, BELOW_NAME]
 """Valid scoreboard display slots."""
 
@@ -1662,6 +1662,26 @@ class _ForceloadMod(Command):
         return str(self)
 
 
+class _FunctionWith(Command):
+    def block(self, pos: Position) -> str:
+        self._add('block', *pos)
+        return str(self)
+
+    def entity(self, target: Target) -> str:
+        self._add('entity', as_target(target))
+        return str(self)
+
+    def storage(self, source: str) -> str:
+        self._add('storage', as_resource_path(source))
+        return str(self)
+
+
+class _FunctionMod(Command):
+    def with_(self) -> _FunctionWith:
+        self._add('with')
+        return self._start(_FunctionWith())
+
+
 class _ItemTarget(Command):
     def __init__(self, follow: T, allow_modifier=False):
         super().__init__()
@@ -2406,11 +2426,13 @@ def forceload() -> _ForceloadMod:
 
 
 # We use 'object' here because importing Function would create a circular dependency.
-def function(path: str | object) -> str:
+def function(path: str | object, arguments: NbtDef = None) -> _FunctionMod:
     """Runs a function."""
     cmd = Command()
     cmd._add('function', _as_function_path(path))
-    return str(cmd)
+    if arguments is not None:
+        cmd._add_opt(Nbt(arguments))
+    return cmd._start(_FunctionMod())
 
 
 def _as_function_path(path: str | object) -> str:

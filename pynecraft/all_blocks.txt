@@ -182,7 +182,7 @@ Chiseled Red Sandstone
 Chiseled Sandstone
 Chiseled Stone Bricks
 Chorus Flower
-Chorus Plant (block)
+Chorus Plant (block) / Chorus Plant
 Clay
 Coal Ore
 Coarse Dirt

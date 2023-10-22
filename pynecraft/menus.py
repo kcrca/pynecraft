@@ -181,7 +181,7 @@ class _Placement:
             after = self.run_at(close_menu)
         else:
             after = sel_sign.place(r(0, 0, 0), self.facing, clear=False)
-        commands = tuple(self.run_at(function(self.menu.func('init')), action)) + (after,)
+        commands = tuple(self.run_at(str(function(self.menu.func('init'))), action)) + (after,)
         return commands
 
 

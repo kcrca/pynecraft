@@ -75,6 +75,9 @@ class BlockFetcher(Fetcher):
             # This is not really a block at all.
             return None, None
 
+        # this appears once randomly, and it shouldn't
+        if ' (block)' in raw_id:
+            raw_id = re.sub(' \(block\)', '', raw_id)
         id = raw_id
         desc = raw_desc
         if 'upcoming' in id:
@@ -214,7 +217,7 @@ class MobFetcher(Fetcher):
         return page.find('h2', string='List of mobs')
 
     def is_end(self, elem):
-        return elem.name == 'h2' or 'Unused mobs' in elem.text
+        return elem.name == 'h2' or 'Unused mobs' in elem.text or 'Upcoming' in elem.text
 
     def desc_elem(self):
         return 'td'

@@ -1153,7 +1153,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('defaultgamemode survival', defaultgamemode(SURVIVAL))
         self.assertEqual('deop @s @a', deop(s(), a()))
         self.assertEqual('difficulty peaceful', difficulty(PEACEFUL))
-        self.assertEqual('function m:b/c', function('m:b/c'))
         self.assertEqual('me howdy', me('howdy'))
         self.assertEqual('op @s', op(s()))
         self.assertEqual('reload', reload())
@@ -1167,6 +1166,14 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tellraw @s {"text": "howdy"}', tellraw(s(), JsonText.text('howdy')))
         self.assertEqual('tellraw @s {"text": "howdy"}', tellraw(s(), {'text': 'howdy'}))
         self.assertEqual('tellraw @s {"text": "howdy"}', tellraw(s(), 'howdy'))
+
+    def test_function(self):
+        self.assertEqual('function m:b/c', str(function('m:b/c')))
+        self.assertEqual('function foo {foo: bar}', str(function('foo', {'foo': 'bar'})))
+        self.assertEqual('function foo with block 1 ~2 ^3', str(function('foo').with_().block((1, r(2), d(3)))))
+        self.assertEqual('function foo with entity @e', str(function('foo').with_().entity(e())))
+        self.assertEqual('function foo with storage m:b', str(function('foo').with_().storage('m:b')))
+
 
     def test_resource_checks(self):
         self.assertEqual('xyzzy', as_resource('xyzzy'))

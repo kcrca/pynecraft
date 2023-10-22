@@ -361,7 +361,7 @@ class Loop(Function):
                 for i in range(0, len(self._iterations)):
                     iter_suffix = self._iter_suffix(i)
                     prefix = str(self._prefix_for(i)) + ' '
-                    new_body.append(prefix + function(self.full_name + iter_suffix))
+                    new_body.append(prefix + str(function(self.full_name + iter_suffix)))
                     iter_name = self.name + iter_suffix
                     func = Function(iter_name)
                     func.add(x[len(prefix):] for x in self.body[pos:pos + self._iterations[i]])
@@ -387,8 +387,8 @@ class Loop(Function):
         if Loop._setup_override:
             return _to_tuple(Loop._setup_override())
         setup = [
-            execute().unless().score(self.score).matches((0, None)).run(function(
-                f'{self.score.target}_init')),
+            execute().unless().score(self.score).matches((0, None)).run(str(function(
+                f'{self.score.target}_init'))),
             self.max_score.set(loop_size),
             execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1)))]
         setup.extend(self.adjuster)
@@ -463,7 +463,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 12
+LATEST_PACK_VERSION = 18
 
 
 class DataPack:
