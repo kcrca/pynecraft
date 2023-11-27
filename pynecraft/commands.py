@@ -1031,6 +1031,11 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
+    def function(self, function: str) -> _ExecuteMod:
+        self._add('function', function)
+        return self._start(_ExecuteMod())
+
+    @_fluent
     def predicate(self, predicate: str) -> _ExecuteMod:
         self._add('predicate', predicate)
         return self._start(_ExecuteMod())
@@ -1072,6 +1077,28 @@ class _StoreClause(Command):
         return self._start(_ExecuteMod())
 
 
+class _ReturnMod(Command):
+    def __init__(self):
+        super().__init__()
+        self._used = False
+
+    def run(self, cmd: str | Command) -> str:
+        if not isinstance(cmd, str):
+            cmd = str(cmd)
+        self._add('run', cmd)
+        self._used = True
+        return str(self)
+
+    def fail(self) -> str:
+        self._add('fail')
+        return str(self)
+
+    def __str__(self):
+        if not self._used:
+            return 'return 0'
+        return super().__str__()
+
+
 class _ExecuteMod(Command):
     @_fluent
     def align(self, axes: str) -> _ExecuteMod:
@@ -1093,6 +1120,11 @@ class _ExecuteMod(Command):
     @_fluent
     def at(self, target: Target) -> _ExecuteMod:
         self._add('at', as_target(target))
+        return self
+
+    @_fluent
+    def entity(self, target: EntityDef) -> _ExecuteMod:
+        self._add('entity', as_target(target))
         return self
 
     @_fluent
@@ -2077,6 +2109,62 @@ class _TimeMod(Command):
         return str(self)
 
 
+class _TickMod(Command):
+    @_fluent
+    def query(self) -> str:
+        self._add('query')
+        return str(self)
+
+    @_fluent
+    def rate(self, rate: int) -> str:
+        self._add('rate', rate)
+        return str(self)
+
+    @_fluent
+    def freeze(self) -> str:
+        self._add('freeze')
+        return str(self)
+
+    @_fluent
+    def unfreeze(self) -> str:
+        self._add('unfreeze')
+        return str(self)
+
+    @_fluent
+    def step(self, time: int = None) -> str | _TickStopMod:
+        self._add('step')
+        if time is None:
+            return self._start(_TickStopMod())
+        self._add(time)
+        return str(self)
+
+    @_fluent
+    def sprint(self, time: int = None) -> str | _TickStopMod:
+        self._add('step')
+        if time is None:
+            return self._start(_TickStopMod())
+        self._add(time)
+        return str(self)
+
+
+class _TickStopMod(Command):
+    @_fluent
+    def __init__(self):
+        super().__init__()
+        self._used = False
+
+    def stop(self) -> str:
+        self._add('stop')
+        self._used = True
+        return str(self)
+
+    def __str__(self):
+        if not self._used:
+            self._add('1')
+            return super().__str__()
+        return super().__str__()
+
+
 class _TitleMod(Command):
     @_fluent
     def clear(self) -> str:
@@ -2613,10 +2701,13 @@ def reload() -> str:
     return str(cmd)
 
 
-def return_(value: int = 0) -> str:
+def return_(value: int = None) -> _ReturnMod | str:
     """Returns from a function (stop executing it) with a given result. If non provided, 0 is returned."""
     cmd = Command()
-    cmd._add('return', value)
+    cmd._add('return')
+    if value is None:
+        return cmd._start(_ReturnMod())
+    cmd._add(value)
     return str(cmd)
 
 
@@ -2817,6 +2908,12 @@ def tellraw(target: Target, *message: JsonDef) -> str:
         jl = jl[0]
     cmd._add(jl)
     return str(cmd)
+
+
+def tick() -> _TickMod:
+    cmd = Command()
+    cmd._add('tick')
+    return cmd._start(_TickMod())
 
 
 def time() -> _TimeMod:

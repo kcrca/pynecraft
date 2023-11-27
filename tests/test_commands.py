@@ -643,6 +643,16 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('perf start', perf(START))
         self.assertEqual('perf stop', perf(STOP))
 
+    def test_tick(self):
+        self.assertEqual('tick query', tick().query())
+        self.assertEqual('tick rate 17', tick().rate(17))
+        self.assertEqual('tick freeze', tick().freeze())
+        self.assertEqual('tick unfreeze', tick().unfreeze())
+        self.assertEqual('tick step 17', tick().step(17))
+        self.assertEqual('tick step stop', tick().step().stop())
+        self.assertEqual('tick sprint 17', tick().sprint(17))
+        self.assertEqual('tick sprint stop', tick().sprint().stop())
+
     def test_return(self):
         self.assertEqual('return 17', return_(17))
         self.assertEqual('return 0', str(return_()))
