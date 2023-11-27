@@ -85,10 +85,13 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('in the_nether', str(_ExecuteMod().in_(THE_NETHER)))
         self.assertEqual('if block 1 ~2 ^3 stone', str(_ExecuteMod().if_().block((1, r(2), d(3)), 'stone')))
         self.assertEqual('unless block 1 ~2 ^3 stone', str(_ExecuteMod().unless().block((1, r(2), d(3)), 'stone')))
+        self.assertEqual('if function foo', str(_ExecuteMod().if_().function('foo')))
+        self.assertEqual('unless function foo', str(_ExecuteMod().unless().function('foo')))
         self.assertEqual('store result block 1 ~2 ^3 {} short 1.3', str(
             _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT,
                                               1.3)))
         self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
+        self.assertEqual('entity @p', str(_ExecuteMod().entity(p())))
         with self.assertRaises(ValueError):
             _ExecuteMod().align('foo')
         with self.assertRaises(ValueError):
@@ -642,7 +645,9 @@ class TestCommands(unittest.TestCase):
 
     def test_return(self):
         self.assertEqual('return 17', return_(17))
-        self.assertEqual('return 0', return_())
+        self.assertEqual('return 0', str(return_()))
+        self.assertEqual('return run say hi', return_().run(say('hi')))
+        self.assertEqual('return run say hi', return_().run('say hi'))
 
     def test_setidletimeout(self):
         self.assertEqual('setidletimeout 17', setidletimeout(17))
