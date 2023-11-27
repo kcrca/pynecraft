@@ -867,7 +867,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('debug function foo', debug().function('foo'))
         self.assertEqual('debug function foo', debug().function(Function('foo')))
 
-    def test_scoreboard(self):
+    def test_scoreboard_objectives(self):
         self.assertEqual('scoreboard objectives add obj food', scoreboard().objectives().add('obj', ScoreCriteria.FOOD))
         self.assertEqual('scoreboard objectives add obj drink', scoreboard().objectives().add('obj', 'drink'))
         self.assertEqual('list', _ScoreboardObjectivesMod().list())
@@ -878,8 +878,16 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('setdisplay sidebar', _ScoreboardObjectivesMod().setdisplay(SIDEBAR))
         self.assertEqual('setdisplay sidebar.team.blue obj',
                          _ScoreboardObjectivesMod().setdisplay(SIDEBAR_TEAM + 'blue', 'obj'))
-        self.assertEqual('modify obj displayname fred', _ScoreboardObjectivesMod().modify('obj', DISPLAY_NAME, 'fred'))
-        self.assertEqual('modify obj rendertype hearts', _ScoreboardObjectivesMod().modify('obj', RENDER_TYPE, HEARTS))
+        self.assertEqual('modify obj displayname fred', _ScoreboardObjectivesMod().modify('obj').displayname('fred'))
+        self.assertEqual('modify obj rendertype hearts', _ScoreboardObjectivesMod().modify('obj').rendertype(HEARTS))
+        self.assertEqual('modify obj numberformat styled {\'bold\': True}',
+                         _ScoreboardObjectivesMod().modify('obj').numberformat().styled({'bold': True}))
+        self.assertEqual('modify obj numberformat fixed bubble',
+                         _ScoreboardObjectivesMod().modify('obj').numberformat().fixed('bubble'))
+        self.assertEqual('modify obj numberformat blank',
+                         _ScoreboardObjectivesMod().modify('obj').numberformat().blank())
+
+    def test_scoreboard_players(self):
         self.assertEqual('scoreboard players enable * obj', str(scoreboard().players().enable((Star(), 'obj'))))
         self.assertEqual('scoreboard players enable * obj', str(scoreboard().players().enable(Score(Star(), 'obj'))))
         self.assertEqual('list *', _ScoreboardPlayersMod().list(Star()))
@@ -898,6 +906,12 @@ class TestCommands(unittest.TestCase):
                          _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), PLUS, Score(rand(), 'obj2')))
         self.assertEqual('operation * obj > @r obj2',
                          _ScoreboardPlayersMod().operation(Score(Star(), 'obj'), MAX, Score(rand(), 'obj2')))
+        self.assertEqual('display name * obj display', _ScoreboardPlayersMod().display().name(Star(), 'obj', 'display'))
+        self.assertEqual('display name * obj', _ScoreboardPlayersMod().display().name(Star(), 'obj'))
+        self.assertEqual('display numberformat * sc blank',
+                         _ScoreboardPlayersMod().display().numberformat(Star(), 'sc').blank())
+        self.assertEqual('display numberformat * sc',
+                         str(_ScoreboardPlayersMod().display().numberformat(Star(), 'sc')))
 
         self.assertEqual('reset @a obj', _ScoreboardPlayersMod().reset((a(), 'obj')))
         self.assertEqual('reset @a obj', _ScoreboardPlayersMod().reset(Score(a(), 'obj')))
@@ -1188,7 +1202,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('function foo with block 1 ~2 ^3', str(function('foo').with_().block((1, r(2), d(3)))))
         self.assertEqual('function foo with entity @e', str(function('foo').with_().entity(e())))
         self.assertEqual('function foo with storage m:b', str(function('foo').with_().storage('m:b')))
-
 
     def test_resource_checks(self):
         self.assertEqual('xyzzy', as_resource('xyzzy'))

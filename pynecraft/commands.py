@@ -407,7 +407,8 @@ HANDS = [MAINHAND, OFFHAND]
 
 DISPLAY_NAME = 'displayname'
 RENDER_TYPE = 'rendertype'
-SCOREBOARD_OBJECTIVES_MODIFIABLE = [DISPLAY_NAME, RENDER_TYPE]
+NUMBER_FORMAT = 'numberformat'
+SCOREBOARD_OBJECTIVES_MODIFIABLE = [DISPLAY_NAME, RENDER_TYPE, NUMBER_FORMAT]
 """Valid modifiable scoreboard objective values."""
 
 HEARTS = 'hearts'
@@ -1872,10 +1873,39 @@ class _ScoreboardObjectivesMod(Command):
         return str(self)
 
     @_fluent
-    def modify(self, objective: str, which: str, value: str) -> str:
-        if which == RENDER_TYPE:
-            _in_group(SCOREBOARD_RENDER_TYPES, value)
-        self._add('modify', as_name(objective), _in_group(SCOREBOARD_OBJECTIVES_MODIFIABLE, which), value)
+    def modify(self, objective: str) -> str | _ScorboardObjectivesModifyMod:
+        self._add('modify', objective)
+        return self._start(_ScorboardObjectivesModifyMod())
+
+
+class _ScorboardObjectivesModifyMod(Command):
+    def displayname(self, name: str | JsonText) -> str:
+        self._add('displayname', name)
+        return str(self)
+
+    def rendertype(self, type: str) -> str:
+        self._add('rendertype', _in_group(SCOREBOARD_RENDER_TYPES, type))
+        return str(self)
+
+    def numberformat(self) -> _NumberFormatMod:
+        self._add('numberformat')
+        return self._start(_NumberFormatMod())
+
+
+class _NumberFormatMod(Command):
+    def styled(self, style: NbtDef) -> str:
+        self._add('styled', style)
+        used = True
+        return str(self)
+
+    def fixed(self, text: str) -> str:
+        self._add('fixed', text)
+        used = True
+        return str(self)
+
+    def blank(self) -> str:
+        self._add('blank')
+        used = True
         return str(self)
 
 
@@ -1938,6 +1968,24 @@ class _ScoreboardPlayersMod(Command):
             op = '>'
         self._add('operation', as_score(score), op, as_score(source))
         return str(self)
+
+    @_fluent
+    def display(self) -> _DisplayNameMod:
+        self._add('display')
+        return self._start(_DisplayNameMod())
+
+
+class _DisplayNameMod(Command):
+    @_fluent
+    def name(self, targets: TargetSpec, objective: str, display_name: str = None) -> str:
+        self._add('name', as_target(targets), objective)
+        self._add_opt(display_name)
+        return str(self)
+
+    @_fluent
+    def numberformat(self, targets: TargetSpec, score: str) -> _NumberFormatMod:
+        self._add('numberformat', as_target(targets), score)
+        return self._start(_NumberFormatMod())
 
 
 class _ScoreboardMod(Command):
@@ -2140,7 +2188,7 @@ class _TickMod(Command):
 
     @_fluent
     def sprint(self, time: int = None) -> str | _TickStopMod:
-        self._add('step')
+        self._add('sprint')
         if time is None:
             return self._start(_TickStopMod())
         self._add(time)

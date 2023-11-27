@@ -338,81 +338,7 @@ class Advancement(ValueEnum):
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_advancement_display = {Advancement.MINECRAFT: "Minecraft", Advancement.STONE_AGE: "Stone Age",
-                        Advancement.GETTING_AN_UPGRADE: "Getting an Upgrade",
-                        Advancement.ACQUIRE_HARDWARE: "Acquire Hardware", Advancement.SUIT_UP: "Suit Up",
-                        Advancement.HOT_STUFF: "Hot Stuff", Advancement.ISNT_IT_IRON_PICK: "Isn't It Iron Pick",
-                        Advancement.NOT_TODAY_THANK_YOU: "Not Today, Thank You",
-                        Advancement.ICE_BUCKET_CHALLENGE: "Ice Bucket Challenge", Advancement.DIAMONDS: "Diamonds!",
-                        Advancement.WE_NEED_TO_GO_DEEPER: "We Need to Go Deeper",
-                        Advancement.COVER_ME_WITH_DIAMONDS: "Cover Me with Diamonds",
-                        Advancement.ENCHANTER: "Enchanter", Advancement.ZOMBIE_DOCTOR: "Zombie Doctor",
-                        Advancement.EYE_SPY: "Eye Spy", Advancement.ENTER_THE_END: "The End?",
-                        Advancement.NETHER: "Nether", Advancement.RETURN_TO_SENDER: "Return to Sender",
-                        Advancement.THOSE_WERE_THE_DAYS: "Those Were the Days",
-                        Advancement.HIDDEN_IN_THE_DEPTHS: "Hidden in the Depths",
-                        Advancement.SUBSPACE_BUBBLE: "Subspace Bubble",
-                        Advancement.A_TERRIBLE_FORTRESS: "A Terrible Fortress",
-                        Advancement.WHO_IS_CUTTING_ONIONS: "Who is Cutting Onions?", Advancement.OH_SHINY: "Oh Shiny",
-                        Advancement.THIS_BOAT_HAS_LEGS: "This Boat Has Legs",
-                        Advancement.UNEASY_ALLIANCE: "Uneasy Alliance", Advancement.WAR_PIGS: "War Pigs",
-                        Advancement.COUNTRY_LODE_TAKE_ME_HOME: "Country Lode, Take Me Home",
-                        Advancement.COVER_ME_IN_DEBRIS: "Cover Me in Debris",
-                        Advancement.SPOOKY_SCARY_SKELETON: "Spooky Scary Skeleton", Advancement.INTO_FIRE: "Into Fire",
-                        Advancement.NOT_QUITE_NINE_LIVES: "Not Quite \"Nine\" Lives",
-                        Advancement.FEELS_LIKE_HOME: "Feels Like Home",
-                        Advancement.HOT_TOURIST_DESTINATIONS: "Hot Tourist Destinations",
-                        Advancement.WITHERING_HEIGHTS: "Withering Heights", Advancement.LOCAL_BREWERY: "Local Brewery",
-                        Advancement.BRING_HOME_THE_BEACON: "Bring Home the Beacon",
-                        Advancement.A_FURIOUS_COCKTAIL: "A Furious Cocktail", Advancement.BEACONATOR: "Beaconator",
-                        Advancement.HOW_DID_WE_GET_HERE: "How Did We Get Here?", Advancement.THE_END: "The End",
-                        Advancement.FREE_THE_END: "Free the End",
-                        Advancement.THE_NEXT_GENERATION: "The Next Generation",
-                        Advancement.REMOTE_GETAWAY: "Remote Getaway", Advancement.THE_END_AGAIN: "The End... Again...",
-                        Advancement.YOU_NEED_A_MINT: "You Need a Mint",
-                        Advancement.THE_CITY_AT_THE_END_OF_THE_GAME: "The City at the End of the Game",
-                        Advancement.SKYS_THE_LIMIT: "Sky's the Limit",
-                        Advancement.GREAT_VIEW_FROM_UP_HERE: "Great View From Up Here",
-                        Advancement.ADVENTURE: "Adventure", Advancement.VOLUNTARY_EXILE: "Voluntary Exile",
-                        Advancement.IS_IT_A_BIRD: "Is It a Bird?", Advancement.MONSTER_HUNTER: "Monster Hunter",
-                        Advancement.THE_POWER_OF_BOOKS: "The Power of Books", Advancement.WHAT_A_DEAL: "What a Deal!",
-                        Advancement.CRAFTING_A_NEW_LOOK: "Crafting a New Look",
-                        Advancement.STICKY_SITUATION: "Sticky Situation", Advancement.OL_BETSY: "Ol' Betsy",
-                        Advancement.SURGE_PROTECTOR: "Surge Protector", Advancement.CAVES__CLIFFS: "Caves & Cliffs",
-                        Advancement.RESPECTING_THE_REMNANTS: "Respecting the Remnants",
-                        Advancement.SNEAK_100: "Sneak 100", Advancement.SWEET_DREAMS: "Sweet Dreams",
-                        Advancement.HERO_OF_THE_VILLAGE: "Hero of the Village",
-                        Advancement.IS_IT_A_BALLOON: "Is It a Balloon?",
-                        Advancement.A_THROWAWAY_JOKE: "A Throwaway Joke", Advancement.IT_SPREADS: "It Spreads",
-                        Advancement.TAKE_AIM: "Take Aim", Advancement.MONSTERS_HUNTED: "Monsters Hunted",
-                        Advancement.POSTMORTAL: "Postmortal", Advancement.HIRED_HELP: "Hired Help",
-                        Advancement.STAR_TRADER: "Star Trader", Advancement.SMITHING_WITH_STYLE: "Smithing with Style",
-                        Advancement.TWO_BIRDS_ONE_ARROW: "Two Birds, One Arrow",
-                        Advancement.WHOS_THE_PILLAGER_NOW: "Who's the Pillager Now?",
-                        Advancement.ARBALISTIC: "Arbalistic", Advancement.CAREFUL_RESTORATION: "Careful Restoration",
-                        Advancement.ADVENTURING_TIME: "Adventuring Time", Advancement.SOUND_OF_MUSIC: "Sound of Music",
-                        Advancement.LIGHT_AS_A_RABBIT: "Light as a Rabbit", Advancement.IS_IT_A_PLANE: "Is It a Plane?",
-                        Advancement.VERY_VERY_FRIGHTENING: "Very Very Frightening",
-                        Advancement.SNIPER_DUEL: "Sniper Duel", Advancement.BULLSEYE: "Bullseye",
-                        Advancement.HUSBANDRY: "Husbandry", Advancement.BEE_OUR_GUEST: "Bee Our Guest",
-                        Advancement.THE_PARROTS_AND_THE_BATS: "The Parrots and the Bats",
-                        Advancement.YOUVE_GOT_A_FRIEND_IN_ME: "You've Got a Friend in Me",
-                        Advancement.WHATEVER_FLOATS_YOUR_GOAT: "Whatever Floats Your Goat!",
-                        Advancement.BEST_FRIENDS_FOREVER: "Best Friends Forever",
-                        Advancement.GLOW_AND_BEHOLD: "Glow and Behold!", Advancement.FISHY_BUSINESS: "Fishy Business",
-                        Advancement.TOTAL_BEELOCATION: "Total Beelocation", Advancement.BUKKIT_BUKKIT: "Bukkit Bukkit",
-                        Advancement.SMELLS_INTERESTING: "Smells Interesting",
-                        Advancement.A_SEEDY_PLACE: "A Seedy Place", Advancement.WAX_ON: "Wax On",
-                        Advancement.TWO_BY_TWO: "Two by Two", Advancement.BIRTHDAY_SONG: "Birthday Song",
-                        Advancement.A_COMPLETE_CATALOGUE: "A Complete Catalogue",
-                        Advancement.TACTICAL_FISHING: "Tactical Fishing",
-                        Advancement.WHEN_THE_SQUAD_HOPS_INTO_TOWN: "When the Squad Hops into Town",
-                        Advancement.LITTLE_SNIFFS: "Little Sniffs", Advancement.A_BALANCED_DIET: "A Balanced Diet",
-                        Advancement.SERIOUS_DEDICATION: "Serious Dedication", Advancement.WAX_OFF: "Wax Off",
-                        Advancement.THE_CUTEST_PREDATOR: "The Cutest Predator",
-                        Advancement.WITH_OUR_POWERS_COMBINED: "With Our Powers Combined!",
-                        Advancement.PLANTING_THE_PAST: "Planting the Past",
-                        Advancement.THE_HEALING_POWER_OF_FRIENDSHIP: "The Healing Power of Friendship!"}
+_advancement_display = {Advancement.MINECRAFT: "Minecraft",Advancement.STONE_AGE: "Stone Age",Advancement.GETTING_AN_UPGRADE: "Getting an Upgrade",Advancement.ACQUIRE_HARDWARE: "Acquire Hardware",Advancement.SUIT_UP: "Suit Up",Advancement.HOT_STUFF: "Hot Stuff",Advancement.ISNT_IT_IRON_PICK: "Isn't It Iron Pick",Advancement.NOT_TODAY_THANK_YOU: "Not Today, Thank You",Advancement.ICE_BUCKET_CHALLENGE: "Ice Bucket Challenge",Advancement.DIAMONDS: "Diamonds!",Advancement.WE_NEED_TO_GO_DEEPER: "We Need to Go Deeper",Advancement.COVER_ME_WITH_DIAMONDS: "Cover Me with Diamonds",Advancement.ENCHANTER: "Enchanter",Advancement.ZOMBIE_DOCTOR: "Zombie Doctor",Advancement.EYE_SPY: "Eye Spy",Advancement.ENTER_THE_END: "The End?",Advancement.NETHER: "Nether",Advancement.RETURN_TO_SENDER: "Return to Sender",Advancement.THOSE_WERE_THE_DAYS: "Those Were the Days",Advancement.HIDDEN_IN_THE_DEPTHS: "Hidden in the Depths",Advancement.SUBSPACE_BUBBLE: "Subspace Bubble",Advancement.A_TERRIBLE_FORTRESS: "A Terrible Fortress",Advancement.WHO_IS_CUTTING_ONIONS: "Who is Cutting Onions?",Advancement.OH_SHINY: "Oh Shiny",Advancement.THIS_BOAT_HAS_LEGS: "This Boat Has Legs",Advancement.UNEASY_ALLIANCE: "Uneasy Alliance",Advancement.WAR_PIGS: "War Pigs",Advancement.COUNTRY_LODE_TAKE_ME_HOME: "Country Lode, Take Me Home",Advancement.COVER_ME_IN_DEBRIS: "Cover Me in Debris",Advancement.SPOOKY_SCARY_SKELETON: "Spooky Scary Skeleton",Advancement.INTO_FIRE: "Into Fire",Advancement.NOT_QUITE_NINE_LIVES: "Not Quite \"Nine\" Lives",Advancement.FEELS_LIKE_HOME: "Feels Like Home",Advancement.HOT_TOURIST_DESTINATIONS: "Hot Tourist Destinations",Advancement.WITHERING_HEIGHTS: "Withering Heights",Advancement.LOCAL_BREWERY: "Local Brewery",Advancement.BRING_HOME_THE_BEACON: "Bring Home the Beacon",Advancement.A_FURIOUS_COCKTAIL: "A Furious Cocktail",Advancement.BEACONATOR: "Beaconator",Advancement.HOW_DID_WE_GET_HERE: "How Did We Get Here?",Advancement.THE_END: "The End",Advancement.FREE_THE_END: "Free the End",Advancement.THE_NEXT_GENERATION: "The Next Generation",Advancement.REMOTE_GETAWAY: "Remote Getaway",Advancement.THE_END_AGAIN: "The End... Again...",Advancement.YOU_NEED_A_MINT: "You Need a Mint",Advancement.THE_CITY_AT_THE_END_OF_THE_GAME: "The City at the End of the Game",Advancement.SKYS_THE_LIMIT: "Sky's the Limit",Advancement.GREAT_VIEW_FROM_UP_HERE: "Great View From Up Here",Advancement.ADVENTURE: "Adventure",Advancement.VOLUNTARY_EXILE: "Voluntary Exile",Advancement.IS_IT_A_BIRD: "Is It a Bird?",Advancement.MONSTER_HUNTER: "Monster Hunter",Advancement.THE_POWER_OF_BOOKS: "The Power of Books",Advancement.WHAT_A_DEAL: "What a Deal!",Advancement.CRAFTING_A_NEW_LOOK: "Crafting a New Look",Advancement.STICKY_SITUATION: "Sticky Situation",Advancement.OL_BETSY: "Ol' Betsy",Advancement.SURGE_PROTECTOR: "Surge Protector",Advancement.CAVES__CLIFFS: "Caves & Cliffs",Advancement.RESPECTING_THE_REMNANTS: "Respecting the Remnants",Advancement.SNEAK_100: "Sneak 100",Advancement.SWEET_DREAMS: "Sweet Dreams",Advancement.HERO_OF_THE_VILLAGE: "Hero of the Village",Advancement.IS_IT_A_BALLOON: "Is It a Balloon?",Advancement.A_THROWAWAY_JOKE: "A Throwaway Joke",Advancement.IT_SPREADS: "It Spreads",Advancement.TAKE_AIM: "Take Aim",Advancement.MONSTERS_HUNTED: "Monsters Hunted",Advancement.POSTMORTAL: "Postmortal",Advancement.HIRED_HELP: "Hired Help",Advancement.STAR_TRADER: "Star Trader",Advancement.SMITHING_WITH_STYLE: "Smithing with Style",Advancement.TWO_BIRDS_ONE_ARROW: "Two Birds, One Arrow",Advancement.WHOS_THE_PILLAGER_NOW: "Who's the Pillager Now?",Advancement.ARBALISTIC: "Arbalistic",Advancement.CAREFUL_RESTORATION: "Careful Restoration",Advancement.ADVENTURING_TIME: "Adventuring Time",Advancement.SOUND_OF_MUSIC: "Sound of Music",Advancement.LIGHT_AS_A_RABBIT: "Light as a Rabbit",Advancement.IS_IT_A_PLANE: "Is It a Plane?",Advancement.VERY_VERY_FRIGHTENING: "Very Very Frightening",Advancement.SNIPER_DUEL: "Sniper Duel",Advancement.BULLSEYE: "Bullseye",Advancement.HUSBANDRY: "Husbandry",Advancement.BEE_OUR_GUEST: "Bee Our Guest",Advancement.THE_PARROTS_AND_THE_BATS: "The Parrots and the Bats",Advancement.YOUVE_GOT_A_FRIEND_IN_ME: "You've Got a Friend in Me",Advancement.WHATEVER_FLOATS_YOUR_GOAT: "Whatever Floats Your Goat!",Advancement.BEST_FRIENDS_FOREVER: "Best Friends Forever",Advancement.GLOW_AND_BEHOLD: "Glow and Behold!",Advancement.FISHY_BUSINESS: "Fishy Business",Advancement.TOTAL_BEELOCATION: "Total Beelocation",Advancement.BUKKIT_BUKKIT: "Bukkit Bukkit",Advancement.SMELLS_INTERESTING: "Smells Interesting",Advancement.A_SEEDY_PLACE: "A Seedy Place",Advancement.WAX_ON: "Wax On",Advancement.TWO_BY_TWO: "Two by Two",Advancement.BIRTHDAY_SONG: "Birthday Song",Advancement.A_COMPLETE_CATALOGUE: "A Complete Catalogue",Advancement.TACTICAL_FISHING: "Tactical Fishing",Advancement.WHEN_THE_SQUAD_HOPS_INTO_TOWN: "When the Squad Hops into Town",Advancement.LITTLE_SNIFFS: "Little Sniffs",Advancement.A_BALANCED_DIET: "A Balanced Diet",Advancement.SERIOUS_DEDICATION: "Serious Dedication",Advancement.WAX_OFF: "Wax Off",Advancement.THE_CUTEST_PREDATOR: "The Cutest Predator",Advancement.WITH_OUR_POWERS_COMBINED: "With Our Powers Combined!",Advancement.PLANTING_THE_PAST: "Planting the Past",Advancement.THE_HEALING_POWER_OF_FRIENDSHIP: "The Healing Power of Friendship!"}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
@@ -552,37 +478,7 @@ class BiomeId(ValueEnum):
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_biomeid_display = {BiomeId.THE_VOID: "The Void", BiomeId.PLAINS: "Plains",
-                    BiomeId.SUNFLOWER_PLAINS: "Sunflower Plains", BiomeId.SNOWY_PLAINS: "Snowy Plains",
-                    BiomeId.ICE_SPIKES: "Ice Spikes", BiomeId.DESERT: "Desert", BiomeId.SWAMP: "Swamp",
-                    BiomeId.MANGROVE_SWAMP: "Mangrove Swamp", BiomeId.FOREST: "Forest",
-                    BiomeId.FLOWER_FOREST: "Flower Forest", BiomeId.BIRCH_FOREST: "Birch Forest",
-                    BiomeId.DARK_FOREST: "Dark Forest", BiomeId.OLD_GROWTH_BIRCH_FOREST: "Old Growth Birch Forest",
-                    BiomeId.OLD_GROWTH_PINE_TAIGA: "Old Growth Pine Taiga",
-                    BiomeId.OLD_GROWTH_SPRUCE_TAIGA: "Old Growth Spruce Taiga", BiomeId.TAIGA: "Taiga",
-                    BiomeId.SNOWY_TAIGA: "Snowy Taiga", BiomeId.SAVANNA: "Savanna",
-                    BiomeId.SAVANNA_PLATEAU: "Savanna Plateau", BiomeId.WINDSWEPT_HILLS: "Windswept Hills",
-                    BiomeId.WINDSWEPT_GRAVELLY_HILLS: "Windswept Gravelly Hills",
-                    BiomeId.WINDSWEPT_FOREST: "Windswept Forest", BiomeId.WINDSWEPT_SAVANNA: "Windswept Savanna",
-                    BiomeId.JUNGLE: "Jungle", BiomeId.SPARSE_JUNGLE: "Sparse Jungle",
-                    BiomeId.BAMBOO_JUNGLE: "Bamboo Jungle", BiomeId.BADLANDS: "Badlands",
-                    BiomeId.ERODED_BADLANDS: "Eroded Badlands", BiomeId.WOODED_BADLANDS: "Wooded Badlands",
-                    BiomeId.MEADOW: "Meadow", BiomeId.CHERRY_GROVE: "Cherry Grove", BiomeId.GROVE: "Grove",
-                    BiomeId.SNOWY_SLOPES: "Snowy Slopes", BiomeId.FROZEN_PEAKS: "Frozen Peaks",
-                    BiomeId.JAGGED_PEAKS: "Jagged Peaks", BiomeId.STONY_PEAKS: "Stony Peaks", BiomeId.RIVER: "River",
-                    BiomeId.FROZEN_RIVER: "Frozen River", BiomeId.BEACH: "Beach", BiomeId.SNOWY_BEACH: "Snowy Beach",
-                    BiomeId.STONY_SHORE: "Stony Shore", BiomeId.WARM_OCEAN: "Warm Ocean",
-                    BiomeId.LUKEWARM_OCEAN: "Lukewarm Ocean", BiomeId.DEEP_LUKEWARM_OCEAN: "Deep Lukewarm Ocean",
-                    BiomeId.OCEAN: "Ocean", BiomeId.DEEP_OCEAN: "Deep Ocean", BiomeId.COLD_OCEAN: "Cold Ocean",
-                    BiomeId.DEEP_COLD_OCEAN: "Deep Cold Ocean", BiomeId.FROZEN_OCEAN: "Frozen Ocean",
-                    BiomeId.DEEP_FROZEN_OCEAN: "Deep Frozen Ocean", BiomeId.MUSHROOM_FIELDS: "Mushroom Fields",
-                    BiomeId.DRIPSTONE_CAVES: "Dripstone Caves", BiomeId.LUSH_CAVES: "Lush Caves",
-                    BiomeId.DEEP_DARK: "Deep Dark", BiomeId.NETHER_WASTES: "Nether Wastes",
-                    BiomeId.WARPED_FOREST: "Warped Forest", BiomeId.CRIMSON_FOREST: "Crimson Forest",
-                    BiomeId.SOUL_SAND_VALLEY: "Soul Sand Valley", BiomeId.BASALT_DELTAS: "Basalt Deltas",
-                    BiomeId.THE_END: "The End", BiomeId.END_HIGHLANDS: "End Highlands",
-                    BiomeId.END_MIDLANDS: "End Midlands", BiomeId.SMALL_END_ISLANDS: "Small End Islands",
-                    BiomeId.END_BARRENS: "End Barrens"}
+_biomeid_display = {BiomeId.THE_VOID: "The Void",BiomeId.PLAINS: "Plains",BiomeId.SUNFLOWER_PLAINS: "Sunflower Plains",BiomeId.SNOWY_PLAINS: "Snowy Plains",BiomeId.ICE_SPIKES: "Ice Spikes",BiomeId.DESERT: "Desert",BiomeId.SWAMP: "Swamp",BiomeId.MANGROVE_SWAMP: "Mangrove Swamp",BiomeId.FOREST: "Forest",BiomeId.FLOWER_FOREST: "Flower Forest",BiomeId.BIRCH_FOREST: "Birch Forest",BiomeId.DARK_FOREST: "Dark Forest",BiomeId.OLD_GROWTH_BIRCH_FOREST: "Old Growth Birch Forest",BiomeId.OLD_GROWTH_PINE_TAIGA: "Old Growth Pine Taiga",BiomeId.OLD_GROWTH_SPRUCE_TAIGA: "Old Growth Spruce Taiga",BiomeId.TAIGA: "Taiga",BiomeId.SNOWY_TAIGA: "Snowy Taiga",BiomeId.SAVANNA: "Savanna",BiomeId.SAVANNA_PLATEAU: "Savanna Plateau",BiomeId.WINDSWEPT_HILLS: "Windswept Hills",BiomeId.WINDSWEPT_GRAVELLY_HILLS: "Windswept Gravelly Hills",BiomeId.WINDSWEPT_FOREST: "Windswept Forest",BiomeId.WINDSWEPT_SAVANNA: "Windswept Savanna",BiomeId.JUNGLE: "Jungle",BiomeId.SPARSE_JUNGLE: "Sparse Jungle",BiomeId.BAMBOO_JUNGLE: "Bamboo Jungle",BiomeId.BADLANDS: "Badlands",BiomeId.ERODED_BADLANDS: "Eroded Badlands",BiomeId.WOODED_BADLANDS: "Wooded Badlands",BiomeId.MEADOW: "Meadow",BiomeId.CHERRY_GROVE: "Cherry Grove",BiomeId.GROVE: "Grove",BiomeId.SNOWY_SLOPES: "Snowy Slopes",BiomeId.FROZEN_PEAKS: "Frozen Peaks",BiomeId.JAGGED_PEAKS: "Jagged Peaks",BiomeId.STONY_PEAKS: "Stony Peaks",BiomeId.RIVER: "River",BiomeId.FROZEN_RIVER: "Frozen River",BiomeId.BEACH: "Beach",BiomeId.SNOWY_BEACH: "Snowy Beach",BiomeId.STONY_SHORE: "Stony Shore",BiomeId.WARM_OCEAN: "Warm Ocean",BiomeId.LUKEWARM_OCEAN: "Lukewarm Ocean",BiomeId.DEEP_LUKEWARM_OCEAN: "Deep Lukewarm Ocean",BiomeId.OCEAN: "Ocean",BiomeId.DEEP_OCEAN: "Deep Ocean",BiomeId.COLD_OCEAN: "Cold Ocean",BiomeId.DEEP_COLD_OCEAN: "Deep Cold Ocean",BiomeId.FROZEN_OCEAN: "Frozen Ocean",BiomeId.DEEP_FROZEN_OCEAN: "Deep Frozen Ocean",BiomeId.MUSHROOM_FIELDS: "Mushroom Fields",BiomeId.DRIPSTONE_CAVES: "Dripstone Caves",BiomeId.LUSH_CAVES: "Lush Caves",BiomeId.DEEP_DARK: "Deep Dark",BiomeId.NETHER_WASTES: "Nether Wastes",BiomeId.WARPED_FOREST: "Warped Forest",BiomeId.CRIMSON_FOREST: "Crimson Forest",BiomeId.SOUL_SAND_VALLEY: "Soul Sand Valley",BiomeId.BASALT_DELTAS: "Basalt Deltas",BiomeId.THE_END: "The End",BiomeId.END_HIGHLANDS: "End Highlands",BiomeId.END_MIDLANDS: "End Midlands",BiomeId.SMALL_END_ISLANDS: "Small End Islands",BiomeId.END_BARRENS: "End Barrens"}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
@@ -659,45 +555,21 @@ class Effect(ValueEnum):
         return _effect_display[self]
 
     def positive(self):
-        return _effect_positive[self.value]
+      return _effect_positive[self.value]
 
     def id(self):
-        return _effect_ids[self.value]
+      return _effect_ids[self.value]
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_effect_positive = {'speed': True, 'slowness': False, 'haste': True, 'mining_fatigue': False, 'strength': True,
-                    'instant_health': True, 'instant_damage': False, 'jump_boost': True, 'nausea': False,
-                    'regeneration': True, 'resistance': True, 'fire_resistance': True, 'water_breathing': True,
-                    'invisibility': True, 'blindness': False, 'night_vision': True, 'hunger': False, 'weakness': False,
-                    'poison': False, 'wither': False, 'health_boost': True, 'absorption': True, 'saturation': True,
-                    'glowing': None, 'levitation': False, 'luck': True, 'unluck': False, 'slow_falling': True,
-                    'conduit_power': True, 'dolphins_grace': True, 'bad_omen': None, 'hero_of_the_village': True,
-                    'darkness': False}
+_effect_positive = {'speed': True, 'slowness': False, 'haste': True, 'mining_fatigue': False, 'strength': True, 'instant_health': True, 'instant_damage': False, 'jump_boost': True, 'nausea': False, 'regeneration': True, 'resistance': True, 'fire_resistance': True, 'water_breathing': True, 'invisibility': True, 'blindness': False, 'night_vision': True, 'hunger': False, 'weakness': False, 'poison': False, 'wither': False, 'health_boost': True, 'absorption': True, 'saturation': True, 'glowing': None, 'levitation': False, 'luck': True, 'unluck': False, 'slow_falling': True, 'conduit_power': True, 'dolphins_grace': True, 'bad_omen': None, 'hero_of_the_village': True, 'darkness': False}
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_effect_ids = {'speed': 1, 'slowness': 2, 'haste': 3, 'mining_fatigue': 4, 'strength': 5, 'instant_health': 6,
-               'instant_damage': 7, 'jump_boost': 8, 'nausea': 9, 'regeneration': 10, 'resistance': 11,
-               'fire_resistance': 12, 'water_breathing': 13, 'invisibility': 14, 'blindness': 15, 'night_vision': 16,
-               'hunger': 17, 'weakness': 18, 'poison': 19, 'wither': 20, 'health_boost': 21, 'absorption': 22,
-               'saturation': 23, 'glowing': 24, 'levitation': 25, 'luck': 26, 'unluck': 27, 'slow_falling': 28,
-               'conduit_power': 29, 'dolphins_grace': 30, 'bad_omen': 31, 'hero_of_the_village': 32, 'darkness': 33}
+_effect_ids = {'speed': 1, 'slowness': 2, 'haste': 3, 'mining_fatigue': 4, 'strength': 5, 'instant_health': 6, 'instant_damage': 7, 'jump_boost': 8, 'nausea': 9, 'regeneration': 10, 'resistance': 11, 'fire_resistance': 12, 'water_breathing': 13, 'invisibility': 14, 'blindness': 15, 'night_vision': 16, 'hunger': 17, 'weakness': 18, 'poison': 19, 'wither': 20, 'health_boost': 21, 'absorption': 22, 'saturation': 23, 'glowing': 24, 'levitation': 25, 'luck': 26, 'unluck': 27, 'slow_falling': 28, 'conduit_power': 29, 'dolphins_grace': 30, 'bad_omen': 31, 'hero_of_the_village': 32, 'darkness': 33}
+
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_effect_display = {Effect.SPEED: "Speed", Effect.SLOWNESS: "Slowness", Effect.HASTE: "Haste",
-                   Effect.MINING_FATIGUE: "Mining Fatigue", Effect.STRENGTH: "Strength",
-                   Effect.INSTANT_HEALTH: "Instant Health", Effect.INSTANT_DAMAGE: "Instant Damage",
-                   Effect.JUMP_BOOST: "Jump Boost", Effect.NAUSEA: "Nausea", Effect.REGENERATION: "Regeneration",
-                   Effect.RESISTANCE: "Resistance", Effect.FIRE_RESISTANCE: "Fire Resistance",
-                   Effect.WATER_BREATHING: "Water Breathing", Effect.INVISIBILITY: "Invisibility",
-                   Effect.BLINDNESS: "Blindness", Effect.NIGHT_VISION: "Night Vision", Effect.HUNGER: "Hunger",
-                   Effect.WEAKNESS: "Weakness", Effect.POISON: "Poison", Effect.WITHER: "Wither",
-                   Effect.HEALTH_BOOST: "Health Boost", Effect.ABSORPTION: "Absorption",
-                   Effect.SATURATION: "Saturation", Effect.GLOWING: "Glowing", Effect.LEVITATION: "Levitation",
-                   Effect.LUCK: "Luck", Effect.BAD_LUCK: "Bad Luck", Effect.SLOW_FALLING: "Slow Falling",
-                   Effect.CONDUIT_POWER: "Conduit Power", Effect.DOLPHINS_GRACE: "Dolphin's Grace",
-                   Effect.BAD_OMEN: "Bad Omen", Effect.HERO_OF_THE_VILLAGE: "Hero of the Village",
-                   Effect.DARKNESS: "Darkness"}
+_effect_display = {Effect.SPEED: "Speed",Effect.SLOWNESS: "Slowness",Effect.HASTE: "Haste",Effect.MINING_FATIGUE: "Mining Fatigue",Effect.STRENGTH: "Strength",Effect.INSTANT_HEALTH: "Instant Health",Effect.INSTANT_DAMAGE: "Instant Damage",Effect.JUMP_BOOST: "Jump Boost",Effect.NAUSEA: "Nausea",Effect.REGENERATION: "Regeneration",Effect.RESISTANCE: "Resistance",Effect.FIRE_RESISTANCE: "Fire Resistance",Effect.WATER_BREATHING: "Water Breathing",Effect.INVISIBILITY: "Invisibility",Effect.BLINDNESS: "Blindness",Effect.NIGHT_VISION: "Night Vision",Effect.HUNGER: "Hunger",Effect.WEAKNESS: "Weakness",Effect.POISON: "Poison",Effect.WITHER: "Wither",Effect.HEALTH_BOOST: "Health Boost",Effect.ABSORPTION: "Absorption",Effect.SATURATION: "Saturation",Effect.GLOWING: "Glowing",Effect.LEVITATION: "Levitation",Effect.LUCK: "Luck",Effect.BAD_LUCK: "Bad Luck",Effect.SLOW_FALLING: "Slow Falling",Effect.CONDUIT_POWER: "Conduit Power",Effect.DOLPHINS_GRACE: "Dolphin's Grace",Effect.BAD_OMEN: "Bad Omen",Effect.HERO_OF_THE_VILLAGE: "Hero of the Village",Effect.DARKNESS: "Darkness"}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
@@ -788,42 +660,14 @@ class Enchantment(ValueEnum):
         return _enchantment_display[self]
 
     def max_level(self):
-        return _enchantment_maxes[self.value]
+      return _enchantment_maxes[self.value]
+
+# noinspection SpellCheckingInspection,GrazieInspection
+_enchantment_maxes = {'aqua_affinity': 1, 'bane_of_arthropods': 5, 'blast_protection': 4, 'channeling': 1, 'cleaving': 3, 'curse_of_binding': 1, 'curse_of_vanishing': 1, 'depth_strider': 3, 'efficiency': 5, 'feather_falling': 4, 'fire_aspect': 2, 'fire_protection': 4, 'flame': 1, 'fortune': 3, 'frost_walker': 2, 'impaling': 5, 'infinity': 1, 'knockback': 2, 'looting': 3, 'loyalty': 3, 'luck_of_the_sea': 3, 'lure': 3, 'mending': 1, 'multishot': 1, 'piercing': 4, 'power': 5, 'projectile_protection': 4, 'protection': 4, 'punch': 2, 'quick_charge': 3, 'respiration': 3, 'riptide': 3, 'sharpness': 5, 'silk_touch': 1, 'smite': 5, 'soul_speed': 3, 'sweeping_edge': 3, 'swift_sneak': 3, 'thorns': 3, 'unbreaking': 3}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_enchantment_maxes = {'aqua_affinity': 1, 'bane_of_arthropods': 5, 'blast_protection': 4, 'channeling': 1,
-                      'cleaving': 3, 'curse_of_binding': 1, 'curse_of_vanishing': 1, 'depth_strider': 3,
-                      'efficiency': 5, 'feather_falling': 4, 'fire_aspect': 2, 'fire_protection': 4, 'flame': 1,
-                      'fortune': 3, 'frost_walker': 2, 'impaling': 5, 'infinity': 1, 'knockback': 2, 'looting': 3,
-                      'loyalty': 3, 'luck_of_the_sea': 3, 'lure': 3, 'mending': 1, 'multishot': 1, 'piercing': 4,
-                      'power': 5, 'projectile_protection': 4, 'protection': 4, 'punch': 2, 'quick_charge': 3,
-                      'respiration': 3, 'riptide': 3, 'sharpness': 5, 'silk_touch': 1, 'smite': 5, 'soul_speed': 3,
-                      'sweeping_edge': 3, 'swift_sneak': 3, 'thorns': 3, 'unbreaking': 3}
-
-# noinspection SpellCheckingInspection,GrazieInspection
-_enchantment_display = {Enchantment.AQUA_AFFINITY: "Aqua Affinity",
-                        Enchantment.BANE_OF_ARTHROPODS: "Bane of Arthropods",
-                        Enchantment.BLAST_PROTECTION: "Blast Protection", Enchantment.CHANNELING: "Channeling",
-                        Enchantment.CLEAVING: "Cleaving", Enchantment.CURSE_OF_BINDING: "Curse of Binding",
-                        Enchantment.CURSE_OF_VANISHING: "Curse of Vanishing",
-                        Enchantment.DEPTH_STRIDER: "Depth Strider", Enchantment.EFFICIENCY: "Efficiency",
-                        Enchantment.FEATHER_FALLING: "Feather Falling", Enchantment.FIRE_ASPECT: "Fire Aspect",
-                        Enchantment.FIRE_PROTECTION: "Fire Protection", Enchantment.FLAME: "Flame",
-                        Enchantment.FORTUNE: "Fortune", Enchantment.FROST_WALKER: "Frost Walker",
-                        Enchantment.IMPALING: "Impaling", Enchantment.INFINITY: "Infinity",
-                        Enchantment.KNOCKBACK: "Knockback", Enchantment.LOOTING: "Looting",
-                        Enchantment.LOYALTY: "Loyalty", Enchantment.LUCK_OF_THE_SEA: "Luck of the Sea",
-                        Enchantment.LURE: "Lure", Enchantment.MENDING: "Mending", Enchantment.MULTISHOT: "Multishot",
-                        Enchantment.PIERCING: "Piercing", Enchantment.POWER: "Power",
-                        Enchantment.PROJECTILE_PROTECTION: "Projectile Protection",
-                        Enchantment.PROTECTION: "Protection", Enchantment.PUNCH: "Punch",
-                        Enchantment.QUICK_CHARGE: "Quick Charge", Enchantment.RESPIRATION: "Respiration",
-                        Enchantment.RIPTIDE: "Riptide", Enchantment.SHARPNESS: "Sharpness",
-                        Enchantment.SILK_TOUCH: "Silk Touch", Enchantment.SMITE: "Smite",
-                        Enchantment.SOUL_SPEED: "Soul Speed", Enchantment.SWEEPING_EDGE: "Sweeping Edge",
-                        Enchantment.SWIFT_SNEAK: "Swift Sneak", Enchantment.THORNS: "Thorns",
-                        Enchantment.UNBREAKING: "Unbreaking"}
+_enchantment_display = {Enchantment.AQUA_AFFINITY: "Aqua Affinity",Enchantment.BANE_OF_ARTHROPODS: "Bane of Arthropods",Enchantment.BLAST_PROTECTION: "Blast Protection",Enchantment.CHANNELING: "Channeling",Enchantment.CLEAVING: "Cleaving",Enchantment.CURSE_OF_BINDING: "Curse of Binding",Enchantment.CURSE_OF_VANISHING: "Curse of Vanishing",Enchantment.DEPTH_STRIDER: "Depth Strider",Enchantment.EFFICIENCY: "Efficiency",Enchantment.FEATHER_FALLING: "Feather Falling",Enchantment.FIRE_ASPECT: "Fire Aspect",Enchantment.FIRE_PROTECTION: "Fire Protection",Enchantment.FLAME: "Flame",Enchantment.FORTUNE: "Fortune",Enchantment.FROST_WALKER: "Frost Walker",Enchantment.IMPALING: "Impaling",Enchantment.INFINITY: "Infinity",Enchantment.KNOCKBACK: "Knockback",Enchantment.LOOTING: "Looting",Enchantment.LOYALTY: "Loyalty",Enchantment.LUCK_OF_THE_SEA: "Luck of the Sea",Enchantment.LURE: "Lure",Enchantment.MENDING: "Mending",Enchantment.MULTISHOT: "Multishot",Enchantment.PIERCING: "Piercing",Enchantment.POWER: "Power",Enchantment.PROJECTILE_PROTECTION: "Projectile Protection",Enchantment.PROTECTION: "Protection",Enchantment.PUNCH: "Punch",Enchantment.QUICK_CHARGE: "Quick Charge",Enchantment.RESPIRATION: "Respiration",Enchantment.RIPTIDE: "Riptide",Enchantment.SHARPNESS: "Sharpness",Enchantment.SILK_TOUCH: "Silk Touch",Enchantment.SMITE: "Smite",Enchantment.SOUL_SPEED: "Soul Speed",Enchantment.SWEEPING_EDGE: "Sweeping Edge",Enchantment.SWIFT_SNEAK: "Swift Sneak",Enchantment.THORNS: "Thorns",Enchantment.UNBREAKING: "Unbreaking"}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
@@ -926,60 +770,14 @@ class GameRule(ValueEnum):
         return _gamerule_display[self]
 
     def rule_type(self):
-        return _gamerule_types[self.value]
+      return _gamerule_types[self.value]
+
+# noinspection SpellCheckingInspection,GrazieInspection
+_gamerule_types = {'announceAdvancements': 'bool', 'blockExplosionDropDecay': 'bool', 'commandBlockOutput': 'bool', 'commandModificationBlockLimit': 'int', 'disableElytraMovementCheck': 'bool', 'disableRaids': 'bool', 'doDaylightCycle': 'bool', 'doEntityDrops': 'bool', 'doFireTick': 'bool', 'doInsomnia': 'bool', 'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool', 'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool', 'doTraderSpawning': 'bool', 'doVinesSpread': 'bool', 'doWeatherCycle': 'bool', 'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'enderPearlsVanishOnDeath': 'bool', 'fallDamage': 'bool', 'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool', 'globalSoundEvents': 'bool', 'keepInventory': 'bool', 'lavaSourceConversion': 'bool', 'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int', 'mobExplosionDropDecay': 'bool', 'mobGriefing': 'bool', 'naturalRegeneration': 'bool', 'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool', 'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int', 'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool', 'universalAnger': 'bool', 'waterSourceConversion': 'bool'}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_gamerule_types = {'announceAdvancements': 'bool', 'blockExplosionDropDecay': 'bool', 'commandBlockOutput': 'bool',
-                   'commandModificationBlockLimit': 'int', 'disableElytraMovementCheck': 'bool', 'disableRaids': 'bool',
-                   'doDaylightCycle': 'bool', 'doEntityDrops': 'bool', 'doFireTick': 'bool', 'doInsomnia': 'bool',
-                   'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool',
-                   'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool',
-                   'doTraderSpawning': 'bool', 'doVinesSpread': 'bool', 'doWeatherCycle': 'bool',
-                   'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'enderPearlsVanishOnDeath': 'bool',
-                   'fallDamage': 'bool', 'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool',
-                   'globalSoundEvents': 'bool', 'keepInventory': 'bool', 'lavaSourceConversion': 'bool',
-                   'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int',
-                   'mobExplosionDropDecay': 'bool', 'mobGriefing': 'bool', 'naturalRegeneration': 'bool',
-                   'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool',
-                   'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int',
-                   'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool',
-                   'universalAnger': 'bool', 'waterSourceConversion': 'bool'}
-
-# noinspection SpellCheckingInspection,GrazieInspection
-_gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
-                     GameRule.BLOCK_EXPLOSION_DROP_DECAY: "block Explosion Drop Decay",
-                     GameRule.COMMAND_BLOCK_OUTPUT: "command Block Output",
-                     GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT: "command Modification Block Limit",
-                     GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK: "disable Elytra Movement Check",
-                     GameRule.DISABLE_RAIDS: "disable Raids", GameRule.DO_DAYLIGHT_CYCLE: "do Daylight Cycle",
-                     GameRule.DO_ENTITY_DROPS: "do Entity Drops", GameRule.DO_FIRE_TICK: "do Fire Tick",
-                     GameRule.DO_INSOMNIA: "do Insomnia", GameRule.DO_IMMEDIATE_RESPAWN: "do Immediate Respawn",
-                     GameRule.DO_LIMITED_CRAFTING: "do Limited Crafting", GameRule.DO_MOB_LOOT: "do Mob Loot",
-                     GameRule.DO_MOB_SPAWNING: "do Mob Spawning", GameRule.DO_PATROL_SPAWNING: "do Patrol Spawning",
-                     GameRule.DO_TILE_DROPS: "do Tile Drops", GameRule.DO_TRADER_SPAWNING: "do Trader Spawning",
-                     GameRule.DO_VINES_SPREAD: "do Vines Spread", GameRule.DO_WEATHER_CYCLE: "do Weather Cycle",
-                     GameRule.DO_WARDEN_SPAWNING: "do Warden Spawning", GameRule.DROWNING_DAMAGE: "drowning Damage",
-                     GameRule.ENDER_PEARLS_VANISH_ON_DEATH: "ender Pearls Vanish On Death",
-                     GameRule.FALL_DAMAGE: "fall Damage", GameRule.FIRE_DAMAGE: "fire Damage",
-                     GameRule.FORGIVE_DEAD_PLAYERS: "forgive Dead Players", GameRule.FREEZE_DAMAGE: "freeze Damage",
-                     GameRule.GLOBAL_SOUND_EVENTS: "global Sound Events", GameRule.KEEP_INVENTORY: "keep Inventory",
-                     GameRule.LAVA_SOURCE_CONVERSION: "lava Source Conversion",
-                     GameRule.LOG_ADMIN_COMMANDS: "log Admin Commands",
-                     GameRule.MAX_COMMAND_CHAIN_LENGTH: "max Command Chain Length",
-                     GameRule.MAX_ENTITY_CRAMMING: "max Entity Cramming",
-                     GameRule.MOB_EXPLOSION_DROP_DECAY: "mob Explosion Drop Decay",
-                     GameRule.MOB_GRIEFING: "mob Griefing", GameRule.NATURAL_REGENERATION: "natural Regeneration",
-                     GameRule.PLAYERS_SLEEPING_PERCENTAGE: "players Sleeping Percentage",
-                     GameRule.RANDOM_TICK_SPEED: "random Tick Speed", GameRule.REDUCED_DEBUG_INFO: "reduced Debug Info",
-                     GameRule.SEND_COMMAND_FEEDBACK: "send Command Feedback",
-                     GameRule.SHOW_DEATH_MESSAGES: "show Death Messages",
-                     GameRule.SNOW_ACCUMULATION_HEIGHT: "snow Accumulation Height",
-                     GameRule.SPAWN_RADIUS: "spawn Radius",
-                     GameRule.SPECTATORS_GENERATE_CHUNKS: "spectators Generate Chunks",
-                     GameRule.TNT_EXPLOSION_DROP_DECAY: "tnt Explosion Drop Decay",
-                     GameRule.UNIVERSAL_ANGER: "universal Anger",
-                     GameRule.WATER_SOURCE_CONVERSION: "water Source Conversion"}
+_gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",GameRule.BLOCK_EXPLOSION_DROP_DECAY: "block Explosion Drop Decay",GameRule.COMMAND_BLOCK_OUTPUT: "command Block Output",GameRule.COMMAND_MODIFICATION_BLOCK_LIMIT: "command Modification Block Limit",GameRule.DISABLE_ELYTRA_MOVEMENT_CHECK: "disable Elytra Movement Check",GameRule.DISABLE_RAIDS: "disable Raids",GameRule.DO_DAYLIGHT_CYCLE: "do Daylight Cycle",GameRule.DO_ENTITY_DROPS: "do Entity Drops",GameRule.DO_FIRE_TICK: "do Fire Tick",GameRule.DO_INSOMNIA: "do Insomnia",GameRule.DO_IMMEDIATE_RESPAWN: "do Immediate Respawn",GameRule.DO_LIMITED_CRAFTING: "do Limited Crafting",GameRule.DO_MOB_LOOT: "do Mob Loot",GameRule.DO_MOB_SPAWNING: "do Mob Spawning",GameRule.DO_PATROL_SPAWNING: "do Patrol Spawning",GameRule.DO_TILE_DROPS: "do Tile Drops",GameRule.DO_TRADER_SPAWNING: "do Trader Spawning",GameRule.DO_VINES_SPREAD: "do Vines Spread",GameRule.DO_WEATHER_CYCLE: "do Weather Cycle",GameRule.DO_WARDEN_SPAWNING: "do Warden Spawning",GameRule.DROWNING_DAMAGE: "drowning Damage",GameRule.ENDER_PEARLS_VANISH_ON_DEATH: "ender Pearls Vanish On Death",GameRule.FALL_DAMAGE: "fall Damage",GameRule.FIRE_DAMAGE: "fire Damage",GameRule.FORGIVE_DEAD_PLAYERS: "forgive Dead Players",GameRule.FREEZE_DAMAGE: "freeze Damage",GameRule.GLOBAL_SOUND_EVENTS: "global Sound Events",GameRule.KEEP_INVENTORY: "keep Inventory",GameRule.LAVA_SOURCE_CONVERSION: "lava Source Conversion",GameRule.LOG_ADMIN_COMMANDS: "log Admin Commands",GameRule.MAX_COMMAND_CHAIN_LENGTH: "max Command Chain Length",GameRule.MAX_ENTITY_CRAMMING: "max Entity Cramming",GameRule.MOB_EXPLOSION_DROP_DECAY: "mob Explosion Drop Decay",GameRule.MOB_GRIEFING: "mob Griefing",GameRule.NATURAL_REGENERATION: "natural Regeneration",GameRule.PLAYERS_SLEEPING_PERCENTAGE: "players Sleeping Percentage",GameRule.RANDOM_TICK_SPEED: "random Tick Speed",GameRule.REDUCED_DEBUG_INFO: "reduced Debug Info",GameRule.SEND_COMMAND_FEEDBACK: "send Command Feedback",GameRule.SHOW_DEATH_MESSAGES: "show Death Messages",GameRule.SNOW_ACCUMULATION_HEIGHT: "snow Accumulation Height",GameRule.SPAWN_RADIUS: "spawn Radius",GameRule.SPECTATORS_GENERATE_CHUNKS: "spectators Generate Chunks",GameRule.TNT_EXPLOSION_DROP_DECAY: "tnt Explosion Drop Decay",GameRule.UNIVERSAL_ANGER: "universal Anger",GameRule.WATER_SOURCE_CONVERSION: "water Source Conversion"}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
@@ -1013,12 +811,7 @@ class ScoreCriteria(ValueEnum):
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_scorecriteria_display = {ScoreCriteria.DUMMY: "dummy", ScoreCriteria.TRIGGER: "trigger",
-                          ScoreCriteria.DEATH_COUNT: "death Count",
-                          ScoreCriteria.PLAYER_KILL_COUNT: "player Kill Count",
-                          ScoreCriteria.TOTAL_KILL_COUNT: "total Kill Count", ScoreCriteria.HEALTH: "health",
-                          ScoreCriteria.XP: "xp", ScoreCriteria.LEVEL: "level", ScoreCriteria.FOOD: "food",
-                          ScoreCriteria.AIR: "air", ScoreCriteria.ARMOR: "armor"}
+_scorecriteria_display = {ScoreCriteria.DUMMY: "dummy",ScoreCriteria.TRIGGER: "trigger",ScoreCriteria.DEATH_COUNT: "death Count",ScoreCriteria.PLAYER_KILL_COUNT: "player Kill Count",ScoreCriteria.TOTAL_KILL_COUNT: "total Kill Count",ScoreCriteria.HEALTH: "health",ScoreCriteria.XP: "xp",ScoreCriteria.LEVEL: "level",ScoreCriteria.FOOD: "food",ScoreCriteria.AIR: "air",ScoreCriteria.ARMOR: "armor"}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
@@ -1214,50 +1007,7 @@ class Particle(ValueEnum):
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Particle.ANGRY_VILLAGER: "Angry Villager",
-                     Particle.ASH: "Ash", Particle.BLOCK: "Block", Particle.BLOCK_MARKER: "Block Marker",
-                     Particle.BUBBLE: "Bubble", Particle.BUBBLE_COLUMN_UP: "Bubble Column Up",
-                     Particle.BUBBLE_POP: "Bubble Pop", Particle.CAMPFIRE_COSY_SMOKE: "Campfire Cosy Smoke",
-                     Particle.CAMPFIRE_SIGNAL_SMOKE: "Campfire Signal Smoke", Particle.CHERRY_LEAVES: "Cherry Leaves",
-                     Particle.CLOUD: "Cloud", Particle.COMPOSTER: "Composter", Particle.CRIMSON_SPORE: "Crimson Spore",
-                     Particle.CRIT: "Crit", Particle.CURRENT_DOWN: "Current Down",
-                     Particle.DAMAGE_INDICATOR: "Damage Indicator", Particle.DOLPHIN: "Dolphin",
-                     Particle.DRAGON_BREATH: "Dragon Breath",
-                     Particle.DRIPPING_DRIPSTONE_LAVA: "Dripping Dripstone Lava",
-                     Particle.DRIPPING_DRIPSTONE_WATER: "Dripping Dripstone Water",
-                     Particle.DRIPPING_HONEY: "Dripping Honey", Particle.DRIPPING_LAVA: "Dripping Lava",
-                     Particle.DRIPPING_OBSIDIAN_TEAR: "Dripping Obsidian Tear",
-                     Particle.DRIPPING_WATER: "Dripping Water", Particle.DUST: "Dust",
-                     Particle.DUST_COLOR_TRANSITION: "Dust Color Transition", Particle.EFFECT: "Effect",
-                     Particle.ELDER_GUARDIAN: "Elder Guardian", Particle.ELECTRIC_SPARK: "Electric Spark",
-                     Particle.ENCHANT: "Enchant", Particle.ENCHANTED_HIT: "Enchanted Hit", Particle.END_ROD: "End Rod",
-                     Particle.ENTITY_EFFECT: "Entity Effect", Particle.EXPLOSION: "Explosion",
-                     Particle.EXPLOSION_EMITTER: "Explosion Emitter",
-                     Particle.FALLING_DRIPSTONE_LAVA: "Falling Dripstone Lava",
-                     Particle.FALLING_DRIPSTONE_WATER: "Falling Dripstone Water", Particle.FALLING_DUST: "Falling Dust",
-                     Particle.FALLING_HONEY: "Falling Honey", Particle.FALLING_LAVA: "Falling Lava",
-                     Particle.FALLING_NECTAR: "Falling Nectar", Particle.FALLING_OBSIDIAN_TEAR: "Falling Obsidian Tear",
-                     Particle.FALLING_SPORE_BLOSSOM: "Falling Spore Blossom", Particle.FALLING_WATER: "Falling Water",
-                     Particle.FIREWORK: "Firework", Particle.FISHING: "Fishing", Particle.FLAME: "Flame",
-                     Particle.FLASH: "Flash", Particle.GLOW: "Glow", Particle.GLOW_SQUID_INK: "Glow Squid Ink",
-                     Particle.HAPPY_VILLAGER: "Happy Villager", Particle.HEART: "Heart",
-                     Particle.INSTANT_EFFECT: "Instant Effect", Particle.ITEM: "Item",
-                     Particle.ITEM_SLIME: "Item Slime", Particle.ITEM_SNOWBALL: "Item Snowball",
-                     Particle.LANDING_HONEY: "Landing Honey", Particle.LANDING_LAVA: "Landing Lava",
-                     Particle.LANDING_OBSIDIAN_TEAR: "Landing Obsidian Tear", Particle.LARGE_SMOKE: "Large Smoke",
-                     Particle.LAVA: "Lava", Particle.MYCELIUM: "Mycelium", Particle.NAUTILUS: "Nautilus",
-                     Particle.NOTE: "Note", Particle.POOF: "Poof", Particle.PORTAL: "Portal", Particle.RAIN: "Rain",
-                     Particle.SCRAPE: "Scrape", Particle.SCULK_CHARGE: "Sculk Charge",
-                     Particle.SCULK_CHARGE_POP: "Sculk Charge Pop", Particle.SCULK_SOUL: "Sculk Soul",
-                     Particle.SHRIEK: "Shriek", Particle.SMOKE: "Smoke", Particle.SNEEZE: "Sneeze",
-                     Particle.SNOWFLAKE: "Snowflake", Particle.SONIC_BOOM: "Sonic Boom", Particle.SOUL: "Soul",
-                     Particle.SOUL_FIRE_FLAME: "Soul Fire Flame", Particle.SPIT: "Spit",
-                     Particle.SPORE_BLOSSOM_AIR: "Spore Blossom Air", Particle.SPLASH: "Splash",
-                     Particle.SQUID_INK: "Squid Ink", Particle.SWEEP_ATTACK: "Sweep Attack",
-                     Particle.TOTEM_OF_UNDYING: "Totem Of Undying", Particle.UNDERWATER: "Underwater",
-                     Particle.VIBRATION: "Vibration", Particle.WARPED_SPORE: "Warped Spore",
-                     Particle.WAX_OFF: "Wax Off", Particle.WAX_ON: "Wax On", Particle.WHITE_ASH: "White Ash",
-                     Particle.WITCH: "Witch"}
+_particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect",Particle.ANGRY_VILLAGER: "Angry Villager",Particle.ASH: "Ash",Particle.BLOCK: "Block",Particle.BLOCK_MARKER: "Block Marker",Particle.BUBBLE: "Bubble",Particle.BUBBLE_COLUMN_UP: "Bubble Column Up",Particle.BUBBLE_POP: "Bubble Pop",Particle.CAMPFIRE_COSY_SMOKE: "Campfire Cosy Smoke",Particle.CAMPFIRE_SIGNAL_SMOKE: "Campfire Signal Smoke",Particle.CHERRY_LEAVES: "Cherry Leaves",Particle.CLOUD: "Cloud",Particle.COMPOSTER: "Composter",Particle.CRIMSON_SPORE: "Crimson Spore",Particle.CRIT: "Crit",Particle.CURRENT_DOWN: "Current Down",Particle.DAMAGE_INDICATOR: "Damage Indicator",Particle.DOLPHIN: "Dolphin",Particle.DRAGON_BREATH: "Dragon Breath",Particle.DRIPPING_DRIPSTONE_LAVA: "Dripping Dripstone Lava",Particle.DRIPPING_DRIPSTONE_WATER: "Dripping Dripstone Water",Particle.DRIPPING_HONEY: "Dripping Honey",Particle.DRIPPING_LAVA: "Dripping Lava",Particle.DRIPPING_OBSIDIAN_TEAR: "Dripping Obsidian Tear",Particle.DRIPPING_WATER: "Dripping Water",Particle.DUST: "Dust",Particle.DUST_COLOR_TRANSITION: "Dust Color Transition",Particle.EFFECT: "Effect",Particle.ELDER_GUARDIAN: "Elder Guardian",Particle.ELECTRIC_SPARK: "Electric Spark",Particle.ENCHANT: "Enchant",Particle.ENCHANTED_HIT: "Enchanted Hit",Particle.END_ROD: "End Rod",Particle.ENTITY_EFFECT: "Entity Effect",Particle.EXPLOSION: "Explosion",Particle.EXPLOSION_EMITTER: "Explosion Emitter",Particle.FALLING_DRIPSTONE_LAVA: "Falling Dripstone Lava",Particle.FALLING_DRIPSTONE_WATER: "Falling Dripstone Water",Particle.FALLING_DUST: "Falling Dust",Particle.FALLING_HONEY: "Falling Honey",Particle.FALLING_LAVA: "Falling Lava",Particle.FALLING_NECTAR: "Falling Nectar",Particle.FALLING_OBSIDIAN_TEAR: "Falling Obsidian Tear",Particle.FALLING_SPORE_BLOSSOM: "Falling Spore Blossom",Particle.FALLING_WATER: "Falling Water",Particle.FIREWORK: "Firework",Particle.FISHING: "Fishing",Particle.FLAME: "Flame",Particle.FLASH: "Flash",Particle.GLOW: "Glow",Particle.GLOW_SQUID_INK: "Glow Squid Ink",Particle.HAPPY_VILLAGER: "Happy Villager",Particle.HEART: "Heart",Particle.INSTANT_EFFECT: "Instant Effect",Particle.ITEM: "Item",Particle.ITEM_SLIME: "Item Slime",Particle.ITEM_SNOWBALL: "Item Snowball",Particle.LANDING_HONEY: "Landing Honey",Particle.LANDING_LAVA: "Landing Lava",Particle.LANDING_OBSIDIAN_TEAR: "Landing Obsidian Tear",Particle.LARGE_SMOKE: "Large Smoke",Particle.LAVA: "Lava",Particle.MYCELIUM: "Mycelium",Particle.NAUTILUS: "Nautilus",Particle.NOTE: "Note",Particle.POOF: "Poof",Particle.PORTAL: "Portal",Particle.RAIN: "Rain",Particle.SCRAPE: "Scrape",Particle.SCULK_CHARGE: "Sculk Charge",Particle.SCULK_CHARGE_POP: "Sculk Charge Pop",Particle.SCULK_SOUL: "Sculk Soul",Particle.SHRIEK: "Shriek",Particle.SMOKE: "Smoke",Particle.SNEEZE: "Sneeze",Particle.SNOWFLAKE: "Snowflake",Particle.SONIC_BOOM: "Sonic Boom",Particle.SOUL: "Soul",Particle.SOUL_FIRE_FLAME: "Soul Fire Flame",Particle.SPIT: "Spit",Particle.SPORE_BLOSSOM_AIR: "Spore Blossom Air",Particle.SPLASH: "Splash",Particle.SQUID_INK: "Squid Ink",Particle.SWEEP_ATTACK: "Sweep Attack",Particle.TOTEM_OF_UNDYING: "Totem Of Undying",Particle.UNDERWATER: "Underwater",Particle.VIBRATION: "Vibration",Particle.WARPED_SPORE: "Warped Spore",Particle.WAX_OFF: "Wax Off",Particle.WAX_ON: "Wax On",Particle.WHITE_ASH: "White Ash",Particle.WITCH: "Witch"}
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
@@ -1289,23 +1039,4 @@ class PotterySherd(ValueEnum):
 
 
 # noinspection SpellCheckingInspection,GrazieInspection
-_potterysherd_display = {PotterySherd.ANGLER_POTTERY_SHERD: "Angler Pottery Sherd",
-                         PotterySherd.ARCHER_POTTERY_SHERD: "Archer Pottery Sherd",
-                         PotterySherd.ARMS_UP_POTTERY_SHERD: "Arms Up Pottery Sherd",
-                         PotterySherd.BLADE_POTTERY_SHERD: "Blade Pottery Sherd",
-                         PotterySherd.BREWER_POTTERY_SHERD: "Brewer Pottery Sherd",
-                         PotterySherd.BURN_POTTERY_SHERD: "Burn Pottery Sherd",
-                         PotterySherd.DANGER_POTTERY_SHERD: "Danger Pottery Sherd",
-                         PotterySherd.EXPLORER_POTTERY_SHERD: "Explorer Pottery Sherd",
-                         PotterySherd.FRIEND_POTTERY_SHERD: "Friend Pottery Sherd",
-                         PotterySherd.HEART_POTTERY_SHERD: "Heart Pottery Sherd",
-                         PotterySherd.HEARTBREAK_POTTERY_SHERD: "Heartbreak Pottery Sherd",
-                         PotterySherd.HOWL_POTTERY_SHERD: "Howl Pottery Sherd",
-                         PotterySherd.MINER_POTTERY_SHERD: "Miner Pottery Sherd",
-                         PotterySherd.MOURNER_POTTERY_SHERD: "Mourner Pottery Sherd",
-                         PotterySherd.PLENTY_POTTERY_SHERD: "Plenty Pottery Sherd",
-                         PotterySherd.PRIZE_POTTERY_SHERD: "Prize Pottery Sherd",
-                         PotterySherd.SHEAF_POTTERY_SHERD: "Sheaf Pottery Sherd",
-                         PotterySherd.SHELTER_POTTERY_SHERD: "Shelter Pottery Sherd",
-                         PotterySherd.SKULL_POTTERY_SHERD: "Skull Pottery Sherd",
-                         PotterySherd.SNORT_POTTERY_SHERD: "Snort Pottery Sherd"}
+_potterysherd_display = {PotterySherd.ANGLER_POTTERY_SHERD: "Angler Pottery Sherd",PotterySherd.ARCHER_POTTERY_SHERD: "Archer Pottery Sherd",PotterySherd.ARMS_UP_POTTERY_SHERD: "Arms Up Pottery Sherd",PotterySherd.BLADE_POTTERY_SHERD: "Blade Pottery Sherd",PotterySherd.BREWER_POTTERY_SHERD: "Brewer Pottery Sherd",PotterySherd.BURN_POTTERY_SHERD: "Burn Pottery Sherd",PotterySherd.DANGER_POTTERY_SHERD: "Danger Pottery Sherd",PotterySherd.EXPLORER_POTTERY_SHERD: "Explorer Pottery Sherd",PotterySherd.FRIEND_POTTERY_SHERD: "Friend Pottery Sherd",PotterySherd.HEART_POTTERY_SHERD: "Heart Pottery Sherd",PotterySherd.HEARTBREAK_POTTERY_SHERD: "Heartbreak Pottery Sherd",PotterySherd.HOWL_POTTERY_SHERD: "Howl Pottery Sherd",PotterySherd.MINER_POTTERY_SHERD: "Miner Pottery Sherd",PotterySherd.MOURNER_POTTERY_SHERD: "Mourner Pottery Sherd",PotterySherd.PLENTY_POTTERY_SHERD: "Plenty Pottery Sherd",PotterySherd.PRIZE_POTTERY_SHERD: "Prize Pottery Sherd",PotterySherd.SHEAF_POTTERY_SHERD: "Sheaf Pottery Sherd",PotterySherd.SHELTER_POTTERY_SHERD: "Shelter Pottery Sherd",PotterySherd.SKULL_POTTERY_SHERD: "Skull Pottery Sherd",PotterySherd.SNORT_POTTERY_SHERD: "Snort Pottery Sherd"}
