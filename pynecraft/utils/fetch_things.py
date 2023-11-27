@@ -118,12 +118,17 @@ class ItemFetcher(Fetcher):
         'Light',
         'Dragon Egg',
         'Command Block',
+        'Chain Command Block',
+        'Repeating Command Block',
         'Minecart with Command Block',
         'Spawner',
+        'Trial Spawner',
     ]
     operator_menu = [
         'Barrier',
         'Command Block',
+        'Chain Command Block',
+        'Repeating Command Block',
         'Minecart with Command Block',
         'Debug Stick',
         'Jigsaw',

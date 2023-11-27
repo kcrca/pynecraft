@@ -52,6 +52,7 @@ Carrot
 Carrot on a Stick
 Cat Spawn Egg
 Cave Spider Spawn Egg
+Chain Command Block
 Chainmail Boots
 Chainmail Chestplate
 Chainmail Helmet
@@ -314,6 +315,7 @@ Raw Salmon / Salmon
 Recovery Compass
 Red Dye
 Redstone Dust / Redstone
+Repeating Command Block
 Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
@@ -373,6 +375,7 @@ Tipped Arrow
 Torchflower Seeds
 Totem of Undying
 Trader Llama Spawn Egg
+Trial Spawner
 Trident
 Tropical Fish
 Tropical Fish Spawn Egg
