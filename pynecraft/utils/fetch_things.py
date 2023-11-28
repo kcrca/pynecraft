@@ -93,6 +93,8 @@ class BlockFetcher(Fetcher):
             id = re.sub(r'Redstone (Repeater|Comparator)', r'\1', id)
         elif id == 'Monster Spawner':
             id = 'Spawner'
+        elif id == 'Grass':
+            id = 'Short Grass'
         if 'Block' in id or 'Crops' in id:
             id = re.sub(r'Block of (.*)', r'\1 Block', id)
             id = re.sub(r'(Jigsaw|Light|Smooth Quartz|Wheat) (Block|Crops)', r'\1', id)

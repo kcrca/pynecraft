@@ -349,7 +349,7 @@ Granite
 Granite Slab
 Granite Stairs
 Granite Wall
-Grass
+Grass / Short Grass
 Grass Block
 Gravel
 Gray Banner
