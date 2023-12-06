@@ -514,8 +514,12 @@ class Region:
 
     def replace_doors(self, new: BlockDef, old: BlockDef = '#doors', new_state: Mapping = None,
                       shared_states: SomeMappings = None) -> Commands:
-        """Replaces doors in the region using all the relevant states."""
-        yield from self.replace(new, old, Region.door_states, new_state, shared_states)
+        """
+        Replaces doors in the region using all the relevant states.
+        N.B.: Not imlemented, doors cannot be replaced generically, https://bugs.mojang.com/browse/MC-192791
+        """
+        raise NotImplementedError('Fill does not replace doors, sorry. https://bugs.mojang.com/browse/MC-192791')
+        # yield from self.replace(new, old, Region.door_states, new_state, shared_states)
 
     def replace_trapdoors(self, new: BlockDef, old: BlockDef = '#trapdoors', new_state: Mapping = None,
                           shared_states: SomeMappings = None) -> Commands:
