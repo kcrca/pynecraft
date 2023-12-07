@@ -2685,7 +2685,7 @@ def op(target: Target) -> str:
 def particle(particle: Particle | str, *params) -> str:
     """Creates particles. The syntax of the command is quite variant and conditional, so nearly no checks are made."""
     cmd = Command()
-    cmd._add('particle', Particle(particle))
+    cmd._add('particle', str(particle))
     for param in params:
         if isinstance(param, str) or not isinstance(param, Iterable):
             cmd._add(param)
