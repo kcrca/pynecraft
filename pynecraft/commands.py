@@ -1058,7 +1058,7 @@ class _StoreClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def entity(self, target: Target, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
+    def entity(self, target: Target, nbt_path: str, data_type: str, scale: float = 1) -> _ExecuteMod:
         self._add('entity', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
