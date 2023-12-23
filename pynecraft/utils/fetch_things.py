@@ -110,21 +110,6 @@ class BlockFetcher(Fetcher):
 class ItemFetcher(Fetcher):
     must_give = [
         'Knowledge Book',
-        'Debug Stick',
-        'Suspicious Stew',
-        'Bundle',
-        'Jigsaw',
-        'Structure Block',
-        'Structure Void',
-        'Barrier',
-        'Light',
-        'Dragon Egg',
-        'Command Block',
-        'Chain Command Block',
-        'Repeating Command Block',
-        'Minecart with Command Block',
-        'Spawner',
-        'Trial Spawner',
     ]
     operator_menu = [
         'Barrier',
@@ -236,6 +221,11 @@ class MobFetcher(Fetcher):
         if 'Jockey' in desc or 'Horseman' in desc:
             return None, None
         return id, desc
+
+    def added(self, things: list[str]):
+        if 'Breeze' not in things:
+            return ['Breeze']
+        return super().added(things)
 
 
 if __name__ == '__main__':

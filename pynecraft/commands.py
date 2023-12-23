@@ -1053,7 +1053,7 @@ class _IfClause(Command):
 
 class _StoreClause(Command):
     @_fluent
-    def block(self, pos: Position, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
+    def block(self, pos: Position, nbt_path: str, data_type: str, scale: float = 1) -> _ExecuteMod:
         self._add('block', *pos, nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
@@ -1063,7 +1063,7 @@ class _StoreClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def storage(self, target: Target, nbt_path: str, data_type: str, scale: float) -> _ExecuteMod:
+    def storage(self, target: Target, nbt_path: str, data_type: str, scale: float = 1) -> _ExecuteMod:
         self._add('storage', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 

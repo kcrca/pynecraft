@@ -3,6 +3,7 @@ Axolotl
 Bat
 Bee
 Blaze
+Breeze
 Camel
 Cat
 Cave Spider

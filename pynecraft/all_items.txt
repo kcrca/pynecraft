@@ -12,7 +12,6 @@ Axolotl Spawn Egg
 Baked Potato
 Bamboo Raft
 Bamboo Raft with Chest / Bamboo Chest Raft
-Barrier
 Bat Spawn Egg
 Bee Spawn Egg
 Beetroot
@@ -52,7 +51,6 @@ Carrot
 Carrot on a Stick
 Cat Spawn Egg
 Cave Spider Spawn Egg
-Chain Command Block
 Chainmail Boots
 Chainmail Chestplate
 Chainmail Helmet
@@ -68,7 +66,6 @@ Coal
 Coast Armor Trim / Coast Armor Trim Smithing Template
 Cocoa Beans
 Cod Spawn Egg
-Command Block
 Compass
 Cooked Chicken
 Cooked Cod
@@ -101,7 +98,6 @@ Diamond Sword
 Disc Fragment / Disc Fragment 5
 Dolphin Spawn Egg
 Donkey Spawn Egg
-Dragon Egg
 Dragon's Breath / Dragon Breath
 Dried Kelp
 Drowned Spawn Egg
@@ -192,7 +188,6 @@ Iron Pickaxe
 Iron Shovel
 Iron Sword
 Item Frame
-Jigsaw
 Jungle Boat
 Jungle Boat with Chest / Jungle Chest Boat
 Kelp
@@ -206,7 +201,6 @@ Leather Cap / Leather Helmet
 Leather Horse Armor
 Leather Pants / Leather Leggings
 Leather Tunic / Leather Chestplate
-Light
 Light Blue Dye
 Light Gray Dye
 Lime Dye
@@ -222,7 +216,6 @@ Melon Slice
 Milk Bucket
 Minecart
 Minecart with Chest / Chest Minecart
-Minecart with Command Block
 Minecart with Command Block / Command Block Minecart
 Minecart with Furnace / Furnace Minecart
 Minecart with Hopper / Hopper Minecart
@@ -315,7 +308,6 @@ Raw Salmon / Salmon
 Recovery Compass
 Red Dye
 Redstone Dust / Redstone
-Repeating Command Block
 Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
@@ -343,7 +335,6 @@ Snort Pottery Sherd
 Snout / Piglin Banner Pattern
 Snow Golem Spawn Egg
 Snowball
-Spawner
 Spectral Arrow
 Spider Eye
 Spider Spawn Egg
@@ -363,8 +354,6 @@ Stone Sword
 Stray Spawn Egg
 Strider Spawn Egg
 String
-Structure Block
-Structure Void
 Sugar
 Suspicious Stew
 Sweet Berries
@@ -375,7 +364,6 @@ Tipped Arrow
 Torchflower Seeds
 Totem of Undying
 Trader Llama Spawn Egg
-Trial Spawner
 Trident
 Tropical Fish
 Tropical Fish Spawn Egg

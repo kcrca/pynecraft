@@ -207,7 +207,8 @@ class TestFunctions(unittest.TestCase):
         loaded = Loop.load('foo')
         self.assertEqual(saved.adjuster, loaded.adjuster)
 
-        saved = Loop(score, 'loop').adjust(('adj1', 'adj2', 'adj23')).add('before').loop(loop_func, range(0, 3)).add('after')
+        saved = Loop(score, 'loop').adjust(('adj1', 'adj2', 'adj23')).add('before').loop(loop_func, range(0, 3)).add(
+            'after')
         saved.save('foo')
         loaded = Loop.load('foo')
         self.assertEqual(saved.adjuster, loaded.adjuster)

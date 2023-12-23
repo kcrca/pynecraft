@@ -791,13 +791,12 @@ class FunctionSet:
             return Path(self.parent.name) / self.name
         return Path(self.name)
 
-    def add(self, *functions: Function) -> FunctionSet:
+    def add(self, function: Function) -> Function:
         """Adds a function to this set."""
-        for f in functions:
-            if f.name in self._functions:
-                raise ValueError(f'{f.name}: duplicate function in {self.name}')
-            self._functions[f.name] = f
-        return self
+        if function.name in self._functions:
+            raise ValueError(f'{function.name}: duplicate function in {self.name}')
+        self._functions[function.name] = function
+        return function
 
     def child(self, name: str) -> FunctionSet | None:
         """Returns the named child FunctionSet of this function set."""
