@@ -1369,5 +1369,16 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$execute store result block $(x) $(y) $(z) $(path) short $(scale)',
                          str(execute().store(RESULT).block((Arg('x'), Arg('y'), Arg('z')), Arg('path'), SHORT,
                                                            Arg('scale'))))
-        self.assertEqual('$title @s title $(t)', title(s()).title(Arg('t')))
-        self.assertEqual('$damage @s $(d) $(w) ', str(damage(s(), Arg('d'), Arg('w'))))
+        self.assertEqual('$title $(tgt) title $(t)', title(Arg('tgt')).title(Arg('t')))
+        self.assertEqual('$damage $(tgt) $(d) $(w)', str(damage(Arg('tgt'), Arg('d'), Arg('w'))))
+        self.assertEqual('$effect give $(tgt) $(e) $(d) $(a) $(h)',
+                         effect().give(Arg('tgt'), Arg('e'), Arg('d'), Arg('a'), Arg('h')))
+        self.assertEqual('$experience add $(tgt) $(amt) $(w)', experience().add(Arg('tgt'), Arg('amt'), Arg('w')))
+        self.assertEqual('$(t)', as_team(Arg('t')))
+        self.assertEqual('$team modify $(t) color $(v)', team().modify(Arg('t'), TeamOption.COLOR, Arg('v')))
+        self.assertEqual('$gamerule $(r) $(v)', gamerule(Arg('r'), Arg('v')))
+        self.assertEqual('$gamerule 15 $(v)', gamerule(15, Arg('v')))
+        self.assertEqual('$gamerule $(r) 12', gamerule(Arg('r'), 12))
+        self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
+        self.assertEqual('$setworldspawn $(x) $(y) $(z) $(angle)',
+                         setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('angle')))

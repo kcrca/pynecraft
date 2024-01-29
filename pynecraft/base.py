@@ -391,7 +391,7 @@ def as_angle(angle: Angle) -> Angle:
         raise ValueError(f'{angle}: Invalid angle')
 
 
-def as_yaw(yaw: Angle | str | None) -> Angle | None:
+def as_yaw(yaw: Angle | StrOrArg | None) -> Angle | None:
     """Checks if the angle is a valid yaw value, or None.
 
      "Valid" means a value that as_facing() or as_angle() accepts. If it is a number or RelCoord, it must be in
@@ -400,6 +400,8 @@ def as_yaw(yaw: Angle | str | None) -> Angle | None:
     :param yaw: The (probable) yaw angle.
     :return: The input value.
     """
+    if isinstance(yaw, Arg):
+        return yaw
     if yaw is not None:
         if isinstance(yaw, str):
             yaw = as_facing(yaw).rotation[0]
@@ -533,6 +535,8 @@ class Nbt(UserDict):
         Returns a string version of what is passed, using str() instead of repr() for dict and iterables. Because
         str(dict), str(list), etc., use repr(), not str().
         """
+        if isinstance(obj, Arg):
+            return str(obj)
         if isinstance(obj, cls):
             return str(obj)
         if isinstance(obj, Mapping):

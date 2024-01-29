@@ -1368,12 +1368,12 @@ class _BossbarSet(Command):
 
 class _BossbarMod(Command):
     @_fluent
-    def add(self, id: str, name: str) -> str:
+    def add(self, id: StrOrArg, name: StrOrArg) -> str:
         self._add('add', as_resource(id), _quote(name))
         return str(self)
 
     @_fluent
-    def get(self, id: str) -> _BossbarGet:
+    def get(self, id: StrOrArg) -> _BossbarGet:
         self._add('get', as_resource(id))
         return self._start(_BossbarGet())
 
@@ -1383,19 +1383,19 @@ class _BossbarMod(Command):
         return str(self)
 
     @_fluent
-    def remove(self, id: str) -> str:
+    def remove(self, id: StrOrArg) -> str:
         self._add('remove', as_resource(id))
         return str(self)
 
     @_fluent
-    def set(self, id: str) -> _BossbarSet:
+    def set(self, id: StrOrArg) -> _BossbarSet:
         self._add('set', as_resource(id))
         return self._start(_BossbarSet())
 
 
 class _ClearClause(Command):
     @_fluent
-    def item(self, item: str, max_count: int = None) -> str:
+    def item(self, item: StrOrArg, max_count: int = None) -> str:
         self._add(item)
         if max_count:
             self._add(max_count)
@@ -1428,7 +1428,7 @@ class _CloneClause(Command):
 
 # noinspection PyAttributeOutsideInit
 class _CloneFromDimMod(Command):
-    def from_(self, dimension: str, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
+    def from_(self, dimension: StrOrFlag, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
         self.dimension = dimension
         self.start_pos = start_pos
         self.end_pos = end_pos
@@ -1440,7 +1440,7 @@ class _CloneToDimMod(Command):
         super().__init__()
         self._from_ = from_
 
-    def to(self, dimension: str, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
+    def to(self, dimension: StrOrFlag, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
         f = self._from_
         dest_pos = _clone_dest(f.start_pos, f.end_pos, dest_pos, dest_type)
         self._add('clone', 'from', f.dimension, *f.start_pos, *f.end_pos, 'to', dimension, *dest_pos)
@@ -1453,16 +1453,17 @@ class _End(Command):
 
 class _DataSource(Command):
     @_fluent
-    def from_(self, data_target: DataTarget, nbt_path: str) -> str:
+    def from_(self, data_target: DataTarget, nbt_path: StrOrArg) -> str:
         self._add('from', data_single_str(data_target), as_nbt_path(nbt_path))
         return str(self)
 
     @_fluent
-    def value(self, v: str | float | Nbt | Iterable[str | float | Mapping]) -> str:
+    def value(self, v: StrOrArg | float | Nbt | Iterable[StrOrArg | float | Mapping]) -> str:
         self._add('value', Nbt.to_str(v))
         return str(self)
 
-    def string(self, data_target: DataTarget, nbt_path: str = None, start: int = None, end: int = None) -> str:
+    def string(self, data_target: DataTarget, nbt_path: StrOrArg = None, start: IntOrArg = None,
+               end: IntOrArg = None) -> str:
         self._add('string', data_single_str(data_target))
         self._add_opt(as_nbt_path(nbt_path), start, end)
         return str(self)
@@ -1513,7 +1514,7 @@ class _DataModifyClause(Command):
 
 class _DataMod(Command):
     @_fluent
-    def get(self, data_target: DataTarget, nbt_path: str = None, scale: float = None, /) -> str:
+    def get(self, data_target: DataTarget, nbt_path: StrOrArg = None, scale: FloatOrArg = None, /) -> str:
         self._add('get', data_single_str(data_target))
         if not nbt_path and scale is not None:
             raise ValueError('Must give dir to use scale')
@@ -1526,26 +1527,27 @@ class _DataMod(Command):
         return str(self)
 
     @_fluent
-    def modify(self, data_target: DataTarget, nbt_path: str) -> _DataModifyClause:
+    def modify(self, data_target: DataTarget, nbt_path: StrOrArg) -> _DataModifyClause:
         self._add('modify', data_single_str(data_target), nbt_path)
         return self._start(_DataModifyClause())
 
     @_fluent
-    def remove(self, data_target: DataTarget, nbt_path: str) -> str:
+    def remove(self, data_target: DataTarget, nbt_path: StrOrArg) -> str:
         self._add('remove', data_single_str(data_target), nbt_path)
         return str(self)
 
 
 class _RandomMod(Command):
-    def roll(self, range: (int, int), sequence: str = None, /, in_chat: bool = True) -> str:
+    def roll(self, range: (IntOrArg, IntOrArg), sequence: StrOrArg = None, /, in_chat: bool = True) -> str:
         self._add('roll' if in_chat else 'value', f'{range[0]}..{range[1]}')
         self._add_opt(as_name(sequence))
         return str(self)
 
-    def value(self, range: (int, int), sequence: str = None, /, in_chat: bool = False) -> str:
+    def value(self, range: (IntOrArg, IntOrArg), sequence: StrOrArg = None, /, in_chat: bool = False) -> str:
         return self.roll(range, sequence, in_chat)
 
-    def reset(self, sequence: str, seed: int = None, include_world_seed=None, include_sequence_id=None, /) -> str:
+    def reset(self, sequence: StrOrArg, seed: IntOrArg = None, include_world_seed: BoolOrArg = None,
+              include_sequence_id: BoolOrArg = None, /) -> str:
         self._add('reset')
         if sequence != '*':
             sequence = as_name(sequence)
@@ -1563,18 +1565,18 @@ class _DatapackOrder(Command):
         self._add('last')
         return str(self)
 
-    def before(self, other_datapack: str) -> str:
+    def before(self, other_datapack: StrOrArg) -> str:
         self._add('before', other_datapack)
         return str(self)
 
-    def after(self, other_datapack: str) -> str:
+    def after(self, other_datapack: StrOrArg) -> str:
         self._add('after', other_datapack)
         return str(self)
 
 
 class _DatapackMod(Command):
     @_fluent
-    def disable(self, name: str) -> str:
+    def disable(self, name: StrOrArg) -> str:
         self._add('disable', as_name(name))
         return str(self)
 
@@ -1584,7 +1586,7 @@ class _DatapackMod(Command):
         return self._start(_DatapackOrder())
 
     @_fluent
-    def list(self, filter: str = None) -> str:
+    def list(self, filter: StrOrArg = None) -> str:
         self._add('list')
         self._add_opt(_in_group(DATAPACK_FILTERS, filter))
         return str(self)
@@ -1602,15 +1604,15 @@ class _DebugMod(Command):
         return str(self)
 
     @_fluent
-    def function(self, path: str | object) -> str:
+    def function(self, path: StrOrArg | object) -> str:
         self._add('function', as_resource_path(_as_function_path(path)))
         return str(self)
 
 
 class _EffectAction(Command):
     @_fluent
-    def give(self, target: Target, effect: Effect | str, duration: int | str = None, amplifier: int = None,
-             hide_particles: bool = None, /) -> str:
+    def give(self, target: Target, effect: Effect | StrOrArg, duration: IntOrArg | StrOrArg = None,
+             amplifier: IntOrArg = None, hide_particles: BoolOrArg = None, /) -> str:
         if amplifier is not None and duration is None:
             raise ValueError('must give seconds to use amplifier')
         if hide_particles is not None and amplifier is None:
@@ -1618,16 +1620,18 @@ class _EffectAction(Command):
         if isinstance(duration, str):
             if duration != INFINITE:
                 raise ValueError(f'{duration}: Invalid duration')
-        elif duration is not None:
+        elif duration is not None and not isinstance(duration, Arg):
             seconds_range = range(MAX_EFFECT_SECONDS + 1)
             if duration not in seconds_range:
                 raise ValueError(f'{duration}: Not in range {seconds_range}')
-        self._add('give', as_target(target), Effect(effect))
+        if isinstance(effect, str):
+            effect = Effect(effect)
+        self._add('give', as_target(target), effect)
         self._add_opt(duration, amplifier, _bool(hide_particles))
         return str(self)
 
     @_fluent
-    def clear(self, target: Target = None, effect: Effect | str = None) -> str:
+    def clear(self, target: Target = None, effect: Effect | StrOrArg = None) -> str:
         if effect is not None and target is None:
             raise ValueError('must give target to use effect')
         self._add('clear')
@@ -1639,26 +1643,26 @@ class _EffectAction(Command):
 
 class _ExperienceMod(Command):
     @_fluent
-    def add(self, target: Target, amount: int, which: str = None) -> str:
+    def add(self, target: Target, amount: IntOrArg, which: StrOrArg = None) -> str:
         self._add('add', as_target(target), amount)
         self._add_opt(_in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
     @_fluent
-    def set(self, target: Target, amount: int, which: str = None) -> str:
+    def set(self, target: Target, amount: IntOrArg, which: StrOrArg = None) -> str:
         self._add('set', as_target(target), amount)
         self._add_opt(_in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
     @_fluent
-    def query(self, target: Target, which: str) -> str:
+    def query(self, target: Target, which: StrOrArg) -> str:
         self._add('query', as_single(target), _in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
 
 class _FilterClause(Command):
     @_fluent
-    def replace(self, filter: str = None) -> str:
+    def replace(self, filter: StrOrArg = None) -> str:
         self._add('replace')
         self._add_opt(filter)
         return str(self)
@@ -1686,7 +1690,7 @@ class _FilterClause(Command):
 
 class _BiomeFilterClause(Command):
     @_fluent
-    def replace(self, biome: Biome | str) -> str:
+    def replace(self, biome: Biome | StrOrArg) -> str:
         self._add('replace', as_biome(biome))
         return str(self)
 
@@ -1728,7 +1732,7 @@ class _FunctionWith(Command):
         self._add('entity', as_target(target))
         return str(self)
 
-    def storage(self, source: str) -> str:
+    def storage(self, source: StrOrArg) -> str:
         self._add('storage', as_resource_path(source))
         return str(self)
 
@@ -1792,13 +1796,13 @@ class _ItemMod(Command):
 
 class _LootSource(Command):
     @_fluent
-    def fish(self, loot_table: str, pos: Position, thing: str) -> str:
+    def fish(self, loot_table: StrOrArg, pos: Position, thing: StrOrArg) -> str:
         # the 'hand' keywords are also valid resource names, so no separate test is meaningful
         self._add('fish', as_resource_path(loot_table), *pos, as_resource(thing))
         return str(self)
 
     @_fluent
-    def loot(self, loot_table: str) -> str:
+    def loot(self, loot_table: StrOrArg) -> str:
         self._add('loot', as_resource_path(loot_table))
         return str(self)
 
@@ -1808,7 +1812,7 @@ class _LootSource(Command):
         return str(self)
 
     @_fluent
-    def mine(self, pos: Position, thing: str) -> str:
+    def mine(self, pos: Position, thing: StrOrArg) -> str:
         # the 'hand' keywords are also valid resource names, so no separate test is meaningful
         self._add('mine', *pos, as_resource(thing))
         return str(self)
@@ -1851,7 +1855,7 @@ class _LootTarget(Command):
 
 
 class _ScoreboardCriteria(Command):
-    def __init__(self, criterion: str | ScoreCriteria, *criteria: str | ScoreCriteria):
+    def __init__(self, criterion: StrOrArg | ScoreCriteria, *criteria: StrOrArg | ScoreCriteria):
         super().__init__()
         self._as_criteria(criterion)
         self._add(criterion)
@@ -1886,12 +1890,12 @@ class _ScoreboardObjectivesMod(Command):
         return str(self)
 
     @_fluent
-    def remove(self, objective: str) -> str:
+    def remove(self, objective: StrOrArg) -> str:
         self._add('remove', as_name(objective))
         return str(self)
 
     @_fluent
-    def setdisplay(self, slot: str, objective: str = None) -> str:
+    def setdisplay(self, slot: StrOrArg, objective: StrOrArg = None) -> str:
         if not slot.startswith(SIDEBAR_TEAM):
             _in_group(DISPLAY_SLOTS, slot)
         self._add('setdisplay', slot)
@@ -1899,17 +1903,17 @@ class _ScoreboardObjectivesMod(Command):
         return str(self)
 
     @_fluent
-    def modify(self, objective: str) -> str | _ScorboardObjectivesModifyMod:
+    def modify(self, objective: StrOrArg) -> str | _ScorboardObjectivesModifyMod:
         self._add('modify', objective)
         return self._start(_ScorboardObjectivesModifyMod())
 
 
 class _ScorboardObjectivesModifyMod(Command):
-    def displayname(self, name: str | JsonText) -> str:
+    def displayname(self, name: StrOrArg | JsonText) -> str:
         self._add('displayname', name)
         return str(self)
 
-    def rendertype(self, type: str) -> str:
+    def rendertype(self, type: StrOrArg) -> str:
         self._add('rendertype', _in_group(SCOREBOARD_RENDER_TYPES, type))
         return str(self)
 
@@ -1924,7 +1928,7 @@ class _NumberFormatMod(Command):
         used = True
         return str(self)
 
-    def fixed(self, text: str) -> str:
+    def fixed(self, text: StrOrArg) -> str:
         self._add('fixed', text)
         used = True
         return str(self)
@@ -2003,13 +2007,13 @@ class _ScoreboardPlayersMod(Command):
 
 class _DisplayNameMod(Command):
     @_fluent
-    def name(self, targets: TargetSpec, objective: str, display_name: str = None) -> str:
+    def name(self, targets: TargetSpec, objective: StrOrArg, display_name: StrOrArg = None) -> str:
         self._add('name', as_target(targets), objective)
         self._add_opt(display_name)
         return str(self)
 
     @_fluent
-    def numberformat(self, targets: TargetSpec, score: str) -> _NumberFormatMod:
+    def numberformat(self, targets: TargetSpec, score: StrOrArg) -> _NumberFormatMod:
         self._add('numberformat', as_target(targets), score)
         return self._start(_NumberFormatMod())
 
@@ -2028,19 +2032,19 @@ class _ScoreboardMod(Command):
 
 class _PlaceMod(Command):
     @_fluent
-    def feature(self, feature: str, pos: Position = None) -> str:
+    def feature(self, feature: StrOrArg, pos: Position = None) -> str:
         self._add('feature', as_resource(feature))
         self._add_opt_pos(pos)
         return str(self)
 
     @_fluent
-    def jigsaw(self, pool: str, target_pool: str, max_depth: int, pos: Position = None) -> str:
+    def jigsaw(self, pool: StrOrArg, target_pool: StrOrArg, max_depth: IntOrArg, pos: Position = None) -> str:
         self._add('jigsaw', as_resource(pool), as_resource(target_pool), max_depth)
         self._add_opt_pos(pos)
         return str(self)
 
     @_fluent
-    def structure(self, structure: str, /, pos: Position = None) -> str:
+    def structure(self, structure: StrOrArg, /, pos: Position = None) -> str:
         self._add('structure', as_resource(structure))
         self._add_opt_pos(pos)
         return str(self)
@@ -2058,7 +2062,7 @@ class _RideMod(Command):
 
 class _ScheduleMod(Command):
     @_fluent
-    def function(self, path: str | object, time: DurationDef, action: str) -> str:
+    def function(self, path: StrOrArg | object, time: DurationDef, action: str) -> str:
         try:
             # noinspection PyUnresolvedReferences
             path = path.full_name
@@ -2068,14 +2072,14 @@ class _ScheduleMod(Command):
         return str(self)
 
     @_fluent
-    def clear(self, path: str) -> str:
+    def clear(self, path: StrOrArg) -> str:
         self._add('clear', as_resource_path(path))
         return str(self)
 
 
 class _TagMod(Command):
     @_fluent
-    def add(self, tag: str) -> str:
+    def add(self, tag: StrOrArg) -> str:
         self._add('add', as_name(tag))
         return str(self)
 
@@ -2085,7 +2089,7 @@ class _TagMod(Command):
         return str(self)
 
     @_fluent
-    def remove(self, tag: str) -> str:
+    def remove(self, tag: StrOrArg) -> str:
         self._add('remove', as_name(tag))
         return str(self)
 
@@ -2098,7 +2102,7 @@ class _TeamMod(Command):
         return str(self)
 
     @_fluent
-    def add(self, team: StrOrArg, display_name: str = None) -> str:
+    def add(self, team: StrOrArg, display_name: StrOrArg = None) -> str:
         self._add('add', as_team(team))
         self._add_opt(as_name(display_name))
         return str(self)
@@ -2125,17 +2129,17 @@ class _TeamMod(Command):
         return str(self)
 
     @_fluent
-    def modify(self, team: StrOrArg, option: TeamOption | str, value: str | bool) -> str:
+    def modify(self, team: StrOrArg, option: TeamOption | str, value: StrOrArg | BoolOrArg) -> str:
         value_type = TeamOption.value_spec(TeamOption(option))
         if value_type == bool:
-            if not isinstance(value, bool):
+            if not isinstance(value, (bool, Arg)):
                 raise ValueError(f'{value}: Must be bool')
             value = _bool(value)
         elif value_type == str:
-            if not isinstance(value, str):
+            if not isinstance(value, (str, Arg)):
                 raise ValueError(f'{value}: Must be str')
         else:
-            if value not in value_type:
+            if not isinstance(value, Arg) and value not in value_type:
                 raise ValueError(f'{value}: Must be one of {value_type}')
         self._add('modify', as_team(team), option, value)
         return str(self)
@@ -2143,7 +2147,7 @@ class _TeamMod(Command):
 
 class _TeleportMod(Command):
     @_fluent
-    def facing(self, facing: Target | Position, anchor: str = None) -> str:
+    def facing(self, facing: Target | Position, anchor: StrOrArg = None) -> str:
         self._add('facing')
         is_entity = False
         try:
@@ -2169,7 +2173,7 @@ class _TimeMod(Command):
         return str(self)
 
     @_fluent
-    def query(self, which: str) -> str:
+    def query(self, which: StrOrMod) -> str:
         self._add('query', _in_group(TIME_TYPES, which))
         return str(self)
 
@@ -2507,7 +2511,7 @@ def debug() -> _DebugMod:
     return cmd._start(_DebugMod())
 
 
-def defaultgamemode(gamemode: str) -> str:
+def defaultgamemode(gamemode: StrOrArg) -> str:
     """Sets the default game mode."""
     cmd = Command()
     cmd._add('$defaultgamemode', _in_group(GAMEMODE, gamemode))
@@ -2521,7 +2525,7 @@ def deop(*targets: Target) -> str:
     return str(cmd)
 
 
-def difficulty(difficulty: str = None) -> str:
+def difficulty(difficulty: StrOrArg = None) -> str:
     """Sets the difficulty level."""
     cmd = Command()
     cmd._add('$difficulty')
@@ -2537,7 +2541,7 @@ def effect() -> _EffectAction:
     return cmd._start(_EffectAction())
 
 
-def enchant(target: Target, enchantment: Enchantment | str | int, level: int = None) -> str:
+def enchant(target: Target, enchantment: Enchantment | StrOrArg | IntOrArg, level: IntOrArg = None) -> str:
     """Adds an enchantment to a player's selected item."""
     cmd = Command()
     cmd._add('$enchant', as_target(target))
@@ -2595,7 +2599,7 @@ def forceload() -> _ForceloadMod:
 
 
 # We use 'object' here because importing Function would create a circular dependency.
-def function(path: str | object, arguments: NbtDef = None) -> _FunctionMod:
+def function(path: StrOrArg | object, arguments: NbtDef = None) -> _FunctionMod:
     """Runs a function."""
     cmd = Command()
     cmd._add('$function', _as_function_path(path))
@@ -2604,7 +2608,7 @@ def function(path: str | object, arguments: NbtDef = None) -> _FunctionMod:
     return cmd._start(_FunctionMod())
 
 
-def _as_function_path(path: str | object) -> str:
+def _as_function_path(path: StrOrArg | object) -> str:
     try:
         # This will work if it is a Function, but I can't import Function, so we just duck type it
         # noinspection PyUnresolvedReferences
@@ -2615,7 +2619,7 @@ def _as_function_path(path: str | object) -> str:
     return path
 
 
-def gamemode(gamemode: str, target: Target = None) -> str:
+def gamemode(gamemode: StrOrArg, target: Target = None) -> str:
     """Sets the gamemode for some set of players."""
     cmd = Command()
     cmd._add('$gamemode', _in_group(GAMEMODE, gamemode))
@@ -2623,12 +2627,15 @@ def gamemode(gamemode: str, target: Target = None) -> str:
     return str(cmd)
 
 
-def gamerule(rule: GameRule | str, value: bool | int = None) -> str:
+def gamerule(rule: GameRule | StrOrArg, value: BoolOrArg | IntOrArg = None) -> str:
     """Sets or queries a game rule value."""
     cmd = Command()
-    rule = GameRule(rule)
+    if isinstance(rule, str):
+        rule = GameRule(rule)
     cmd._add('$gamerule', rule)
-    if value is not None:
+    if isinstance(value, Arg) or isinstance(rule, Arg):
+        cmd._add(value)
+    elif value is not None:
         rule_type = rule.rule_type()
         if rule_type == 'int':
             if type(value) != int:
@@ -2651,7 +2658,7 @@ def give(target: Target, item: EntityDef | BlockDef, count: int = None) -> str:
     return str(cmd)
 
 
-def help(command: str = None) -> str:
+def help(command: StrOrArg = None) -> str:
     """Provides help for commands."""
     cmd = Command()
     cmd._add('$help')
@@ -2666,7 +2673,7 @@ def item() -> _ItemMod:
     return cmd._start(_ItemMod())
 
 
-def jfr(action: str) -> str:
+def jfr(action: StrOrArg) -> str:
     cmd = Command()
     cmd._add('$jfr', _in_group(START_STOP, action))
     return str(cmd)
@@ -2687,8 +2694,8 @@ def list_() -> _ListMod:
     return cmd._start(_ListMod())
 
 
-def locate(kind: str, name: str) -> str:
-    """Locates closest structure."""
+def locate(kind: StrOrArg, name: StrOrArg) -> str:
+    """Locates closest thing of some kind."""
     cmd = Command()
     cmd._add('$locate', _in_group(LOCATABLE, kind), name)
     return str(cmd)
@@ -2701,7 +2708,7 @@ def loot() -> _LootTarget:
     return cmd._start(_LootTarget())
 
 
-def me(msg: str, *msgs: str) -> str:
+def me(msg: StrOrArg, *msgs: StrOrArg) -> str:
     """Displays a message about the sender."""
     cmd = Command()
     cmd._add('$me', msg, *msgs)
@@ -2715,7 +2722,7 @@ def op(target: Target) -> str:
     return str(cmd)
 
 
-def particle(particle: Particle | str, *params) -> str:
+def particle(particle: Particle | StrOrArg, *params) -> str:
     """Creates particles. The syntax of the command is quite variant and conditional, so nearly no checks are made."""
     cmd = Command()
     cmd._add('$particle', str(particle))
@@ -2751,7 +2758,7 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
     return str(cmd)
 
 
-def publish(allow_commands: bool = None, gamemode: str = None, port: int = None) -> str:
+def publish(allow_commands: BoolOrArg = None, gamemode: StrOrArg = None, port: StrOrArg = None) -> str:
     cmd = Command()
     cmd._add('$publish')
     cmd._add_opt(_bool(allow_commands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
@@ -2765,7 +2772,7 @@ def random() -> _RandomMod:
     return cmd._start(_RandomMod())
 
 
-def recipe(action: str, target: Target, recipe_name: str) -> str:
+def recipe(action: str, target: Target, recipe_name: StrOrArg) -> str:
     """Gives or takes player recipes."""
     action = _to_donate(action, GIVE_TAKE)
     if recipe_name != '*':
@@ -2827,7 +2834,7 @@ def seed() -> str:
     return str(cmd)
 
 
-def setblock(pos: Position, block: BlockDef, action: str = None) -> _BlockMod:
+def setblock(pos: Position, block: BlockDef, action: StrOrArg = None) -> _BlockMod:
     """Changes a block to another block."""
     if isinstance(block, str) and str(block)[0] == '#':
         raise ValueError(f'{block}: Block tag not allowed here')
@@ -2846,7 +2853,7 @@ def setidletimeout(minutes: int) -> str:
     return str(cmd)
 
 
-def setworldspawn(pos: Position = None, yaw: float | str = None) -> str:
+def setworldspawn(pos: Position = None, yaw: FloatOrArg | StrOrArg = None) -> str:
     """Sets the dir spawn."""
     cmd = Command()
     cmd._add('$setworldspawn')
