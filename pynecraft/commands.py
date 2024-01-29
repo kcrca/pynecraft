@@ -943,7 +943,7 @@ class Selector(TargetSpec):
         return self._not_args('team', as_name(team, allow_not=True), as_names(*teams, allow_not=True))
 
     @_fluent
-    def sort(self, sorting: str) -> Selector:
+    def sort(self, sorting: StrOrArg) -> Selector:
         """Add a sort criteria to the selector."""
         return self._unique_arg('sort', _in_group(SORT, sorting))
 
@@ -1018,7 +1018,7 @@ class Selector(TargetSpec):
         adv = [advancement]
         for a in advancements:
             adv.append(a)
-        values = (str(x) for x in adv)
+        values = tuple(str(x) for x in adv)
         return self._unique_arg('advancements', '{' + ','.join(values) + '}')
 
     @_fluent

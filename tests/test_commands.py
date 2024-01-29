@@ -1347,3 +1347,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[tag=!$(t1)]', str(a().not_tag(Arg('t1'))))
         self.assertEqual('@a[tag=!$(t1), tag=!$(t2)]', str(a().not_tag(Arg('t1'), Arg('t2'))))
         self.assertEqual('@a[tag=!$(t1), tag=$(t2)]', str(a().not_tag(Arg('t1')).tag(Arg('t2'))))
+        self.assertEqual(
+            '@a[x=$(x),y=$(y),z=$(z), distance=$(d), dx=$(dx),dy=$(dy),dz=$(dz), scores={$(s)=$(v)}, tag=$(t), '
+            'team=$(tm), sort=$(so), limit=$(li), level=$(lvl), gamemode=$(gm), name=$(n), x_rotation=$(xr), '
+            'y_rotation=$(yr), type=$(ty), advancements={$(adv)=$(vadv)}, predicate=$(p)]',
+            str(a().pos((Arg('x'), Arg('y'), Arg('z'))).distance(Arg('d')).volume(
+                (Arg('dx'), Arg('dy'), Arg('dz'))).scores({Arg('s'): Arg('v')}).tag(Arg('t')).team(Arg('tm')).sort(
+                Arg('so')).limit(Arg('li')).level(Arg('lvl')).gamemode(Arg('gm')).name(Arg('n')).x_rotation(
+                Arg('xr')).y_rotation(Arg('yr')).type(Arg('ty')).advancements(
+                AdvancementCriteria(Arg('adv'), Arg('vadv'))).predicate(Arg('p'))))

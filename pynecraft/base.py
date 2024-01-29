@@ -1096,8 +1096,10 @@ for __i, __r in enumerate(SIGN_DIRECTIONS):
 _facing_info = {NORTH: (0, -1, 0), EAST: (1, 0, 270), SOUTH: (0, 1, 180), WEST: (-1, 0, 90)}
 
 
-def _in_group(group: list | tuple, name: str | int | None, allow_none=True):
+def _in_group(group: list | tuple, name: StrOrArg | int | None, allow_none=True):
     if allow_none and name is None:
+        return name
+    if isinstance(name, Arg):
         return name
 
     if name not in group:
@@ -1139,21 +1141,24 @@ def as_duration(duration: DurationDef | None) -> TimeSpec | None:
 
 
 def as_range(spec: Range) -> str:
-    """Checks if the argument is a valid numeric range.
+    """
+    Checks if the argument is a valid numeric range.
 
      "Valid" means a single number or bool, or a two-element list or tuple that define the endpoints. If a bool, it will
      be treated as 1 or 0. For a two-element range, one of the endpoints may be None to define an open-ended range.
 
     :param spec: The (probable) range.
-    :return: A string for the range, either the single number of a range using '..' between the two values.    """
+    :return: A string for the range, either the single number of a range using '..' between the two values, one of which
+    can be None.
+    """
 
     if isinstance(spec, bool):
         return str(int(spec))
-    if isinstance(spec, (float, int)):
+    if isinstance(spec, (float, int, Arg)):
         return str(spec)
 
     for i, v in enumerate(spec):
-        if v is not None and not isinstance(v, (float, int)):
+        if v is not None and not isinstance(v, (float, int, Arg)):
             raise ValueError(f'{v}: Must be None or a number')
     s = '' if spec[0] is None else spec[0]
     e = '' if spec[1] is None else spec[1]
