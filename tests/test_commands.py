@@ -1323,6 +1323,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$item modify entity @s $(slot) $(mod)',
                          str(item().modify().entity(s(), Arg('slot'), Arg('mod'))))
         self.assertEqual('$advancement grant @s from $(from)', advancement(GRANT, s()).from_(Arg('from')))
+        self.assertEqual('$(u)',str(User(Arg('u'))))
+
+        with self.assertRaises(ValueError):
+            tp(e().type(Arg('t')))
+
+    def test_selector_macros(self):
         self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
             AdvancementCriteria(Arg('c'), Arg('b')))))
         self.assertEqual('@a[advancements={husbandry/wax_on={stuff=$(b)}}]', str(a().advancements(AdvancementCriteria(
@@ -1331,7 +1337,7 @@ class TestCommands(unittest.TestCase):
                          str(a().advancements(
                              AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
                              AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
-        self.assertEqual('$(u)',str(User(Arg('u'))))
+        self.assertEqual('@a[dx=$(x),dy=$(y),dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
+        self.assertEqual('@a[score_specs={x=1,y=..3}]', str(a().scores('x=1', 'y=..3')))
 
-        with self.assertRaises(ValueError):
-            tp(e().type(Arg('t')))
+
