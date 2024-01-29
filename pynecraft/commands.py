@@ -112,7 +112,7 @@ def _as_data_target(target: DataTarget | None, checker: Callable) -> Iterable[an
         return 'block', *as_position(target)
     if isinstance(target, TargetSpec):
         return 'entity', checker(target)
-    if isinstance(target, str):
+    if isinstance(target, (str, Arg)):
         return 'storage', as_resource_path(target)
     raise ValueError(f'{target}: Invalid data target (must be position, entity selector, or resource name)')
 
@@ -363,7 +363,7 @@ ADVANCEMENT = [EVERYTHING, ONLY, FROM, THROUGH, UNTIL]
 
 VALUE = 'value'
 MAX = 'max'
-BOSSBAR = [VALUE, MAX]
+BOSSBAR_STORE = [VALUE, MAX]
 """Valid bossbar values for storage."""
 
 BOSSBAR_COLORS = [BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW]
@@ -518,7 +518,6 @@ MAX_EFFECT_SECONDS = 1000000
 """Maximum number of seconds an effect can be specified for"""
 
 
-
 def _to_donate(action: StrOrArg, group_list: list[str]):
     if isinstance(action, Arg):
         return str(action)
@@ -598,7 +597,7 @@ T = TypeVar('T', bound=Command)
 
 class _ScoreClause(Command):
     @_fluent
-    def is_(self, relation: str, score: ScoreName) -> _ExecuteMod:
+    def is_(self, relation: StrOrArg, score: ScoreName) -> _ExecuteMod:
         self._add(_in_group(RELATION, relation), as_score(score))
         return self._start(_ExecuteMod())
 
@@ -882,7 +881,7 @@ class Selector(TargetSpec):
             self._add_arg(key, v)
         return self
 
-    def _not_args(self, key: str, value, values):
+    def _not_args(self, key: StrOrArg, value, values):
         self._add_arg(key, _not_ify(value))
         for v in values:
             self._add_arg(key, _not_ify(v))
@@ -933,12 +932,12 @@ class Selector(TargetSpec):
         return self.tag(_not_ify(as_name(tag, allow_not=True)), *_not_ify(as_names(*tags, allow_not=True)))
 
     @_fluent
-    def team(self, team: str) -> Selector:
+    def team(self, team: StrOrArg) -> Selector:
         """Add a team to the selector."""
         return self._unique_arg('team', as_name(team, allow_not=True))
 
     @_fluent
-    def not_team(self, team: str, *teams) -> Selector:
+    def not_team(self, team: StrOrArg, *teams) -> Selector:
         """Add one or more 'not' teams to the selector. You need not specify the '!' in the string."""
         return self._not_args('team', as_name(team, allow_not=True), as_names(*teams, allow_not=True))
 
@@ -948,7 +947,7 @@ class Selector(TargetSpec):
         return self._unique_arg('sort', _in_group(SORT, sorting))
 
     @_fluent
-    def limit(self, limit: int) -> Selector:
+    def limit(self, limit: IntOrArg) -> Selector:
         """Add a result count limit to the selector."""
         self._single = limit == 1
         return self._unique_arg('limit', str(limit))
@@ -959,12 +958,12 @@ class Selector(TargetSpec):
         return self._unique_arg('level', as_range(level_range))
 
     @_fluent
-    def gamemode(self, mode: str) -> Selector:
+    def gamemode(self, mode: StrOrArg) -> Selector:
         """Add a gamemode to the selector."""
         return self._unique_arg('gamemode', _in_group(GAMEMODE, mode))
 
     @_fluent
-    def not_gamemode(self, mode: str, *modes: str) -> Selector:
+    def not_gamemode(self, mode: StrOrArg, *modes: StrOrArg) -> Selector:
         """Add one or more 'not' gamemodes to the selector. You need to specify the '!' in the string."""
         _in_group(GAMEMODE, mode)
         for g in modes:
@@ -972,12 +971,12 @@ class Selector(TargetSpec):
         return self._not_args('gamemode', mode, modes)
 
     @_fluent
-    def name(self, name: str) -> Selector:
+    def name(self, name: StrOrArg) -> Selector:
         """Add a name criteria to the selector."""
         return self._unique_arg('name', as_name(name, allow_not=True))
 
     @_fluent
-    def not_name(self, name: str, *names: str) -> Selector:
+    def not_name(self, name: StrOrArg, *names: StrOrArg) -> Selector:
         """Add one or more 'not' names to the selector. You need to specify the '!' in the string."""
         return self._not_args('name', as_name(name, allow_not=True), as_names(*names, allow_not=True))
 
@@ -993,12 +992,12 @@ class Selector(TargetSpec):
         return self
 
     @_fluent
-    def type(self, type_: str) -> Selector:
+    def type(self, type_: StrOrArg) -> Selector:
         """Add a type to the selector."""
         return self._unique_arg('type', as_resource(type_, allow_not=True))
 
     @_fluent
-    def not_type(self, type_: str, *types: str):
+    def not_type(self, type_: StrOrArg, *types: StrOrArg):
         """Add one or more 'not' types to the selector. You need to specify the '!' in the string."""
         return self._not_args('type', as_resource(type_, allow_not=True), as_resources(*types, allow_not=True))
 
@@ -1022,7 +1021,7 @@ class Selector(TargetSpec):
         return self._unique_arg('advancements', '{' + ','.join(values) + '}')
 
     @_fluent
-    def predicate(self, predicate: str, *predicates: str) -> Selector:
+    def predicate(self, predicate: StrOrArg, *predicates: StrOrArg) -> Selector:
         """Add a predicate to the selector."""
         return self._multi_args('predicate', predicate, predicates)
 
@@ -1039,12 +1038,12 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def blocks(self, start_pos: Position, end_pos: Position, dest_pos: Position, mode: str) -> _ExecuteMod:
+    def blocks(self, start_pos: Position, end_pos: Position, dest_pos: Position, mode: StrOrArg) -> _ExecuteMod:
         self._add('blocks', *start_pos, *end_pos, *dest_pos, _in_group(SCAN_MODE, mode))
         return self._start(_ExecuteMod())
 
     @_fluent
-    def data(self, data_target: DataTarget, nbt_path: str) -> _ExecuteMod:
+    def data(self, data_target: DataTarget, nbt_path: StrOrArg) -> _ExecuteMod:
         self._add('data', data_target_str(data_target), nbt_path)
         return self._start(_ExecuteMod())
 
@@ -1054,12 +1053,12 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def function(self, function: str) -> _ExecuteMod:
+    def function(self, function: StrOrArg) -> _ExecuteMod:
         self._add('function', function)
         return self._start(_ExecuteMod())
 
     @_fluent
-    def predicate(self, predicate: str) -> _ExecuteMod:
+    def predicate(self, predicate: StrOrArg) -> _ExecuteMod:
         self._add('predicate', predicate)
         return self._start(_ExecuteMod())
 
@@ -1075,23 +1074,23 @@ class _IfClause(Command):
 
 class _StoreClause(Command):
     @_fluent
-    def block(self, pos: Position, nbt_path: str, data_type: str, scale: float = 1) -> _ExecuteMod:
+    def block(self, pos: Position, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
         self._add('block', *pos, nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
-    def entity(self, target: Target, nbt_path: str, data_type: str, scale: float = 1) -> _ExecuteMod:
+    def entity(self, target: Target, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
         self._add('entity', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
-    def storage(self, target: Target, nbt_path: str, data_type: str, scale: float = 1) -> _ExecuteMod:
+    def storage(self, target: Target, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
         self._add('storage', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
-    def bossbar(self, id: str, param: str) -> _ExecuteMod:
-        self._add('bossbar', id, _in_group(BOSSBAR, param))
+    def bossbar(self, id: StrOrArg, where: str) -> _ExecuteMod:
+        self._add('bossbar', id, _in_group(BOSSBAR_STORE, where))
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1105,7 +1104,7 @@ class _ReturnMod(Command):
         super().__init__()
         self._used = False
 
-    def run(self, cmd: str | Command) -> str:
+    def run(self, cmd: StrOrArg | Command) -> str:
         if not isinstance(cmd, str):
             cmd = str(cmd)
         self._add('run', cmd)
@@ -1131,7 +1130,7 @@ class _ExecuteMod(Command):
         return self
 
     @_fluent
-    def anchored(self, anchor: str) -> _ExecuteMod:
+    def anchored(self, anchor: StrOrArg) -> _ExecuteMod:
         self._add('anchored', _in_group(ENTITY_ANCHOR, anchor))
         return self
 
@@ -1156,12 +1155,12 @@ class _ExecuteMod(Command):
         return self
 
     @_fluent
-    def facing_entity(self, target: Target, anchor: str) -> _ExecuteMod:
+    def facing_entity(self, target: Target, anchor: StrOrArg) -> _ExecuteMod:
         self._add('facing entity', as_target(target), _in_group(ENTITY_ANCHOR, anchor))
         return self
 
     @_fluent
-    def in_(self, dimension: str) -> _ExecuteMod:
+    def in_(self, dimension: StrOrArg) -> _ExecuteMod:
         self._add('in', _in_group(DIMENSION, dimension))
         return self
 
@@ -1175,7 +1174,7 @@ class _ExecuteMod(Command):
         self._add('positioned as', as_target(target))
         return self
 
-    def positioned_over(self, heightmap: str) -> _ExecuteMod:
+    def positioned_over(self, heightmap: StrOrArg) -> _ExecuteMod:
         self._add('positioned over', _in_group(HEIGHTMAP, heightmap))
         return self
 
@@ -1200,15 +1199,15 @@ class _ExecuteMod(Command):
         return self._start(_IfClause())
 
     @_fluent
-    def store(self, what: str) -> _StoreClause:
+    def store(self, what: StrOrArg) -> _StoreClause:
         self._add('store', _in_group(STORE_WHAT, what))
         return self._start(_StoreClause())
 
-    def dimension(self, dimension: str) -> _ExecuteMod:
+    def dimension(self, dimension: StrOrArg) -> _ExecuteMod:
         self._add('dimension', dimension)
         return self
 
-    def on(self, relationship: str) -> _ExecuteMod:
+    def on(self, relationship: StrOrArg) -> _ExecuteMod:
         self._add('on', _in_group(RELATIONSHIPS, relationship))
         return self
 
@@ -1256,7 +1255,7 @@ class _AttributeBaseAct(Command):
 
 class _AttributeModifierAct(Command):
     @_fluent
-    def add(self, uuid: StrOrArg, name: str, value: float) -> str:
+    def add(self, uuid: StrOrArg | Uuid, name: StrOrArg, value: FloatOrArg) -> str:
         self._add('add', as_uuid(uuid), f'"{name}"', value)
         return str(self)
 
@@ -1331,17 +1330,17 @@ class _BossbarGet(Command):
 
 class _BossbarSet(Command):
     @_fluent
-    def color(self, color: str) -> str:
+    def color(self, color: StrOrArg) -> str:
         self._add('color', _in_group(BOSSBAR_COLORS, color))
         return str(self)
 
     @_fluent
-    def max(self, value: int) -> str:
+    def max(self, value: IntOrArg) -> str:
         self._add('max', value)
         return str(self)
 
     @_fluent
-    def name(self, name: str) -> str:
+    def name(self, name: StrOrArg) -> str:
         self._add('name', _quote(name))
         return str(self)
 
@@ -1352,7 +1351,7 @@ class _BossbarSet(Command):
         return str(self)
 
     @_fluent
-    def style(self, style: str) -> str:
+    def style(self, style: StrOrArg) -> str:
         self._add('style', _in_group(BOSSBAR_STYLES, style))
         return str(self)
 
@@ -2250,15 +2249,15 @@ class _TitleMod(Command):
         return self._add_str('reset')
 
     @_fluent
-    def title(self, msg: str) -> str:
+    def title(self, msg: StrOrArg) -> str:
         return self._add_str('title', _quote(msg))
 
     @_fluent
-    def subtitle(self, msg: str) -> str:
+    def subtitle(self, msg: StrOrArg) -> str:
         return self._add_str('subtitle', _quote(msg))
 
     @_fluent
-    def actionbar(self, msg: str) -> str:
+    def actionbar(self, msg: StrOrArg) -> str:
         return self._add_str('actionbar', _quote(msg))
 
     @_fluent
@@ -2480,7 +2479,7 @@ def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Positi
     return cmd._start(_CloneClause())
 
 
-def damage(target: Target, amount: int, type: str = None) -> _DamageMod:
+def damage(target: Target, amount: IntOrArg, type: StrOrArg = None) -> _DamageMod:
     """Applies a set amount of damage to the specified entities."""
     cmd = Command()
     cmd._add('$damage', as_target(target), amount)
@@ -3452,7 +3451,7 @@ class Score(Command, Expression):
     # noinspection PyArgumentList
     _cmd_base = scoreboard().players()
 
-    def __init__(self, target: Target, objective: str):
+    def __init__(self, target: Target, objective: StrOrArg):
         """Creates a new score.
 
         :param target: The score's name.

@@ -1356,3 +1356,18 @@ class TestCommands(unittest.TestCase):
                 Arg('so')).limit(Arg('li')).level(Arg('lvl')).gamemode(Arg('gm')).name(Arg('n')).x_rotation(
                 Arg('xr')).y_rotation(Arg('yr')).type(Arg('ty')).advancements(
                 AdvancementCriteria(Arg('adv'), Arg('vadv'))).predicate(Arg('p'))))
+        self.assertEqual('$(name) $(obj)', str(Score(Arg('name'), Arg('obj'))))
+        self.assertEqual('$execute if blocks $(x1) $(y1) $(z1) $(x2) $(y2) $(z2) $(x3) $(y3) $(z3) $(m)',
+                         str(execute().if_().blocks(
+                             (Arg('x1'), Arg('y1'), Arg('z1')),
+                             (Arg('x2'), Arg('y2'), Arg('z2')),
+                             (Arg('x3'), Arg('y3'), Arg('z3')),
+                             Arg('m'))))
+        self.assertEqual('$execute if data storage $(t) $(p)', str(execute().if_().data(Arg('t'), Arg('p'))))
+        self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
+        self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
+        self.assertEqual('$execute store result block $(x) $(y) $(z) $(path) short $(scale)',
+                         str(execute().store(RESULT).block((Arg('x'), Arg('y'), Arg('z')), Arg('path'), SHORT,
+                                                           Arg('scale'))))
+        self.assertEqual('$title @s title $(t)', title(s()).title(Arg('t')))
+        self.assertEqual('$damage @s $(d) $(w) ', str(damage(s(), Arg('d'), Arg('w'))))
