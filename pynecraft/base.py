@@ -32,6 +32,7 @@ _nbt_path_re = re.compile(r'[a-zA-Z0-9_.[\]{}]*')
 _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
 _backslash_map = {'\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
+_arg_re = re.compile(r'\$\(' + _nbt_path_re.pattern + r'\)')
 
 NORTH = 'north'
 EAST = 'east'
@@ -190,8 +191,8 @@ def _strip_not(path):
     return path
 
 
-def _not_ify(value: str | Iterable[str]) -> str | Iterable[str]:
-    if isinstance(value, str):
+def _not_ify(value: StrOrArg | Iterable[StrOrArg]) -> str | Iterable[str]:
+    if isinstance(value, StrOrArg):
         s = str(value)
         if not s.startswith('!'):
             s = '!' + s
@@ -332,19 +333,19 @@ def as_name(name: str | None, allow_not=False) -> str | None:
     :param allow_not: Whether to allow a '!' before any names.
     :return: the input value.
     """
-    if isinstance(name, Arg):
-        return name
     if name is None:
         return None
+    if isinstance(name, Arg):
+        return str(name)
     orig = name
     if allow_not:
         name = _strip_not(name)
-    if not _name_re.fullmatch(name):
+    if not _name_re.fullmatch(name) and not _arg_re.fullmatch(name):
         raise ValueError(f'{name}: Invalid name')
     return orig
 
 
-def as_names(*names: str, allow_not=False) -> tuple[str, ...]:
+def as_names(*names: StrOrArg, allow_not=False) -> tuple[str, ...]:
     """Calls as_name on each name
 
     :param names: The (probable) names.
@@ -353,7 +354,7 @@ def as_names(*names: str, allow_not=False) -> tuple[str, ...]:
     """
     for t in names:
         as_name(t, allow_not)
-    return names
+    return tuple(str(n) for n in names)
 
 
 def as_column(col: IntColumn) -> IntColumn:

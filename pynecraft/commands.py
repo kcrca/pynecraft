@@ -30,7 +30,7 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     WHITE, YELLOW, _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, \
     as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, \
     as_range, as_resource, as_resource_path, as_resources, as_yaw, to_id, to_name, FacingDef, \
-    Facing, _nbt_path_re, Arg, StrOrArg, IntOrArg, BoolOrArg, FloatOrArg
+    Facing, Arg, StrOrArg, IntOrArg, BoolOrArg, FloatOrArg, _arg_re
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 
@@ -517,7 +517,6 @@ _GIVE_GRANT = GIVE_CLEAR + GRANT_REVOKE
 MAX_EFFECT_SECONDS = 1000000
 """Maximum number of seconds an effect can be specified for"""
 
-_arg_re = re.compile(r'\$\(' + _nbt_path_re.pattern + r'\)')
 
 
 def _to_donate(action: StrOrArg, group_list: list[str]):
@@ -918,17 +917,18 @@ class Selector(TargetSpec):
         return self._unique_arg('delta', f'dx={_float(dx)},dy={_float(dy)},dz={_float(dz)}')
 
     @_fluent
-    def scores(self, *score_specs: StrOrArg) -> Selector:
+    def scores(self, score_specs: Mapping) -> Selector:
         """Add one or more score criteria to the selector."""
-        return self._unique_arg('score_specs', '{' + ','.join(score_specs) + '}')
+        s = '{' + ','.join(f'{k}={v}' for k, v in score_specs.items()) + '}'
+        return self._unique_arg('scores', s)
 
     @_fluent
-    def tag(self, tag: str, *tags: str) -> Selector:
+    def tag(self, tag: StrOrArg, *tags: StrOrArg) -> Selector:
         """Add one or more tags to the selector. You can use '!' for 'not'."""
         return self._multi_args('tag', as_name(tag, allow_not=True), as_names(*tags, allow_not=True))
 
     @_fluent
-    def not_tag(self, tag: str, *tags: str) -> Selector:
+    def not_tag(self, tag: StrOrArg, *tags: StrOrArg) -> Selector:
         """Add one or more 'not' tags to the selector. You need not specify the '!' in the string."""
         return self.tag(_not_ify(as_name(tag, allow_not=True)), *_not_ify(as_names(*tags, allow_not=True)))
 

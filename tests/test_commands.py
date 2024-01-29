@@ -348,9 +348,9 @@ class TestCommands(unittest.TestCase):
             a().volume((1, 2, 3)).volume((4, 5, 6))
 
     def test_target_scores(self):
-        self.assertEqual('@a[score_specs={x=1,y=..3}]', str(a().scores('x=1', 'y=..3')))
+        self.assertEqual('@a[scores={x=1,y=..3}]', str(a().scores({'x': 1, 'y': '..3'})))
         with self.assertRaises(KeyError):
-            a().scores('x=1').scores('y=..3')
+            a().scores({'x': 1}).scores({'y': '..3'})
 
     def test_target_tag(self):
         self.assertEqual('@a[tag=foo]', str(a().tag('foo')))
@@ -474,11 +474,12 @@ class TestCommands(unittest.TestCase):
 
     def test_target_chainability(self):
         self.assertEqual(
-            '@a[x=1,y=2,z=3, distance=..15.5, dx=4.4,dy=5.5,dz=6.6, score_specs={}, tag=one, team=slug, '
+            '@a[x=1,y=2,z=3, distance=..15.5, dx=4.4,dy=5.5,dz=6.6, scores={}, tag=one, team=slug, '
             'sort=arbitrary, limit=15, level=3..15, gamemode=survival, name=Robin, x_rotation=9, '
             'y_rotation=..24, type=cougar, nbt={hi: there}, advancements={husbandry/plant_seed=true}, '
             'predicate=nada]',
-            str(a().pos((1, 2, 3)).distance((None, 15.5)).volume((4.4, 5.5, 6.6)).scores().tag("one").team('slug').sort(
+            str(a().pos((1, 2, 3)).distance((None, 15.5)).volume((4.4, 5.5, 6.6)).scores({}).tag("one").team(
+                'slug').sort(
                 ARBITRARY).limit(15).level((3, 15)).gamemode(SURVIVAL).name('Robin').x_rotation(9).y_rotation(
                 (None, 24)).type('cougar').nbt({"hi": "there"}).advancements(
                 AdvancementCriteria(Advancement.A_SEEDY_PLACE, True)).predicate("nada")))
@@ -1323,7 +1324,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$item modify entity @s $(slot) $(mod)',
                          str(item().modify().entity(s(), Arg('slot'), Arg('mod'))))
         self.assertEqual('$advancement grant @s from $(from)', advancement(GRANT, s()).from_(Arg('from')))
-        self.assertEqual('$(u)',str(User(Arg('u'))))
+        self.assertEqual('$(u)', str(User(Arg('u'))))
 
         with self.assertRaises(ValueError):
             tp(e().type(Arg('t')))
@@ -1338,6 +1339,11 @@ class TestCommands(unittest.TestCase):
                              AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
                              AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
         self.assertEqual('@a[dx=$(x),dy=$(y),dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
-        self.assertEqual('@a[score_specs={x=1,y=..3}]', str(a().scores('x=1', 'y=..3')))
-
-
+        self.assertEqual('@a[scores={$(x)=$(xv),$(y)=$(yv)}]',
+                         str(a().scores({Arg('x'): Arg('xv'), Arg('y'): Arg('yv')})))
+        self.assertEqual('@a[tag=$(t1)]', str(a().tag(Arg('t1'))))
+        self.assertEqual('@a[tag=$(t1), tag=$(t2)]', str(a().tag(Arg('t1'), Arg('t2'))))
+        self.assertEqual('@a[tag=$(t1), tag=$(t2)]', str(a().tag(Arg('t1')).tag(Arg('t2'))))
+        self.assertEqual('@a[tag=!$(t1)]', str(a().not_tag(Arg('t1'))))
+        self.assertEqual('@a[tag=!$(t1), tag=!$(t2)]', str(a().not_tag(Arg('t1'), Arg('t2'))))
+        self.assertEqual('@a[tag=!$(t1), tag=$(t2)]', str(a().not_tag(Arg('t1')).tag(Arg('t2'))))
