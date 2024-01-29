@@ -482,3 +482,10 @@ class TestSimpler(unittest.TestCase):
             Painting('pointer').summon(r(0, 0, 0), nbt={'foo': 12}, facing=SOUTH))
         with self.assertRaises(ValueError):
             Painting('foo')
+
+    def test_macro(self):
+        shield = Shield().add_pattern(Arg('pat'), Arg('c'))
+        self.assertEqual(
+            {'Count': 1, 'id': 'shield',
+             'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': '$(pat)', 'Color': '$(c)'}]}}},
+            shield.nbt)

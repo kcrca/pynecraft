@@ -1310,3 +1310,27 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('random reset fred 123 false', random().reset('fred', 123, False))
         self.assertEqual('random reset fred 123 true true', random().reset('fred', 123, True, True))
         self.assertEqual('random reset fred 123 true false', random().reset('fred', 123, True, False))
+
+    def test_macro(self):
+        self.assertEqual('$say $(test)', say(Arg('test')))
+        self.assertEqual('$execute as @e[tag=$(t)] positioned 1 $(y) ~$(z) run tp $(w) @s',
+                         execute().as_(e().tag(Arg('t'))).positioned((1, Arg('y'), r(Arg('z')))).run(tp(Arg('w'), s())))
+        self.assertEqual('$attribute @s foo modifier add $(uuid) "robin" 1.3',
+                         attribute(s(), 'foo').modifier().add(Arg('uuid'), 'robin', 1.3))
+        self.assertEqual('$tag $(target) list', tag(Arg('target')).list())
+        self.assertEqual('$team empty $(team)', team().empty(Arg('team')))
+        self.assertEqual('$setblock 1 2 3 $(block)', str(setblock((1, 2, 3), Arg('block'))))
+        self.assertEqual('$item modify entity @s $(slot) $(mod)',
+                         str(item().modify().entity(s(), Arg('slot'), Arg('mod'))))
+        self.assertEqual('$advancement grant @s from $(from)', advancement(GRANT, s()).from_(Arg('from')))
+        self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
+            AdvancementCriteria(Arg('c'), Arg('b')))))
+        self.assertEqual('@a[advancements={husbandry/wax_on={stuff=$(b)}}]', str(a().advancements(AdvancementCriteria(
+            Advancement.WAX_ON, ('stuff', Arg('b'))))))
+        self.assertEqual('@a[advancements={husbandry/wax_on={stuff=false},story/smelt_iron={stuff=false}}]',
+                         str(a().advancements(
+                             AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
+                             AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
+
+        with self.assertRaises(ValueError):
+            tp(e().type(Arg('t')))

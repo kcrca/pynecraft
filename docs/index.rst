@@ -76,7 +76,7 @@ Pynecraft has the following modules:
     mechanisms.
 
 Notes on Design
-==============-
+===============
 
 There are several choices to be made when deciding how to map the
 minecraft commands into a python (and hopefully pythonic) functions
@@ -89,7 +89,6 @@ options?
 
 For the block type, you can use several different styles. For simple
 blocks, you can just name the block:
-
 ::
 
     fill((1, 2, 3), (4, 5, 6), 'air')
@@ -249,6 +248,18 @@ run, and it will generate a command for each one.
         say('Ready to go!'),
         function('my_pack:go_to_it')
         say('Done!'))
+
+*Macro Commands*
+----------------
+In Minecraft, macro commands are marked with a ``$``, and substitute incoming values using ``$(foo)``.
+Pynecraft just requires you to mark where you are using incoming arguments, and prepends the ``$`` if needed.
+So for example, you could have use macro arguments like this:
+::
+    execute().as_(e().tag(Var('tag'))).run(say(Var(msg)))
+
+This would give you:
+::
+    $execute as @e[tag=$(tag)] run say $(msg)
 
 *Functions*
 -----------

@@ -30,7 +30,7 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     WHITE, YELLOW, _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, \
     as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, \
     as_range, as_resource, as_resource_path, as_resources, as_yaw, to_id, to_name, FacingDef, \
-    Facing
+    Facing, _nbt_path_re, Arg, StrOrArg, IntOrArg, BoolOrArg
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 
@@ -48,7 +48,7 @@ def as_biome(biome: Biome, allow_not: bool = False) -> str:
     Returns a string version of the given biome. A string version is preferred because new biome types can be added
     by datapacks.
     """
-    if isinstance(biome, BiomeId):
+    if isinstance(biome, (BiomeId, Arg)):
         return str(biome)
     return as_resource(biome, allow_not=allow_not)
 
@@ -153,34 +153,40 @@ def as_position(pos: Position) -> Position:
     raise ValueError(f'{str(pos)}: Invalid position')
 
 
-def as_user(name: str) -> str:
+def as_user(name: StrOrArg) -> str:
     """Checks if the argument is a valid username.
 
     :param name: The (probable) user name.
     :return: The input value.
     """
+    if isinstance(name, Arg):
+        return str(name)
     if not re.fullmatch(r'\w+', name):
         raise ValueError(f'{name}: Invalid user name')
     return name
 
 
-def as_uuid(uuid: str) -> str:
+def as_uuid(uuid: StrOrArg) -> str:
     """Checks if the string is a valid UUID as four numbers separated by dashes.
 
     :param uuid: The (probable) uuid.
     :return: the input value.
     """
+    if isinstance(uuid, Arg):
+        return str(uuid)
     if not re.fullmatch(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+', uuid):
         raise ValueError(f'{uuid}: Invalid UUID string')
     return uuid
 
 
-def as_team(team: str) -> str | None:
+def as_team(team: StrOrArg) -> str | None:
     """Checks if the argument is a valid team name, or None.
 
     :param team: The (probable) team name.
     :return: The input value.
     """
+    if isinstance(team, Arg):
+        return str(team)
     if team is None:
         return team
     if not re.fullmatch(r'[\w+.-]{1,16}', team):
@@ -196,6 +202,8 @@ def as_block(block: BlockDef | None) -> Block | None:
     :param block: The (probable) block.
     :return: A Block object for the argument, or None.
     """
+    if isinstance(block, Arg):
+        return str(block)
     if block is None:
         return None
     if isinstance(block, str):
@@ -213,6 +221,8 @@ def as_entity(entity: EntityDef | None) -> Entity | None:
     :param entity: The (probable) entity
     :return: an Entity object for the argument, or None.
     """
+    if isinstance(entity, Arg):
+        return str(entity)
     if entity is None:
         return None
     if isinstance(entity, str):
@@ -239,7 +249,7 @@ def as_score(score: ScoreName | None) -> Score | None:
     raise ValueError(f'{str(score)}: Invalid score')
 
 
-def as_color_num(color: int | str | None) -> int | None:
+def as_color_num(color: IntOrArg | StrOrArg | None) -> int | None:
     """Checks if the argument is a valid color number specification, or None.
 
     "Valid" means an int, or a string that names a known color from which a color number can be inferred.
@@ -248,6 +258,8 @@ def as_color_num(color: int | str | None) -> int | None:
     :param color:
     :return:
     """
+    if isinstance(color, Arg):
+        return str(color)
     if color is None:
         return None
     if isinstance(color, str):
@@ -260,7 +272,7 @@ def as_color_num(color: int | str | None) -> int | None:
     return color
 
 
-def as_color(color: int | str | None) -> str | None:
+def as_color(color: IntOrArg | StrOrArg | None) -> str | None:
     """Checks if the argument is a valid color name, or None.
 
     "Valid" means one of the 16 known colors, such as those used for wool. These are stored in the
@@ -275,7 +287,7 @@ def as_color(color: int | str | None) -> str | None:
     return COLORS[color_num]
 
 
-def as_slot(slot: str | None) -> str | None:
+def as_slot(slot: StrOrArg | None) -> str | None:
     """Checks if the argument is a valid slot specification, or None.
 
     "Valid" means valid for the ``item`` command.
@@ -283,6 +295,8 @@ def as_slot(slot: str | None) -> str | None:
     :param slot: The (probable) slot name.
     :return: The input value.
     """
+    if isinstance(slot, Arg):
+        return str(slot)
     if slot is None:
         return None
     if not re.fullmatch(r'[a-z]+(\.[a-z0-9]+)?', slot):
@@ -503,8 +517,12 @@ _GIVE_GRANT = GIVE_CLEAR + GRANT_REVOKE
 MAX_EFFECT_SECONDS = 1000000
 """Maximum number of seconds an effect can be specified for"""
 
+_arg_re = re.compile(r'\$\(' + _nbt_path_re.pattern + r'\)')
 
-def _to_donate(action: str, group_list: list[str]):
+
+def _to_donate(action: StrOrArg, group_list: list[str]):
+    if isinstance(action, Arg):
+        return str(action)
     if action in _GIVELIKE:
         return group_list[0]
     elif action in _CLEARLIKE:
@@ -521,7 +539,10 @@ class Command:
         self._rep = ''
 
     def __str__(self):
-        return self._rep.strip()
+        s = self._rep.strip()
+        if s[0] == '$' and not _arg_re.search(s):
+            s = s[1:]
+        return s
 
     def __repr__(self):
         return f'<{self.__class__.__name__}:{self}>'
@@ -555,9 +576,9 @@ class Command:
         self._add(*args)
         return str(self)
 
-    def _add_if(self, to_add: str):
+    def _add_if(self, to_add):
         if self._rep:
-            self._rep += to_add
+            self._rep += str(to_add)
 
     def _add_opt(self, *objs: any):
         for o in objs:
@@ -588,14 +609,24 @@ class _ScoreClause(Command):
         return self._start(_ExecuteMod())
 
 
+@staticmethod
+def _as_critereon(c: BoolOrArg) -> str:
+    if isinstance(c, bool):
+        return _bool(c)
+    return str(c)
+
+
 class AdvancementCriteria(Command):
-    def __init__(self, advancement: Advancement | str, criteria: bool | tuple[str, bool]):
+    def __init__(self, advancement: AdvancementDef, criteria: BoolOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
-        advancement = Advancement(advancement)
+        if not isinstance(advancement, Arg):
+            advancement = Advancement(advancement)
         if isinstance(criteria, bool):
-            self._add(f'{advancement}={_bool(criteria)}')
+            self._add(f'{advancement}={_as_critereon(criteria)}')
+        elif isinstance(criteria, Arg):
+            self._add(f'{advancement}={criteria}')
         else:
-            self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')
+            self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_as_critereon(criteria[1])}}}')
 
 
 class _JsonTextMod:
@@ -619,7 +650,7 @@ class _JsonTextHoverAction(_JsonTextMod):
             self._ev['tag'] = tag
         return self._jt
 
-    def show_entity(self, type: str, uuid: str, name: JsonText | str = None) -> JsonText:
+    def show_entity(self, type: str, uuid: StrOrArg, name: JsonText | str = None) -> JsonText:
         self._ev['action'] = 'show_entity'
         self._ev['type'] = as_resource(type)
         self._ev['id'] = as_uuid(uuid)
@@ -1208,7 +1239,10 @@ class _ExecuteMod(Command):
         results = []
         for c in cmds:
             selfish = self.clone()
-            selfish._add(str(c))
+            s = str(c)
+            if len(s) > 0 and s[0] == '$':
+                s = s[1:]
+            selfish._add(s)
             results.append(str(selfish))
         if len(cmds) == 1:
             return results[0]
@@ -1231,17 +1265,17 @@ class _AttributeBaseAct(Command):
 
 class _AttributeModifierAct(Command):
     @_fluent
-    def add(self, uuid: str, name: str, value: float) -> str:
+    def add(self, uuid: StrOrArg, name: str, value: float) -> str:
         self._add('add', as_uuid(uuid), f'"{name}"', value)
         return str(self)
 
     @_fluent
-    def remove(self, uuid: str) -> str:
+    def remove(self, uuid: StrOrArg) -> str:
         self._add('remove', as_uuid(uuid))
         return str(self)
 
     @_fluent
-    def value(self, uuid: str, scale: float = None) -> str:
+    def value(self, uuid: StrOrArg, scale: float = None) -> str:
         self._add('value get', as_uuid(uuid))
         if scale:
             self._add(scale)
@@ -1722,20 +1756,22 @@ class _ItemTarget(Command):
         self.allow_modifier = allow_modifier
 
     @_fluent
-    def block(self, pos: Position, slot: str, modifier: str = None) -> T:
+    def block(self, pos: Position, slot: StrOrArg, modifier: StrOrArg = None) -> T:
         self._add('block', *pos, as_slot(slot))
         self._modifier(modifier)
         return self._start(self.follow)
 
     @_fluent
-    def entity(self, target: Target, slot: str, modifier: str = None) -> T:
+    def entity(self, target: Target, slot: StrOrArg, modifier: StrOrArg = None) -> T:
         self._add('entity', as_target(target), as_slot(slot))
         self._modifier(modifier)
         return self._start(self.follow)
 
-    def _modifier(self, modifier):
+    def _modifier(self, modifier: StrOrArg):
         if modifier and not self.allow_modifier:
             raise ValueError('Modifier not allowed here')
+        if isinstance(modifier, Arg):
+            modifier = str(modifier)
         self._add_opt(modifier)
 
 
@@ -2066,40 +2102,40 @@ class _TagMod(Command):
 
 class _TeamMod(Command):
     @_fluent
-    def list(self, team: str = None) -> str:
+    def list(self, team: StrOrArg = None) -> str:
         self._add('list')
         self._add_opt(as_team(team))
         return str(self)
 
     @_fluent
-    def add(self, team: str, display_name: str = None) -> str:
+    def add(self, team: StrOrArg, display_name: str = None) -> str:
         self._add('add', as_team(team))
         self._add_opt(as_name(display_name))
         return str(self)
 
     @_fluent
-    def remove(self, team: str) -> str:
+    def remove(self, team: StrOrArg) -> str:
         self._add('remove', as_team(team))
         return str(self)
 
     @_fluent
-    def empty(self, team: str) -> str:
+    def empty(self, team: StrOrArg) -> str:
         self._add('empty', as_team(team))
         return str(self)
 
     @_fluent
-    def join(self, team: str, target: Target = None) -> str:
+    def join(self, team: StrOrArg, target: Target = None) -> str:
         self._add('join', as_team(team))
         self._add_opt(as_target(target))
         return str(self)
 
     @_fluent
-    def leave(self, team: str, target: Target = None) -> str:
+    def leave(self, team: StrOrArg, target: Target = None) -> str:
         self._add('leave', as_team(team), as_target(target))
         return str(self)
 
     @_fluent
-    def modify(self, team, option: TeamOption | str, value: str | bool) -> str:
+    def modify(self, team: StrOrArg, option: TeamOption | str, value: str | bool) -> str:
         value_type = TeamOption.value_spec(TeamOption(option))
         if value_type == bool:
             if not isinstance(value, bool):
@@ -2340,31 +2376,38 @@ class _ListMod(Command):
         return str(self)
 
 
+def _as_advancement(advancement: AdvancementDef):
+    if isinstance(advancement, (Arg, str)):
+        return str(advancement)
+    return advancement
+
+
 class _AdvancementMod(Command):
     def everything(self):
         self._add('everything')
         return str(self)
 
-    def only(self, advancement: Advancement, criterion: str = None) -> str:
+    def only(self, advancement: AdvancementDef, criterion: StrOrArg = None) -> str:
+        advancement = _as_advancement(advancement)
         self._add('only', advancement)
         self._add_opt(criterion)
         return str(self)
 
-    def from_(self, advancement: Advancement) -> str:
+    def from_(self, advancement: AdvancementDef) -> str:
         return self._setup('from', advancement)
 
-    def through(self, advancement: Advancement) -> str:
+    def through(self, advancement: AdvancementDef) -> str:
         return self._setup('through', advancement)
 
-    def until(self, advancement: Advancement) -> str:
+    def until(self, advancement: AdvancementDef) -> str:
         return self._setup('until', advancement)
 
     def _setup(self, param, advancement):
-        self._add(param, advancement)
+        self._add(param, _as_advancement(advancement))
         return str(self)
 
 
-def advancement(action: str, target: Selector) -> _AdvancementMod:
+def advancement(action: StrOrArg, target: Selector) -> _AdvancementMod:
     """Gives or takes an advancement from one or more players.
 
     :param action: GRANT or REVOKE.
@@ -2372,28 +2415,28 @@ def advancement(action: str, target: Selector) -> _AdvancementMod:
     """
     cmd = Command()
     action = _to_donate(action, GRANT_REVOKE)
-    cmd._add('advancement', action, target)
+    cmd._add('$advancement', action, target)
     return cmd._start(_AdvancementMod())
 
 
-def attribute(target: Target, attribute: str) -> _AttributeMod:
+def attribute(target: Target, attribute: StrOrArg) -> _AttributeMod:
     """Queries, adds, removes, or sets an entity attribute."""
     cmd = Command()
-    cmd._add('attribute', as_single(target), as_resource(attribute))
+    cmd._add('$attribute', as_single(target), as_resource(attribute))
     return cmd._start(_AttributeMod())
 
 
 def bossbar() -> _BossbarMod:
     """Creates and modifies bossbars."""
     cmd = Command()
-    cmd._add('bossbar')
+    cmd._add('$bossbar')
     return cmd._start(_BossbarMod())
 
 
 def clear(target: Target) -> _ClearClause:
     """Clears items from player inventory."""
     cmd = Command()
-    cmd._add('clear', as_target(target))
+    cmd._add('$clear', as_target(target))
     return cmd._start(_ClearClause())
 
 
@@ -2442,14 +2485,14 @@ def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Positi
         raise ValueError('Must give all positions or none of them')
 
     dest_pos = _clone_dest(start_pos, end_pos, dest_pos, dest_type)
-    cmd._add('clone', *start_pos, *end_pos, *dest_pos)
+    cmd._add('$clone', *start_pos, *end_pos, *dest_pos)
     return cmd._start(_CloneClause())
 
 
 def damage(target: Target, amount: int, type: str = None) -> _DamageMod:
     """Applies a set amount of damage to the specified entities."""
     cmd = Command()
-    cmd._add('damage', as_target(target), amount)
+    cmd._add('$damage', as_target(target), amount)
     cmd._add_opt(as_resource(type))
     return cmd._start(_DamageMod())
 
@@ -2457,41 +2500,41 @@ def damage(target: Target, amount: int, type: str = None) -> _DamageMod:
 def data() -> _DataMod:
     """Gets, merges, modifies and removes block entity and entity NBT data."""
     cmd = Command()
-    cmd._add('data')
+    cmd._add('$data')
     return cmd._start(_DataMod())
 
 
 def datapack() -> _DatapackMod:
     """Controls loaded data packs."""
     cmd = Command()
-    cmd._add('datapack')
+    cmd._add('$datapack')
     return cmd._start(_DatapackMod())
 
 
 def debug() -> _DebugMod:
     cmd = Command()
-    cmd._add('debug')
+    cmd._add('$debug')
     return cmd._start(_DebugMod())
 
 
 def defaultgamemode(gamemode: str) -> str:
     """Sets the default game mode."""
     cmd = Command()
-    cmd._add('defaultgamemode', _in_group(GAMEMODE, gamemode))
+    cmd._add('$defaultgamemode', _in_group(GAMEMODE, gamemode))
     return str(cmd)
 
 
 def deop(*targets: Target) -> str:
     """Revokes operator status from a player."""
     cmd = Command()
-    cmd._add('deop', *targets)
+    cmd._add('$deop', *targets)
     return str(cmd)
 
 
 def difficulty(difficulty: str = None) -> str:
     """Sets the difficulty level."""
     cmd = Command()
-    cmd._add('difficulty')
+    cmd._add('$difficulty')
     if difficulty:
         cmd._add(_in_group(DIFFICULTIES, difficulty))
     return str(cmd)
@@ -2500,14 +2543,14 @@ def difficulty(difficulty: str = None) -> str:
 def effect() -> _EffectAction:
     """Adds or removes status effects."""
     cmd = Command()
-    cmd._add('effect')
+    cmd._add('$effect')
     return cmd._start(_EffectAction())
 
 
 def enchant(target: Target, enchantment: Enchantment | str | int, level: int = None) -> str:
     """Adds an enchantment to a player's selected item."""
     cmd = Command()
-    cmd._add('enchant', as_target(target))
+    cmd._add('$enchant', as_target(target))
     if isinstance(enchantment, (str, int)):
         try:
             enchantment = Enchantment(enchantment)
@@ -2526,14 +2569,14 @@ def enchant(target: Target, enchantment: Enchantment | str | int, level: int = N
 def execute() -> _ExecuteMod:
     """Executes a command."""
     cmd = Command()
-    cmd._add('execute')
+    cmd._add('$execute')
     return cmd._start(_ExecuteMod())
 
 
 def experience() -> _ExperienceMod:
     """Adds or removes player experience."""
     cmd = Command()
-    cmd._add('experience')
+    cmd._add('$experience')
     return cmd._start(_ExperienceMod())
 
 
@@ -2543,13 +2586,13 @@ xp = experience
 def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClause | str:
     """Fills a region with a specific block."""
     cmd = Command()
-    cmd._add('fill', *start_pos, *end_pos, as_block(block))
+    cmd._add('$fill', *start_pos, *end_pos, as_block(block))
     return cmd._start(_FilterClause())
 
 
 def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
     cmd = Command()
-    cmd._add('fillbiome', *start_pos, *end_pos, as_biome(biome))
+    cmd._add('$fillbiome', *start_pos, *end_pos, as_biome(biome))
     return cmd._start(_BiomeFilterClause())
     pass
 
@@ -2557,7 +2600,7 @@ def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFil
 def forceload() -> _ForceloadMod:
     """Forces chunks to constantly be loaded or not."""
     cmd = Command()
-    cmd._add('forceload')
+    cmd._add('$forceload')
     return cmd._start(_ForceloadMod())
 
 
@@ -2565,7 +2608,7 @@ def forceload() -> _ForceloadMod:
 def function(path: str | object, arguments: NbtDef = None) -> _FunctionMod:
     """Runs a function."""
     cmd = Command()
-    cmd._add('function', _as_function_path(path))
+    cmd._add('$function', _as_function_path(path))
     if arguments is not None:
         cmd._add_opt(Nbt(arguments))
     return cmd._start(_FunctionMod())
@@ -2585,7 +2628,7 @@ def _as_function_path(path: str | object) -> str:
 def gamemode(gamemode: str, target: Target = None) -> str:
     """Sets the gamemode for some set of players."""
     cmd = Command()
-    cmd._add('gamemode', _in_group(GAMEMODE, gamemode))
+    cmd._add('$gamemode', _in_group(GAMEMODE, gamemode))
     cmd._add_opt(as_target(target))
     return str(cmd)
 
@@ -2594,7 +2637,7 @@ def gamerule(rule: GameRule | str, value: bool | int = None) -> str:
     """Sets or queries a game rule value."""
     cmd = Command()
     rule = GameRule(rule)
-    cmd._add('gamerule', rule)
+    cmd._add('$gamerule', rule)
     if value is not None:
         rule_type = rule.rule_type()
         if rule_type == 'int':
@@ -2613,7 +2656,7 @@ def gamerule(rule: GameRule | str, value: bool | int = None) -> str:
 def give(target: Target, item: EntityDef | BlockDef, count: int = None) -> str:
     """Gives an item to a player."""
     cmd = Command()
-    cmd._add('give', as_target(target), item)
+    cmd._add('$give', as_target(target), item)
     cmd._add_opt(count)
     return str(cmd)
 
@@ -2621,7 +2664,7 @@ def give(target: Target, item: EntityDef | BlockDef, count: int = None) -> str:
 def help(command: str = None) -> str:
     """Provides help for commands."""
     cmd = Command()
-    cmd._add('help')
+    cmd._add('$help')
     cmd._add_opt(command)
     return str(cmd)
 
@@ -2629,20 +2672,20 @@ def help(command: str = None) -> str:
 def item() -> _ItemMod:
     """Manipulates items in inventories."""
     cmd = Command()
-    cmd._add('item')
+    cmd._add('$item')
     return cmd._start(_ItemMod())
 
 
 def jfr(action: str) -> str:
     cmd = Command()
-    cmd._add('jfr', _in_group(START_STOP, action))
+    cmd._add('$jfr', _in_group(START_STOP, action))
     return str(cmd)
 
 
 def kill(target: Target = None) -> str:
     """Kills entities (players, mobs, items, etc.)."""
     cmd = Command()
-    cmd._add('kill')
+    cmd._add('$kill')
     cmd._add_opt(as_target(target))
     return str(cmd)
 
@@ -2650,42 +2693,42 @@ def kill(target: Target = None) -> str:
 def list_() -> _ListMod:
     """Lists players on the server."""
     cmd = Command()
-    cmd._add('list')
+    cmd._add('$list')
     return cmd._start(_ListMod())
 
 
 def locate(kind: str, name: str) -> str:
     """Locates closest structure."""
     cmd = Command()
-    cmd._add('locate', _in_group(LOCATABLE, kind), name)
+    cmd._add('$locate', _in_group(LOCATABLE, kind), name)
     return str(cmd)
 
 
 def loot() -> _LootTarget:
     """Drops items from an inventory slot onto the ground."""
     cmd = Command()
-    cmd._add('loot')
+    cmd._add('$loot')
     return cmd._start(_LootTarget())
 
 
 def me(msg: str, *msgs: str) -> str:
     """Displays a message about the sender."""
     cmd = Command()
-    cmd._add('me', msg, *msgs)
+    cmd._add('$me', msg, *msgs)
     return str(cmd)
 
 
 def op(target: Target) -> str:
     """Grants operator status to a player."""
     cmd = Command()
-    cmd._add('op', as_target(target))
+    cmd._add('$op', as_target(target))
     return str(cmd)
 
 
 def particle(particle: Particle | str, *params) -> str:
     """Creates particles. The syntax of the command is quite variant and conditional, so nearly no checks are made."""
     cmd = Command()
-    cmd._add('particle', str(particle))
+    cmd._add('$particle', str(particle))
     for param in params:
         if isinstance(param, str) or not isinstance(param, Iterable):
             cmd._add(param)
@@ -2697,14 +2740,14 @@ def particle(particle: Particle | str, *params) -> str:
 def perf(action: str) -> str:
     """Captures information and metrics about the game for ten seconds."""
     cmd = Command()
-    cmd._add('perf', _in_group(START_STOP, action))
+    cmd._add('$perf', _in_group(START_STOP, action))
     return str(cmd)
 
 
 def place() -> _PlaceMod:
     """Used to place a configured feature, jigsaw, or structure at a given location."""
     cmd = Command()
-    cmd._add('place')
+    cmd._add('$place')
     return cmd._start(_PlaceMod())
 
 
@@ -2712,7 +2755,7 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
               volume: float = None, pitch: float = None, min_volume: float = None) -> str:
     """Plays a sound."""
     cmd = Command()
-    cmd._add('playsound', as_resource_path(sound), as_resource_path(source), as_target(target))
+    cmd._add('$playsound', as_resource_path(sound), as_resource_path(source), as_target(target))
     cmd._add_opt_pos(pos)
     cmd._add_opt(volume, pitch, min_volume)
     return str(cmd)
@@ -2720,7 +2763,7 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
 
 def publish(allow_commands: bool = None, gamemode: str = None, port: int = None) -> str:
     cmd = Command()
-    cmd._add('publish')
+    cmd._add('$publish')
     cmd._add_opt(_bool(allow_commands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
     return str(cmd)
 
@@ -2728,7 +2771,7 @@ def publish(allow_commands: bool = None, gamemode: str = None, port: int = None)
 def random() -> _RandomMod:
     """Randomizing values and controlling random sequences."""
     cmd = Command()
-    cmd._add('random')
+    cmd._add('$random')
     return cmd._start(_RandomMod())
 
 
@@ -2738,21 +2781,21 @@ def recipe(action: str, target: Target, recipe_name: str) -> str:
     if recipe_name != '*':
         recipe_name = as_resource_path(recipe_name)
     cmd = Command()
-    cmd._add('recipe', action, as_target(target), recipe_name)
+    cmd._add('$recipe', action, as_target(target), recipe_name)
     return str(cmd)
 
 
 def reload() -> str:
     """Reloads loot tables, advancements, and functions from disk."""
     cmd = Command()
-    cmd._add('reload')
+    cmd._add('$reload')
     return str(cmd)
 
 
 def return_(value: int = None) -> _ReturnMod | str:
     """Returns from a function (stop executing it) with a given result. If non provided, 0 is returned."""
     cmd = Command()
-    cmd._add('return')
+    cmd._add('$return')
     if value is None:
         return cmd._start(_ReturnMod())
     cmd._add(value)
@@ -2762,35 +2805,35 @@ def return_(value: int = None) -> _ReturnMod | str:
 def ride(target: Target) -> _RideMod:
     """Allows entities to mount or dismount other entities. """
     cmd = Command()
-    cmd._add('ride', as_single(target))
+    cmd._add('$ride', as_single(target))
     return cmd._start(_RideMod())
 
 
-def say(msg: str, *msgs: str):
+def say(msg: StrOrArg, *msgs: StrOrArg):
     """Displays a message to multiple players."""
     cmd = Command()
-    cmd._add('say', msg, *msgs)
+    cmd._add('$say', msg, *msgs)
     return str(cmd)
 
 
 def schedule() -> _ScheduleMod:
     """Delays the execution of a dir."""
     cmd = Command()
-    cmd._add('schedule')
+    cmd._add('$schedule')
     return cmd._start(_ScheduleMod())
 
 
 def scoreboard() -> _ScoreboardMod:
     """Manages scoreboard objectives and players."""
     cmd = Command()
-    cmd._add('scoreboard')
+    cmd._add('$scoreboard')
     return cmd._start(_ScoreboardMod())
 
 
 def seed() -> str:
     """Displays the dir seed."""
     cmd = Command()
-    cmd._add('seed')
+    cmd._add('$seed')
     return str(cmd)
 
 
@@ -2800,7 +2843,7 @@ def setblock(pos: Position, block: BlockDef, action: str = None) -> _BlockMod:
         raise ValueError(f'{block}: Block tag not allowed here')
     block = as_block(block)
     cmd = Command()
-    cmd._add('setblock', *pos, block)
+    cmd._add('$setblock', *pos, block)
     if action:
         cmd._add_opt(_in_group(SETBLOCK_ACTIONS, action))
     return cmd._start(_BlockMod())
@@ -2809,14 +2852,14 @@ def setblock(pos: Position, block: BlockDef, action: str = None) -> _BlockMod:
 def setidletimeout(minutes: int) -> str:
     """Sets the time before idle players are kicked from the server."""
     cmd = Command()
-    cmd._add('setidletimeout', minutes)
+    cmd._add('$setidletimeout', minutes)
     return str(cmd)
 
 
 def setworldspawn(pos: Position = None, yaw: float | str = None) -> str:
     """Sets the dir spawn."""
     cmd = Command()
-    cmd._add('setworldspawn')
+    cmd._add('$setworldspawn')
     cmd._add_opt_pos(pos)
     cmd._add_opt(as_yaw(yaw))
     return str(cmd)
@@ -2825,7 +2868,7 @@ def setworldspawn(pos: Position = None, yaw: float | str = None) -> str:
 def spawnpoint(target: Target = None, pos: Position = None, yaw: Angle | str = None) -> str:
     """Sets the spawn point for a player."""
     cmd = Command()
-    cmd._add('spawnpoint')
+    cmd._add('$spawnpoint')
     cmd._add_opt(as_target(target))
     cmd._add_opt_pos(pos)
     cmd._add_opt(as_yaw(yaw))
@@ -2835,7 +2878,7 @@ def spawnpoint(target: Target = None, pos: Position = None, yaw: Angle | str = N
 def spectate(target: Target = None, watched: Target = None) -> str:
     """Make one player in spectator mode spectate an entity."""
     cmd = Command()
-    cmd._add('spectate', as_single(target))
+    cmd._add('$spectate', as_single(target))
     cmd._add_opt(as_target(watched))
     return str(cmd)
 
@@ -2846,7 +2889,7 @@ def spreadplayers(center: Position, distance: float, max_range: float, respect_t
     has a weird optional ``under <num>`` parameter in the middle, which is hard to model and, well, weird. As an
     optional value, it appears at the last parameter."""
     cmd = Command()
-    cmd._add('spreadplayers', *center, distance, max_range)
+    cmd._add('$spreadplayers', *center, distance, max_range)
     if max_height is not None:
         cmd._add_opt('under', max_height)
     cmd._add(_bool(respect_teams), as_target(target))
@@ -2856,7 +2899,7 @@ def spreadplayers(center: Position, distance: float, max_range: float, respect_t
 def stopsound(target: Target, /, source: str = None, sound: str = None) -> str:
     """Stops a sound."""
     cmd = Command()
-    cmd._add('stopsound', as_target(target))
+    cmd._add('$stopsound', as_target(target))
     cmd._add_opt(as_resource_path(source), as_resource_path(sound))
     return str(cmd)
 
@@ -2865,7 +2908,7 @@ def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) ->
     """Summons an entity."""
     to_summon = as_entity(to_summon)
     cmd = Command()
-    cmd._add('summon', to_summon.id)
+    cmd._add('$summon', to_summon.id)
     cmd._add_opt_pos(pos)
     e_nbt = Nbt(to_summon.nbt) if to_summon.nbt else Nbt()
     tags = e_nbt['Tags'] if 'Tags' in e_nbt else ()
@@ -2881,21 +2924,21 @@ def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) ->
 def tag(target: Target) -> _TagMod:
     """Controls entity tags."""
     cmd = Command()
-    cmd._add('tag', as_target(target))
+    cmd._add('$tag', as_target(target))
     return cmd._start(_TagMod())
 
 
 def team() -> _TeamMod:
     """Controls teams."""
     cmd = Command()
-    cmd._add('team')
+    cmd._add('$team')
     return cmd._start(_TeamMod())
 
 
 def teammsg(msg: str, *msgs: str) -> str:
     """An alias of ``/tm``. Specifies the message to send to team."""
     cmd = Command()
-    cmd._add('teammsg', msg, *msgs)
+    cmd._add('$teammsg', msg, *msgs)
     return str(cmd)
 
 
@@ -2906,7 +2949,7 @@ def teleport(who_or_to: Target | Position, to: Target | Position = None,
              rotation: float = None) -> str | _TeleportMod:
     """An alias of ``/tp``. Teleports entities."""
     cmd = Command()
-    cmd._add('tp')
+    cmd._add('$tp')
     try:
         if to is None:
             cmd._add(as_single(who_or_to))
@@ -2934,7 +2977,7 @@ tp = teleport
 def tell(target: Target, message: str, *msgs: str) -> str:
     """Displays a private message to other players."""
     cmd = Command()
-    cmd._add('tell', as_target(target), message, *msgs)
+    cmd._add('$tell', as_target(target), message, *msgs)
     return str(cmd)
 
 
@@ -2945,7 +2988,7 @@ w = tell
 def tellraw(target: Target, *message: JsonDef) -> str:
     """Displays a JSON message to players."""
     cmd = Command()
-    cmd._add('tellraw', target)
+    cmd._add('$tellraw', target)
     jl = JsonList()
     for m in message:
         if isinstance(m, str):
@@ -2960,35 +3003,35 @@ def tellraw(target: Target, *message: JsonDef) -> str:
 
 def tick() -> _TickMod:
     cmd = Command()
-    cmd._add('tick')
+    cmd._add('$tick')
     return cmd._start(_TickMod())
 
 
 def time() -> _TimeMod:
     """Changes or queries the game time."""
     cmd = Command()
-    cmd._add('time')
+    cmd._add('$time')
     return cmd._start(_TimeMod())
 
 
 def title(target: Target) -> _TitleMod:
     """Manages screen titles."""
     cmd = Command()
-    cmd._add('title', as_target(target))
+    cmd._add('$title', as_target(target))
     return cmd._start(_TitleMod())
 
 
 def trigger(objective: str):
     """Sets a trigger to be activated."""
     cmd = Command()
-    cmd._add('trigger', as_name(objective))
+    cmd._add('$trigger', as_name(objective))
     return cmd._start(_TriggerMod())
 
 
 def weather(weather_name: str, duration: DurationDef = None) -> str:
     """Sets the weather."""
     cmd = Command()
-    cmd._add('weather', _in_group(WEATHER_TYPES, weather_name))
+    cmd._add('$weather', _in_group(WEATHER_TYPES, weather_name))
     cmd._add_opt(as_duration(duration))
     return str(cmd)
 
@@ -2996,7 +3039,7 @@ def weather(weather_name: str, duration: DurationDef = None) -> str:
 def worldborder() -> _WorldBorderMod:
     """Manages the dir border."""
     cmd = Command()
-    cmd._add('worldborder')
+    cmd._add('$worldborder')
     return cmd._start(_WorldBorderMod())
 
 
@@ -3642,20 +3685,21 @@ class JsonText(UserDict, JsonHolder):
             raise ValueError(f'{map}: Not a dictionary')
 
 
-Target = Union[str, TargetSpec]
-ScoreName = Union[Score, Tuple[Target, str]]
-BlockDef = Union[str, Block, Tuple[str, Mapping], Tuple[str, Mapping, Mapping]]
-EntityDef = Union[str, Entity, Tuple[str, Mapping]]
-JsonDef = Union[JsonText, dict, str]
-SignMessage = Union[str, NbtDef, None]
+Target = Union[StrOrArg, TargetSpec]
+ScoreName = Union[Score, Tuple[Target, StrOrArg]]
+BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, Mapping], Tuple[StrOrArg, Mapping, Mapping]]
+EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, Mapping]]
+JsonDef = Union[JsonText, dict, StrOrArg]
+SignMessage = Union[StrOrArg, NbtDef, None]
 SignMessages = Iterable[SignMessage]
-SignCommand = Union[str, Command, NbtDef, Callable[[Union[JsonText]], JsonText], None]
+SignCommand = Union[StrOrArg, Command, NbtDef, Callable[[Union[JsonText]], JsonText], None]
 SignCommands = Iterable[SignCommand]
 Commands = Iterable[Union[Command, str]]
-DataTarget = Union[Position, TargetSpec, str]
+DataTarget = Union[Position, TargetSpec, StrOrArg]
 SomeBlockDefs = Union[BlockDef, Iterable[BlockDef]]
 SomeMappings = Union[Mapping, Iterable[Mapping]]
-Biome = Union[str, BiomeId]
+Biome = Union[StrOrArg, BiomeId]
+AdvancementDef = Union[Advancement, StrOrArg]
 
 
 def lines(*orig: any) -> list[str]:

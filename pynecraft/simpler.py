@@ -4,7 +4,7 @@ import dataclasses
 from typing import Callable, Mapping, Tuple, Union, Sequence
 
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, d, as_facing, r, to_id, NORTH
+    _to_list, d, as_facing, r, to_id, NORTH, IntOrArg, StrOrArg
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
     SignMessages, SomeMappings, fill, fillbiome, as_biome, as_block, as_color_num, setblock, data, SignMessage, \
     SignCommand
@@ -393,7 +393,7 @@ class Shield(Item):
         super().__init__('shield')
         self.merge_nbt({'tag': {'BlockEntityTag': {'Patterns': []}}})
 
-    def add_pattern(self, pattern: str | Pattern, color: int | str) -> Shield:
+    def add_pattern(self, pattern: StrOrArg | Pattern, color: IntOrArg | StrOrArg) -> Shield:
         """Add a pattern to the shield."""
         color = as_color_num(color)
         patterns = self.nbt['tag']['BlockEntityTag'].get_list('Patterns')

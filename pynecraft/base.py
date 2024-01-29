@@ -27,7 +27,7 @@ _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#
                                (\[[,=\s{_jed_resource}]*])?   # an optional state, such as "[facing=south]"
                             ''', re.VERBOSE)
 _name_re = re.compile(r'[\w+.-]+')
-_nbt_key_re = re.compile(r'[a-zA-Z0-9_]+')
+_nbt_key_re = re.compile(r'[a-zA-Z0-9_:]+')
 _nbt_path_re = re.compile(r'[a-zA-Z0-9_.[\]{}]*')
 _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
@@ -128,6 +128,18 @@ GT = '>'
 RELATION = [LT, LE, EQ, GE, GT]
 
 
+class Arg:
+    """
+    An argument for a macro command.
+    """
+
+    def __init__(self, name):
+        self.name = as_nbt_path(name)
+
+    def __str__(self):
+        return f'$({self.name})'
+
+
 def _quote(value):
     if isinstance(value, str):
         if not re.fullmatch(r'\w+', value):
@@ -161,6 +173,8 @@ def _to_tuple(data):
 
 
 def _strip_namespace(path):
+    if isinstance(path, Arg):
+        return path
     parts = path.split(':', 1)
     if len(parts) > 1:
         as_resource(parts[0])
@@ -169,6 +183,8 @@ def _strip_namespace(path):
 
 
 def _strip_not(path):
+    if isinstance(path, Arg):
+        return path
     if path and path[0] == '!':
         return path[1:]
     return path
@@ -221,6 +237,8 @@ def as_nbt_key(key: str) -> str:
 
 
 def as_nbt_path(path: str) -> str:
+    if isinstance(path, Arg):
+        return path
     if _nbt_path_re.fullmatch(path) is None:
         raise ValueError(f'{path}: Invalid NBT path')
     return path
@@ -234,6 +252,8 @@ def as_resource(name: str | None, allow_namespace=True, allow_not=False) -> str 
     :param allow_not: Whether to allow a '!' before the name.
     :return: the input value.
     """
+    if isinstance(name, Arg):
+        return name
     if name is None:
         return None
     eval_name = name
@@ -266,6 +286,8 @@ def as_resource_path(path: str | None, allow_not=False) -> str | None:
     :param allow_not: Whether to allow a '!' before any names.
     :return: the input value.
     """
+    if isinstance(path, Arg):
+        return path
     if path is None:
         return None
     orig = path
@@ -292,6 +314,8 @@ def as_item_stack(item: str):
     :param item: The (probable) item stack.
     :return: the input value
     """
+    if isinstance(item, Arg):
+        return item
     resource, *_ = item.split('{')
     as_resource(resource)
     return item
@@ -304,6 +328,8 @@ def as_name(name: str | None, allow_not=False) -> str | None:
     :param allow_not: Whether to allow a '!' before any names.
     :return: the input value.
     """
+    if isinstance(name, Arg):
+        return name
     if name is None:
         return None
     orig = name
@@ -338,7 +364,7 @@ def as_column(col: IntColumn) -> IntColumn:
         if len(col) != 2:
             raise ValueError(f'{col}: Column must have 2 values')
         for c in col:
-            if not isinstance(c, (int, IntRelCoord)):
+            if not isinstance(c, (int, IntRelCoord, Arg)):
                 raise ValueError(f'{c}: not a coordinate')
         return col
     raise ValueError(f'{str(col)}: Invalid column position')
@@ -495,7 +521,6 @@ class Nbt(UserDict):
                 part = part[p]
             part.pop(path[-1])
         return self
-
 
     @classmethod
     def to_str(cls, obj) -> str:
@@ -720,10 +745,10 @@ def to_name(id: str) -> str:
 class RelCoord:
     """A relative coordinate. These are shown in minecraft commands with special annotation, such as '~1' or '^2'."""
 
-    def __init__(self, prefix: str, v: float):
+    def __init__(self, prefix: str, v: float | Arg):
         self.prefix = prefix
         self.value = v
-        self._rep = prefix + _float(v)
+        self._rep = prefix + (str(v) if isinstance(v, Arg) else _float(v))
 
     def _v(self: U, v: float) -> U:
         if isinstance(v, int):
@@ -832,7 +857,7 @@ def _rel_coord(ch, f, values: Sequence[float]) -> RelCoord | Tuple[RelCoord, ...
     return tuple(f(x) for x in values)
 
 
-def r(*v: float | Iterable[float]) -> RelCoord | IntRelCoord | Tuple[RelCoord, RelCoord] | \
+def r(*v: FloatOrArg | Iterable[FloatOrArg]) -> RelCoord | IntRelCoord | Tuple[RelCoord, RelCoord] | \
                                       Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
                                       Tuple[RelCoord, ...]:
     """
@@ -1132,14 +1157,19 @@ def as_range(spec: Range) -> str:
     return str(s) + '..' + str(e)
 
 
+BoolOrArg = Union[bool, Arg]
+IntOrArg = Union[int, Arg]
+FloatOrArg = Union[float, Arg]
+StrOrArg = Union[str, Arg]
+
 NbtDef = Union[Nbt, Mapping]
-FacingDef = Union[int, str, Facing]
-DurationDef = Union[str, int, TimeSpec]
-Coord = Union[float, RelCoord]
-Angle = Union[float, RelCoord]
+FacingDef = Union[IntOrArg, StrOrArg, Facing]
+DurationDef = Union[StrOrArg, IntOrArg, TimeSpec]
+Coord = Union[FloatOrArg, RelCoord]
+Angle = Union[FloatOrArg, RelCoord]
 IntCoord = Union[int, IntRelCoord]
 Position = Tuple[Coord, Coord, Coord]
-XYZ = Tuple[float, float, float]
+XYZ = Tuple[FloatOrArg, FloatOrArg, FloatOrArg]
 Column = Tuple[Coord, Coord]
 IntColumn = Tuple[IntCoord, IntCoord]
-Range = Union[float, bool, Tuple[Optional[float], Optional[float]]]
+Range = Union[FloatOrArg, BoolOrArg, Tuple[Optional[FloatOrArg], Optional[FloatOrArg]]]
