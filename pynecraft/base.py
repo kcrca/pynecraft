@@ -190,16 +190,6 @@ def _strip_not(path):
     return path
 
 
-def _bool(value: bool | None) -> str | None:
-    if value is None:
-        return None
-    return str(value).lower()
-
-
-def _float(value: float) -> str:
-    return str(round(value, parameters.float_precision))
-
-
 def _not_ify(value: str | Iterable[str]) -> str | Iterable[str]:
     if isinstance(value, str):
         s = str(value)
@@ -208,6 +198,20 @@ def _not_ify(value: str | Iterable[str]) -> str | Iterable[str]:
         return s
     else:
         return tuple((_not_ify(x) for x in value))
+
+
+def _bool(value: BoolOrArg | None) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, Arg):
+        return str(value)
+    return str(value).lower()
+
+
+def _float(value: FloatOrArg) -> str:
+    if isinstance(value, Arg):
+        return str(value)
+    return str(round(value, parameters.float_precision))
 
 
 def string(obj):
@@ -858,8 +862,8 @@ def _rel_coord(ch, f, values: Sequence[float]) -> RelCoord | Tuple[RelCoord, ...
 
 
 def r(*v: FloatOrArg | Iterable[FloatOrArg]) -> RelCoord | IntRelCoord | Tuple[RelCoord, RelCoord] | \
-                                      Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
-                                      Tuple[RelCoord, ...]:
+                                                Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
+                                                Tuple[RelCoord, ...]:
     """
     Returns a single or tuple '~' relative coordinate(s) of its input value(s). If all values are integers,
     the value(s) will be IntRelCoords.

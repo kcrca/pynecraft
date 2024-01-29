@@ -1331,6 +1331,7 @@ class TestCommands(unittest.TestCase):
                          str(a().advancements(
                              AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
                              AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
+        self.assertEqual('$(u)',str(User(Arg('u'))))
 
         with self.assertRaises(ValueError):
             tp(e().type(Arg('t')))

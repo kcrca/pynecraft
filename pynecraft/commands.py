@@ -609,24 +609,15 @@ class _ScoreClause(Command):
         return self._start(_ExecuteMod())
 
 
-@staticmethod
-def _as_critereon(c: BoolOrArg) -> str:
-    if isinstance(c, bool):
-        return _bool(c)
-    return str(c)
-
-
 class AdvancementCriteria(Command):
     def __init__(self, advancement: AdvancementDef, criteria: BoolOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
         if not isinstance(advancement, Arg):
             advancement = Advancement(advancement)
-        if isinstance(criteria, bool):
-            self._add(f'{advancement}={_as_critereon(criteria)}')
-        elif isinstance(criteria, Arg):
-            self._add(f'{advancement}={criteria}')
+        if isinstance(criteria, BoolOrArg):
+            self._add(f'{advancement}={_bool(criteria)}')
         else:
-            self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_as_critereon(criteria[1])}}}')
+            self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')
 
 
 class _JsonTextMod:
@@ -707,7 +698,7 @@ class TargetSpec(Command, ABC):
 class User(TargetSpec):
     """A named user as a target."""
 
-    def __init__(self, name: str):
+    def __init__(self, name: StrOrArg):
         super().__init__()
         self.name = as_user(name)
         self._add(name)
@@ -850,7 +841,7 @@ class Selector(TargetSpec):
 
     _create_key = object()
 
-    def __init__(self, create_key, selector):
+    def __init__(self, create_key, selector: str):
         super().__init__()
         assert (create_key == Selector._create_key), 'Private __init__, use creation methods'
         self._selector = selector
@@ -921,7 +912,7 @@ class Selector(TargetSpec):
         return self._unique_arg('distance', as_range(distance))
 
     @_fluent
-    def volume(self, deltas: Tuple[float, float, float]) -> Selector:
+    def volume(self, deltas: Tuple[FloatOrArg, FloatOrArg, FloatOrArg]) -> Selector:
         """Add a volume to the selector. Must have three values in the list or tuple."""
         dx, dy, dz = deltas
         return self._unique_arg('delta', f'dx={_float(dx)},dy={_float(dy)},dz={_float(dz)}')
