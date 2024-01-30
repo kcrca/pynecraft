@@ -1382,3 +1382,4 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
         self.assertEqual('$setworldspawn $(x) $(y) $(z) $(angle)',
                          setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('angle')))
+g

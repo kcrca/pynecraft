@@ -2862,7 +2862,7 @@ def setworldspawn(pos: Position = None, yaw: FloatOrArg | StrOrArg = None) -> st
     return str(cmd)
 
 
-def spawnpoint(target: Target = None, pos: Position = None, yaw: Angle | str = None) -> str:
+def spawnpoint(target: Target = None, pos: Position = None, yaw: Angle | StrOrArg = None) -> str:
     """Sets the spawn point for a player."""
     cmd = Command()
     cmd._add('$spawnpoint')
@@ -2893,7 +2893,7 @@ def spreadplayers(center: Position, distance: float, max_range: float, respect_t
     return str(cmd)
 
 
-def stopsound(target: Target, /, source: str = None, sound: str = None) -> str:
+def stopsound(target: Target, /, source: StrOrArg = None, sound: StrOrArg = None) -> str:
     """Stops a sound."""
     cmd = Command()
     cmd._add('$stopsound', as_target(target))
@@ -2932,7 +2932,7 @@ def team() -> _TeamMod:
     return cmd._start(_TeamMod())
 
 
-def teammsg(msg: str, *msgs: str) -> str:
+def teammsg(msg: StrOrArg, *msgs: StrOrArg) -> str:
     """An alias of ``/tm``. Specifies the message to send to team."""
     cmd = Command()
     cmd._add('$teammsg', msg, *msgs)
@@ -2971,7 +2971,7 @@ def teleport(who_or_to: Target | Position, to: Target | Position = None,
 tp = teleport
 
 
-def tell(target: Target, message: str, *msgs: str) -> str:
+def tell(target: Target, message: StrOrArg, *msgs: StrOrArg) -> str:
     """Displays a private message to other players."""
     cmd = Command()
     cmd._add('$tell', as_target(target), message, *msgs)
@@ -3018,14 +3018,14 @@ def title(target: Target) -> _TitleMod:
     return cmd._start(_TitleMod())
 
 
-def trigger(objective: str):
+def trigger(objective: StrOrArg):
     """Sets a trigger to be activated."""
     cmd = Command()
     cmd._add('$trigger', as_name(objective))
     return cmd._start(_TriggerMod())
 
 
-def weather(weather_name: str, duration: DurationDef = None) -> str:
+def weather(weather_name: StrOrArg, duration: DurationDef = None) -> str:
     """Sets the weather."""
     cmd = Command()
     cmd._add('$weather', _in_group(WEATHER_TYPES, weather_name))
