@@ -8,7 +8,7 @@ from pynecraft.base import Coord, EAST, IntRelCoord, NORTH, Nbt, ROTATION_0, ROT
     parameters, r, rotate_facing, as_facing, string, d, _to_list, _to_tuple, _strip_namespace, _strip_not, _bool, \
     _float, _not_ify, _ensure_size, as_nbt_path, as_resource, as_resources, as_resource_path, as_name, as_names, \
     as_column, as_angle, as_yaw, as_pitch, to_id, days, seconds, ticks, _int_or_float, _in_group, COLORS, RED, \
-    as_duration, as_range
+    as_duration, as_range, Arg
 from pynecraft.commands import setblock
 
 
@@ -360,3 +360,21 @@ class TestBase(unittest.TestCase):
         self.assertTrue(isinstance(_int_or_float(1), int))
         self.assertTrue(isinstance(_int_or_float(1.0), int))
         self.assertTrue(isinstance(_int_or_float(1.5), float))
+
+    def test_arg(self):
+        self.assertEqual('$(foo)', str(Arg('foo')))
+        self.assertTrue(Arg('a') == Arg('a'))
+        self.assertTrue(Arg('a') == '$(a)')
+        self.assertFalse(Arg('a') == 'a')
+        self.assertFalse(Arg('a') == None)
+        self.assertEqual(hash(Arg('a')), hash(Arg('a')))
+        self.assertNotEqual(hash(Arg('a')), hash(Arg('b')))
+
+    def test_macro(self):
+        self.assertEqual('$(a)', str(as_yaw(Arg('a'))))
+        self.assertEqual('$(a)', str(as_pitch(Arg('a'))))
+        self.assertEqual('$(a)', Nbt.to_str(Arg('a')))
+        self.assertEqual(Arg('a'), Nbt({'list': Arg('a')}).get_list('list'))
+        self.assertEqual(Arg('d'), as_duration(Arg('d')))
+        self.assertEqual('$(r)', as_range(Arg('r')))
+        self.assertEqual('$(b)..$(e)', as_range((Arg('b'), Arg('e'))))

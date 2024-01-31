@@ -140,6 +140,17 @@ class Arg:
     def __str__(self):
         return f'$({self.name})'
 
+    def __eq__(self, other: StrOrArg):
+        if isinstance(other, str):
+            return str(self) == other
+        try:
+            return self.name == other.name
+        except AttributeError:
+            return False
+
+    def __hash__(self):
+        return hash(self.name)
+
 
 def _quote(value):
     if isinstance(value, str):
@@ -378,10 +389,12 @@ def as_column(col: IntColumn) -> IntColumn:
 def as_angle(angle: Angle) -> Angle:
     """Checks if the angle is a valid one. "Valid" means a float or a tilde relative coordinate (such as ``~45``).
 
+    An Arg is also valid.
+
     :param angle: The (probable) angle.
     :return: The input value.
     """
-    if isinstance(angle, (int, float)):
+    if isinstance(angle, (int, float, Arg)):
         return angle
     elif isinstance(angle, RelCoord):
         if angle.prefix != '~':
@@ -391,42 +404,48 @@ def as_angle(angle: Angle) -> Angle:
         raise ValueError(f'{angle}: Invalid angle')
 
 
-def as_yaw(yaw: Angle | StrOrArg | None) -> Angle | None:
+def as_yaw(angle: Angle | StrOrArg | None) -> Angle | None:
     """Checks if the angle is a valid yaw value, or None.
 
      "Valid" means a value that as_facing() or as_angle() accepts. If it is a number or RelCoord, it must be in
      the range [-180, 180).
 
-    :param yaw: The (probable) yaw angle.
+    An Arg is also valid.
+
+    :param angle: The (probable) yaw angle.
     :return: The input value.
     """
-    if isinstance(yaw, Arg):
-        return yaw
-    if yaw is not None:
-        if isinstance(yaw, str):
-            yaw = as_facing(yaw).rotation[0]
+    if isinstance(angle, Arg):
+        return angle
+    if angle is not None:
+        if isinstance(angle, str):
+            angle = as_facing(angle).rotation[0]
         else:
-            yaw = as_angle(yaw)
-            yv = yaw.value if isinstance(yaw, RelCoord) else yaw
+            angle = as_angle(angle)
+            yv = angle.value if isinstance(angle, RelCoord) else angle
             if not -180 <= yv < 180:
                 raise ValueError(f'{yv}: must be in range [-180.0, 180.0)')
-    return yaw
+    return angle
 
 
-def as_pitch(pitch: Angle | None) -> Angle | None:
+def as_pitch(angle: Angle | None) -> Angle | None:
     """Checks if the angle is a valid pitch value, or None.
 
      "Valid" means a value that as_angle() accepts, and that is the range [-90, 90).
 
-    :param pitch: The (probable) pitch angle.
+    An Arg is also valid.
+
+    :param angle: The (probable) pitch angle.
     :return: The input value.
     """
-    if pitch is not None:
-        pitch = as_angle(pitch)
-        yv = pitch.value if isinstance(pitch, RelCoord) else pitch
+    if isinstance(angle, Arg):
+        return angle
+    if angle is not None:
+        angle = as_angle(angle)
+        yv = angle.value if isinstance(angle, RelCoord) else angle
         if not -90 <= yv < 90:
             raise ValueError(f'{yv}: must be in range [-90.0, 90.0)')
-    return pitch
+    return angle
 
 
 class JsonHolder(ABC):
@@ -546,7 +565,7 @@ class Nbt(UserDict):
         return str(sout.getvalue())
 
     @classmethod
-    def as_nbt(cls, nbt: NbtDef):
+    def as_nbt(cls, nbt: NbtDef) -> Nbt:
         """Returns the input parameter as an Nbt, including making a copy of an Nbt object that is passed in."""
         if not isinstance(nbt, cls):
             nbt = cls(nbt)
@@ -670,7 +689,7 @@ class Nbt(UserDict):
         """
         if key in self:
             value = self[key]
-            assert isinstance(value, list), f'{key}: Expected list value, got {value}'
+            assert isinstance(value, (list, Arg)), f'{key}: Expected list value, got {value}'
         else:
             value = self[key] = []
         return value
@@ -754,7 +773,7 @@ def to_name(id: str) -> str:
 class RelCoord:
     """A relative coordinate. These are shown in minecraft commands with special annotation, such as '~1' or '^2'."""
 
-    def __init__(self, prefix: str, v: float | Arg):
+    def __init__(self, prefix: str, v: FloatOrArg):
         self.prefix = prefix
         self.value = v
         self._rep = prefix + (str(v) if isinstance(v, Arg) else _float(v))
@@ -1139,7 +1158,7 @@ def as_duration(duration: DurationDef | None) -> TimeSpec | None:
 
     If the input is None, it is returned. Otherwise, this returns Duration(duration).
     """
-    if duration is None or isinstance(duration, TimeSpec):
+    if duration is None or isinstance(duration, (TimeSpec, Arg)):
         return duration
     return TimeSpec(duration)
 
@@ -1156,9 +1175,11 @@ def as_range(spec: Range) -> str:
     can be None.
     """
 
+    if isinstance(spec, Arg):
+        return str(spec)
     if isinstance(spec, bool):
         return str(int(spec))
-    if isinstance(spec, (float, int, Arg)):
+    if isinstance(spec, (float, int)):
         return str(spec)
 
     for i, v in enumerate(spec):
