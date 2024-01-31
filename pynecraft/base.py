@@ -223,7 +223,7 @@ def _bool(value: BoolOrArg | None) -> str | None:
 def _float(value: FloatOrArg) -> str:
     if isinstance(value, Arg):
         return str(value)
-    return str(round(value, parameters.float_precision))
+    return str(round(value, settings.float_precision))
 
 
 def string(obj):
@@ -731,8 +731,8 @@ class _ToMinecraftText(HTMLParser):
         return json.dumps(self.out)
 
 
-class Parameters:
-    """Manage general parameters. Use the 'parameters' variable to adjust the parameters."""
+class Settings:
+    """Manage general settings. Use the 'settings' variable to adjust the settings."""
 
     def __init__(self):
         self._float_precision = 3
@@ -750,7 +750,7 @@ class Parameters:
         self._float_precision = precision
 
 
-parameters = Parameters()
+settings = Settings()
 
 
 def to_id(name: str) -> str:
