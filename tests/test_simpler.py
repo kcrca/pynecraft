@@ -483,9 +483,31 @@ class TestSimpler(unittest.TestCase):
         with self.assertRaises(ValueError):
             Painting('foo')
 
+    def test_as_color_num(self):
+        self.assertIsNone(as_color_num(None))
+        self.assertEqual(15, as_color_num(15))
+        self.assertEqual(15, as_color_num('black'))
+        self.assertEqual(15, as_color_num('Black'))
+        with self.assertRaises(ValueError):
+            as_color_num(16)
+        with self.assertRaises(ValueError):
+            as_color_num('ecru')
+
+    def test_as_color(self):
+        self.assertIsNone(as_color(None))
+        self.assertEqual('black', as_color(15))
+        self.assertEqual('black', as_color('black'))
+        self.assertEqual('black', as_color('Black'))
+        with self.assertRaises(ValueError):
+            as_color(16)
+        with self.assertRaises(ValueError):
+            as_color('ecru')
+
     def test_macro(self):
         shield = Shield().add_pattern(Arg('pat'), Arg('c'))
         self.assertEqual(
             {'Count': 1, 'id': 'shield',
              'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': '$(pat)', 'Color': '$(c)'}]}}},
             shield.nbt)
+        self.assertEqual('$(c)', as_color(Arg('c')))
+        self.assertEqual('$(c)', as_color_num(Arg('c')))

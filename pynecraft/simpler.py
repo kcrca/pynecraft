@@ -4,9 +4,9 @@ import dataclasses
 from typing import Callable, Mapping, Tuple, Union, Sequence
 
 from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, d, as_facing, r, to_id, NORTH, IntOrArg, StrOrArg
+    _to_list, d, as_facing, r, to_id, NORTH, IntOrArg, StrOrArg, Arg
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignMessages, SomeMappings, fill, fillbiome, as_biome, as_block, as_color_num, setblock, data, SignMessage, \
+    SignMessages, SomeMappings, fill, fillbiome, as_biome, as_block, setblock, data, SignMessage, \
     SignCommand
 from .enums import Pattern
 
@@ -935,3 +935,43 @@ class Painting(Entity):
             if y > 2:
                 pos[1] += 1
         return super().summon(pos, nbt)
+
+
+def as_color(color: IntOrArg | StrOrArg | None) -> str | None:
+    """Checks if the argument is a valid color name, or None.
+
+    "Valid" means one of the 16 known colors, such as those used for wool. These are stored in the
+    ``COLORS`` array.
+
+    :param color: The ((probable) color name.
+    :return: The color name, in lower case.
+    """
+    if isinstance(color, Arg):
+        return str(color)
+    if color is None:
+        return None
+    color_num = as_color_num(color)
+    return COLORS[color_num]
+
+
+def as_color_num(color: IntOrArg | StrOrArg | None) -> int | str | None:
+    """Checks if the argument is a valid color number specification, or None.
+
+    "Valid" means an int, or a string that names a known color from which a color number can be inferred.
+    Color numbers range from 0 to 15. (See as_color() for a documentation on color names.)
+
+    :param color:
+    :return:
+    """
+    if isinstance(color, Arg):
+        return str(color)
+    if color is None:
+        return None
+    if isinstance(color, str):
+        color_num = COLORS.index(to_id(color))
+        if color_num < 0:
+            raise ValueError(f'{color}: Unknown color')
+        return color_num
+    if color not in range(len(COLORS)):
+        raise ValueError(f'{color}: Unknown color')
+    return color

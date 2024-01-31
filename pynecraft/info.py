@@ -7,9 +7,9 @@ from enum import Enum
 from importlib.resources import files
 
 from .base import COLORS, Nbt, to_id, to_name, NbtDef
-from .commands import Block, Entity, as_color_num
+from .commands import Block, Entity
 from .enums import PotterySherd
-from .simpler import Item
+from .simpler import Item, as_color_num
 from .utils.fetch_things import ItemFetcher
 
 blocks: dict[str, Block] = {}
