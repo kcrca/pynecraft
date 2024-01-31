@@ -213,7 +213,6 @@ class TestFunctions(unittest.TestCase):
         loaded = Loop.load('foo')
         self.assertEqual(saved.adjuster, loaded.adjuster)
 
-
     def check_save(self, save_path: str | Path | None, func_name: str, expected: str | Path):
         expected = expected if isinstance(expected, Path) else Path(expected)
         path = Function(func_name).add('say hi').save(save_path)
@@ -301,7 +300,6 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual('packer:dir', sub_set.full_name)
         self.assertEqual('packer:dir/sub_func', sub_func.full_name)
         self.assertEqual('sub_func', sub_func.name)
-
 
     def test_function_datapack_save_and_load(self):
         pack = DataPack('packer')

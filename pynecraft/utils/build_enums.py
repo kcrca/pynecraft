@@ -136,7 +136,7 @@ def clean(cell) -> str:
     if not isinstance(cell, str):
         cell = cell.text
     s = re.sub(r'\s{2,}', ' ', cell.strip())
-    s = s.replace(u'\u200c', '') .strip() # Discard the zero-width non-joiners
+    s = s.replace(u'\u200c', '').strip()  # Discard the zero-width non-joiners
     return re.sub(r'\s*[\[*].*', '', s, flags=re.DOTALL)  # Discard footnotes
 
 

@@ -1,6 +1,6 @@
 import unittest
 
-from pynecraft.base import r, NORTH, SOUTH, EAST, WEST
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
 from pynecraft.function import Function
 from pynecraft.menus import Menu, Submenu
 
