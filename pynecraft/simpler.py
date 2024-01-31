@@ -3,11 +3,10 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Mapping, Tuple, Union, Sequence
 
-from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, \
-    _to_list, d, as_facing, r, to_id, NORTH, IntOrArg, StrOrArg, Arg
+from .base import FacingDef, IntRelCoord, Nbt, NbtDef, Position, RelCoord, _ensure_size, _in_group, _quote, _to_list, d, \
+    as_facing, r, to_id, NORTH, IntOrArg, StrOrArg, Arg
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommands, \
-    SignMessages, SomeMappings, fill, fillbiome, as_biome, as_block, setblock, data, SignMessage, \
-    SignCommand
+    SignMessages, SomeMappings, fill, fillbiome, as_biome, as_block, setblock, data, SignMessage, SignCommand
 from .enums import Pattern
 
 ARMORER = 'Armorer'
