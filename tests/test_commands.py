@@ -1377,9 +1377,16 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$(t)', as_team(Arg('t')))
         self.assertEqual('$team modify $(t) color $(v)', team().modify(Arg('t'), TeamOption.COLOR, Arg('v')))
         self.assertEqual('$gamerule $(r) $(v)', gamerule(Arg('r'), Arg('v')))
-        self.assertEqual('$gamerule 15 $(v)', gamerule(15, Arg('v')))
+        self.assertEqual('$gamerule disableRaids $(v)', gamerule(GameRule.DISABLE_RAIDS, Arg('v')))
         self.assertEqual('$gamerule $(r) 12', gamerule(Arg('r'), 12))
         self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
         self.assertEqual('$setworldspawn $(x) $(y) $(z) $(angle)',
                          setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('angle')))
-g
+
+    def test_macro_entity(self):
+        self.assertEqual('$summon $(mob) $(x) $(y) $(z)', Entity(Arg('mob')).summon((Arg('x'), Arg('y'), Arg('z'))))
+
+    def test_macro_score(self, ADD=None):
+        self.assertEqual('$scoreboard players add $(x) $(obj) $(v)', Score(Arg('x'), Arg('obj')).add(Arg('v')))
+        self.assertEqual('$scoreboard players operation $(x) $(obj) += $(y) $(obj)',
+                         Score(Arg('x'), Arg('obj')).operation(PLUS, Score(Arg('y'), Arg('obj'))))

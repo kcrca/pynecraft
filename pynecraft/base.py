@@ -312,7 +312,7 @@ def as_resource_path(path: str | None, allow_not=False) -> str | Arg| None:
     return orig
 
 
-def as_item_stack(item: str):
+def as_item_stack(item: StrOrArg):
     """
     Checks if the argument is a valid item stack specification. This only checks the resource part of the item stack.
 
@@ -1177,7 +1177,7 @@ FloatOrArg = Union[float, Arg]
 StrOrArg = Union[str, Arg]
 
 NbtDef = Union[Nbt, Mapping]
-FacingDef = Union[IntOrArg, StrOrArg, Facing]
+FacingDef = Union[int, str, Facing]
 DurationDef = Union[StrOrArg, IntOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
 Angle = Union[FloatOrArg, RelCoord]

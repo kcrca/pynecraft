@@ -1953,17 +1953,17 @@ class _ScoreboardPlayersMod(Command):
         return str(self)
 
     @_fluent
-    def set(self, score: ScoreName, value: int) -> str:
+    def set(self, score: ScoreName, value: IntOrArg) -> str:
         self._add('set', as_score(score), value)
         return str(self)
 
     @_fluent
-    def add(self, score: ScoreName, value: int) -> str:
+    def add(self, score: ScoreName, value: IntOrArg) -> str:
         self._add('add', as_score(score), value)
         return str(self)
 
     @_fluent
-    def remove(self, score: ScoreName, value: int) -> str:
+    def remove(self, score: ScoreName, value: IntOrArg) -> str:
         self._add('remove', as_score(score), value)
         return str(self)
 
@@ -2627,10 +2627,10 @@ def gamemode(gamemode: StrOrArg, target: Target = None) -> str:
     return str(cmd)
 
 
-def gamerule(rule: GameRule | StrOrArg, value: BoolOrArg | IntOrArg = None) -> str:
+def gamerule(rule: GameRule | StrOrArg | IntOrArg, value: BoolOrArg | IntOrArg = None) -> str:
     """Sets or queries a game rule value."""
     cmd = Command()
-    if isinstance(rule, str):
+    if isinstance(rule, (str, int)):
         rule = GameRule(rule)
     cmd._add('$gamerule', rule)
     if isinstance(value, Arg) or isinstance(rule, Arg):
@@ -2758,7 +2758,7 @@ def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
     return str(cmd)
 
 
-def publish(allow_commands: BoolOrArg = None, gamemode: StrOrArg = None, port: StrOrArg = None) -> str:
+def publish(allow_commands: BoolOrArg = None, gamemode: StrOrArg = None, port: StrOrArg | IntOrArg = None) -> str:
     cmd = Command()
     cmd._add('$publish')
     cmd._add_opt(_bool(allow_commands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
@@ -3069,7 +3069,7 @@ def literal(text: str):
 class NbtHolder(Command):
     """This class represents a thing that has NBT values. These include blocks and entities."""
 
-    def __init__(self, id: str = None, name: str = None):
+    def __init__(self, id: StrOrArg = None, name: StrOrArg = None):
         """Creates a holder.
 
         Typically, the ID is an in-game ID, such as 'air' or 'minecraft:smooth_stone', and the name is derived
@@ -3091,29 +3091,33 @@ class NbtHolder(Command):
         super().__init__()
         if (id, name) == (None, None):
             raise ValueError('Must specify at least one of id or name')
-        if id:
+        if isinstance(id, str):
             id = id.strip()
-        if name:
+        if isinstance(name, str):
             name = name.strip()
-        if id and not name:
+        if isinstance(id, str) and not name:
             if re.search('[A-Z |]', id):
                 name = id
                 id = None
             else:
                 name = to_name(id)
-        if name and not id:
+        if isinstance(name, str) and not id:
             id = to_id(name)
 
         self.id = as_item_stack(id)
         self.nbt = Nbt()
         self._add(id)
-        self.sign_text = tuple(name.split('|'))
-        t = self.sign_text
-        if len(t) < 4:
-            t = ('',) + t
-        t = _ensure_size(t, 4, '')
-        self.full_text = tuple(t)
-        self.name = name.replace('|', ' ')
+        if isinstance(id, str):
+            self.sign_text = tuple(name.split('|'))
+            t = self.sign_text
+            if len(t) < 4:
+                t = ('',) + t
+            t = _ensure_size(t, 4, '')
+            self.full_text = tuple(t)
+            self.name = name.replace('|', ' ')
+        else:
+            self.sign_text = name
+            self.full_text = name
 
     def __lt__(self, other):
         return self.name < other.name
@@ -3155,7 +3159,7 @@ class NbtHolder(Command):
 class Entity(NbtHolder):
     """This class supports operations useful for an entity. """
 
-    def __init__(self, id: str, nbt=None, name=None):
+    def __init__(self, id: StrOrArg, nbt: NbtDef = None, name: StrOrArg = None):
         """Creates a new entity object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``.
 
         :param id: The entity ID.
@@ -3200,7 +3204,7 @@ class Entity(NbtHolder):
             self.nbt.pop('CustomName')
             self.nbt.pop('CustomNameVisible')
 
-    def tag(self, *tags: str) -> Entity:
+    def tag(self, *tags: StrOrArg) -> Entity:
         """Add one or more tags."""
         self.nbt.get_list('Tags').extend(tags)
         return self
@@ -3230,8 +3234,10 @@ class Entity(NbtHolder):
         nbt, facing = self._summon_clean(nbt, facing)
         return summon(self, pos, nbt)
 
-    def full_id(self):
+    def full_id(self) -> str:
         """Returns a qualified id, adding 'minecraft:' if no namespace was given at construction."""
+        if isinstance(id, Arg):
+            return str(self.id)
         if self.id.find(':') >= 0:
             return self.id
         return 'minecraft:' + self.id
@@ -3240,7 +3246,7 @@ class Entity(NbtHolder):
 class Block(NbtHolder):
     """This class supports operations useful for a block. """
 
-    def __init__(self, id: str, state=None, nbt=None, name=None):
+    def __init__(self, id: StrOrArg, state=None, nbt=None, name:StrOrArg=None):
         """Creates a new block object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``. Block
         state is represented as an NBT object. """
         super().__init__(id, name)
@@ -3479,7 +3485,7 @@ class Score(Command, Expression):
     def __hash__(self):
         return hash((self.target, self.objective))
 
-    def init(self, value: int = 0) -> Iterable[str]:
+    def init(self, value: IntOrArg = 0) -> Iterable[str]:
         """Initializes the score by ensure the objective exists, and setting its value to the provided value."""
         # noinspection PyArgumentList
         return ((scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(value)))
@@ -3488,13 +3494,13 @@ class Score(Command, Expression):
         """Return a 'get' command for the score."""
         return self._cmd().get(self)
 
-    def set(self, value: int | str | Command | Score | Expression) -> str | list[Command]:
+    def set(self, value: IntOrArg | str | Command | Score | Expression) -> str | list[Command]:
         """
         Returns a 'set' command for the score. If the value is a command, returns a command that sets the value to
         the result of that command. If the value is an expression, returns the commands required to set this score to
         the value of that expression.
         """
-        if isinstance(value, int):
+        if isinstance(value, (int, Arg)):
             return self._cmd().set(self, value)
         elif isinstance(value, Score):
             return self._cmd().operation(self, EQ, value)
@@ -3503,11 +3509,11 @@ class Score(Command, Expression):
         else:
             return str(execute().store(RESULT).score(self).run(value))
 
-    def add(self, value: int) -> str:
+    def add(self, value: IntOrArg) -> str:
         """Returns an 'add' command for the score."""
         return self._cmd().add(self, value)
 
-    def remove(self, value: int) -> str:
+    def remove(self, value: IntOrArg) -> str:
         """Return sa 'remove' command for the score."""
         return self._cmd().remove(self, value)
 
