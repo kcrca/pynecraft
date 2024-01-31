@@ -943,6 +943,8 @@ def as_color(color: IntOrArg | StrOrArg | None) -> str | None:
     "Valid" means one of the 16 known colors, such as those used for wool. These are stored in the
     ``COLORS`` array.
 
+    An Arg is also valid.
+
     :param color: The ((probable) color name.
     :return: The color name, in lower case.
     """
@@ -959,6 +961,8 @@ def as_color_num(color: IntOrArg | StrOrArg | None) -> int | str | None:
 
     "Valid" means an int, or a string that names a known color from which a color number can be inferred.
     Color numbers range from 0 to 15. (See as_color() for a documentation on color names.)
+
+    An Arg is also valid.
 
     :param color:
     :return:

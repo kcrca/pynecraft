@@ -1170,6 +1170,8 @@ def as_range(spec: Range) -> str:
      "Valid" means a single number or bool, or a two-element list or tuple that define the endpoints. If a bool, it will
      be treated as 1 or 0. For a two-element range, one of the endpoints may be None to define an open-ended range.
 
+    An Arg or a tuple of one or two Args is also valid.
+
     :param spec: The (probable) range.
     :return: A string for the range, either the single number of a range using '..' between the two values, one of which
     can be None.

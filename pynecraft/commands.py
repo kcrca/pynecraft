@@ -199,6 +199,8 @@ def as_block(block: BlockDef | None) -> Block | None:
 
     "Valid" means a string block name, or valid arguments to the Block constructor.
 
+    An Arg is also valid.
+
     :param block: The (probable) block.
     :return: A Block object for the argument, or None.
     """
@@ -217,6 +219,8 @@ def as_entity(entity: EntityDef | None) -> Entity | None:
     """Checks if the argument is a valid entity specification, or None.
 
     "Valid" means a string entity name, or valid arguments to the Entity constructor.
+
+    An Arg is also valid.
 
     :param entity: The (probable) entity
     :return: an Entity object for the argument, or None.
@@ -253,6 +257,8 @@ def as_slot(slot: StrOrArg | None) -> str | None:
     """Checks if the argument is a valid slot specification, or None.
 
     "Valid" means valid for the ``item`` command.
+
+    An Arg is also valid.
 
     :param slot: The (probable) slot name.
     :return: The input value.
