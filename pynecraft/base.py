@@ -566,7 +566,7 @@ class Nbt(UserDict):
 
     @classmethod
     def as_nbt(cls, nbt: NbtDef) -> Nbt:
-        """Returns the input parameter as an Nbt, including making a copy of an Nbt object that is passed in."""
+        """Returns the input argument as an Nbt, including making a copy of an Nbt object that is passed in."""
         if not isinstance(nbt, cls):
             nbt = cls(nbt)
         for k, v in nbt.items():
@@ -842,19 +842,23 @@ class RelCoord:
     def __pos__(self: U) -> U:
         return self
 
+    # The specific tuple sizes help type checking since some things that will consume the output expect specifics
     @classmethod
-    def add(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
+    def add(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | tuple[
+        Coord, Coord] | tuple[Coord, Coord, Coord] | None:
         """Returns ``v1 + v2``. If either is None, the result is the other."""
         return cls.merge(lambda v1, v2: v1 + v2, v1, v2)
 
     @classmethod
-    def sub(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
+    def sub(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | tuple[
+        Coord, Coord] | tuple[Coord, Coord, Coord] | None:
         """Returns ``v1 - v2``. If either is None, the result is the other."""
         return cls.merge(lambda v1, v2: v1 - v2, v1, v2)
 
     @staticmethod
     def merge(op: Callable[[Coord, Coord], Coord], v1: Sequence[Coord, ...] | None,
-              v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | None:
+              v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | tuple[Coord, Coord] | tuple[
+        Coord, Coord, Coord] | None:
         """
         Returns the result of invoking op on each element of the vectors. If either vector is None, the result is the
         other.
