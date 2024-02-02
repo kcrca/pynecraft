@@ -193,6 +193,8 @@ class ItemFetcher(Fetcher):
             m = re.fullmatch('Raw (Copper|Iron|Gold)', id)
             if not m:
                 id = id[4:]
+        elif id == 'Scute':
+            id = 'Turtle Scute'
 
         return id, desc
 
