@@ -134,7 +134,9 @@ class Arg:
     An argument for a macro command.
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str):
+        if not name:
+            raise ValueError('Arg must have actual name')
         self.name = as_nbt_path(name)
 
     def __str__(self):
@@ -150,6 +152,13 @@ class Arg:
 
     def __hash__(self):
         return hash(self.name)
+
+
+def de_arg(v: any) -> any:
+    return str(v) if isinstance(v, Arg) else v
+
+def is_arg(v: any) -> bool:
+    return isinstance(v, Arg) or (isinstance(v, str) and _arg_re.search(v))
 
 
 def _quote(value):
@@ -185,8 +194,8 @@ def _to_tuple(data):
 
 
 def _strip_namespace(path):
-    if isinstance(path, Arg):
-        return path
+    if is_arg(path):
+        return str(path)
     parts = path.split(':', 1)
     if len(parts) > 1:
         as_resource(parts[0])
@@ -195,8 +204,7 @@ def _strip_namespace(path):
 
 
 def _strip_not(path):
-    if isinstance(path, Arg):
-        return path
+    path = de_arg(path)
     if path and path[0] == '!':
         return path[1:]
     return path
@@ -215,13 +223,13 @@ def _not_ify(value: StrOrArg | Iterable[StrOrArg]) -> str | Iterable[str]:
 def _bool(value: BoolOrArg | None) -> str | None:
     if value is None:
         return None
-    if isinstance(value, Arg):
+    if is_arg(value):
         return str(value)
     return str(value).lower()
 
 
 def _float(value: FloatOrArg) -> str:
-    if isinstance(value, Arg):
+    if is_arg(value):
         return str(value)
     return str(round(value, settings.float_precision))
 
@@ -247,7 +255,7 @@ def as_nbt_key(key: StrOrArg) -> StrOrArg:
     :param key: The (probable) key.
     :return: the original input string.
     """
-    if isinstance(key, Arg):
+    if is_arg(key):
         return str(key)
     if not _nbt_key_re.fullmatch(key):
         raise KeyError(f'{key}: Invalid NBT key')
@@ -255,7 +263,7 @@ def as_nbt_key(key: StrOrArg) -> StrOrArg:
 
 
 def as_nbt_path(path: StrOrArg) -> str:
-    if isinstance(path, Arg):
+    if is_arg(path):
         return str(path)
     if _nbt_path_re.fullmatch(path) is None:
         raise ValueError(f'{path}: Invalid NBT path')
@@ -270,7 +278,7 @@ def as_resource(name: str | None, allow_namespace=True, allow_not=False) -> str 
     :param allow_not: Whether to allow a '!' before the name.
     :return: the input value.
     """
-    if isinstance(name, Arg):
+    if is_arg(name):
         return name
     if name is None:
         return None
@@ -304,7 +312,7 @@ def as_resource_path(path: str | None, allow_not=False) -> str | Arg | None:
     :param allow_not: Whether to allow a '!' before any names.
     :return: the input value.
     """
-    if isinstance(path, Arg):
+    if is_arg(path):
         return path
     if path is None:
         return None
@@ -332,7 +340,7 @@ def as_item_stack(item: StrOrArg):
     :param item: The (probable) item stack.
     :return: the input value
     """
-    if isinstance(item, Arg):
+    if is_arg(item):
         return item
     resource, *_ = item.split('{')
     as_resource(resource)
@@ -348,7 +356,7 @@ def as_name(name: str | None, allow_not=False) -> str | None:
     """
     if name is None:
         return None
-    if isinstance(name, Arg):
+    if is_arg(name):
         return str(name)
     orig = name
     if allow_not:
@@ -370,7 +378,7 @@ def as_names(*names: StrOrArg, allow_not=False) -> tuple[str, ...]:
     return tuple(str(n) for n in names)
 
 
-def as_column(col: IntColumn) -> IntColumn:
+def as_column(col: IntColumn) -> IntColumn | tuple[str]:
     """Checks if the argument is a valid column position.
 
     A valid column position is a tuple or list of two ints and/or IntRelCoords.
@@ -378,6 +386,9 @@ def as_column(col: IntColumn) -> IntColumn:
     :param col: The (probable) column position.
     :return: The input value.
     """
+    col = de_arg(col)
+    if isinstance(col, str):
+        return (col,)
     if isinstance(col, (tuple, list)):
         if len(col) != 2:
             raise ValueError(f'{col}: Column must have 2 values')
@@ -396,7 +407,8 @@ def as_angle(angle: Angle) -> Angle:
     :param angle: The (probable) angle.
     :return: The input value.
     """
-    if isinstance(angle, (int, float, Arg)):
+    angle = de_arg(angle)
+    if isinstance(angle, (int, float, str)):
         return angle
     elif isinstance(angle, RelCoord):
         if angle.prefix != '~':
@@ -417,7 +429,7 @@ def as_yaw(angle: Angle | StrOrArg | None) -> Angle | None:
     :param angle: The (probable) yaw angle.
     :return: The input value.
     """
-    if isinstance(angle, Arg):
+    if is_arg(angle):
         return angle
     if angle is not None:
         if isinstance(angle, str):
@@ -440,7 +452,7 @@ def as_pitch(angle: Angle | None) -> Angle | None:
     :param angle: The (probable) pitch angle.
     :return: The input value.
     """
-    if isinstance(angle, Arg):
+    if is_arg(angle):
         return angle
     if angle is not None:
         angle = as_angle(angle)
@@ -558,7 +570,7 @@ class Nbt(UserDict):
         Returns a string version of what is passed, using str() instead of repr() for dict and iterables. Because
         str(dict), str(list), etc., use repr(), not str().
         """
-        if isinstance(obj, Arg):
+        if is_arg(obj):
             return str(obj)
         if isinstance(obj, cls):
             return str(obj)
@@ -757,18 +769,22 @@ class Settings:
 settings = Settings()
 
 
-def to_id(name: str) -> str:
+def to_id(name: StrOrArg) -> str:
     """
     Returns an ID from the passed-in name. If it's already an ID, it is just returned. Otherwise, it lower-cases the
     name, and replaces both ' ' and '| with '_'.
     """
+    if is_arg(name):
+        return str(name)
     return re.sub(r'\s+|\'|\|', '_', name.strip().lower())
 
 
-def to_name(id: str) -> str:
+def to_name(id: StrOrArg) -> str:
     """
     Returns a user-friendly name from the passed-in ID. It just replaces '_' with spaces and title-cases the result.
     """
+    if is_arg(id):
+        return str(id)
     return id.replace('_', ' ').title()
 
 
@@ -780,7 +796,7 @@ class RelCoord:
     def __init__(self, prefix: str, v: FloatOrArg):
         self.prefix = prefix
         self.value = v
-        self._rep = prefix + (str(v) if isinstance(v, Arg) else _float(v))
+        self._rep = prefix + (str(v) if is_arg(v) else _float(v))
 
     def _v(self: U, v: float) -> U:
         if isinstance(v, int):
@@ -1130,7 +1146,7 @@ _facing_info = {NORTH: (0, -1, 0), EAST: (1, 0, 270), SOUTH: (0, 1, 180), WEST: 
 def _in_group(group: list | tuple, name: StrOrArg | int | None, allow_none=True):
     if allow_none and name is None:
         return name
-    if isinstance(name, Arg):
+    if is_arg(name):
         return name
 
     if name not in group:
@@ -1166,7 +1182,9 @@ def as_duration(duration: DurationDef | None) -> TimeSpec | None:
 
     If the input is None, it is returned. Otherwise, this returns Duration(duration).
     """
-    if duration is None or isinstance(duration, (TimeSpec, Arg)):
+    if is_arg(duration):
+        return str(duration)
+    if duration is None or isinstance(duration, (TimeSpec)):
         return duration
     return TimeSpec(duration)
 
@@ -1185,7 +1203,7 @@ def as_range(spec: Range) -> str:
     can be None.
     """
 
-    if isinstance(spec, Arg):
+    if is_arg(spec):
         return str(spec)
     if isinstance(spec, bool):
         return str(int(spec))
@@ -1193,7 +1211,7 @@ def as_range(spec: Range) -> str:
         return str(spec)
 
     for i, v in enumerate(spec):
-        if v is not None and not isinstance(v, (float, int, Arg)):
+        if v is not None and not isinstance(v, (float, int)) and not is_arg(v):
             raise ValueError(f'{v}: Must be None or a number')
     s = '' if spec[0] is None else spec[0]
     e = '' if spec[1] is None else spec[1]
@@ -1212,7 +1230,7 @@ FacingDef = Union[int, str, Facing]
 DurationDef = Union[StrOrArg, IntOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
 Angle = Union[FloatOrArg, RelCoord]
-IntCoord = Union[int, IntRelCoord]
+IntCoord = Union[IntOrArg, IntRelCoord, str]
 Position = Tuple[Coord, Coord, Coord]
 XYZ = Tuple[FloatOrArg, FloatOrArg, FloatOrArg]
 Column = Tuple[Coord, Coord]

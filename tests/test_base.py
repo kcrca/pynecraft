@@ -5,7 +5,8 @@ from parameterized import parameterized
 from pynecraft.base import Arg, COLORS, Coord, EAST, IntRelCoord, NORTH, Nbt, RED, ROTATION_0, ROTATION_180, \
     ROTATION_270, ROTATION_90, RelCoord, SOUTH, TimeSpec, WEST, _bool, _ensure_size, _float, _in_group, _int_or_float, \
     _not_ify, _strip_namespace, _strip_not, _to_list, _to_tuple, as_angle, as_column, as_duration, as_facing, as_name, \
-    as_names, as_nbt_path, as_pitch, as_range, as_resource, as_resource_path, as_resources, as_yaw, d, days, r, \
+    as_names, as_nbt_key, as_nbt_path, as_pitch, as_range, as_resource, as_resource_path, as_resources, as_yaw, d, days, \
+    r, \
     rotate_facing, seconds, settings, string, ticks, to_id
 from pynecraft.commands import setblock
 
@@ -44,20 +45,27 @@ class TestBase(unittest.TestCase):
     def test_strip_namespace(self):
         self.assertEqual('foo', _strip_namespace('m:foo'))
         self.assertEqual('foo', _strip_namespace('foo'))
+        self.assertEqual('$(b)', _strip_namespace(Arg('b')))
+        self.assertEqual('a$(b)', _strip_namespace('a$(b)'))
 
     def test_strip_not(self):
         self.assertEqual('foo', _strip_not('!foo'))
         self.assertEqual('foo', _strip_not('foo'))
+        self.assertEqual('$(f)', _strip_not(Arg('f')))
+        self.assertEqual('b$(f)', _strip_not('b$(f)'))
+        self.assertEqual('b$(f)', _strip_not('!b$(f)'))
 
     def test_bool(self):
         self.assertIsNone(_bool(None))
         self.assertEqual('true', _bool(True))
+        self.assertEqual('$(b)', _bool(Arg('b')))
 
     def test_float(self):
         self.assertEqual('1', _float(1))
         self.assertEqual('1.0', _float(1.0))
         self.assertEqual('1.1', _float(1.1))
         self.assertEqual('1.123', _float(1.12345))
+        self.assertEqual('$(f)', _bool(Arg('f')))
 
     def test_not_ify(self):
         self.assertEqual('!foo', _not_ify('foo'))
@@ -70,9 +78,15 @@ class TestBase(unittest.TestCase):
         with self.assertRaises(ValueError):
             _ensure_size([None, None, None], 2)
 
+    def test_as_nbt_key(self):
+        self.assertEqual('key', as_nbt_key('key'))
+        self.assertEqual('v$(k)', as_nbt_key('v$(k)'))
+
     def test_as_nbt_path(self):
         self.assertEqual('', as_nbt_path(''))
         self.assertEqual('a.b.c', as_nbt_path('a.b.c'))
+        self.assertEqual('$(a)', as_nbt_path(Arg('a')))
+        self.assertEqual('a.$(b).c', as_nbt_path('a.$(b).c'))
         with self.assertRaises(ValueError):
             as_nbt_path('a.b%c')
 
@@ -82,6 +96,10 @@ class TestBase(unittest.TestCase):
         self.assertEqual('!a', as_resource('!a', allow_not=True))
         self.assertEqual('m:a', as_resource('m:a'))
         self.assertEqual('!m:a', as_resource('!m:a', allow_not=True))
+        self.assertEqual('!v$(k)', as_resource('!v$(k)', allow_not=True))
+        self.assertEqual('v$(k)', as_resource('v$(k)', allow_not=True))
+        self.assertEqual('$(k)', as_resource('$(k)', allow_not=True))
+        self.assertEqual('$(k)', as_resource(Arg('k'), allow_not=True))
         with self.assertRaises(ValueError):
             as_resource('!a')
         with self.assertRaises(ValueError):
@@ -91,6 +109,8 @@ class TestBase(unittest.TestCase):
         self.assertTupleEqual((), as_resources())
         self.assertTupleEqual(('a',), as_resources('a'))
         self.assertTupleEqual(('a', '!b'), as_resources('a', '!b', allow_not=True))
+        self.assertTupleEqual(('v$(a)', '!v$(b)'), as_resources('v$(a)', '!v$(b)', allow_not=True))
+        self.assertTupleEqual(('$(a)', '$(b)'), as_resources(Arg('a'), Arg('b'), allow_not=True))
         with self.assertRaises(ValueError):
             as_resources('!a')
         with self.assertRaises(ValueError):
@@ -102,6 +122,10 @@ class TestBase(unittest.TestCase):
         self.assertEqual('/a', as_resource_path('/a'))
         self.assertEqual('/a/b/c', as_resource_path('/a/b/c'))
         self.assertEqual('!/a/b/c', as_resource_path('!/a/b/c', allow_not=True))
+        self.assertEqual('!v$(k)', as_resource_path('!v$(k)', allow_not=True))
+        self.assertEqual('v$(k)', as_resource_path('v$(k)', allow_not=True))
+        self.assertEqual('$(k)', as_resource_path('$(k)', allow_not=True))
+        self.assertEqual('$(k)', as_resource_path(Arg('k'), allow_not=True))
         with self.assertRaises(ValueError):
             as_resource_path('')
         with self.assertRaises(ValueError):
@@ -113,6 +137,8 @@ class TestBase(unittest.TestCase):
         self.assertIsNone(as_name(None))
         self.assertEqual('a', as_name('a'))
         self.assertEqual('!a', as_name('!a', allow_not=True))
+        self.assertEqual('v$(a)', as_name('v$(a)'))
+        self.assertEqual('$(a)', as_name(Arg('a')))
         with self.assertRaises(ValueError):
             as_name('!a')
         with self.assertRaises(ValueError):
@@ -130,6 +156,8 @@ class TestBase(unittest.TestCase):
         self.assertEqual((1, 2), as_column((1, 2)))
         self.assertEqual(r(1, 2), as_column(r(1, 2)))
         self.assertEqual((1, r(2)), as_column((1, r(2))))
+        self.assertEqual(('v$(a)',), as_column('v$(a)'))
+        self.assertEqual(('$(a)',), as_column(Arg('a')))
         with self.assertRaises(ValueError):
             as_column((1,))
         with self.assertRaises(ValueError):
@@ -139,6 +167,8 @@ class TestBase(unittest.TestCase):
         self.assertEqual(17, as_angle(17))
         self.assertEqual(17.3, as_angle(17.3))
         self.assertEqual(r(17.3), as_angle(r(17.3)))
+        self.assertEqual('v$(a)', as_angle('v$(a)'))
+        self.assertEqual('$(a)', as_angle(Arg('a')))
         with self.assertRaises(ValueError):
             as_angle(d(17.3))
 
@@ -146,6 +176,8 @@ class TestBase(unittest.TestCase):
         self.assertIsNone(as_yaw(None))
         self.assertEqual(17.3, as_yaw(17.3))
         self.assertEqual(90, as_yaw(WEST))
+        self.assertEqual('v$(a)', as_yaw('v$(a)'))
+        self.assertEqual('$(a)', as_yaw(Arg('a')))
         with self.assertRaises(ValueError):
             as_yaw(181)
         with self.assertRaises(ValueError):
@@ -154,16 +186,20 @@ class TestBase(unittest.TestCase):
     def test_as_pitch(self):
         self.assertIsNone(as_pitch(None))
         self.assertEqual(17.3, as_pitch(17.3))
+        self.assertEqual('v$(a)', as_pitch('v$(a)'))
+        self.assertEqual('$(a)', as_pitch(Arg('a')))
         with self.assertRaises(ValueError):
             as_pitch(181)
         with self.assertRaises(ValueError):
             as_pitch(-181)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             as_pitch(WEST)
 
     def test_in_group(self):
         self.assertIsNone(_in_group(COLORS, None))
         self.assertEqual(RED, _in_group(COLORS, RED))
+        self.assertEqual('v$(a)', _in_group(COLORS, 'v$(a)'))
+        self.assertEqual('$(a)', _in_group(COLORS, Arg('a')))
         with self.assertRaises(ValueError):
             _in_group(COLORS, None, allow_none=False)
         with self.assertRaises(ValueError):
@@ -185,6 +221,8 @@ class TestBase(unittest.TestCase):
         self.assertIsNone(as_duration(None))
         self.assertEqual(TimeSpec('15s'), as_duration(TimeSpec('15s')))
         self.assertEqual(TimeSpec(15), as_duration(15))
+        self.assertEqual('v$(k)', as_duration('v$(k)'))
+        self.assertEqual('$(k)', as_duration(Arg('k')))
 
     def test_as_range(self):
         self.assertEqual('0', as_range(False))
@@ -193,6 +231,10 @@ class TestBase(unittest.TestCase):
         self.assertEqual('5.3..8.4', as_range((5.3, 8.4)))
         self.assertEqual('5.3..', as_range((5.3, None)))
         self.assertEqual('..8.4', as_range((None, 8.4)))
+        self.assertEqual('v$(k)', as_range('v$(k)'))
+        self.assertEqual('$(k)', as_range(Arg('k')))
+        self.assertEqual('v$(k)..q$(z)', as_range(('v$(k)', 'q$(z)')))
+        self.assertEqual('$(k)..q$(z)', as_range((Arg('k'), 'q$(z)')))
         with self.assertRaises(ValueError):
             as_range((6, 3))
 
@@ -205,6 +247,8 @@ class TestBase(unittest.TestCase):
     def test_to_id(self):
         self.assertEqual('foo', to_id('foo'))
         self.assertEqual('foo_bar', to_id('Foo Bar'))
+        self.assertEqual('v$(k)', to_id('v$(k)'))
+        self.assertEqual('$(k)', to_id(Arg('k')))
 
     def test_nbt(self):
         self.assertEqual({'key': 1}, Nbt().merge(Nbt(key=1)))
@@ -283,9 +327,6 @@ class TestBase(unittest.TestCase):
         with self.assertRaises(ValueError):
             Nbt.TypedArray('d', ())
 
-    def test_nbt_macro(self):
-        self.assertEqual('{$(k):$(v)}', str(Nbt({Arg('k'): Arg('v')})))
-
     def test_precision(self):
         orig = settings.float_precision
         try:
@@ -304,6 +345,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual(IntRelCoord('~', 3), r(3))
         self.assertEqual(RelCoord('~', 3.0), r(3.0))
         self.assertEqual(RelCoord('~', 3.1), r(3.1))
+        self.assertEqual(RelCoord('~', Arg('v')), r(Arg('v')))
         self.assertEqual(r(5.5), r(2) + r(3.5))
         self.assertEqual(r(5.5), r(2) + 3.5)
         self.assertEqual(r(3.5), r(5.5) - r(2))
@@ -327,6 +369,8 @@ class TestBase(unittest.TestCase):
 
         with self.assertRaises(AssertionError):
             r(3.5) + d(3.5)
+        with self.assertRaises(AssertionError):
+            r(Arg('v')) + d(3.5)
 
     def test_rel_coord_merge(self):
         def add(v1: Coord, v2: Coord):
@@ -339,6 +383,8 @@ class TestBase(unittest.TestCase):
         self.assertEqual(r(1, 2, 3), RelCoord.merge(add, r(1, 2, 3), None))
         self.assertEqual(r(1, 2, 3), RelCoord.merge(add, None, r(1, 2, 3)))
         self.assertEqual(r(2, 4, 6), RelCoord.merge(add, r(1, 2, 3), r(1, 2, 3)))
+        with self.assertRaises(TypeError):
+            RelCoord.merge(add, r(Arg('a'), 2), r(1, 2))
 
     def test_time_spec(self):
         self.assertEqual(0, TimeSpec(0).ticks)
@@ -373,6 +419,8 @@ class TestBase(unittest.TestCase):
         self.assertFalse(Arg('a') == None)
         self.assertEqual(hash(Arg('a')), hash(Arg('a')))
         self.assertNotEqual(hash(Arg('a')), hash(Arg('b')))
+        with self.assertRaises(ValueError):
+            Arg('')
 
     def test_macro(self):
         self.assertEqual('$(a)', str(as_yaw(Arg('a'))))
@@ -382,4 +430,3 @@ class TestBase(unittest.TestCase):
         self.assertEqual(Arg('d'), as_duration(Arg('d')))
         self.assertEqual('$(r)', as_range(Arg('r')))
         self.assertEqual('$(b)..$(e)', as_range((Arg('b'), Arg('e'))))
-
