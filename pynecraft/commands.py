@@ -29,7 +29,8 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
     as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
-    as_resource_path, as_resources, as_yaw, to_id, to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, BoolOrArg, \
+    as_resource_path, as_resources, as_yaw, is_arg, to_id, to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, \
+    BoolOrArg, \
     FloatOrArg, _arg_re
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
@@ -159,7 +160,7 @@ def as_user(name: StrOrArg) -> str:
     :param name: The (probable) user name.
     :return: The input value.
     """
-    if isinstance(name, Arg):
+    if is_arg(name):
         return str(name)
     if not re.fullmatch(r'\w+', name):
         raise ValueError(f'{name}: Invalid user name')
@@ -172,7 +173,7 @@ def as_uuid(uuid: StrOrArg) -> str:
     :param uuid: The (probable) uuid.
     :return: the input value.
     """
-    if isinstance(uuid, Arg):
+    if is_arg(uuid):
         return str(uuid)
     if not re.fullmatch(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+', uuid):
         raise ValueError(f'{uuid}: Invalid UUID string')
@@ -185,7 +186,7 @@ def as_team(team: StrOrArg) -> str | None:
     :param team: The (probable) team name.
     :return: The input value.
     """
-    if isinstance(team, Arg):
+    if is_arg(team):
         return str(team)
     if team is None:
         return team
@@ -204,7 +205,7 @@ def as_block(block: BlockDef | None) -> Block | Arg | None:
     :param block: The (probable) block.
     :return: A Block object for the argument, or None.
     """
-    if isinstance(block, Arg):
+    if is_arg(block):
         return block
     if block is None:
         return None
@@ -225,7 +226,7 @@ def as_entity(entity: EntityDef | None) -> Entity | Arg | None:
     :param entity: The (probable) entity
     :return: an Entity object for the argument, or None.
     """
-    if isinstance(entity, Arg):
+    if is_arg(entity):
         return entity
     if entity is None:
         return None
@@ -263,7 +264,7 @@ def as_slot(slot: StrOrArg | None) -> str | None:
     :param slot: The (probable) slot name.
     :return: The input value.
     """
-    if isinstance(slot, Arg):
+    if is_arg(slot):
         return str(slot)
     if slot is None:
         return None
@@ -487,7 +488,7 @@ MAX_EFFECT_SECONDS = 1000000
 
 
 def _to_donate(action: StrOrArg, group_list: list[str]):
-    if isinstance(action, Arg):
+    if is_arg(action):
         return str(action)
     if action in _GIVELIKE:
         return group_list[0]
@@ -578,9 +579,11 @@ class _ScoreClause(Command):
 class AdvancementCriteria(Command):
     def __init__(self, advancement: AdvancementDef, criteria: BoolOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
-        if not isinstance(advancement, Arg):
-            advancement = Advancement(advancement)
-        if isinstance(criteria, BoolOrArg):
+        if is_arg(advancement):
+            advancement = str(advancement)
+        if is_arg(criteria):
+            self._add(f'{advancement}={str(criteria)}')
+        elif isinstance(criteria, BoolOrArg):
             self._add(f'{advancement}={_bool(criteria)}')
         else:
             self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')

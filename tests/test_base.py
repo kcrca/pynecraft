@@ -4,7 +4,8 @@ from parameterized import parameterized
 
 from pynecraft.base import Arg, COLORS, Coord, EAST, IntRelCoord, NORTH, Nbt, RED, ROTATION_0, ROTATION_180, \
     ROTATION_270, ROTATION_90, RelCoord, SOUTH, TimeSpec, WEST, _bool, _ensure_size, _float, _in_group, _int_or_float, \
-    _not_ify, _strip_namespace, _strip_not, _to_list, _to_tuple, as_angle, as_column, as_duration, as_facing, as_name, \
+    _not_ify, _quote, _strip_namespace, _strip_not, _to_list, _to_tuple, as_angle, as_column, as_duration, as_facing, \
+    as_name, \
     as_names, as_nbt_key, as_nbt_path, as_pitch, as_range, as_resource, as_resource_path, as_resources, as_yaw, d, days, \
     r, \
     rotate_facing, seconds, settings, string, ticks, to_id
@@ -21,6 +22,12 @@ class TestBase(unittest.TestCase):
 
     def tearDown(self) -> None:
         Nbt.use_spaces = self.orig_spaces
+
+    def test_quote(self):
+        self.assertEqual('foo', _quote('foo'))
+        self.assertEqual('"f b"', _quote('f b'))
+        self.assertEqual('\'"f b"\'', _quote('"f b"'))
+        self.assertEqual('"\'f b\'"', _quote("'f b'"))
 
     def test_to_list(self):
         self.assertListEqual([], _to_list(()))
@@ -81,6 +88,7 @@ class TestBase(unittest.TestCase):
     def test_as_nbt_key(self):
         self.assertEqual('key', as_nbt_key('key'))
         self.assertEqual('v$(k)', as_nbt_key('v$(k)'))
+        self.assertEqual('$(k)', as_nbt_key(Arg('k')))
 
     def test_as_nbt_path(self):
         self.assertEqual('', as_nbt_path(''))
@@ -279,6 +287,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual('{}', Nbt.to_str(Nbt({})))
         self.assertEqual('[]', Nbt.to_str([]))
         self.assertEqual(Nbt(sub=Nbt()), Nbt.as_nbt({'sub': {}}))
+        self.assertEqual('$(a)', Nbt.to_str(Arg('a')))
 
     def test_nbt_regularize(self):
         self.assertEqual('{key: [1, 2]}', str(Nbt(key=[1, 2])))
@@ -293,6 +302,7 @@ class TestBase(unittest.TestCase):
     def test_nbt_get_list(self):
         self.assertEqual([], Nbt().get_list('key'))
         self.assertEqual([1, 2], Nbt(key=[1, 2]).get_list('key'))
+        self.assertEqual(Arg('a'), Nbt({'list': Arg('a')}).get_list('list'))
 
     def test_nbt_get_nbt(self):
         self.assertEqual(Nbt(), Nbt().get_nbt('key'))
@@ -421,12 +431,3 @@ class TestBase(unittest.TestCase):
         self.assertNotEqual(hash(Arg('a')), hash(Arg('b')))
         with self.assertRaises(ValueError):
             Arg('')
-
-    def test_macro(self):
-        self.assertEqual('$(a)', str(as_yaw(Arg('a'))))
-        self.assertEqual('$(a)', str(as_pitch(Arg('a'))))
-        self.assertEqual('$(a)', Nbt.to_str(Arg('a')))
-        self.assertEqual(Arg('a'), Nbt({'list': Arg('a')}).get_list('list'))
-        self.assertEqual(Arg('d'), as_duration(Arg('d')))
-        self.assertEqual('$(r)', as_range(Arg('r')))
-        self.assertEqual('$(b)..$(e)', as_range((Arg('b'), Arg('e'))))

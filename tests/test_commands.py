@@ -1320,6 +1320,11 @@ class TestCommands(unittest.TestCase):
                          str(a().advancements(
                              AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
                              AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
+        self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
+            AdvancementCriteria('$(c)', '$(b)'))))
+        self.assertEqual('@a[advancements={k$(c)=v$(b)}]', str(a().advancements(
+            AdvancementCriteria('k$(c)', 'v$(b)'))))
+
         self.assertEqual('@a[dx=$(x),dy=$(y),dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
         self.assertEqual('@a[scores={$(x)=$(xv),$(y)=$(yv)}]',
                          str(a().scores({Arg('x'): Arg('xv'), Arg('y'): Arg('yv')})))
