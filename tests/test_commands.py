@@ -144,6 +144,20 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             _StoreClause().storage('bar', '{}', 'foo', 1.9)
 
+    def test_execute_macros(self):
+        self.assertEqual('$execute if blocks $(x1) $(y1) $(z1) $(x2) $(y2) $(z2) $(x3) $(y3) $(z3) $(m)',
+                         str(execute().if_().blocks(
+                             (Arg('x1'), Arg('y1'), Arg('z1')),
+                             (Arg('x2'), Arg('y2'), Arg('z2')),
+                             (Arg('x3'), Arg('y3'), Arg('z3')),
+                             Arg('m'))))
+        self.assertEqual('$execute if data storage $(t) $(p)', str(execute().if_().data(Arg('t'), Arg('p'))))
+        self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
+        self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
+        self.assertEqual('$execute store result block $(x) $(y) $(z) $(path) short $(scale)',
+                         str(execute().store(RESULT).block((Arg('x'), Arg('y'), Arg('z')), Arg('path'), SHORT,
+                                                           Arg('scale'))))
+
     def test_range(self):
         self.assertEqual('3', as_range(3))
         self.assertEqual('1..3', as_range((1, 3)))
@@ -201,6 +215,7 @@ class TestCommands(unittest.TestCase):
                          Entity('bat', name='Fred').custom_name(True).custom_name_visible(True).nbt)
         self.assertEqual('summon bat 1 ~2 ^3 {Facing: 2, Rotation: [180.0f, 0.0f]}',
                          Entity('bat', name='Fred').summon((1, r(2), d(3)), facing=NORTH))
+        self.assertEqual('$summon $(mob) $(x) $(y) $(z)', Entity(Arg('mob')).summon((Arg('x'), Arg('y'), Arg('z'))))
 
     def test_json_text(self):
         sort_keys = Nbt.sort_keys
@@ -304,6 +319,7 @@ class TestCommands(unittest.TestCase):
     def test_score(self):
         self.assertEqual('* foo', str(Score(Star(), 'foo')))
         self.assertEqual('@a bar', str(Score(a(), 'bar')))
+        self.assertEqual('$(name) $(obj)', str(Score(Arg('name'), Arg('obj'))))
         x = Score('x', 'score')
         self.assertEqual(('scoreboard objectives add score dummy', 'scoreboard players set x score 17'), x.init(17))
         self.assertEqual('scoreboard players get x score', x.get())
@@ -312,6 +328,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('scoreboard players remove x score 17', x.remove(17))
         self.assertEqual('scoreboard players reset x score', x.reset())
         self.assertEqual('scoreboard players enable x score', x.enable())
+        self.assertEqual('$scoreboard players add $(x) $(obj) $(v)', Score(Arg('x'), Arg('obj')).add(Arg('v')))
+        self.assertEqual('$scoreboard players operation $(x) $(obj) += $(y) $(obj)',
+                         Score(Arg('x'), Arg('obj')).operation(PLUS, Score(Arg('y'), Arg('obj'))))
 
     def test_as_score(self):
         self.assertIsNone(as_score(None))
@@ -466,6 +485,7 @@ class TestCommands(unittest.TestCase):
                          str(a().advancements(
                              AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
                              AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
+        self.assertEqual('$advancement grant @s from $(from)', advancement(GRANT, s()).from_(Arg('from')))
 
     def test_target_predicate(self):
         self.assertEqual('@a[predicate=foo]', str(a().predicate('foo')))
@@ -517,6 +537,8 @@ class TestCommands(unittest.TestCase):
 
     def test_attribute(self):
         self.assertEqual('attribute @s foo get', attribute(s(), 'foo').get())
+        self.assertEqual('$attribute @s foo modifier add $(uuid) "robin" 1.3',
+                         attribute(s(), 'foo').modifier().add(Arg('uuid'), 'robin', 1.3))
 
     def test_attribute_act(self):
         self.assertEqual('get', str(_AttributeMod().get()))
@@ -593,6 +615,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('damage @a 27 at 1 ~2 ^3', str(damage(a(), 27).at((1, r(2), d(3)))))
         self.assertEqual('damage @a 27 by @s', str(damage(a(), 27).by(s())))
         self.assertEqual('damage @a 27 by @s from @p', str(damage(a(), 27).by(s()).from_(p())))
+        self.assertEqual('$damage $(tgt) $(d) $(w)', str(damage(Arg('tgt'), Arg('d'), Arg('w'))))
 
     def test_data_target(self):
         self.assertEqual('block 1 ~2 ^3', data_target_str((1, r(2), d(3))))
@@ -612,6 +635,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('effect clear @s', effect().clear(s()))
         self.assertEqual('effect clear @s speed', effect().clear(s(), 'speed'))
         self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
+        self.assertEqual('$effect give $(tgt) $(e) $(d) $(a) $(h)',
+                         effect().give(Arg('tgt'), Arg('e'), Arg('d'), Arg('a'), Arg('h')))
         with self.assertRaises(ValueError):
             effect().give(s(), Effect.SPEED, -1)
         with self.assertRaises(ValueError):
@@ -660,6 +685,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('return run say hi', return_().run(say('hi')))
         self.assertEqual('return run say hi', return_().run('say hi'))
 
+    def test_say(self):
+        self.assertEqual('say test', say('test'))
+        self.assertEqual('$say v$(test)', say('v$(test)'))
+        self.assertEqual('$say $(test)', say(Arg('test')))
+
     def test_setidletimeout(self):
         self.assertEqual('setidletimeout 17', setidletimeout(17))
 
@@ -672,6 +702,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('experience query @s points', experience().query(s(), POINTS))
         self.assertEqual('experience query @s levels', experience().query(s(), LEVELS))
         self.assertEqual('experience query @s points', xp().query(s(), POINTS))
+        self.assertEqual('$experience add $(tgt) $(amt) $(w)', experience().add(Arg('tgt'), Arg('amt'), Arg('w')))
 
     def test_fill(self):
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone')))
@@ -762,6 +793,10 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('gamerule disableRaids true', gamerule(GameRule.DISABLE_RAIDS, True))
         self.assertEqual('gamerule maxCommandChainLength 13', gamerule(GameRule.MAX_COMMAND_CHAIN_LENGTH, 13))
         self.assertEqual('gamerule disableRaids true', gamerule('disableRaids', True))
+        self.assertEqual('$gamerule $(r) $(v)', gamerule(Arg('r'), Arg('v')))
+        self.assertEqual('$gamerule disableRaids $(v)', gamerule(GameRule.DISABLE_RAIDS, Arg('v')))
+        self.assertEqual('$gamerule $(r) 12', gamerule(Arg('r'), 12))
+        self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
         with self.assertRaises(ValueError):
             gamerule(GameRule.DISABLE_RAIDS, 17)
         with self.assertRaises(ValueError):
@@ -799,6 +834,8 @@ class TestCommands(unittest.TestCase):
                          str(item().replace().block((1, r(2), d(3)), 'hotbar.0').with_('air')))
         self.assertEqual('item replace block 1 ~2 ^3 hotbar.0 from entity @s b',
                          str(item().replace().block((1, r(2), d(3)), 'hotbar.0').from_().entity(s(), 'b')))
+        self.assertEqual('$item modify entity @s $(slot) $(mod)',
+                         str(item().modify().entity(s(), Arg('slot'), Arg('mod'))))
         with self.assertRaises(ValueError):
             item().replace().block((1, r(2), d(3)), 'a.17', 'm:a')
         with self.assertRaises(ValueError):
@@ -958,11 +995,15 @@ class TestCommands(unittest.TestCase):
             str(setblock((1, r(2), d(3)), 'stone').state({'up': 'down'}).state({'up': 'upper'})))
         self.assertEqual('setblock 1 ~2 ^3 stone[up=down]{up: upper}',
                          str(setblock((1, r(2), d(3)), 'stone').state({'up': 'down'}).nbt({'up': 'upper'})))
+        self.assertEqual('$setblock 0 0 0 v$(b)', str(setblock((0,0,0), 'v$(b)')))
+        self.assertEqual('$setblock 0 0 0 $(b)', str(setblock((0,0,0), Arg('b'))))
 
     def test_setworldspawn_command(self):
         self.assertEqual('setworldspawn', setworldspawn())
         self.assertEqual('setworldspawn 1 ~2 ^3', setworldspawn((1, r(2), d(3))))
         self.assertEqual('setworldspawn 1 ~2 ^3 9.3', setworldspawn((1, r(2), d(3)), 9.3))
+        self.assertEqual('$setworldspawn $(x) $(y) $(z) $(angle)',
+                         setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('angle')))
 
     def test_spawnpoint_command(self):
         self.assertEqual('spawnpoint', spawnpoint())
@@ -997,6 +1038,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tag @s add foo', tag(s()).add('foo'))
         self.assertEqual('tag @s list', tag(s()).list())
         self.assertEqual('tag @s remove foo', tag(s()).remove('foo'))
+        self.assertEqual('$tag $(target) list', tag(Arg('target')).list())
 
     def test_team_command(self):
         self.assertEqual('team list', team().list())
@@ -1019,6 +1061,8 @@ class TestCommands(unittest.TestCase):
                          team().modify('foo', TeamOption.COLLISION_RULE, PUSH_OWN_TEAM))
         self.assertEqual('team modify foo prefix pre', team().modify('foo', TeamOption.PREFIX, 'pre'))
         self.assertEqual('team modify foo suffix post', team().modify('foo', TeamOption.SUFFIX, 'post'))
+        self.assertEqual('$team modify $(t) color $(v)', team().modify(Arg('t'), TeamOption.COLOR, Arg('v')))
+        self.assertEqual('$team empty $(team)', team().empty(Arg('team')))
         with self.assertRaises(ValueError):
             team().modify('foo', TeamOption.DISPLAY_NAME, True)
         with self.assertRaises(ValueError):
@@ -1051,6 +1095,8 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             # Target must be singleton
             teleport(s(), e())
+        with self.assertRaises(ValueError):
+            tp(e().type(Arg('t')))
 
     def test_as_single(self):
         with self.assertRaises(ValueError):
@@ -1086,6 +1132,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('foo1', as_team('foo1'))
         with self.assertRaises(ValueError):
             as_uuid(',17')
+        self.assertEqual('v$(t)', as_team('v$(t)'))
+        self.assertEqual('$(t)', as_team(Arg('t')))
 
     def test_as_block(self):
         self.assertIsNone(as_block(None))
@@ -1124,6 +1172,7 @@ class TestCommands(unittest.TestCase):
     def test_as_biome(self):
         self.assertEqual('desert', str(as_biome(BiomeId.DESERT)))
         self.assertEqual('dessert', str(as_biome('dessert')))
+        self.assertEqual('$(b)', str(as_biome(Arg('b'))))
 
     def test_time_command(self):
         self.assertEqual('time add 9', time().add(9))
@@ -1139,6 +1188,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('title @s subtitle foo', title(s()).subtitle('foo'))
         self.assertEqual('title @s actionbar foo', title(s()).actionbar('foo'))
         self.assertEqual('title @s times 1 2 3', title(s()).times(1, 2, 3))
+        self.assertEqual('$title $(tgt) title $(t)', title(Arg('tgt')).title(Arg('t')))
 
     def test_trigger_command(self):
         self.assertEqual('trigger foo', str(trigger('foo')))
@@ -1294,23 +1344,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('random reset fred 123 true true', random().reset('fred', 123, True, True))
         self.assertEqual('random reset fred 123 true false', random().reset('fred', 123, True, False))
 
-    def test_macro(self):
-        self.assertEqual('$say $(test)', say(Arg('test')))
-        self.assertEqual('$execute as @e[tag=$(t)] positioned 1 $(y) ~$(z) run tp $(w) @s',
-                         execute().as_(e().tag(Arg('t'))).positioned((1, Arg('y'), r(Arg('z')))).run(tp(Arg('w'), s())))
-        self.assertEqual('$attribute @s foo modifier add $(uuid) "robin" 1.3',
-                         attribute(s(), 'foo').modifier().add(Arg('uuid'), 'robin', 1.3))
-        self.assertEqual('$tag $(target) list', tag(Arg('target')).list())
-        self.assertEqual('$team empty $(team)', team().empty(Arg('team')))
-        self.assertEqual('$setblock 1 2 3 $(block)', str(setblock((1, 2, 3), Arg('block'))))
-        self.assertEqual('$item modify entity @s $(slot) $(mod)',
-                         str(item().modify().entity(s(), Arg('slot'), Arg('mod'))))
-        self.assertEqual('$advancement grant @s from $(from)', advancement(GRANT, s()).from_(Arg('from')))
-        self.assertEqual('$(u)', str(User(Arg('u'))))
-
-        with self.assertRaises(ValueError):
-            tp(e().type(Arg('t')))
-
     def test_selector_macros(self):
         self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
             AdvancementCriteria(Arg('c'), Arg('b')))))
@@ -1343,38 +1376,4 @@ class TestCommands(unittest.TestCase):
                 Arg('so')).limit(Arg('li')).level(Arg('lvl')).gamemode(Arg('gm')).name(Arg('n')).x_rotation(
                 Arg('xr')).y_rotation(Arg('yr')).type(Arg('ty')).advancements(
                 AdvancementCriteria(Arg('adv'), Arg('vadv'))).predicate(Arg('p'))))
-        self.assertEqual('$(name) $(obj)', str(Score(Arg('name'), Arg('obj'))))
-        self.assertEqual('$execute if blocks $(x1) $(y1) $(z1) $(x2) $(y2) $(z2) $(x3) $(y3) $(z3) $(m)',
-                         str(execute().if_().blocks(
-                             (Arg('x1'), Arg('y1'), Arg('z1')),
-                             (Arg('x2'), Arg('y2'), Arg('z2')),
-                             (Arg('x3'), Arg('y3'), Arg('z3')),
-                             Arg('m'))))
-        self.assertEqual('$execute if data storage $(t) $(p)', str(execute().if_().data(Arg('t'), Arg('p'))))
-        self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
-        self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
-        self.assertEqual('$execute store result block $(x) $(y) $(z) $(path) short $(scale)',
-                         str(execute().store(RESULT).block((Arg('x'), Arg('y'), Arg('z')), Arg('path'), SHORT,
-                                                           Arg('scale'))))
-        self.assertEqual('$title $(tgt) title $(t)', title(Arg('tgt')).title(Arg('t')))
-        self.assertEqual('$damage $(tgt) $(d) $(w)', str(damage(Arg('tgt'), Arg('d'), Arg('w'))))
-        self.assertEqual('$effect give $(tgt) $(e) $(d) $(a) $(h)',
-                         effect().give(Arg('tgt'), Arg('e'), Arg('d'), Arg('a'), Arg('h')))
-        self.assertEqual('$experience add $(tgt) $(amt) $(w)', experience().add(Arg('tgt'), Arg('amt'), Arg('w')))
-        self.assertEqual('$(t)', as_team(Arg('t')))
-        self.assertEqual('$team modify $(t) color $(v)', team().modify(Arg('t'), TeamOption.COLOR, Arg('v')))
-        self.assertEqual('$gamerule $(r) $(v)', gamerule(Arg('r'), Arg('v')))
-        self.assertEqual('$gamerule disableRaids $(v)', gamerule(GameRule.DISABLE_RAIDS, Arg('v')))
-        self.assertEqual('$gamerule $(r) 12', gamerule(Arg('r'), 12))
-        self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
-        self.assertEqual('$setworldspawn $(x) $(y) $(z) $(angle)',
-                         setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('angle')))
-        self.assertEqual('$setblock 0 0 0 $(b)', str(setblock((0,0,0), Arg('b'))))
-
-    def test_macro_entity(self):
-        self.assertEqual('$summon $(mob) $(x) $(y) $(z)', Entity(Arg('mob')).summon((Arg('x'), Arg('y'), Arg('z'))))
-
-    def test_macro_score(self, ADD=None):
-        self.assertEqual('$scoreboard players add $(x) $(obj) $(v)', Score(Arg('x'), Arg('obj')).add(Arg('v')))
-        self.assertEqual('$scoreboard players operation $(x) $(obj) += $(y) $(obj)',
-                         Score(Arg('x'), Arg('obj')).operation(PLUS, Score(Arg('y'), Arg('obj'))))
+        self.assertEqual('$(u)', str(User(Arg('u'))))
