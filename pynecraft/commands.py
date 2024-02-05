@@ -194,7 +194,7 @@ def as_team(team: StrOrArg) -> str | None:
     return team
 
 
-def as_block(block: BlockDef | None) -> Block | None:
+def as_block(block: BlockDef | None) -> Block | Arg | None:
     """Checks if the argument is a valid block specification, or None.
 
     "Valid" means a string block name, or valid arguments to the Block constructor.
@@ -205,7 +205,7 @@ def as_block(block: BlockDef | None) -> Block | None:
     :return: A Block object for the argument, or None.
     """
     if isinstance(block, Arg):
-        return str(block)
+        return block
     if block is None:
         return None
     if isinstance(block, str):
@@ -215,7 +215,7 @@ def as_block(block: BlockDef | None) -> Block | None:
     return block
 
 
-def as_entity(entity: EntityDef | None) -> Entity | None:
+def as_entity(entity: EntityDef | None) -> Entity | Arg | None:
     """Checks if the argument is a valid entity specification, or None.
 
     "Valid" means a string entity name, or valid arguments to the Entity constructor.
@@ -226,7 +226,7 @@ def as_entity(entity: EntityDef | None) -> Entity | None:
     :return: an Entity object for the argument, or None.
     """
     if isinstance(entity, Arg):
-        return str(entity)
+        return entity
     if entity is None:
         return None
     if isinstance(entity, str):
@@ -702,11 +702,11 @@ class Uuid(TargetSpec):
     @property
     def hex_str(self) -> str:
         """The hex string for the UUID."""
-        hex = '%08x%08x%08x%08x' % tuple(x & 0xffffffff for x in self._ints)
+        as_hex = '%08x%08x%08x%08x' % tuple(x & 0xffffffff for x in self._ints)
         result = ''
         pos = 0
         for i in Uuid._UUID_GROUP_SIZES:
-            result += hex[pos:pos + i] + '-'
+            result += as_hex[pos:pos + i] + '-'
             pos += i
         return result[:-1]
 
@@ -724,10 +724,10 @@ class Uuid(TargetSpec):
     @classmethod
     def from_hex(cls, uuid_str: str) -> Uuid:
         """Returns a UUID from the hex string."""
-        hex = ''
+        as_hex = ''
         for i, part in enumerate(uuid_str.split('-')):
-            hex += part.zfill(Uuid._UUID_GROUP_SIZES[i])
-        return Uuid(Uuid._to_int(hex[0:8]), Uuid._to_int(hex[8:16]), Uuid._to_int(hex[16:24]), Uuid._to_int(hex[24:32]))
+            as_hex += part.zfill(Uuid._UUID_GROUP_SIZES[i])
+        return Uuid(Uuid._to_int(as_hex[0:8]), Uuid._to_int(as_hex[8:16]), Uuid._to_int(as_hex[16:24]), Uuid._to_int(as_hex[24:32]))
 
     @classmethod
     def _to_int(cls, hex: str) -> int:
@@ -784,10 +784,6 @@ all_ = a
 def e():
     """A target selector for ``@e``."""
     return Selector(Selector._create_key, '@e')
-
-
-entity = e
-"""Equivalent to e()."""
 
 
 # noinspection PyProtectedMember
@@ -994,6 +990,33 @@ class Selector(TargetSpec):
         return self._multi_args('predicate', predicate, predicates)
 
 
+def block(pos: Position) -> Position:
+    """
+    Syntactic sugar to allow user to type expected (but unnecessary) keyword.
+    For example, in the command `/data get block 1 2 3`, we can determine that this
+    is a "block" because you've provided a location. So you can use it simply as
+    `data().get((1, 2, 3))`. If you're bothered by the lack of the keyword `block`,
+    you could also type `data().get(block((1, 2, 3)))`.
+    """
+    return pos
+
+
+def entity(target: TargetSpec) -> TargetSpec:
+    """
+    Syntactic sugar to allow user to type expected (but unnecessary) keyword.
+    See block() for details.
+    """
+    return target
+
+
+def store(store: StrOrArg) -> StrOrArg:
+    """
+    Syntactic sugar to allow user to type expected (but unnecessary) keyword.
+    See block() for details.
+    """
+    return store
+
+
 class _IfClause(Command):
     @_fluent
     def biome(self, pos: Position, biome: Biome) -> _ExecuteMod:
@@ -1052,8 +1075,8 @@ class _StoreClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def storage(self, target: Target, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
-        self._add('storage', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
+    def storage(self, target: StrOrArg, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
+        self._add('storage', as_resource(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1396,7 +1419,7 @@ class _CloneClause(Command):
 
 # noinspection PyAttributeOutsideInit
 class _CloneFromDimMod(Command):
-    def from_(self, dimension: StrOrFlag, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
+    def from_(self, dimension: StrOrArg, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
         self.dimension = dimension
         self.start_pos = start_pos
         self.end_pos = end_pos
@@ -1408,7 +1431,7 @@ class _CloneToDimMod(Command):
         super().__init__()
         self._from_ = from_
 
-    def to(self, dimension: StrOrFlag, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
+    def to(self, dimension: StrOrArg, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
         f = self._from_
         dest_pos = _clone_dest(f.start_pos, f.end_pos, dest_pos, dest_type)
         self._add('clone', 'from', f.dimension, *f.start_pos, *f.end_pos, 'to', dimension, *dest_pos)
@@ -2141,7 +2164,7 @@ class _TimeMod(Command):
         return str(self)
 
     @_fluent
-    def query(self, which: StrOrMod) -> str:
+    def query(self, which: StrOrArg) -> str:
         self._add('query', _in_group(TIME_TYPES, which))
         return str(self)
 

@@ -136,13 +136,13 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('entity @p {} float 3.5', str(_StoreClause().entity(p(), '{}', FLOAT, 3.5)))
         self.assertEqual('score @e foo', str(_StoreClause().score((e(), 'foo'))))
         self.assertEqual('score @e foo', str(_StoreClause().score(Score(e(), 'foo'))))
-        self.assertEqual('storage @s {} double 1.9', str(_StoreClause().storage(s(), '{}', DOUBLE, 1.9)))
+        self.assertEqual('storage foo {} double 1.9', str(_StoreClause().storage('foo', '{}', DOUBLE, 1.9)))
         with self.assertRaises(ValueError):
             _StoreClause().bossbar('stud', 'foo')
         with self.assertRaises(ValueError):
             _StoreClause().entity(p(), '{}', 'foo', 3.5)
         with self.assertRaises(ValueError):
-            _StoreClause().storage(s(), '{}', 'foo', 1.9)
+            _StoreClause().storage('bar', '{}', 'foo', 1.9)
 
     def test_range(self):
         self.assertEqual('3', as_range(3))
@@ -1362,6 +1362,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
         self.assertEqual('$setworldspawn $(x) $(y) $(z) $(angle)',
                          setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('angle')))
+        self.assertEqual('$setblock 0 0 0 $(b)', str(setblock((0,0,0), Arg('b'))))
 
     def test_macro_entity(self):
         self.assertEqual('$summon $(mob) $(x) $(y) $(z)', Entity(Arg('mob')).summon((Arg('x'), Arg('y'), Arg('z'))))
