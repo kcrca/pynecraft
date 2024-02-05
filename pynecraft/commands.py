@@ -727,12 +727,13 @@ class Uuid(TargetSpec):
         as_hex = ''
         for i, part in enumerate(uuid_str.split('-')):
             as_hex += part.zfill(Uuid._UUID_GROUP_SIZES[i])
-        return Uuid(Uuid._to_int(as_hex[0:8]), Uuid._to_int(as_hex[8:16]), Uuid._to_int(as_hex[16:24]), Uuid._to_int(as_hex[24:32]))
+        return Uuid(Uuid._to_int(as_hex[0:8]), Uuid._to_int(as_hex[8:16]), Uuid._to_int(as_hex[16:24]),
+                    Uuid._to_int(as_hex[24:32]))
 
     @classmethod
-    def _to_int(cls, hex: str) -> int:
+    def _to_int(cls, as_hex: str) -> int:
         """Convert the hex string to a signed 32 bit int."""
-        return struct.unpack('>i', bytes.fromhex(hex))[0]
+        return struct.unpack('>i', bytes.fromhex(as_hex))[0]
 
     @classmethod
     def from_most_least_dict(cls, most_least: dict[str, int]) -> Uuid:
@@ -1577,9 +1578,9 @@ class _DatapackMod(Command):
         return self._start(_DatapackOrder())
 
     @_fluent
-    def list(self, filter: StrOrArg = None) -> str:
+    def list(self, filter_spec: StrOrArg = None) -> str:
         self._add('list')
-        self._add_opt(_in_group(DATAPACK_FILTERS, filter))
+        self._add_opt(_in_group(DATAPACK_FILTERS, filter_spec))
         return str(self)
 
 
@@ -1653,9 +1654,9 @@ class _ExperienceMod(Command):
 
 class _FilterClause(Command):
     @_fluent
-    def replace(self, filter: StrOrArg = None) -> str:
+    def replace(self, block: BlockDef = None) -> str:
         self._add('replace')
-        self._add_opt(filter)
+        self._add_opt(block)
         return str(self)
 
     @_fluent
@@ -1894,12 +1895,12 @@ class _ScoreboardObjectivesMod(Command):
         return str(self)
 
     @_fluent
-    def modify(self, objective: StrOrArg) -> str | _ScorboardObjectivesModifyMod:
+    def modify(self, objective: StrOrArg) -> str | _ScoreboardObjectivesModifyMod:
         self._add('modify', objective)
-        return self._start(_ScorboardObjectivesModifyMod())
+        return self._start(_ScoreboardObjectivesModifyMod())
 
 
-class _ScorboardObjectivesModifyMod(Command):
+class _ScoreboardObjectivesModifyMod(Command):
     def displayname(self, name: StrOrArg | JsonText) -> str:
         self._add('displayname', name)
         return str(self)
@@ -1916,17 +1917,14 @@ class _ScorboardObjectivesModifyMod(Command):
 class _NumberFormatMod(Command):
     def styled(self, style: NbtDef) -> str:
         self._add('styled', style)
-        used = True
         return str(self)
 
     def fixed(self, text: StrOrArg) -> str:
         self._add('fixed', text)
-        used = True
         return str(self)
 
     def blank(self) -> str:
         self._add('blank')
-        used = True
         return str(self)
 
 
@@ -2412,7 +2410,7 @@ def attribute(target: Target, attribute: StrOrArg) -> _AttributeMod:
 
 
 def bossbar() -> _BossbarMod:
-    """Creates and modifies bossbars."""
+    """Creates and modifies a bossbar."""
     cmd = Command()
     cmd._add('$bossbar')
     return cmd._start(_BossbarMod())
@@ -3479,7 +3477,7 @@ class Score(Command, Expression):
     def init(self, value: IntOrArg = 0) -> Iterable[str]:
         """Initializes the score by ensure the objective exists, and setting its value to the provided value."""
         # noinspection PyArgumentList
-        return ((scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(value)))
+        return (scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(value))
 
     def get(self) -> str:
         """Return a 'get' command for the score."""
@@ -3669,14 +3667,14 @@ class JsonText(UserDict, JsonHolder):
         return _JsonTextHoverAction(self, ev)
 
     @classmethod
-    def as_json(cls, map: Mapping):
+    def as_json(cls, mapping: Mapping):
         """Returns a JsonText object built from the given mapped values."""
-        if map is None or isinstance(map, JsonText):
-            return map
-        elif isinstance(map, Mapping):
-            return cls(map)
+        if mapping is None or isinstance(mapping, JsonText):
+            return mapping
+        elif isinstance(mapping, Mapping):
+            return cls(mapping)
         else:
-            raise ValueError(f'{map}: Not a dictionary')
+            raise ValueError(f'{mapping}: Not a dictionary')
 
 
 Target = Union[StrOrArg, TargetSpec]

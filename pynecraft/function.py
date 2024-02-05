@@ -314,13 +314,13 @@ class Loop(Function):
 
         if load_info.get('as_iterations', True) and loop.body:
             new_body = []
-            for i, iter in enumerate(loop._iterations):
+            for i, it in enumerate(loop._iterations):
                 iter_suffix = loop._iter_suffix(i)
                 prefix = str(loop._prefix_for(i)) + ' '
                 name = loop.name + iter_suffix
                 func = Function.load(path.parent / name)
                 lines = func.commands()
-                assert len(lines) == iter
+                assert len(lines) == it
                 for line in lines:
                     new_body.append(prefix + line)
             loop.body = tuple(new_body)
@@ -455,7 +455,7 @@ class Loop(Function):
 
     def adjust(self, *adjuster: [Command | str]) -> Loop:
         """
-        Execute a command or commands after the loop value is incremented but before it is constrainted to the max
+        Execute a command or commands after the loop value is incremented but before it is constrained to the max
         value. This can be used, for example, to skip a value in the middle if it is not compatible with another
         loop's value.
         """

@@ -49,7 +49,8 @@ def __read_things(which: str, ctor):
 
 
 def __read_lists():
-    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id, operator_menu
+    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id, \
+        operator_menu
     blocks, blocks_by_id = __read_things('blocks', Block)
     items, items_by_id = __read_things('items', Block)
     mobs, mobs_by_id = __read_things('mobs', Entity)

@@ -678,6 +678,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace air',
                          fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace('air'))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace oak_log[axis=y]',
+                         fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace(Block('oak_log', {'axis':'y'})))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone hollow', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').hollow()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone destroy', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').destroy()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone keep', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').keep()))

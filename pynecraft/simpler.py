@@ -3,8 +3,8 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Mapping, Sequence, Tuple, Union
 
-from .base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, _ensure_size, \
-    _in_group, _quote, _to_list, as_facing, d, r, to_id
+from .base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
+    _ensure_size, _in_group, _quote, _to_list, as_facing, d, r, to_id
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommand, \
     SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, data, fill, fillbiome, setblock
 from .enums import Pattern
@@ -515,7 +515,7 @@ class Region:
                       shared_states: SomeMappings = None) -> Commands:
         """
         Replaces doors in the region using all the relevant states.
-        N.B.: Not imlemented, doors cannot be replaced generically, https://bugs.mojang.com/browse/MC-192791
+        N.B.: Not implemented, doors cannot be replaced generically, https://bugs.mojang.com/browse/MC-192791
         """
         raise NotImplementedError('Fill does not replace doors, sorry. https://bugs.mojang.com/browse/MC-192791')
         # yield from self.replace(new, old, Region.door_states, new_state, shared_states)
@@ -588,7 +588,7 @@ class Offset:
         return self._rel_coord(d, *values)
 
     def p(self, *values: CoordsIn) -> CoordsOut:
-        """ Returns the result of offseting the input, with each return value added to this object's coordinates. """
+        """ Returns the result of offsetting the input, with each return value added to this object's coordinates. """
         return tuple(sum(i) for i in zip(values, self.position))
 
     def _rel_coord(self, f, *values: CoordsIn) -> RelCoord | Tuple[RelCoord, ...]:
