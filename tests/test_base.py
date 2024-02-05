@@ -222,7 +222,10 @@ class TestBase(unittest.TestCase):
 
     def test_set_or_clear(self):
         self.assertEqual({'key': 12}, Nbt().set_or_clear('key', 12))
-        self.assertEqual({}, Nbt(key=12).set_or_clear('key', 0))
+        self.assertEqual({'key': 0}, Nbt().set_or_clear('key', 0))
+        self.assertEqual({}, Nbt(key=12).set_or_clear('key', None))
+        self.assertEqual({'key': 'foo'}, Nbt().set_or_clear('key', 'foo'))
+        self.assertEqual({}, Nbt(key=12).set_or_clear('key', None))
         self.assertEqual({'o1': {'o2': {'o3': {'key': True}}}}, Nbt().set_or_clear('o1.o2.o3.key', True))
         self.assertEqual({'o1': {'o2': {'o3': {}}}},
                          Nbt({'o1': {'o2': {'o3': {'key': True}}}}).set_or_clear('o1.o2.o3.key', False))
@@ -279,6 +282,9 @@ class TestBase(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             Nbt.TypedArray('d', ())
+
+    def test_nbt_macro(self):
+        self.assertEqual('{$(k):$(v)}', str(Nbt({Arg('k'): Arg('v')})))
 
     def test_precision(self):
         orig = settings.float_precision
@@ -376,3 +382,4 @@ class TestBase(unittest.TestCase):
         self.assertEqual(Arg('d'), as_duration(Arg('d')))
         self.assertEqual('$(r)', as_range(Arg('r')))
         self.assertEqual('$(b)..$(e)', as_range((Arg('b'), Arg('e'))))
+

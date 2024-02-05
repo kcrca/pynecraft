@@ -241,20 +241,22 @@ def _ensure_size(lst: Iterable[any, ...], size: int, fill=None) -> list:
     return lst
 
 
-def as_nbt_key(key: str) -> str:
+def as_nbt_key(key: StrOrArg) -> StrOrArg:
     """Checks if the argument is a good NBT key. If not, it raises KeyError.
 
     :param key: The (probable) key.
     :return: the original input string.
     """
+    if isinstance(key, Arg):
+        return str(key)
     if not _nbt_key_re.fullmatch(key):
         raise KeyError(f'{key}: Invalid NBT key')
     return key
 
 
-def as_nbt_path(path: str) -> str:
+def as_nbt_path(path: StrOrArg) -> str:
     if isinstance(path, Arg):
-        return path
+        return str(path)
     if _nbt_path_re.fullmatch(path) is None:
         raise ValueError(f'{path}: Invalid NBT path')
     return path
@@ -531,21 +533,23 @@ class Nbt(UserDict):
         self[key] = nbt
         return nbt
 
-    def set_or_clear(self, path: str, v: int | bool | None) -> Nbt:
+    def set_or_clear(self, path: str, v: any) -> Nbt:
+        """
+        If `v` is `None` or `False`, remove `path` from the nbt; otherwise set the value at `path` to be `v`.
+        """
         path = path.split('.')
-        if v:
+        if v is None or (isinstance(v, bool) and not v):
             part = self
-            for p in path[:-1]:
-                part = part[p]
-            part[path[-1]] = v
-        else:
-            part = self
-            parts = []
             for p in path[:-1]:
                 if p not in part:
                     return self
                 part = part[p]
             part.pop(path[-1])
+        else:
+            part = self
+            for p in path[:-1]:
+                part = part[p]
+            part[path[-1]] = v
         return self
 
     @classmethod
