@@ -28,11 +28,11 @@ _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#
                             ''', re.VERBOSE)
 _name_re = re.compile(r'[\w+.-]+')
 _nbt_key_re = re.compile(r'[a-zA-Z0-9_:]+')
-_nbt_path_re = re.compile(r'[a-zA-Z0-9_.[\]{}]*')
+_nbt_path_re = re.compile(r'[a-zA-Z0-9_.[\]{}:"]+')
+_arg_re = re.compile(r'\$\(' + _nbt_path_re.pattern + r'\)')
 _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
 _backslash_map = {'\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
-_arg_re = re.compile(r'\$\(' + _nbt_path_re.pattern + r'\)')
 
 NORTH = 'north'
 EAST = 'east'
@@ -263,7 +263,9 @@ def as_nbt_key(key: StrOrArg) -> StrOrArg:
     return key
 
 
-def as_nbt_path(path: StrOrArg) -> str:
+def as_nbt_path(path: StrOrArg | None) -> str | None:
+    if path is None:
+        return None
     if is_arg(path):
         return str(path)
     if _nbt_path_re.fullmatch(path) is None:

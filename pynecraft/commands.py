@@ -30,8 +30,7 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
     as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
     as_resource_path, as_resources, as_yaw, de_arg, is_arg, to_id, to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, \
-    BoolOrArg, \
-    FloatOrArg, _arg_re
+    BoolOrArg, FloatOrArg, _arg_re
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 
@@ -1069,7 +1068,7 @@ class _IfClause(Command):
 
     @_fluent
     def data(self, data_target: DataTarget, nbt_path: StrOrArg) -> _ExecuteMod:
-        self._add('data', data_target_str(data_target), nbt_path)
+        self._add('data', data_target_str(data_target), as_nbt_path(nbt_path))
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1100,17 +1099,17 @@ class _IfClause(Command):
 class _StoreClause(Command):
     @_fluent
     def block(self, pos: Position, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
-        self._add('block', *pos, nbt_path, _in_group(DATA_TYPE, data_type), scale)
+        self._add('block', *pos, as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
     def entity(self, target: Target, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
-        self._add('entity', as_target(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
+        self._add('entity', as_target(target), as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
     def storage(self, target: StrOrArg, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
-        self._add('storage', as_resource(target), nbt_path, _in_group(DATA_TYPE, data_type), scale)
+        self._add('storage', as_resource(target), as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type), scale)
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1543,7 +1542,7 @@ class _DataMod(Command):
         self._add('get', data_single_str(data_target))
         if not nbt_path and scale is not None:
             raise ValueError('Must give dir to use scale')
-        self._add_opt(nbt_path, scale)
+        self._add_opt(as_nbt_path(nbt_path), scale)
         return str(self)
 
     @_fluent
@@ -1553,12 +1552,12 @@ class _DataMod(Command):
 
     @_fluent
     def modify(self, data_target: DataTarget, nbt_path: StrOrArg) -> _DataModifyClause:
-        self._add('modify', data_single_str(data_target), nbt_path)
+        self._add('modify', data_single_str(data_target), as_nbt_path(nbt_path))
         return self._start(_DataModifyClause())
 
     @_fluent
     def remove(self, data_target: DataTarget, nbt_path: StrOrArg) -> str:
-        self._add('remove', data_single_str(data_target), nbt_path)
+        self._add('remove', data_single_str(data_target), as_nbt_path(nbt_path))
         return str(self)
 
 
