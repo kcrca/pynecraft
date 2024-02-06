@@ -241,10 +241,11 @@ class TestBase(unittest.TestCase):
         self.assertEqual('..8.4', as_range((None, 8.4)))
         self.assertEqual('v$(k)', as_range('v$(k)'))
         self.assertEqual('$(k)', as_range(Arg('k')))
-        self.assertEqual('v$(k)..q$(z)', as_range(('v$(k)', 'q$(z)')))
-        self.assertEqual('$(k)..q$(z)', as_range((Arg('k'), 'q$(z)')))
+        self.assertEqual('$(k)..$(v)', as_range((Arg('k'), Arg('v'))))
         with self.assertRaises(ValueError):
             as_range((6, 3))
+            with self.assertRaises(ValueError):
+                as_range(('v$(k)', 'q$(z)'))
 
     def test_string(self):
         self.assertEqual('', string(''))

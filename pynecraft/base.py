@@ -157,6 +157,7 @@ class Arg:
 def de_arg(v: any) -> any:
     return str(v) if isinstance(v, Arg) else v
 
+
 def is_arg(v: any) -> bool:
     return isinstance(v, Arg) or (isinstance(v, str) and _arg_re.search(v))
 
@@ -270,7 +271,7 @@ def as_nbt_path(path: StrOrArg) -> str:
     return path
 
 
-def as_resource(name: str | None, allow_namespace=True, allow_not=False) -> str | None:
+def as_resource(name: StrOrArg | None, allow_namespace=True, allow_not=False) -> str | None:
     """Checks if the argument is a valid resource name, or None. If not, it raises ValueError.
 
     :param name: The (probable) resource name.
@@ -293,7 +294,7 @@ def as_resource(name: str | None, allow_namespace=True, allow_not=False) -> str 
     return name
 
 
-def as_resources(*names: str, allow_not=False) -> tuple[str, ...]:
+def as_resources(*names: StrOrArg, allow_not=False) -> tuple[str, ...]:
     """Calls as_resource on each name.
 
     :param names: The (probable) resource names .
@@ -305,7 +306,7 @@ def as_resources(*names: str, allow_not=False) -> tuple[str, ...]:
     return names
 
 
-def as_resource_path(path: str | None, allow_not=False) -> str | Arg | None:
+def as_resource_path(path: StrOrArg | None, allow_not=False) -> str | Arg | None:
     """Checks if the argument is a valid resource path, or None.
 
     :param path: The (probable) path.
@@ -347,7 +348,7 @@ def as_item_stack(item: StrOrArg):
     return item
 
 
-def as_name(name: str | None, allow_not=False) -> str | None:
+def as_name(name: StrOrArg | None, allow_not=False) -> str | None:
     """Checks if the argument is a valid name, such as for a user, or None.
 
     :param name: The (probable) name.
@@ -378,7 +379,7 @@ def as_names(*names: StrOrArg, allow_not=False) -> tuple[str, ...]:
     return tuple(str(n) for n in names)
 
 
-def as_column(col: IntColumn) -> IntColumn | tuple[str]:
+def as_column(col: IntColumn | StrOrArg) -> IntColumn | tuple[str]:
     """Checks if the argument is a valid column position.
 
     A valid column position is a tuple or list of two ints and/or IntRelCoords.
@@ -581,8 +582,10 @@ class Nbt(UserDict):
         return str(sout.getvalue())
 
     @classmethod
-    def as_nbt(cls, nbt: NbtDef) -> Nbt:
+    def as_nbt(cls, nbt: NbtDef | str) -> Nbt | str:
         """Returns the input argument as an Nbt, including making a copy of an Nbt object that is passed in."""
+        if is_arg(nbt):
+            return str(nbt)
         if not isinstance(nbt, cls):
             nbt = cls(nbt)
         for k, v in nbt.items():
@@ -1177,14 +1180,14 @@ def as_facing(facing: FacingDef) -> Facing:
     return _facing[facing]
 
 
-def as_duration(duration: DurationDef | None) -> TimeSpec | None:
+def as_duration(duration: DurationDef | None) -> TimeSpec | str | None:
     """Checks if the argument is a valid duration specification, or None.
 
     If the input is None, it is returned. Otherwise, this returns Duration(duration).
     """
     if is_arg(duration):
         return str(duration)
-    if duration is None or isinstance(duration, (TimeSpec)):
+    if duration is None or isinstance(duration, TimeSpec):
         return duration
     return TimeSpec(duration)
 
@@ -1211,7 +1214,8 @@ def as_range(spec: Range) -> str:
         return str(spec)
 
     for i, v in enumerate(spec):
-        if v is not None and not isinstance(v, (float, int)) and not is_arg(v):
+        # Arg, not StrOrArg, because only entire numbers work here
+        if v is not None and not isinstance(v, (float, int, Arg)):
             raise ValueError(f'{v}: Must be None or a number')
     s = '' if spec[0] is None else spec[0]
     e = '' if spec[1] is None else spec[1]
@@ -1229,10 +1233,10 @@ NbtDef = Union[Nbt, Mapping]
 FacingDef = Union[int, str, Facing]
 DurationDef = Union[StrOrArg, IntOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
-Angle = Union[FloatOrArg, RelCoord]
+Angle = Union[FloatOrArg, StrOrArg, RelCoord]
 IntCoord = Union[IntOrArg, IntRelCoord, str]
 Position = Tuple[Coord, Coord, Coord]
 XYZ = Tuple[FloatOrArg, FloatOrArg, FloatOrArg]
 Column = Tuple[Coord, Coord]
 IntColumn = Tuple[IntCoord, IntCoord]
-Range = Union[FloatOrArg, BoolOrArg, Tuple[Optional[FloatOrArg], Optional[FloatOrArg]]]
+Range = Union[FloatOrArg, BoolOrArg, StrOrArg, Tuple[Optional[FloatOrArg], Optional[FloatOrArg]]]

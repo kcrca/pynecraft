@@ -29,7 +29,7 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
     as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
-    as_resource_path, as_resources, as_yaw, is_arg, to_id, to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, \
+    as_resource_path, as_resources, as_yaw, de_arg, is_arg, to_id, to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, \
     BoolOrArg, \
     FloatOrArg, _arg_re
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
@@ -54,26 +54,30 @@ def as_biome(biome: Biome, allow_not: bool = False) -> str:
     return as_resource(biome, allow_not=allow_not)
 
 
-def as_single(target: Target) -> TargetSpec | None:
+def as_single(target: Target) -> TargetSpec | str | None:
     orig = target
     if target is None:
         return None
     target = as_target(target)
-    if not target.is_single():
+    if isinstance(target, TargetSpec) and not target.is_single():
         raise ValueError(f'{str(orig)}: Not a single target')
     return target
 
 
-def as_target(target: Target) -> TargetSpec | None:
-    """Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or usernames,
+def as_target(target: Target) -> TargetSpec | str | None:
+    """
+    Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or usernames,
     or None. If not, it raises a ValueError.
 
     Valid targets are subclasses of TargetSpec, a '*', or a user name.
+
     :param target: The (probable) target.
     :return: a TargetSpec object, created if need be, or None.
     """
     if target is None:
         return None
+    if is_arg(target):
+        return str(target)
     if isinstance(target, TargetSpec):
         return target
     elif target == '*':
@@ -106,13 +110,13 @@ def as_data_single(target: DataTarget | None) -> Iterable[any] | None:
     return _as_data_target(target, as_single)
 
 
-def _as_data_target(target: DataTarget | None, checker: Callable) -> Iterable[any] | None:
+def _as_data_target(target: DataTarget | None, validater: Callable) -> Iterable[any] | None:
     if target is None:
         return None
     if isinstance(target, (tuple, list)):
         return 'block', *as_position(target)
     if isinstance(target, TargetSpec):
-        return 'entity', checker(target)
+        return 'entity', validater(target)
     if isinstance(target, (str, Arg)):
         return 'storage', as_resource_path(target)
     raise ValueError(f'{target}: Invalid data target (must be position, entity selector, or resource name)')
@@ -136,7 +140,7 @@ def _data_target_str(data_target: DataTarget, checker: Callable) -> str:
     return ' '.join(str(x) for x in checker(data_target))
 
 
-def as_position(pos: Position) -> Position:
+def as_position(pos: Position | StrOrArg) -> Position | str:
     """Checks if the argument is a valid position.
 
     A valid position is a tuple or list of three numbers and/or RelCoords.
@@ -144,11 +148,13 @@ def as_position(pos: Position) -> Position:
     :param pos: The (probable) position.
     :return: The input value.
     """
-    if isinstance(pos, (tuple, list)):
+    if is_arg(pos):
+        return str(pos)
+    if isinstance(pos, tuple):
         if len(pos) != 3:
             raise ValueError(f'{pos}: Position must have 3 values')
         for c in pos:
-            if not isinstance(c, (int, float, RelCoord)):
+            if not isinstance(c, (int, float, RelCoord)) and not is_arg(c):
                 raise ValueError(f'{c}: not a coordinate')
         return pos
     raise ValueError(f'{str(pos)}: Invalid position')
@@ -195,7 +201,7 @@ def as_team(team: StrOrArg) -> str | None:
     return team
 
 
-def as_block(block: BlockDef | None) -> Block | Arg | None:
+def as_block(block: BlockDef | None) -> Block | str | None:
     """Checks if the argument is a valid block specification, or None.
 
     "Valid" means a string block name, or valid arguments to the Block constructor.
@@ -206,7 +212,7 @@ def as_block(block: BlockDef | None) -> Block | Arg | None:
     :return: A Block object for the argument, or None.
     """
     if is_arg(block):
-        return block
+        return str(block)
     if block is None:
         return None
     if isinstance(block, str):
@@ -577,7 +583,7 @@ class _ScoreClause(Command):
 
 
 class AdvancementCriteria(Command):
-    def __init__(self, advancement: AdvancementDef, criteria: BoolOrArg | tuple[StrOrArg, BoolOrArg]):
+    def __init__(self, advancement: AdvancementDef, criteria: BoolOrArg | StrOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
         if is_arg(advancement):
             advancement = str(advancement)
@@ -1533,8 +1539,13 @@ class _DataMod(Command):
 
 
 class _RandomMod(Command):
-    def roll(self, range: (IntOrArg, IntOrArg), sequence: StrOrArg = None, /, in_chat: bool = True) -> str:
-        self._add('roll' if in_chat else 'value', f'{range[0]}..{range[1]}')
+    def roll(self, range: tuple[IntOrArg, IntOrArg] | StrOrArg, sequence: StrOrArg = None, /,
+             in_chat: bool = True) -> str:
+        self._add('roll' if in_chat else 'value')
+        if is_arg(range):
+            self._add(range)
+        else:
+            self._add(f'{de_arg(range[0])}..{de_arg(range[1])}')
         self._add_opt(as_name(sequence))
         return str(self)
 
@@ -1547,7 +1558,7 @@ class _RandomMod(Command):
         if sequence != '*':
             sequence = as_name(sequence)
         self._add(sequence)
-        self._add_opt(seed, include_world_seed, include_sequence_id)
+        self._add_opt(de_arg(seed), de_arg(include_world_seed), de_arg(include_sequence_id))
         return str(self)
 
 
@@ -3160,6 +3171,7 @@ class Entity(NbtHolder):
         """
         self._custom_name = False
         self._custom_name_visible = False
+        id = de_arg(id)
         super().__init__(id, name)
         self.merge_nbt(nbt)
 
@@ -3241,6 +3253,7 @@ class Block(NbtHolder):
     def __init__(self, id: StrOrArg, state=None, nbt=None, name: StrOrArg = None):
         """Creates a new block object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``. Block
         state is represented as an NBT object. """
+        id = de_arg(id)
         super().__init__(id, name)
         if state is None:
             state = {}
@@ -3680,10 +3693,11 @@ class JsonText(UserDict, JsonHolder):
             raise ValueError(f'{mapping}: Not a dictionary')
 
 
+MappingOrArg = Union[Mapping, StrOrArg]
 Target = Union[StrOrArg, TargetSpec]
 ScoreName = Union[Score, Tuple[Target, StrOrArg]]
-BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, Mapping], Tuple[StrOrArg, Mapping, Mapping]]
-EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, Mapping]]
+BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, MappingOrArg], Tuple[StrOrArg, MappingOrArg, MappingOrArg]]
+EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, MappingOrArg]]
 JsonDef = Union[JsonText, dict, StrOrArg]
 SignMessage = Union[StrOrArg, NbtDef, None]
 SignMessages = Iterable[SignMessage]

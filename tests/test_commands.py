@@ -196,6 +196,9 @@ class TestCommands(unittest.TestCase):
                          str(Block('stone').merge_nbt({'a': 17}).merge_nbt({'a': 16, 'b': 'howdy'})))
         self.assertEqual('stone[a=16, b=howdy]',
                          str(Block('stone').merge_state({'a': 17}).merge_state({'a': 16, 'b': 'howdy'})))
+        self.assertEqual('v$(k)', str(Block('v$(k)')))
+        self.assertEqual('$(k)', str(Block(Arg('k'))))
+        self.assertEqual('$(k)[a=17]{b: foo}', str(Block(Arg('k'), {'a': 17}, {'b': 'foo'})))
 
     def test_entity(self):
         self.assertEqual('bat', str(Entity('bat')))
@@ -216,6 +219,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('summon bat 1 ~2 ^3 {Facing: 2, Rotation: [180.0f, 0.0f]}',
                          Entity('bat', name='Fred').summon((1, r(2), d(3)), facing=NORTH))
         self.assertEqual('$summon $(mob) $(x) $(y) $(z)', Entity(Arg('mob')).summon((Arg('x'), Arg('y'), Arg('z'))))
+        self.assertEqual('v$(k)', str(Entity('v$(k)')))
+        self.assertEqual('$(k)', str(Entity(Arg('k'))))
+        self.assertEqual('$(k){b: foo}', str(Entity(Arg('k'), {'b': 'foo'})))
 
     def test_json_text(self):
         sort_keys = Nbt.sort_keys
@@ -337,25 +343,20 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(Score(a(), 'bar'), as_score(Score(a(), 'bar')))
         self.assertEqual(Score(a(), 'bar'), as_score((a(), 'bar')))
         self.assertEqual(Score('foo', 'bar'), as_score(('foo', 'bar')))
-
-    def test_as_yaw(self):
-        self.assertIsNone(as_yaw(None))
-        self.assertEqual(90, as_yaw(WEST))
-        self.assertEqual(32, as_yaw(32))
-
-    def test_as_pitch(self):
-        self.assertIsNone(as_pitch(None))
-        self.assertEqual(90, as_yaw(WEST))
-        self.assertEqual(32, as_pitch(32))
+        self.assertEqual(Score('v$(k)', 's$(t)'), as_score(('v$(k)', 's$(t)')))
+        self.assertEqual(Score('$(k)', '$(t)'), as_score((Arg('k'), Arg('t'))))
 
     def test_target_pos(self):
         self.assertEqual('@a[x=1,y=2,z=3]', str(a().pos((1, 2, 3))))
+        self.assertEqual('@a[x=$(x),y=$(y),z=$(z)]', str(a().pos((Arg('x'), Arg('y'), Arg('z')))))
         with self.assertRaises(KeyError):
             a().pos((1, 2, 3)).pos((4, 5, 6))
 
     def test_target_distance(self):
         self.assertEqual('@a[distance=3]', str(a().distance(3)))
+        self.assertEqual('@a[distance=$(d)]', str(a().distance(Arg('d'))))
         self.assertEqual('@a[distance=1..3]', str(a().distance((1, 3))))
+        self.assertEqual('@a[distance=$(x)..$(y)]', str(a().distance((Arg('x'), Arg('y')))))
         self.assertEqual('@a[distance=..3]', str(a().distance((None, 3))))
         self.assertEqual('@a[distance=1..]', str(a().distance((1, None))))
         with self.assertRaises(KeyError):
@@ -363,11 +364,13 @@ class TestCommands(unittest.TestCase):
 
     def test_target_delta(self):
         self.assertEqual('@a[dx=1,dy=2,dz=3]', str(a().volume((1, 2, 3))))
+        self.assertEqual('@a[dx=$(x),dy=$(y),dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
         with self.assertRaises(KeyError):
             a().volume((1, 2, 3)).volume((4, 5, 6))
 
     def test_target_scores(self):
         self.assertEqual('@a[scores={x=1,y=..3}]', str(a().scores({'x': 1, 'y': '..3'})))
+        self.assertEqual('@a[scores={$(x)=$(v1),v$(k)=q$(t)}]', str(a().scores({Arg('x'): Arg('v1'), 'v$(k)': 'q$(t)'})))
         with self.assertRaises(KeyError):
             a().scores({'x': 1}).scores({'y': '..3'})
 
@@ -378,12 +381,15 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[tag=!foo]', str(a().not_tag('foo')))
         self.assertEqual('@a[tag=!foo, tag=!bar]', str(a().not_tag('foo', 'bar')))
         self.assertEqual('@a[tag=!foo, tag=bar]', str(a().not_tag('foo').tag('bar')))
+        self.assertEqual('@a[tag=!$(f), tag=v$(k)]', str(a().not_tag(Arg('f')).tag('v$(k)')))
 
     def test_target_literal(self):
         self.assertEqual('@a[blahblah<->]', str(a().literal('blahblah<->')))
 
     def test_target_team(self):
         self.assertEqual('@a[team=foo]', str(a().team('foo')))
+        self.assertEqual('@a[team=v$(k)]', str(a().team('v$(k)')))
+        self.assertEqual('@a[team=$(f)]', str(a().team(Arg('f'))))
         with self.assertRaises(KeyError):
             a().team('foo').team('bar')
 
@@ -393,11 +399,14 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[team=!foo, team=!bar]', str(a().not_team('foo', '!bar')))
         self.assertEqual('@a[team=!foo, team=!bar]', str(a().not_team('foo').not_team('bar')))
         self.assertEqual('@a[team=!foo, team=!bar]', str(a().not_team('foo').not_team('!bar')))
+        self.assertEqual('@a[team=!$(f), team=!v$(k)]', str(a().not_team(Arg('f')).not_team('!v$(k)')))
         with self.assertRaises(KeyError):
             a().team('foo').not_team('bar')
 
     def test_target_sort(self):
         self.assertEqual('@a[sort=nearest]', str(a().sort(NEAREST)))
+        self.assertEqual('@a[sort=v$(k)]', str(a().sort('v$(k)')))
+        self.assertEqual('@a[sort=$(f)]', str(a().sort(Arg('f'))))
         with self.assertRaises(KeyError):
             a().sort(NEAREST).sort(RANDOM)
         with self.assertRaises(ValueError):
@@ -405,17 +414,22 @@ class TestCommands(unittest.TestCase):
 
     def test_target_limit(self):
         self.assertEqual('@a[limit=1]', str(a().limit(1)))
+        self.assertEqual('@a[limit=$(k)]', str(a().limit(Arg('k'))))
         with self.assertRaises(KeyError):
             a().limit(1).limit(2)
 
     def test_target_level(self):
         self.assertEqual('@a[level=3]', str(a().level(3)))
         self.assertEqual('@a[level=1..3]', str(a().level((1, 3))))
+        self.assertEqual('@a[level=$(k)]', str(a().level(Arg('k'))))
+        self.assertEqual('@a[level=$(v)..$(k)]', str(a().level((Arg('v'), Arg('k')))))
         with self.assertRaises(KeyError):
             a().level(3).level(4)
 
     def test_target_gamemode(self):
         self.assertEqual('@a[gamemode=survival]', str(a().gamemode(SURVIVAL)))
+        self.assertEqual('@a[gamemode=v$(k)]', str(a().gamemode('v$(k)')))
+        self.assertEqual('@a[gamemode=$(k)]', str(a().gamemode(Arg('k'))))
         with self.assertRaises(KeyError):
             a().gamemode(CREATIVE).gamemode(ADVENTURE)
         with self.assertRaises(ValueError):
@@ -424,8 +438,9 @@ class TestCommands(unittest.TestCase):
     def test_target_not_gamemodes(self):
         self.assertEqual('@a[gamemode=!survival]', str(a().not_gamemode(SURVIVAL)))
         self.assertEqual('@a[gamemode=!survival, gamemode=!creative]', str(
-            a().not_gamemode(SURVIVAL,
-                             CREATIVE)))
+            a().not_gamemode(SURVIVAL, CREATIVE)))
+        self.assertEqual('@a[gamemode=!v$(k), gamemode=!$(k)]', str(
+            a().not_gamemode('v$(k)', Arg('k'))))
         with self.assertRaises(KeyError):
             a().gamemode(CREATIVE).not_gamemode(ADVENTURE)
         with self.assertRaises(ValueError):
@@ -433,6 +448,8 @@ class TestCommands(unittest.TestCase):
 
     def test_target_name(self):
         self.assertEqual('@a[name=foo]', str(a().name('foo')))
+        self.assertEqual('@a[name=v$(k)]', str(a().name('v$(k)')))
+        self.assertEqual('@a[name=$(k)]', str(a().name(Arg('k'))))
         with self.assertRaises(KeyError):
             a().name('foo').name('bar')
 
@@ -441,22 +458,26 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[name=!foo, name=!bar]', str(a().not_name('foo', 'bar')))
         self.assertEqual('@a[name=!foo, name=!bar]', str(a().not_name('foo', '!bar')))
         self.assertEqual('@a[name=!foo, name=!bar]', str(a().not_name('foo').not_name('bar')))
-        self.assertEqual('@a[name=!foo, name=!bar]', str(a().not_name('foo').not_name('!bar')))
+        self.assertEqual('@a[name=!$(k), name=!v$(k)]', str(a().not_name(Arg('k')).not_name('!v$(k)')))
         with self.assertRaises(KeyError):
             a().name('foo').not_name('bar')
 
     def test_target_x_rotation(self):
         self.assertEqual('@a[x_rotation=1.5]', str(a().x_rotation(1.5)))
+        self.assertEqual('@a[x_rotation=$(v)]', str(a().x_rotation(Arg('v'))))
         with self.assertRaises(KeyError):
             a().x_rotation(1.5).x_rotation(1.5)
 
     def test_target_y_rotation(self):
         self.assertEqual('@a[y_rotation=1.5]', str(a().y_rotation(1.5)))
+        self.assertEqual('@a[y_rotation=$(v)]', str(a().y_rotation(Arg('v'))))
         with self.assertRaises(KeyError):
             a().y_rotation(1.5).y_rotation(1.5)
 
     def test_target_type(self):
         self.assertEqual('@a[type=creeper]', str(a().type('creeper')))
+        self.assertEqual('@a[type=v$(k)]', str(a().type('v$(k)')))
+        self.assertEqual('@a[type=$(k)]', str(a().type(Arg('k'))))
         with self.assertRaises(KeyError):
             a().type('creeper').type('bat')
 
@@ -466,6 +487,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[type=!foo, type=!bar]', str(a().not_type('foo', '!bar')))
         self.assertEqual('@a[type=!foo, type=!bar]', str(a().not_type('foo').not_type('bar')))
         self.assertEqual('@a[type=!foo, type=!bar]', str(a().not_type('foo').not_type('!bar')))
+        self.assertEqual('@a[type=!$(k), type=!v$(k)]', str(a().not_type(Arg('k')).not_type('!v$(k)')))
         with self.assertRaises(KeyError):
             a().type('foo').not_type('bar')
 
@@ -475,6 +497,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[nbt={a: 17}, nbt={b: "hi there"}]', str(a().nbt({'a': 17}).nbt({'b': 'hi there'})))
         self.assertEqual('@a[nbt=!{a: 17}, nbt=!{b: "hi there"}]',
                          str(a().not_nbt({'a': 17}).not_nbt({'b': 'hi there'})))
+        self.assertEqual('@a[nbt=$(k)]', str(a().nbt(Arg('k'))))
 
     def test_target_advancements(self):
         self.assertEqual('@a[advancements={husbandry/wax_on=true}]', str(a().advancements(
@@ -486,11 +509,14 @@ class TestCommands(unittest.TestCase):
                              AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
                              AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
         self.assertEqual('$advancement grant @s from $(from)', advancement(GRANT, s()).from_(Arg('from')))
+        self.assertEqual('@a[advancements={v$(k)=$(k)}]', str(a().advancements(
+            AdvancementCriteria('v$(k)', Arg('k')))))
 
     def test_target_predicate(self):
         self.assertEqual('@a[predicate=foo]', str(a().predicate('foo')))
         self.assertEqual('@a[predicate=foo, predicate=bar]', str(a().predicate('foo', 'bar')))
         self.assertEqual('@a[predicate=foo, predicate=bar]', str(a().predicate('foo').predicate('bar')))
+        self.assertEqual('@a[predicate=v$(k), predicate=$(k)]', str(a().predicate('v$(k)').predicate(Arg('k'))))
 
     def test_target_chainability(self):
         self.assertEqual(
@@ -504,8 +530,8 @@ class TestCommands(unittest.TestCase):
                 (None, 24)).type('cougar').nbt({"hi": "there"}).advancements(
                 AdvancementCriteria(Advancement.A_SEEDY_PLACE, True)).predicate("nada")))
         self.assertEqual(
-            '@a[team=!Raiders, name=!GRBX, gamemode=!creative, type=!worm]',
-            str(a().not_team('Raiders').not_name("GRBX").not_gamemode(CREATIVE).not_type("worm")))
+            '@a[team=!Raiders, name=!xyzzy, gamemode=!creative, type=!worm]',
+            str(a().not_team('Raiders').not_name("xyzzy").not_gamemode(CREATIVE).not_type("worm")))
 
     def test_comment(self):
         long_line = 'This is a long line of text that would be wrapped if it were asked to be wrapped, and we use it' \
@@ -539,6 +565,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('attribute @s foo get', attribute(s(), 'foo').get())
         self.assertEqual('$attribute @s foo modifier add $(uuid) "robin" 1.3',
                          attribute(s(), 'foo').modifier().add(Arg('uuid'), 'robin', 1.3))
+        self.assertEqual('$attribute @s x$(k) get', attribute(s(), 'x$(k)').get())
+        self.assertEqual('$attribute @s $(f) get', attribute(s(), Arg('f')).get())
 
     def test_attribute_act(self):
         self.assertEqual('get', str(_AttributeMod().get()))
@@ -621,6 +649,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('block 1 ~2 ^3', data_target_str((1, r(2), d(3))))
         self.assertEqual('entity @s', data_target_str(s()))
         self.assertEqual('storage m:/a/b', data_target_str('m:/a/b'))
+        self.assertEqual('storage v$(k)', data_target_str('v$(k)'))
+        self.assertEqual('storage $(k)', data_target_str(Arg('k')))
 
     def test_data(self):
         self.assertEqual('data get entity @s', data().get(s()))
@@ -710,7 +740,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace air',
                          fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace('air'))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace oak_log[axis=y]',
-                         fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace(Block('oak_log', {'axis':'y'})))
+                         fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace(Block('oak_log', {'axis': 'y'})))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone hollow', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').hollow()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone destroy', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').destroy()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone keep', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').keep()))
@@ -995,8 +1025,8 @@ class TestCommands(unittest.TestCase):
             str(setblock((1, r(2), d(3)), 'stone').state({'up': 'down'}).state({'up': 'upper'})))
         self.assertEqual('setblock 1 ~2 ^3 stone[up=down]{up: upper}',
                          str(setblock((1, r(2), d(3)), 'stone').state({'up': 'down'}).nbt({'up': 'upper'})))
-        self.assertEqual('$setblock 0 0 0 v$(b)', str(setblock((0,0,0), 'v$(b)')))
-        self.assertEqual('$setblock 0 0 0 $(b)', str(setblock((0,0,0), Arg('b'))))
+        self.assertEqual('$setblock 0 0 0 v$(b)', str(setblock((0, 0, 0), 'v$(b)')))
+        self.assertEqual('$setblock 0 0 0 $(b)', str(setblock((0, 0, 0), Arg('b'))))
 
     def test_setworldspawn_command(self):
         self.assertEqual('setworldspawn', setworldspawn())
@@ -1099,20 +1129,28 @@ class TestCommands(unittest.TestCase):
             tp(e().type(Arg('t')))
 
     def test_as_single(self):
-        with self.assertRaises(ValueError):
-            as_single(e())
         self.assertTrue(as_single(p()))
         self.assertTrue(as_single(s()))
         self.assertTrue(as_single(e().limit(1)))
+        self.assertTrue(as_single(Arg('t')))
+        self.assertTrue(as_single('v$(k)'))
+        with self.assertRaises(ValueError):
+            as_single(e())
 
     def test_as_data_target(self):
         self.assertIsNone(as_data_target(None))
         self.assertEqual(('block', *r(1, 2, 3)), as_data_target(r(1, 2, 3)))
-        self.assertTrue('entity @s[tag=foo]', str(as_data_target(e().tag('foo'))))
-        self.assertTrue('data path', str(as_data_target('path')))
+        target = tuple(as_data_target(e().tag('foo')))
+        self.assertEqual(('entity', '@e[tag=foo]'), (target[0], str(target[1])))
+        self.assertEqual(('storage', 'path'), as_data_target('path'))
+        self.assertEqual(('storage', 'v$(k)'), as_data_target('v$(k)'))
+        self.assertEqual(('storage', '$(k)'), as_data_target(Arg('k')))
 
     def test_as_position(self):
         self.assertEqual(r(1, 2, 3), as_position(r(1, 2, 3)))
+        self.assertEqual((1, 2, 3), as_position((1, 2, 3)))
+        self.assertEqual('v$(k)', as_position('v$(k)'))
+        self.assertEqual('$(k)', as_position(Arg('k')))
         with self.assertRaises(ValueError):
             as_position(r(1, 2))
         with self.assertRaises(Exception):
@@ -1120,11 +1158,15 @@ class TestCommands(unittest.TestCase):
 
     def test_as_user(self):
         self.assertEqual('foo', as_user('foo'))
+        self.assertEqual('v$(k)', as_user('v$(k)'))
+        self.assertEqual('$(k)', as_user(Arg('k')))
         with self.assertRaises(ValueError):
             as_user(',17')
 
     def test_as_uuid(self):
         self.assertEqual('a-b-c-d', as_uuid('a-b-c-d'))
+        self.assertEqual('v$(k)', as_uuid('v$(k)'))
+        self.assertEqual('$(k)', as_uuid(Arg('k')))
         with self.assertRaises(ValueError):
             as_uuid(',17')
 
@@ -1245,6 +1287,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('/a/b/c', as_resource_path('/a/b/c'))
         self.assertEqual('m:a/b/c', as_resource_path('m:a/b/c'))
         self.assertEqual('m:/a/b/c', as_resource_path('m:/a/b/c'))
+        self.assertEqual('m:/$(k)/b/c', as_resource_path('m:/$(k)/b/c'))
+        self.assertEqual('$(k)', as_resource_path(Arg('k')))
         with self.assertRaises(ValueError):
             as_resource('%')
         with self.assertRaises(ValueError):
@@ -1335,6 +1379,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('random value 1..2 fred', random().value((1, 2), 'fred'))
         self.assertEqual('random roll 1..2', random().roll((1, 2)))
         self.assertEqual('random roll 1..2 fred', random().roll((1, 2), 'fred'))
+        self.assertEqual('$random value $(v)..$(k)', random().value((Arg('v'), Arg('k'))))
+        self.assertEqual('$random value v$(k)', random().value('v$(k)'))
+        self.assertEqual('$random value $(k) $(s)', random().value(Arg('k'), Arg('s')))
 
         self.assertEqual('random reset *', random().reset('*'))
         self.assertEqual('random reset fred', random().reset('fred'))
@@ -1343,6 +1390,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('random reset fred 123 false', random().reset('fred', 123, False))
         self.assertEqual('random reset fred 123 true true', random().reset('fred', 123, True, True))
         self.assertEqual('random reset fred 123 true false', random().reset('fred', 123, True, False))
+        self.assertEqual('$random reset $(s) $(v) $(w) $(i)', random().reset(Arg('s'), Arg('v'), Arg('w'), Arg('i')))
+        self.assertEqual('$random reset s$(k) $(v) $(w) $(i)', random().reset('s$(k)', Arg('v'), Arg('w'), Arg('i')))
 
     def test_selector_macros(self):
         self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
