@@ -89,7 +89,7 @@ def as_target(target: Target) -> TargetSpec | str | None:
             raise ValueError(f'{target}: Invalid target')
 
 
-def as_data_target(target: DataTarget | None) -> Iterable[any] | None:
+def as_data_target(target: DataTarget | None) -> DataTargetBase | None:
     """
     Checks if the argument is a valid data target for commands like ``data merge``, or None. If not,
     it raises ValueError.
@@ -105,20 +105,22 @@ def as_data_target(target: DataTarget | None) -> Iterable[any] | None:
     return _as_data_target(target, as_target)
 
 
-def as_data_single(target: DataTarget | None) -> Iterable[any] | None:
+def as_data_single(target: DataTarget | None) -> DataTargetBase | None:
     """Like as_data_target, but an entity target must be a single target"""
     return _as_data_target(target, as_single)
 
 
-def _as_data_target(target: DataTarget | None, validater: Callable) -> Iterable[any] | None:
+def _as_data_target(target: DataTarget | None, validater: Callable) -> DataTargetBase | None:
     if target is None:
         return None
+    if isinstance(target, DataTargetBase):
+        return target
     if isinstance(target, (tuple, list)):
-        return 'block', *as_position(target)
+        return block(target)
     if isinstance(target, TargetSpec):
-        return 'entity', validater(target)
-    if isinstance(target, (str, Arg)):
-        return 'storage', as_resource_path(target)
+        return entity(validater(target))
+    if isinstance(target, str) and not is_arg(target):
+        return storage(target)
     raise ValueError(f'{target}: Invalid data target (must be position, entity selector, or resource name)')
 
 
@@ -128,16 +130,27 @@ def data_target_str(data_target: DataTarget) -> str:
     :param data_target: The data target.
     :return: A single string, such as 'block 1 2 3'.
     """
-    return _data_target_str(data_target, as_data_target)
+    target = as_data_target(data_target)
+    return str(target)
 
 
 def data_single_str(data_target: DataTarget) -> str:
     """Like data_target_str(), but requires a single target."""
-    return _data_target_str(data_target, as_data_single)
+    target = as_data_single(data_target)
+    return str(target)
 
 
-def _data_target_str(data_target: DataTarget, checker: Callable) -> str:
-    return ' '.join(str(x) for x in checker(data_target))
+def _as_target_spec(target: DataTarget, single=False) -> str:
+    if not isinstance(target, DataTargetBase):
+        if isinstance(target, tuple):
+            target = block(target)
+        elif isinstance(target, TargetSpec):
+            target = entity(target, single=single)
+        elif isinstance(target, str) and not is_arg(str):
+            target = storage(target)
+        else:
+            raise TypeError(f'Data Target cannot be deduced: Invalid type: {type(target)}')
+    return str(target)
 
 
 def as_position(pos: Position | StrOrArg) -> Position | str:
@@ -1000,31 +1013,42 @@ class Selector(TargetSpec):
         return self._multi_args('predicate', predicate, predicates)
 
 
-def block(pos: Position) -> Position:
-    """
-    Syntactic sugar to allow user to type expected (but unnecessary) keyword.
-    For example, in the command `/data get block 1 2 3`, we can determine that this
-    is a "block" because you've provided a location. So you can use it simply as
-    `data().get((1, 2, 3))`. If you're bothered by the lack of the keyword `block`,
-    you could also type `data().get(block((1, 2, 3)))`.
-    """
-    return pos
+class DataTargetBase(Command):
+    pass
 
 
-def entity(target: TargetSpec) -> TargetSpec:
-    """
-    Syntactic sugar to allow user to type expected (but unnecessary) keyword.
-    See block() for details.
-    """
-    return target
+class BlockDataTarget(DataTargetBase):
+    def __init__(self, pos: Position | StrOrArg):
+        super().__init__()
+        self._add('block')
+        if is_arg(pos):
+            self._add(pos)
+        else:
+            self._add(' '.join(str(x) for x in as_position(pos)))
 
 
-def store(store: StrOrArg) -> StrOrArg:
-    """
-    Syntactic sugar to allow user to type expected (but unnecessary) keyword.
-    See block() for details.
-    """
-    return store
+class EntityDataTarget(DataTargetBase):
+    def __init__(self, target: TargetSpec | StrOrArg, single=False):
+        super().__init__()
+        self._add('entity', (as_single if single else as_target)(target))
+
+
+class StorageDataTarget(DataTargetBase):
+    def __init__(self, store: StrOrArg):
+        super().__init__()
+        self._add('storage', as_resource_path(store))
+
+
+def block(pos: Position | StrOrArg) -> BlockDataTarget:
+    return BlockDataTarget(pos)
+
+
+def entity(target: TargetSpec | StrOrArg, single=False) -> EntityDataTarget:
+    return EntityDataTarget(target, single)
+
+
+def storage(store: StrOrArg) -> StorageDataTarget:
+    return StorageDataTarget(store)
 
 
 class _IfClause(Command):
@@ -3704,7 +3728,8 @@ SignMessages = Iterable[SignMessage]
 SignCommand = Union[StrOrArg, Command, NbtDef, Callable[[Union[JsonText]], JsonText], None]
 SignCommands = Iterable[SignCommand]
 Commands = Iterable[Union[Command, str]]
-DataTarget = Union[Position, TargetSpec, StrOrArg]
+RawDataTarget = Union[Position, TargetSpec, StrOrArg]
+DataTarget = Union[RawDataTarget, DataTargetBase]
 SomeBlockDefs = Union[BlockDef, Iterable[BlockDef]]
 SomeMappings = Union[Mapping, Iterable[Mapping]]
 Biome = Union[StrOrArg, BiomeId]

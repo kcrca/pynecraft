@@ -306,7 +306,7 @@ def as_resources(*names: StrOrArg, allow_not=False) -> tuple[str, ...]:
     return names
 
 
-def as_resource_path(path: StrOrArg | None, allow_not=False) -> str | Arg | None:
+def as_resource_path(path: StrOrArg | None, allow_not=False) -> str | None:
     """Checks if the argument is a valid resource path, or None.
 
     :param path: The (probable) path.
@@ -314,7 +314,7 @@ def as_resource_path(path: StrOrArg | None, allow_not=False) -> str | Arg | None
     :return: the input value.
     """
     if is_arg(path):
-        return path
+        return str(path)
     if path is None:
         return None
     orig = path

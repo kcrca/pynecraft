@@ -151,7 +151,7 @@ class TestCommands(unittest.TestCase):
                              (Arg('x2'), Arg('y2'), Arg('z2')),
                              (Arg('x3'), Arg('y3'), Arg('z3')),
                              Arg('m'))))
-        self.assertEqual('$execute if data storage $(t) $(p)', str(execute().if_().data(Arg('t'), Arg('p'))))
+        self.assertEqual('$execute if data storage $(t) $(p)', str(execute().if_().data(storage(Arg('t')), Arg('p'))))
         self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
         self.assertEqual('$execute if function $(func)', str(execute().if_().function(Arg('func'))))
         self.assertEqual('$execute store result block $(x) $(y) $(z) $(path) short $(scale)',
@@ -370,7 +370,8 @@ class TestCommands(unittest.TestCase):
 
     def test_target_scores(self):
         self.assertEqual('@a[scores={x=1,y=..3}]', str(a().scores({'x': 1, 'y': '..3'})))
-        self.assertEqual('@a[scores={$(x)=$(v1),v$(k)=q$(t)}]', str(a().scores({Arg('x'): Arg('v1'), 'v$(k)': 'q$(t)'})))
+        self.assertEqual('@a[scores={$(x)=$(v1),v$(k)=q$(t)}]',
+                         str(a().scores({Arg('x'): Arg('v1'), 'v$(k)': 'q$(t)'})))
         with self.assertRaises(KeyError):
             a().scores({'x': 1}).scores({'y': '..3'})
 
@@ -649,11 +650,16 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('block 1 ~2 ^3', data_target_str((1, r(2), d(3))))
         self.assertEqual('entity @s', data_target_str(s()))
         self.assertEqual('storage m:/a/b', data_target_str('m:/a/b'))
-        self.assertEqual('storage v$(k)', data_target_str('v$(k)'))
-        self.assertEqual('storage $(k)', data_target_str(Arg('k')))
+        with self.assertRaises(ValueError):
+            data_target_str('v$(k)')
+        with self.assertRaises(ValueError):
+            data_target_str(Arg('k'))
 
     def test_data(self):
         self.assertEqual('data get entity @s', data().get(s()))
+        self.assertEqual('data get block ~1 ~2 ~3', data().get(block(r(1, 2, 3))))
+        self.assertEqual('data get entity @s', data().get(entity(s())))
+        self.assertEqual('$data get entity $(s)', data().get(entity(Arg('s'))))
 
     def test_effect(self):
         self.assertEqual('effect give @s speed', effect().give(s(), Effect.SPEED))
@@ -1139,12 +1145,16 @@ class TestCommands(unittest.TestCase):
 
     def test_as_data_target(self):
         self.assertIsNone(as_data_target(None))
-        self.assertEqual(('block', *r(1, 2, 3)), as_data_target(r(1, 2, 3)))
-        target = tuple(as_data_target(e().tag('foo')))
-        self.assertEqual(('entity', '@e[tag=foo]'), (target[0], str(target[1])))
-        self.assertEqual(('storage', 'path'), as_data_target('path'))
-        self.assertEqual(('storage', 'v$(k)'), as_data_target('v$(k)'))
-        self.assertEqual(('storage', '$(k)'), as_data_target(Arg('k')))
+        self.assertEqual('block 1 2 3', str(as_data_target((1, 2, 3))))
+        self.assertEqual('entity @e[tag=foo]', str(as_data_target(e().tag('foo'))))
+        self.assertEqual('storage path', str(as_data_target('path')))
+        self.assertEqual('block $(k)', str(as_data_target(block(Arg('k')))))
+        self.assertEqual('entity $(k)', str(as_data_target(entity(Arg('k')))))
+        self.assertEqual('storage $(k)', str(as_data_target(storage(Arg('k')))))
+        with self.assertRaises(ValueError):
+            as_data_target('v$(k)')
+        with self.assertRaises(ValueError):
+            as_data_target(Arg('k'))
 
     def test_as_position(self):
         self.assertEqual(r(1, 2, 3), as_position(r(1, 2, 3)))
