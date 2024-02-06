@@ -268,7 +268,7 @@ def as_nbt_path(path: StrOrArg | None) -> str | None:
         return None
     if is_arg(path):
         return str(path)
-    if _nbt_path_re.fullmatch(path) is None:
+    if not _nbt_path_re.fullmatch(path):
         raise ValueError(f'{path}: Invalid NBT path')
     return path
 

@@ -91,10 +91,11 @@ class TestBase(unittest.TestCase):
         self.assertEqual('$(k)', as_nbt_key(Arg('k')))
 
     def test_as_nbt_path(self):
-        self.assertEqual('', as_nbt_path(''))
         self.assertEqual('a.b.c', as_nbt_path('a.b.c'))
         self.assertEqual('$(a)', as_nbt_path(Arg('a')))
         self.assertEqual('a.$(b).c', as_nbt_path('a.$(b).c'))
+        with self.assertRaises(ValueError):
+            as_nbt_path('')
         with self.assertRaises(ValueError):
             as_nbt_path('a.b%c')
 
