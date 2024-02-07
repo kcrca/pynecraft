@@ -312,6 +312,27 @@ class TestCommands(unittest.TestCase):
                     's').hover_event()
                     .show_item('bundle').color(GREEN)))
 
+            self.assertEqual('{"text": "$(t)"}', str(JsonText.text(Arg('t'))))
+            self.assertEqual('{"text": "z$(t)"}', str(JsonText.text('z$(t)')))
+            self.assertEqual('{"translate": "$(t)", "with": ["$(s)"]}', str(JsonText.translate(Arg('t'), Arg('s'))))
+            self.assertEqual('{"translate": "$(t)", "with": ["$(s)", "$(v)"]}',
+                             str(JsonText.translate(Arg('t'), Arg('s'), Arg('v'))))
+            self.assertEqual('{"score": {"name": "$(p)", "objective": "$(o)", "value": "$(v)"}}',
+                             str(JsonText.score((Arg('p'), Arg('o')), Arg('v'))))
+            self.assertEqual('{"selector": "$(s)", "separator": {"color": "$(c)", "text": "$(t)"}}',
+                             str(JsonText.entity(Arg('s'), Arg('c'), Arg('t'))))
+            self.assertEqual('{"keybind": "$(s)"}', str(JsonText.keybind(Arg('s'))))
+            self.assertEqual('{"nbt": "$(p)", "entity": "@p"}', str(JsonText.nbt(Arg('p'), p())))
+            self.assertEqual('{"nbt": "$(p)", "entity": "@p", "interpret": "$(i)", "separator": "$(s)"}',
+                             str(JsonText.nbt(Arg('p'), p(), Arg('i'), Arg('s'))))
+            self.assertEqual('{"text": "boo", "extra": ["$(e)", {"text": "$(b)"}]}',
+                             str(JsonText.text('boo').extra(Arg('e'), JsonText.text(Arg('b')))))
+            self.assertEqual('{"text": "foo", "color": "$(c)"}', str(JsonText.text('foo').color(Arg('c'))))
+            self.assertEqual('{"text": "foo", "font": "$(f)"}', str(JsonText.text('foo').font(Arg('f'))))
+            self.assertEqual('{"text": "boo", "underlined": "$(u)"}', str(JsonText.text('boo').underlined(Arg('u'))))
+            self.assertEqual('{"text": "boo", "insertion": "$(i)"}',
+                             str(JsonText.text('boo').insertion(Arg('i'))))
+
         finally:
             Nbt.sort_keys = sort_keys
 

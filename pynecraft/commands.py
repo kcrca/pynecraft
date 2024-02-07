@@ -3586,81 +3586,81 @@ class JsonText(UserDict, JsonHolder):
         return json.dumps(self, cls=_JsonEncoder)
 
     @classmethod
-    def text(cls, txt: str) -> JsonText:
+    def text(cls, txt: StrOrArg) -> JsonText:
         """Returns a JSON text node."""
-        return cls({'text': txt})
+        return cls({'text': de_arg(txt)})
 
     @classmethod
-    def html_text(cls, txt: str) -> List[JsonText]:
+    def html_text(cls, html: str) -> List[JsonText]:
         """Returns a JSON text node populated from some HTML."""
         parser = _ToMinecraftText()
-        parser.feed(txt)
+        parser.feed(html)
         parser.close()
         return parser.json()
 
     @classmethod
-    def translate(cls, translation_id: str, *texts: str) -> JsonText:
+    def translate(cls, translation_id: StrOrArg, *texts: StrOrArg) -> JsonText:
         """Returns a JSON text translation node."""
         if not isinstance(texts, list):
             texts = list(texts)
         else:
             texts = texts[:]
-        return cls({'translate': translation_id, 'with': texts})
+        return cls({'translate': de_arg(translation_id), 'with': de_arg(texts)})
 
     @classmethod
     def score(cls, score: ScoreName, value=None) -> JsonText:
-        """Returns a JSON text score node."""
+        """Returns a JSON text score node. Cannot use macro for the entire score, though you can for the components."""
         score = as_score(score)
-        jt = cls({'score': {'name': str(score.target), 'objective': score.objective, }})
+        jt = cls({'score': {'name': str(score.target), 'objective': de_arg(score.objective)}})
         if value:
-            jt['score']['value'] = value
+            jt['score']['value'] = de_arg(value)
         return jt
 
     @classmethod
-    def entity(cls, selector: Selector, sep_color: str = None, sep_text: str = None) -> JsonText:
+    def entity(cls, selector: Selector | StrOrArg, sep_color: StrOrArg = None, sep_text: StrOrArg = None) -> JsonText:
         """Returns a JSON text entity node."""
         jt = cls()
         jt['selector'] = str(selector)
         if sep_color:
-            jt.setdefault('separator', {}).update({'color': _in_group(COLORS, sep_color)})
+            jt.setdefault('separator', {}).update({'color': _in_group(COLORS, de_arg(sep_color))})
         if sep_text is not None:
-            jt.setdefault('separator', {}).update({'text': sep_text})
+            jt.setdefault('separator', {}).update({'text': de_arg(sep_text)})
         return jt
 
     @classmethod
-    def keybind(cls, keybind_id: str) -> JsonText:
+    def keybind(cls, keybind_id: StrOrArg) -> JsonText:
         """Returns a JSON text keybinding node."""
-        return cls({'keybind': keybind_id})
+        return cls({'keybind': de_arg(keybind_id)})
 
     @classmethod
-    def nbt(cls, resource_path: str, data_target: DataTarget, interpret: bool = None,
-            separator: str = None) -> JsonText:
+    def nbt(cls, resource_path: StrOrArg, data_target: DataTarget, interpret: BoolOrArg = None,
+            separator: StrOrArg = None) -> JsonText:
         """Returns a JSON text NBt node."""
         target_key, target_value = data_target_str(data_target).split(' ', 1)
         jt = cls({'nbt': as_resource_path(resource_path), target_key: target_value})
         if interpret is not None:
-            jt['interpret'] = interpret
+            jt['interpret'] = de_arg(interpret)
         if separator is not None:
-            jt['separator'] = separator
+            jt['separator'] = de_arg(separator)
         return jt
 
     def content(self):
         return dict(self)
 
-    def extra(self, *extras: JsonText | str) -> JsonText:
-        """Adds a ``extra`` field to a JSON node."""
+    def extra(self, *extras: JsonText | StrOrArg) -> JsonText:
+        """Adds an ``extra`` field to a JSON node."""
         cur = self.setdefault('extra', [])
-        cur.extend(extras)
+        cur.extend(de_arg(extras))
         return self
 
-    def color(self, color: str) -> JsonText:
+    def color(self, color: StrOrArg) -> JsonText:
         """Adds a ``color`` field to a JSON node."""
-        self['color'] = _in_group(JSON_COLORS, color)
+        self['color'] = de_arg(_in_group(JSON_COLORS, color))
         return self
 
-    def font(self, font: str) -> JsonText:
+    def font(self, font: StrOrArg) -> JsonText:
         """Adds a ``font`` field to a JSON node."""
-        self['font'] = as_resource_path(font)
+        self['font'] = de_arg(as_resource_path(font))
         return self
 
     def bold(self) -> JsonText:
@@ -3673,9 +3673,9 @@ class JsonText(UserDict, JsonHolder):
         self['italic'] = True
         return self
 
-    def underlined(self, v: bool = True) -> JsonText:
+    def underlined(self, v: BoolOrArg = True) -> JsonText:
         """Adds an ``underline`` field to a JSON node."""
-        self['underlined'] = v
+        self['underlined'] = de_arg(v)
         return self
 
     def strikethrough(self) -> JsonText:
@@ -3688,9 +3688,9 @@ class JsonText(UserDict, JsonHolder):
         self['obfuscated'] = True
         return self
 
-    def insertion(self, to_insert: str) -> JsonText:
+    def insertion(self, to_insert: StrOrArg) -> JsonText:
         """Adds an ``insertion`` field to a JSON node."""
-        self['insertion'] = to_insert
+        self['insertion'] = de_arg(to_insert)
         return self
 
     def click_event(self) -> _JsonTextClickEventAction:

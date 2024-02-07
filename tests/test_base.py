@@ -7,7 +7,7 @@ from pynecraft.base import Arg, COLORS, Coord, EAST, IntRelCoord, NORTH, Nbt, RE
     _not_ify, _quote, _strip_namespace, _strip_not, _to_list, _to_tuple, as_angle, as_column, as_duration, as_facing, \
     as_name, \
     as_names, as_nbt_key, as_nbt_path, as_pitch, as_range, as_resource, as_resource_path, as_resources, as_yaw, d, days, \
-    r, \
+    de_arg, r, \
     rotate_facing, seconds, settings, string, ticks, to_id
 from pynecraft.commands import setblock
 
@@ -89,6 +89,14 @@ class TestBase(unittest.TestCase):
         self.assertEqual('key', as_nbt_key('key'))
         self.assertEqual('v$(k)', as_nbt_key('v$(k)'))
         self.assertEqual('$(k)', as_nbt_key(Arg('k')))
+
+    def test_de_arg(self):
+        self.assertEqual('x', de_arg('x'))
+        self.assertEqual('$(x)', de_arg('$(x)'))
+        self.assertEqual('$(x)', de_arg(Arg('x')))
+        self.assertEqual(('x', 'y'), de_arg(('x', 'y')))
+        self.assertEqual(('x', '$(y)'), de_arg(('x', Arg('y'))))
+        self.assertEqual(('x', ('$(y)', '$(z)')), de_arg(('x', (Arg('y'), Arg('z')))))
 
     def test_as_nbt_path(self):
         self.assertEqual('a.b.c', as_nbt_path('a.b.c'))
@@ -245,8 +253,8 @@ class TestBase(unittest.TestCase):
         self.assertEqual('$(k)..$(v)', as_range((Arg('k'), Arg('v'))))
         with self.assertRaises(ValueError):
             as_range((6, 3))
-            with self.assertRaises(ValueError):
-                as_range(('v$(k)', 'q$(z)'))
+        with self.assertRaises(ValueError):
+            as_range(('v$(k)', 'q$(z)'))
 
     def test_string(self):
         self.assertEqual('', string(''))
@@ -425,10 +433,10 @@ class TestBase(unittest.TestCase):
 
     def test_arg(self):
         self.assertEqual('$(foo)', str(Arg('foo')))
-        self.assertTrue(Arg('a') == Arg('a'))
-        self.assertTrue(Arg('a') == '$(a)')
-        self.assertFalse(Arg('a') == 'a')
-        self.assertFalse(Arg('a') == None)
+        self.assertEqual(Arg('a'), Arg('a'))
+        self.assertEqual(Arg('a'), '$(a)')
+        self.assertNotEqual(Arg('a'), 'a')
+        self.assertIsNotNone(Arg('a'))
         self.assertEqual(hash(Arg('a')), hash(Arg('a')))
         self.assertNotEqual(hash(Arg('a')), hash(Arg('b')))
         with self.assertRaises(ValueError):
