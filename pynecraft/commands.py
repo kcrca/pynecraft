@@ -2093,7 +2093,7 @@ class _ScheduleMod(Command):
             # noinspection PyUnresolvedReferences
             path = path.full_name
         except AttributeError:
-            pass
+            path = de_arg(path)
         self._add('function', as_resource_path(path), as_duration(time), _in_group(SCHEDULE_ACTIONS, action))
         return str(self)
 
