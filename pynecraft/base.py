@@ -165,6 +165,7 @@ def is_arg(v: any) -> bool:
 
 def _quote(value):
     if isinstance(value, str):
+        # If we don't quote these, the string "true" will become a boolean "true", etc.
         if re.fullmatch(r'true|false|\d+\.?\d*|\d*\.?\d+', value):
             return f'"{value}"'
         if not re.fullmatch(r'\w+', value):
