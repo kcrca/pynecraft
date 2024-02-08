@@ -28,6 +28,16 @@ class TestBase(unittest.TestCase):
         self.assertEqual('"f b"', _quote('f b'))
         self.assertEqual('\'"f b"\'', _quote('"f b"'))
         self.assertEqual('"\'f b\'"', _quote("'f b'"))
+        self.assertEqual('"true"', _quote("true"))
+        self.assertEqual('"false"', _quote("false"))
+        self.assertEqual(1, _quote(1))
+        self.assertEqual(0.1, _quote(.1))
+        self.assertEqual(1.0, _quote(1.))
+        self.assertEqual(1.1, _quote(1.1))
+        self.assertEqual('"1."', _quote("1."))
+        self.assertEqual('".1"', _quote(".1"))
+        self.assertEqual('"1.1"', _quote("1.1"))
+        self.assertEqual('t1', _quote("t1"))
 
     def test_to_list(self):
         self.assertListEqual([], _to_list(()))

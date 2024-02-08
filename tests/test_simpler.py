@@ -7,6 +7,7 @@ from pynecraft.commands import *
 from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines
 from pynecraft.simpler import *
+from pynecraft.simpler import _str_values
 
 
 class TestSimpler(unittest.TestCase):
@@ -427,6 +428,14 @@ class TestSimpler(unittest.TestCase):
             """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 2.0f, 3.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
             str(TextDisplay('foo').scale((1, 2, 3)).summon(r(0, 0, 0), facing=NORTH)))
 
+    def test_block_display(self):
+        self.assertEqual({}, _str_values({}))
+        self.assertEqual({'b': 'true', 'i': '12', 'f': '3.7f', 's': 'tr'},
+                         _str_values({'b': True, 'i': 12, 'f': 3.7, 's': 'tr'}))
+        self.assertEqual({'m1': {'b': 'true', 'i': '12', 'f': '3.7f', 's': 'tr'}},
+                         _str_values({'m1': {'b': True, 'i': 12, 'f': 3.7, 's': 'tr'}}))
+        self.assertEqual({'m1': ['true', '12', '3.7f', 'tr']}, _str_values({'m1': [True, 12, 3.7, 'tr']}))
+
     def test_text_display(self):
         self.assertEqual(
             """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
@@ -439,6 +448,9 @@ class TestSimpler(unittest.TestCase):
                                              'right_rotation': [0.0, 0.0, 0.0, 1.0],
                                              'scale': [1.0, 1.0, 1.0], 'translation': [0.0, 0.0, 0.0]}},
                          TextDisplay(JsonText.html_text('<i>foo</i>')).nbt)
+        self.assertEqual(
+            'text_display{text: "$(f)", transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}',
+            str(TextDisplay(Arg('f'))))
 
     def test_item(self):
         self.assertEqual('dirt', Item('dirt').id)

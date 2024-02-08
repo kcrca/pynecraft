@@ -163,9 +163,10 @@ def de_arg(v: any) -> any:
 def is_arg(v: any) -> bool:
     return isinstance(v, Arg) or (isinstance(v, str) and _arg_re.search(v))
 
-
 def _quote(value):
     if isinstance(value, str):
+        if re.fullmatch(r'true|false|\d+\.?\d*|\d*\.?\d+', value):
+            return f'"{value}"'
         if not re.fullmatch(r'\w+', value):
             value = _backslash_re.sub(lambda x: '\\' + _backslash_map[x.group(0)], value)
             singles = value.count("'")
@@ -579,7 +580,7 @@ class Nbt(UserDict):
             return str(obj)
         if isinstance(obj, cls):
             return str(obj)
-        if isinstance(obj, Mapping):
+        if isinstance(obj, Mapping) and not isinstance(obj, JsonHolder):
             return str(cls.as_nbt(obj))
         sout = StringIO()
         cls._to_str(obj, sout, False)

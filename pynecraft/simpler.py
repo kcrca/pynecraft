@@ -4,9 +4,10 @@ import dataclasses
 from typing import Callable, Mapping, Sequence, Tuple, Union
 
 from .base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
-    _ensure_size, _in_group, _quote, _to_list, as_facing, d, r, to_id
-from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, JsonList, JsonText, SignCommand, \
-    SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, data, fill, fillbiome, setblock
+    _ensure_size, _in_group, _quote, _to_list, as_facing, d, de_arg, r, to_id
+from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, \
+    SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
+    fillbiome, setblock
 from .enums import Pattern
 
 ARMORER = 'Armorer'
@@ -327,6 +328,40 @@ class Display(Entity):
         return self
 
 
+class ItemDisplay(Display):
+    """An object that represent an item_display entity."""
+
+    def __init__(self, item: EntityDef):
+        item = as_entity(item)
+        nbt = Item.nbt_for(item)
+        super().__init__('item_display', {'item': nbt})
+
+
+def _str_values(state):
+    """Convert any non-str primitive values into str, because BlockDisplay requires it (ugh)."""
+    if isinstance(state, Mapping):
+        for k, v in state.items():
+            state[k] = _str_values(v)
+        return state
+    elif isinstance(state, str):
+        return state
+    elif isinstance(state, Sequence):
+        values = []
+        for v in state:
+            values.append(_str_values(v))
+        return values
+    else:
+        return Nbt.to_str(state)
+
+
+class BlockDisplay(Display):
+    """An object that represents a block_display entity."""
+
+    def __init__(self, block: BlockDef):
+        block = as_block(block)
+        super().__init__('block_display', {'block_state': {'Name': block.id, 'Properties': _str_values(block.state)}})
+
+
 class TextDisplay(Display):
     """An object that represents a text_display entity."""
 
@@ -345,6 +380,10 @@ class TextDisplay(Display):
             text = str(text).replace("'", '"')
         if text is not None:
             self.merge_nbt({'text': text})
+        return self
+
+    def _simple(self, key, value) -> TextDisplay:
+        self.merge_nbt({key: de_arg(value)})
         return self
 
 
