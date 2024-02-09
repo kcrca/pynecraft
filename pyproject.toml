@@ -1,15 +1,13 @@
-[tool.poetry]
+[project]
 name = "pynecraft"
-version = "0.1.0"
-description = ""
-authors = ["Ken Arnold <arnold@peak.im>"]
-
-[tool.poetry.dependencies]
-python = "^3.9"
-
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
+authors = [{name = "Ken Arnold", email = "arnold@peak.im"}]
+description = "A library for creating minecraft datapacks."
+readme = "README.rst"
+license = {text = "CC BY 4.0 DEED"}
+requires-python = ">=3.11"
+version = "0.5"
+dependencies = [ ]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
