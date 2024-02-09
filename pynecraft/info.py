@@ -6,11 +6,11 @@ from collections import UserDict
 from enum import Enum
 from importlib.resources import files
 
+from ._utils.fetch_things import ItemFetcher
 from .base import COLORS, Nbt, NbtDef, to_id, to_name
 from .commands import Block, Entity
 from .enums import PotterySherd
 from .simpler import Item, as_color_num
-from .utils.fetch_things import ItemFetcher
 
 blocks: dict[str, Block] = {}
 """All blocks by name. See ``block_items`` if you want an item for a block."""

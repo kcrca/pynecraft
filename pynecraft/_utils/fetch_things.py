@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import re
+import sys
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
 
+cwd = Path(sys.path[0])
 
 class Fetcher(ABC):
     def __init__(self, which: str, url: str):
@@ -55,7 +58,7 @@ class Fetcher(ABC):
             assert to_add not in things
             things.append(to_add)
 
-        with open(f'../all_{self.which}.txt', 'w') as fp:
+        with open(cwd / f'../all_{self.which}.txt', 'w') as fp:
             fp.write('\n'.join(sorted(things)))
             fp.write('\n')
 

@@ -1,7 +1,17 @@
+#!/usr/bin/env python
+
+"""
+
+Rebuilds pynecraft.enum.py using current data. This is inherently a bit crufty and sensitive, because it reads data
+from a wiki, which may change at any time. If I knew of a better way to get this info, I'd use it.
+
+"""
+
 from __future__ import annotations
 
 import datetime
 import re
+import sys
 from abc import ABC, abstractmethod
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -11,6 +21,7 @@ from bs4 import BeautifulSoup
 
 WIKI = 'https://minecraft.fandom.com/wiki/'
 noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
+cwd = Path(sys.path[0])
 
 
 class EnumDesc(ABC):
@@ -47,7 +58,7 @@ class PageEnumDesc(EnumDesc):
         The web pages are pretty inconsistent, though not entirely. But nowhere near enough to share much code in the
         scraping of them.
         """
-        cache = Path('.enum_cache') / (self.name + '.html')
+        cache = cwd / '.enum_cache' / (self.name + '.html')
         cache.parent.mkdir(exist_ok=True)
         html = None
         if cache.exists():
@@ -164,6 +175,8 @@ def roman_to_int(s):
     """
     rom_val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
     int_val = 0
+    pat = fr'[^{"".join(rom_val.keys())}].*'
+    s = re.sub(pat, '', s, re.IGNORECASE)
     for i in range(len(s)):
         if i > 0 and rom_val[s[i]] > rom_val[s[i - 1]]:
             int_val += rom_val[s[i]] - 2 * rom_val[s[i - 1]]
@@ -445,7 +458,7 @@ class BiomeIds(PageEnumDesc):
 
 
 if __name__ == '__main__':
-    with open('../enums.py', 'r+') as out:
+    with open(cwd / '..' / 'enums.py', 'r+') as out:
         top = []
         for line in out:
             top.append(line)
