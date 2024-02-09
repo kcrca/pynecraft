@@ -168,15 +168,17 @@ def camel_to_name(camel):
     """
     return re.sub(r'([a-z])([A-Z]+)', r'\1 \2', camel)
 
+rom_val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+for digit in tuple(rom_val.keys()):
+    rom_val[digit.lower()] = rom_val[digit]
 
 def roman_to_int(s):
     """
-    Converts a Roman numeral to an int. (Much more than we need, but copy/paste is easier than thinking
+    Converts a Roman numeral to an int. (Much more than we need, but copy/paste is easier than thinking.)
     """
-    rom_val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
     int_val = 0
-    pat = fr'[^{"".join(rom_val.keys())}].*'
-    s = re.sub(pat, '', s, re.IGNORECASE)
+    # Remove anything after the roman numberal
+    s = re.sub(fr'[^{"".join(rom_val.keys())}].*', '', s.strip())
     for i in range(len(s)):
         if i > 0 and rom_val[s[i]] > rom_val[s[i - 1]]:
             int_val += rom_val[s[i]] - 2 * rom_val[s[i - 1]]

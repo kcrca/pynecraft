@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+
+"""
+
+Rebuilds pynecraft.all*.txt using current data. This is inherently a bit crufty and sensitive, because it reads data
+from a wiki, which may change at any time. If I knew of a better way to get this info, I'd use it.
+
+"""
+
 from __future__ import annotations
 
 import re
@@ -9,6 +18,7 @@ import requests
 from bs4 import BeautifulSoup
 
 cwd = Path(sys.path[0])
+
 
 class Fetcher(ABC):
     def __init__(self, which: str, url: str):
