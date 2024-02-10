@@ -3,7 +3,7 @@ name = "pynecraft"
 authors = [{name = "Ken Arnold", email = "arnold@peak.im"}]
 description = "A library for creating minecraft datapacks."
 readme = "README.rst"
-license = {text = "CC BY 4.0 DEED"}
+license = {text = "MIT"}
 requires-python = ">=3.11"
 version = "0.5"
 dependencies = [ "requests", "bs4", ]
