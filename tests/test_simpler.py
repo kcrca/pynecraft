@@ -2,7 +2,7 @@ import shutil
 import tempfile
 import unittest
 
-from pynecraft.base import CYAN, DARK_AQUA, EAST, N, SOUTH, SW
+from pynecraft.base import CYAN, DARK_AQUA, EAST, N, SOUTH, SW, WEST
 from pynecraft.commands import *
 from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines
@@ -18,6 +18,7 @@ class TestSimpler(unittest.TestCase):
         shutil.rmtree(self.tmp_path)
 
     def test_sign_lines(self):
+        s = Sign((None, 'hi', 'there'), (tell(p(), 'Hello!'),)).place((0, 100, 0), WEST)
         self.assertEqual(
             """{messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}""",
             str(Sign.lines_nbt(("one", "two", "three", "four"))))

@@ -694,15 +694,15 @@ class FunctionSet:
     class _Functions(UserDict):
         """Dict that sets the added functions' parent."""
 
-        def __init__(self, function_set: FunctionSet):
+        def __init__(self, functions: FunctionSet):
             super().__init__()
-            self.functionSet = function_set
+            self.functions = functions
 
         def __setitem__(self, key: str, value: Function):
             ret = super().__setitem__(key, value)
             if not isinstance(value, Function):
                 raise ValueError(f'{value.name}: Not a Function')
-            value.parent = self.functionSet
+            value.parent = self.functions
             return ret
 
     def __init__(self, name: str, pack_or_parent: DataPack | FunctionSet = None):
