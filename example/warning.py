@@ -1,4 +1,4 @@
-from pathlib import Path
+import sys
 
 from pynecraft.base import TimeSpec, r
 from pynecraft.commands import REPLACE, Score, a, comment, execute, return_, s, schedule, tell
@@ -33,6 +33,4 @@ pack.function_set.add(Function('halt').add(halt.set(1)))
 pack.function_set.add(Function('start').add(self_score.set(0), schedule))
 pack.function_set.add(Function('stop').add(self_score.reset()))
 
-dir = f'{Path.home()}/clarity/home/saves/PynecraftWorld'
-print(dir)
-pack.save(dir)
+pack.save(sys.argv[1])
