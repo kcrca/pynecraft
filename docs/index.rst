@@ -32,23 +32,29 @@ Currently pynecraft only supports Java Edition commands.
 Why?
 ----
 
-Python has tools: Editors, debuggers, formatters, etc. It also
-checks syntax at compile time and is easy to add run-time type
-checking. It has a full language, so even though you cannot loop
-or use other control structures in your actual minecraft function,
-you can use them to build your functions. This provides a much
-better infrastructure for writing you minecraft functions.
+Python has tools: Editors, debugger s, formatters, etc. It also
+checks syntax at compile time and run-time type checking. These are
+really useful for eliminating these errors from your commands
+quicker and easier
 
-Also, it is possible to use these to provide the simpler tools
-mentioned above. You don't have to remember which ``ArmorItem``
-slot is the chestplate, or what the syntax is for either defining
-an action for when the player touches a sign, or the rules about
-how that syntax is quoted when embedding it into the sign's NBT.
+It is a full language, so you can use it to generate your commands.
+You can have a check for every mob that starts with 'a', or every
+value of a score from one to ten. You can write a python function
+that generates complicated commands based on a few parameters.
 
-At some future date, maybe someone can add a python interpreter to
-minecraft so you can write your actual scripts in python instead
-of the rather hacky non-programming language that is minecraft
-commands.  Until then, this can make your life much easier.
+There are macro languages that could help with this too, but the
+quoting issues alone can be daunting, and they won't do the syntax
+and run-time validation of commands.
+
+And it is possible to use these to provide the simpler tools mentioned
+above. The simpler.Score class helps you state clearly what you
+want, and it generates the more complicated ``scoreboard`` command
+to do that.  Similarly, you don't have to remember how an item
+stores a blocks' state, you can just create a ``Block`` object and
+ask ``Item.of()`` to return an item for it. And the ``Sign`` class
+understands how to take a list of text lines and commands and build
+the NBT that will encode them.  There are many such support systems
+in pynecraft. And more can be built on top of it.
 
 Structure
 =========
@@ -56,7 +62,7 @@ Structure
 Pynecraft has the following modules:
 
 ``base``
-    The base-level data types and values
+    The base-level data types, classes, and values
 
 ``enums``
     Enums for large sets of values, like effects and particles.
@@ -82,13 +88,12 @@ There are several choices to be made when deciding how to map the
 minecraft commands into a python (and hopefully pythonic) functions
 and types. For example, consider the ``fill`` command, which takes
 two sets of (x, y, z) coordinates, a block to fill with and some
-optional commands, such as whether to replace only certain kinds
-of blocks.  Representing the coordinates as three-tuples is pretty
-normal in other packages, but how to handle the block type? And the
-options?
+options, such as whether to replace only certain kinds of blocks.
+Representing the coordinates as three-tuples is pretty normal in
+python, but how to handle the block type? And the options?
 
-For the block type, you can use several different styles. For simple
-blocks, you can just name the block:
+For the block type, pynecraft lets you use several different styles.
+For simple blocks, you can just name the block:
 ::
 
     fill((1, 2, 3), (4, 5, 6), 'air')
@@ -100,8 +105,8 @@ block state and nbt:
 
     fill((1, 2, 3), (4, 5, 6), Block('oak_sign', {'rotation', 5}, {'Text2': 'Howdy!'))
 
-We use a dict to specify block state and NBT (more on NBT below).
-Or you can just give the specification as a tuple:
+You can use a ``dict`` to specify block state and NBT (more on NBT
+below).  Or you can just give the specification as a tuple:
 
 ::
 
@@ -113,22 +118,22 @@ That pretty will handles blocks. You can do similarly with entities:
 
     summon(('Zombie', {'IsBaby': True}), (1, 2, 3))
 
-But the options for ``fill`` are less obvious. One could present
-them in several different ways:
+But how pynecraft should present the options for ``fill`` are less
+obvious. There are several different ways, such as:
 
 ``fill((1, 2, 3), (4, 5, 6), 'air', 'replace', 'stone')``
-    Just using strings as optional to parameters to ``fill()``.
-    This is pretty free form, and easily allows mistakes.
+    Just using strings as optional parameters to ``fill()``. This
+    is pretty free form, and easily allows mistakes.
 
 
 ``fill((1, 2, 3), (4, 5, 6), 'air', FillsOptions.REPLACE, 'stone')``
     Use an enum for the possible options, still as optional to
-    parameters to ``fill()``.  This is less prone to errors, but
+    parameters to ``fill()``. This is less prone to errors, but
     pretty verbose.
 
 ``fill((1, 2, 3), (4, 5, 6), 'air', REPLACE, 'stone')``
     Provide pre-defined constants for the possible options, still
-    as optional to parameters to ``fill()``.  This is less verbose,
+    as optional to parameters to ``fill()``. This is less verbose,
     although someone could still put in a string and mistype it,
     but that takes work to make the mistake.
 
@@ -138,34 +143,36 @@ them in several different ways:
     for example, has far too many possible syntaxes to represent
     as just strings.
 
-Pynecraft takes the last two approaches, varying with the situation.
-In places where there are several choices that are syntactically
-identical, such as specifying direction of North, East, South, or
-West, it tends towards the pre-defined constants. In places where
-the choice affects syntax, there is a strong preference for the
-chaining approach.
+Pynecraft takes both the last two approaches, varying with the
+situation.  In places where there are several choices that are
+syntactically identical, such as specifying direction of North,
+East, South, or West, it tends towards the pre-defined constants.
+In places where the choice affects syntax, there is a strong
+preference for the chaining approach.
 
 There are other interesting places where choices can be made. For
 example, in the ``data`` command, there are three kinds of targets:
 blocks, entities, and storage. The command makes you specify which
-one: ``data get entity...``, ``data get block...`` etc. However
-block specification look different from entity specifications, so
-that keyword is redundant, and actually complicates the syntax. So
-the pynecraft commands like ``data().get(e().tag('foo'))`` to get
-data from an entity, and ``data().get((1, 2, 3))`` to get data for
-a block at a given position.
+one: ``data get **entity** ...``, ``data get **block** ...``, etc.
+However block specification look different from entity specifications,
+so that keyword is redundant, and actually complicates the syntax.
+So the pynecraft commands like ``data().get(e().tag('foo'))`` to
+get data from an entity, and ``data().get((1, 2, 3))`` to get data
+for a block at a given position. You can be specific if you want,
+by using some predefined functions, such as
+``data().get(entity(e().tag('foo')))``, but this is only required
+if you are using macros in your command (more on macros later).
 
 Finally, there is an overall preference to not be significantly
 more verbose than the actual commands. This means that there are
 several functions that could have longer names, but they don't. For
-example, as shown above, ``e()`` is equivalent to '@e', and to
-specify relative coordinates, ``r(1, 2, 3)`` will generate ``-1 -2
--3``. Admittedly this takes up some of the single-character identifier
-space, but it seems worth it.
+example, as shown above, ``e()`` is the way pynecraft represents
+``@e``, and relative coordinates ``-1 -2 -3`` are represented as
+``r(1, 2, 3)``.  Admittedly this takes up some of the single-character
+identifier space, but it seems worth it.
 
 There are a few large-scale collections of values that are expressed
-in enums, like the achievements and effects. These are in
-``pynecraft.enums``
+in enums, like achievements and effects. These are in ``pynecraft.enums``.
 
 *Error Checking*
 ----------------
@@ -176,8 +183,8 @@ script into minecraft:
 1. Some errors are simply illegal. You cannot misspell a command
 name, for example.
 
-2. Some will be warned about by any competent IDE, due to type hints
-in the method signatures.
+2. Some will be warned about by any competent IDE because of type
+hints in the method signatures.
 
 3. Runtime type checking is used for many other things. For example,
 a block or entity ID must be at least lexically legal: It must be
@@ -193,19 +200,21 @@ by minecraft when the script is loaded.
 Usage
 =====
 
-Here is an expression that will print a minecraft ``setblock`` command:
+Here is an expression that will print a minecraft ``give`` command
+(of course, usually you won’t want to print commands, you want to
+put them in functions, more on this below):
 
 ::
 
     from pynecraft.commands import setblock       
 
-    print(setblock(r(0, 2, 0), 'stone'))
+    print(give(a(), 'iron_sword'))
 
 The output will be
 
 ::
 
-    setblock -0 -2 -0 stone
+    give @a iron_sword
 
 For almost every command (except a few specialized server-side
 commands that seem unlikely to appear in functions or command
@@ -223,25 +232,27 @@ In this case, ``experience()`` returns an object has the methods
 ``add()``, ``set()``, and ``query()``, the three subcommands of
 ``experience``.
 
-You can remember this intermediate object and re-use it. This is
-probably most useful with the ``execute`` command which can get
-complicated:
+You can remember this intermediate object and re-use it. One useful
+case for this is in target specifications, which can get complicated:
 
 ::
 
-    who = execute().as_(e().tag('runner'))
+    tgt = e().team('red').distance((None, 20))
+    who = give(tgt, 'redstone_dust', 10)
+    tag(tgt).add('redstoned')
 
-    print(who.run(say('Ready to go!')))
-    print(who.run(function('my_pack:go_to_it')))
-    print(who.run(say('Done!')))
+This lets you say once what the constraint is and then use it across
+several commands, which is both briefer and easier to modify.
 
 This remembers the prefix that says which entity to run the command
 as, and the use it three times (it is ``as_()`` because ``as`` is
 a keyword in python.) Each returned command object is immutable,
 so you can reuse them without worrying about affecting future calls.
 
-You can also do this by giving ``run()`` multiple commands to
+The ``execute`` command is another place where you could do this,
+but ~ou can also do this by giving ``run()`` multiple commands to
 run, and it will generate a command for each one.
+
 ::
 
     print(cmd) for cmd in execute().as_(e().tag('runner')).run(
@@ -251,21 +262,55 @@ run, and it will generate a command for each one.
 
 *Macro Commands*
 ----------------
-In Minecraft, macro commands are marked with a ``$``, and substitute incoming values using ``$(foo)``.
-Pynecraft just requires you to mark where you are using incoming arguments, and prepends the ``$`` if needed.
-So for example, you could have use macro arguments like this:
+In Minecraft, macro commands are marked with a ``$``, and substitute
+incoming values using ``$(foo)``.  Pynecraft just requires you to
+mark where you are using incoming arguments, and prepends the ``$``
+if needed.  So for example, you could have use macro arguments like
+this:
+
 ::
-    execute().as_(e().tag(Var('tag'))).run(say(Var(msg)))
+
+    execute().as_(e().tag(Arg('tag'))).run(say(Arg('msg')))
 
 This would give you:
+
 ::
+
     $execute as @e[tag=$(tag)] run say $(msg)
+
+You could even just make the entire target a macro:
+
+::
+
+    execute().as_(Arg('tgt')).run(say(Arg('msg')))
+
+In most places you can also simply use a a string, which is most
+useful where the macro value represents part of a value. If you
+want
+
+::
+
+    tell @e[tag=xyz_$(foo)] Shh! There's a wumpus!!!
+
+you can use
+
+::
+
+    tell(e().tag('xyz_$(foo)'), 'Shh! There's a wumpus!!!')
+
+(Macros can be used even more wildly than this, such as to represent
+the actual command or a part of it, such as ``$e$(cmd)`` to run any
+command that starts with an 'e'. In pynecraft you can only do this
+literally by using a string as a command, or using the ``literal``
+function. This level of flexibility would severely limit the amount
+of checking pynecraft could do, and is unlikely to be commonly used,
+so it doesn't provide for it any other way.)
 
 *Functions*
 -----------
 
-Usually you don't want to print commands, but to instead put them
-in functions, and usually put those functions in a data pack. The
+Of course, usually you won't want to print commands, you want to
+put them in functions and put those functions in a data pack. The
 ``pynecraft.functions`` types help you do this. You can start with
 a top-level data pack:
 
@@ -273,15 +318,15 @@ a top-level data pack:
 
         pack = DataPack('my_pack', minecraft_saves / 'my_pack_world')
 
-This creates a data pack named "my_pack" that will get saved in the
-minecraft world "my_pack_world". This is often useful for testing,
-because you can then go into that world and test the pack. Any
-directory will work.
+This creates a data pack named ``my_pack`` that will get saved in
+the minecraft world ``my_pack_world``. This is often useful for
+testing, because you can then go into that world and test the pack.
+Any directory will work.
 
-Each pack has a top-level 'functions' directory, which can have one
-level of function directories beneath it (that's the current minecraft
-rule). If you add a function to the pack, it goes in the top level
-directory:
+Each pack has a top-level ``functions`` directory, which can have
+one level of function directories beneath it (that's the current
+minecraft rule). If you add a function to the pack, it goes in the
+top level directory:
 
 ::
 
@@ -289,10 +334,10 @@ directory:
         pack.functions.add(func)
         pack.save()
 
-This will first clear out the datapack directory, removing it
-entirely. This is important: The DatPack object owns the target
-directory, and you don't want old files hanging around. If you
-rename a function, you don't want the old vesion of the function
+Saving will first clear out the datapack directory, removing it
+entirely. This is important: *The DatPack object owns the target
+directory*, and you don't want old files hanging around. If you
+rename a function, you don't want the old version of the function
 to still exist with an older version of the code. If another function
 calls it, but you forget to change the name there, that would be
 confusing and possibly harmful.
@@ -302,7 +347,7 @@ a path to the root of a save, DataPack will use the appropriate
 subpath, rather than the save itself. And it will own *that*
 directory, not the entire save. This means that "my_pack_world" is
 a save, the directory it will own is ``my_pack_world/datapacks/my_pack``.
-it recognizes a save by the existence of the ``datapacks`` directory
+It recognizes a save by the existence of the ``datapacks`` directory
 inside it.
 
 Otherwise you can point it at a directory that it will own, such
@@ -313,7 +358,7 @@ directory and will delete it!**
 
 And then it will write out the files. In this case, it will create
 a structure like the following (assuming ``my_pack_world`` as the
-path):
+world's save path):
 
 ::
 
@@ -333,30 +378,31 @@ can add your own FunctionSet objects to it to create subdirectories.
 Again, Minecraft limits you to one level of depth, pynecraft just
 enforces it.
 
-There is a special kind of function called a Loop, which is a way
-to imitate having looping functionality. It doesn't actually run
-in a loop, but acts as a loop iteration each time it is invoked.
-You tell it the items to loop over (say, the various kinds of
-weather), and each time you run the loop function it will increment
-a score and then produce the weather that correlates to the score.
-The Loop documentation gives more detail.
+There is a special kind of function called a ``Loop``, which is a
+pynecraft utility that imitates having looping functionality. It
+doesn't actually run in a loop, but acts as a loop iteration each
+time it is invoked.  You tell it the items to loop over (say, the
+various kinds of weather), and each time you run the loop's minecraft
+function it will increment a score and then work with the weather
+that correlates to the score.  The ``Loop`` documentation gives
+more detail.
 
 The Rest of the Pack
 ====================
 
 There are two other parts of a data pack: The ``pack.mcmeta`` file
-and a slew of JSON files to confgure block and entity tags, loot
-tables, custom dimensions, world generation, and o on.
+and a slew of JSON files to configure block and entity tags, loot
+tables, custom dimensions, world generation, and so on.
 
 ``pack.mcmeta``
 ---------------
 
 The ``pack.mcmeta`` file lives at the top of the data pack and has
 some simple configuration, including the pack format version and
-filters for other packs DataPack supports this, both in giving you
+filters for other packs. DataPack supports this, both in giving you
 direct access to its dict that is serialized into the JSON in the
 file, via the ``mcmeta`` property, and via particular methods to
-set the dsecription and filters.
+set the description and filters.
 
 JSON Files
 ----------
@@ -365,7 +411,7 @@ DataPack organizes the JSON files as a top-level dict that contains
 the relevant directories and their contained JSON files. Under this
 dict, keys that end in '/' are saved as directories. These keys
 have dict values whose keys are either subdirectories (they end in
-'/' also) or files (they don't).  File keys have dict values that
+'/' also) or files (they don't). File keys have dict values that
 are saved as JSON files.
 
 For example, the dict tree:
@@ -373,7 +419,7 @@ For example, the dict tree:
 ::
 
     {
-        'advancments/': {
+        'advancements/': {
             'story/': {
                 'battler': { 'criteria': { ... } },
             }
@@ -397,24 +443,37 @@ translates into the following structure
                 |-- niceness.json
 
 The standard members of a data pack's JSON file set have defined
-methods, such as ``advacnements()``, ``recipies``, and ``tags()``.
-You can create other dirctories using the pack's ``json_directory()``
+methods, such as ``advancements()``, ``recipies()``, and ``tags()``.
+You can create other directories using the pack's ``json_directory()``
 method.
 
 Minecraft Versions
-------------------
+==================
 
-Pynecraft was originally written for Minecraft version 1.19, but new things can happen to the
-commands with each release. You can specify a version to the ``parameters`` object. For example,
-to set the version to 1.19.3, you could say
+Mojang keeps producing new minecraft versions, and these have different
+commands, command syntaxes, restrictions, etc. How does pynecraft
+handle them?
 
-::
-    base.parameters.version = '1.19.3'
+Well, right now it doesn't because it has been changed for each
+version.  I could do this because it only had one user (me). But
+in the future, what will happen?
 
-Where differences exist, they are checked when used. For example, the ``fillbiome`` command was
-new in 1.19.3. So without setting the version to a value >= 1.19.3, invoking ``fillbiome()`` will
-get an exception. Versions are specified using either ``packaging.version.Version``
-objects or strings, which are converted to ``Version`` objects.
+At one point I attempted to have pynecraft be for all versions. I
+started in 1.19, and when 1.20 came out, I added a way to specify
+the version, and did various runtime checks to make sure that
+incoming parameters or keywords were correct for each version, that
+1.20 commands were not used in 1.19, etc. This proved so complicated
+I gave it up. And that was just one version change.
+
+Currently pynecraft is built for the (as of this writing) upcoming
+1.21 release.  The plan is to keep it for 1.21, and produce a
+separate, new (but derived) pynecraft for 1.22 when it arrives. You
+will choose to install the version you want. The details of this
+are to be worked out. Possibly the version gets encoded in the name
+( ``pynecraft_1_21``, ``pynecraft_1_22``, etc.). Discussion will
+be had; ideas are invited.
+
+
 
 Indices and tables
 ==================
