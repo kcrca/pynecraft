@@ -1209,9 +1209,8 @@ def as_range(spec: Range) -> str:
 
     :param spec: The (probable) range.
     :return: A string for the range, either the single number of a range using '..' between the two values, one of which
-    can be None.
+        can be None.
     """
-
     if is_arg(spec):
         return str(spec)
     if isinstance(spec, bool):
@@ -1237,7 +1236,7 @@ StrOrArg = Union[str, Arg]
 
 NbtDef = Union[Nbt, Mapping]
 FacingDef = Union[int, str, Facing]
-DurationDef = Union[StrOrArg, IntOrArg, TimeSpec]
+DurationDef = Union[StrOrArg, FloatOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
 Angle = Union[FloatOrArg, StrOrArg, RelCoord]
 IntCoord = Union[IntOrArg, IntRelCoord, str]

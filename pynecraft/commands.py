@@ -818,6 +818,12 @@ self = s
 """Equivalent to s()."""
 
 
+def _as_score_spec(v):
+    if is_arg(v) or isinstance(v, (str, int, float)):
+        return de_arg(v)
+    return as_range(v)
+
+
 class Selector(TargetSpec):
     """This class represents a target selector. You start with one of the selector methods p(), random(), s(), a(),
     and e(), and then possibly add qualifiers from the methods here. These can be chained, so for example,
@@ -903,8 +909,16 @@ class Selector(TargetSpec):
 
     @_fluent
     def scores(self, score_specs: Mapping) -> Selector:
-        """Add one or more score criteria to the selector."""
-        s = '{' + ','.join(f'{k}={v}' for k, v in score_specs.items()) + '}'
+        """Add one or more score criteria to the selector. The objective is the mapping's key, and can be a string or
+        an Arg. The score value can be a value, a range, an Arg, or a str."""
+        s = '{' + ','.join(f'{de_arg(k)}={_as_score_spec(v)}' for k, v in score_specs.items()) + '}'
+        return self._unique_arg('scores', s)
+
+    @_fluent
+    def not_scores(self, score_specs: Mapping) -> Selector:
+        """Add one or more score criteria to the selector, each of which is negated. The objective is the mapping's
+        key, and can be a string or an Arg. The score value can be a value, a range, an Arg, or a str."""
+        s = '{' + ','.join(f'{de_arg(k)}=!{_as_score_spec(v)}' for k, v in score_specs.items()) + '}'
         return self._unique_arg('scores', s)
 
     @_fluent
@@ -2676,7 +2690,7 @@ def gamerule(rule: GameRule | StrOrArg | IntOrArg, value: BoolOrArg | IntOrArg =
     return str(cmd)
 
 
-def give(target: Target, item: EntityDef | BlockDef, count: int = None) -> str:
+def give(target: Target, item: BlockDef, count: int = None) -> str:
     """Gives an item to a player."""
     cmd = Command()
     cmd._add('$give', as_target(target), item)
@@ -2832,7 +2846,7 @@ def ride(target: Target) -> _RideMod:
     return cmd._start(_RideMod())
 
 
-def say(msg: StrOrArg, *msgs: StrOrArg):
+def say(msg: StrOrArg, *msgs: StrOrArg) -> str:
     """Displays a message to multiple players."""
     cmd = Command()
     cmd._add('$say', msg, *msgs)
@@ -3514,7 +3528,7 @@ class Score(Command, Expression):
         return hash((self.target, self.objective))
 
     def init(self, value: IntOrArg = 0) -> Iterable[str]:
-        """Initializes the score by ensure the objective exists, and setting its value to the provided value."""
+        """Initializes the score by ensuring the objective exists, and setting its value to the provided value."""
         # noinspection PyArgumentList
         return (scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(value))
 

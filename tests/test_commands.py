@@ -1405,6 +1405,24 @@ class TestCommands(unittest.TestCase):
         finally:
             Expression.set_scratch_objective(orig)
 
+    def test_execute_if_scores(self):
+        self.assertEqual('execute if entity @e[scores={}]', str(execute().if_().entity(e().scores({}))))
+        self.assertEqual('execute if entity @e[scores={o=12}]', str(execute().if_().entity(e().scores({'o': 12}))))
+        self.assertEqual('execute if entity @e[scores={o=12}]', str(execute().if_().entity(e().scores({'o': (12)}))))
+        self.assertEqual('execute if entity @e[scores={o=-1..1}]', str(execute().if_().entity(e().scores({'o': (-1, 1)}))))
+        self.assertEqual('execute if entity @e[scores={o=!12}]', str(execute().if_().entity(e().scores({'o': '!12'}))))
+        self.assertEqual('$execute if entity @e[scores={o=$(v)}]', str(execute().if_().entity(e().scores({'o': Arg('v')}))))
+        self.assertEqual('$execute if entity @e[scores={o=1.$(v)}]', str(execute().if_().entity(e().scores({'o': '1.$(v)'}))))
+        self.assertEqual('$execute if entity @e[scores={$(o)=1.$(v)}]', str(execute().if_().entity(e().scores({Arg('o'): '1.$(v)'}))))
+
+        self.assertEqual('execute if entity @e[scores={}]', str(execute().if_().entity(e().not_scores({}))))
+        self.assertEqual('execute if entity @e[scores={o=!12}]', str(execute().if_().entity(e().not_scores({'o': 12}))))
+        self.assertEqual('execute if entity @e[scores={o=!12}]', str(execute().if_().entity(e().not_scores({'o': (12)}))))
+        self.assertEqual('execute if entity @e[scores={o=!-1..1}]', str(execute().if_().entity(e().not_scores({'o': (-1, 1)}))))
+        self.assertEqual('$execute if entity @e[scores={o=!$(v)}]', str(execute().if_().entity(e().not_scores({'o': Arg('v')}))))
+        self.assertEqual('$execute if entity @e[scores={o=!1.$(v)}]', str(execute().if_().entity(e().not_scores({'o': '1.$(v)'}))))
+        self.assertEqual('$execute if entity @e[scores={$(o)=!1.$(v)}]', str(execute().if_().entity(e().not_scores({Arg('o'): '1.$(v)'}))))
+
     def test_random(self):
         self.assertEqual('random value 1..2', random().value((1, 2)))
         self.assertEqual('random value 1..2 fred', random().value((1, 2), 'fred'))
