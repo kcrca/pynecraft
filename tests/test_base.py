@@ -203,22 +203,26 @@ class TestBase(unittest.TestCase):
         self.assertIsNone(as_yaw(None))
         self.assertEqual(17.3, as_yaw(17.3))
         self.assertEqual(90, as_yaw(WEST))
-        self.assertEqual('v$(a)', as_yaw('v$(a)'))
+        self.assertEqual('-$(a).1', as_yaw('-$(a).1'))
         self.assertEqual('$(a)', as_yaw(Arg('a')))
         with self.assertRaises(ValueError):
             as_yaw(181)
         with self.assertRaises(ValueError):
             as_yaw(-181)
+        with self.assertRaises(KeyError):
+            as_yaw('v$(k)')
 
     def test_as_pitch(self):
         self.assertIsNone(as_pitch(None))
         self.assertEqual(17.3, as_pitch(17.3))
-        self.assertEqual('v$(a)', as_pitch('v$(a)'))
+        self.assertEqual('-$(a).1', as_pitch('-$(a).1'))
         self.assertEqual('$(a)', as_pitch(Arg('a')))
         with self.assertRaises(ValueError):
             as_pitch(181)
         with self.assertRaises(ValueError):
             as_pitch(-181)
+        with self.assertRaises(TypeError):
+            as_pitch('v$(k)')
         with self.assertRaises(TypeError):
             as_pitch(WEST)
 
@@ -252,17 +256,21 @@ class TestBase(unittest.TestCase):
         self.assertEqual('$(k)', as_duration(Arg('k')))
 
     def test_as_range(self):
-        self.assertEqual('0', as_range(False))
         self.assertEqual('17', as_range(17))
         self.assertEqual('28.3', as_range(28.3))
         self.assertEqual('5.3..8.4', as_range((5.3, 8.4)))
         self.assertEqual('5.3..', as_range((5.3, None)))
         self.assertEqual('..8.4', as_range((None, 8.4)))
-        self.assertEqual('v$(k)', as_range('v$(k)'))
+        self.assertEqual('$(k)', as_range('$(k)'))
+        self.assertEqual('+$(k).1', as_range('+$(k).1'))
         self.assertEqual('$(k)', as_range(Arg('k')))
-        self.assertEqual('$(k)..$(v)', as_range((Arg('k'), Arg('v'))))
+        self.assertEqual('$(k)..-2.$(v)3', as_range((Arg('k'), '-2.$(v)3')))
         with self.assertRaises(ValueError):
             as_range((6, 3))
+        with self.assertRaises(ValueError):
+            as_range(False)
+        with self.assertRaises(ValueError):
+            as_range('v$(k)')
         with self.assertRaises(ValueError):
             as_range(('v$(k)', 'q$(z)'))
 

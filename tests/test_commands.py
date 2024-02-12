@@ -158,16 +158,6 @@ class TestCommands(unittest.TestCase):
                          str(execute().store(RESULT).block((Arg('x'), Arg('y'), Arg('z')), Arg('path'), SHORT,
                                                            Arg('scale'))))
 
-    def test_range(self):
-        self.assertEqual('3', as_range(3))
-        self.assertEqual('1..3', as_range((1, 3)))
-        self.assertEqual('..3', as_range((None, 3)))
-        self.assertEqual('1..', as_range((1, None)))
-        self.assertEqual('0..', as_range((0, None)))
-        self.assertEqual('..0', as_range((None, 0)))
-        self.assertEqual('0', as_range(0))
-        self.assertEqual('2', as_range(2))
-
     def test_coords(self):
         self.assertEqual('~1', str(r(1)))
         self.assertEqual('~-1.5', str(r(-1.5)))
@@ -447,6 +437,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[level=$(v)..$(k)]', str(a().level((Arg('v'), Arg('k')))))
         with self.assertRaises(KeyError):
             a().level(3).level(4)
+        with self.assertRaises(ValueError):
+            a().level('v$(k)')
 
     def test_target_gamemode(self):
         self.assertEqual('@a[gamemode=survival]', str(a().gamemode(SURVIVAL)))
@@ -623,6 +615,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('bossbar set foo value 17', bossbar().set('foo').value(17))
         self.assertEqual('bossbar set foo visible false', bossbar().set('foo').visible(False))
 
+        self.assertEqual('$bossbar set foo max $(v)', bossbar().set('foo').max(Arg('v')))
+        self.assertEqual('$bossbar set foo max +$(v).1', bossbar().set('foo').max('+$(v).1'))
+
     def test_clear(self):
         self.assertEqual('clear @s foo{bar}', clear(s()).item('foo{bar}'))
         self.assertEqual('clear @s foo{bar} 4', clear(s()).item('foo{bar}', 4))
@@ -694,6 +689,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
         self.assertEqual('$effect give $(tgt) $(e) $(d) $(a) $(h)',
                          effect().give(Arg('tgt'), Arg('e'), Arg('d'), Arg('a'), Arg('h')))
+        self.assertEqual('$effect give $(tgt) $(e) +$(d)1 +$(a)2 $(h)',
+                         effect().give(Arg('tgt'), Arg('e'), '+$(d)1', '+$(a)2', Arg('h')))
         with self.assertRaises(ValueError):
             effect().give(s(), Effect.SPEED, -1)
         with self.assertRaises(ValueError):
@@ -1408,20 +1405,29 @@ class TestCommands(unittest.TestCase):
     def test_execute_if_scores(self):
         self.assertEqual('execute if entity @e[scores={}]', str(execute().if_().entity(e().scores({}))))
         self.assertEqual('execute if entity @e[scores={o=12}]', str(execute().if_().entity(e().scores({'o': 12}))))
-        self.assertEqual('execute if entity @e[scores={o=12}]', str(execute().if_().entity(e().scores({'o': (12)}))))
-        self.assertEqual('execute if entity @e[scores={o=-1..1}]', str(execute().if_().entity(e().scores({'o': (-1, 1)}))))
+        self.assertEqual('execute if entity @e[scores={o=12}]', str(execute().if_().entity(e().scores({'o': (12,)}))))
+        self.assertEqual('execute if entity @e[scores={o=-1..1}]',
+                         str(execute().if_().entity(e().scores({'o': (-1, 1)}))))
         self.assertEqual('execute if entity @e[scores={o=!12}]', str(execute().if_().entity(e().scores({'o': '!12'}))))
-        self.assertEqual('$execute if entity @e[scores={o=$(v)}]', str(execute().if_().entity(e().scores({'o': Arg('v')}))))
-        self.assertEqual('$execute if entity @e[scores={o=1.$(v)}]', str(execute().if_().entity(e().scores({'o': '1.$(v)'}))))
-        self.assertEqual('$execute if entity @e[scores={$(o)=1.$(v)}]', str(execute().if_().entity(e().scores({Arg('o'): '1.$(v)'}))))
+        self.assertEqual('$execute if entity @e[scores={o=$(v)}]',
+                         str(execute().if_().entity(e().scores({'o': Arg('v')}))))
+        self.assertEqual('$execute if entity @e[scores={o=1.$(v)}]',
+                         str(execute().if_().entity(e().scores({'o': '1.$(v)'}))))
+        self.assertEqual('$execute if entity @e[scores={$(o)=1.$(v)}]',
+                         str(execute().if_().entity(e().scores({Arg('o'): '1.$(v)'}))))
 
         self.assertEqual('execute if entity @e[scores={}]', str(execute().if_().entity(e().not_scores({}))))
         self.assertEqual('execute if entity @e[scores={o=!12}]', str(execute().if_().entity(e().not_scores({'o': 12}))))
-        self.assertEqual('execute if entity @e[scores={o=!12}]', str(execute().if_().entity(e().not_scores({'o': (12)}))))
-        self.assertEqual('execute if entity @e[scores={o=!-1..1}]', str(execute().if_().entity(e().not_scores({'o': (-1, 1)}))))
-        self.assertEqual('$execute if entity @e[scores={o=!$(v)}]', str(execute().if_().entity(e().not_scores({'o': Arg('v')}))))
-        self.assertEqual('$execute if entity @e[scores={o=!1.$(v)}]', str(execute().if_().entity(e().not_scores({'o': '1.$(v)'}))))
-        self.assertEqual('$execute if entity @e[scores={$(o)=!1.$(v)}]', str(execute().if_().entity(e().not_scores({Arg('o'): '1.$(v)'}))))
+        self.assertEqual('execute if entity @e[scores={o=!12}]',
+                         str(execute().if_().entity(e().not_scores({'o': (12,)}))))
+        self.assertEqual('execute if entity @e[scores={o=!-1..1}]',
+                         str(execute().if_().entity(e().not_scores({'o': (-1, 1)}))))
+        self.assertEqual('$execute if entity @e[scores={o=!$(v)}]',
+                         str(execute().if_().entity(e().not_scores({'o': Arg('v')}))))
+        self.assertEqual('$execute if entity @e[scores={o=!1.$(v)}]',
+                         str(execute().if_().entity(e().not_scores({'o': '1.$(v)'}))))
+        self.assertEqual('$execute if entity @e[scores={$(o)=!1.$(v)}]',
+                         str(execute().if_().entity(e().not_scores({Arg('o'): '1.$(v)'}))))
 
     def test_random(self):
         self.assertEqual('random value 1..2', random().value((1, 2)))

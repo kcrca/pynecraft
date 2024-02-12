@@ -30,6 +30,8 @@ _name_re = re.compile(r'[\w+.-]+')
 _nbt_key_re = re.compile(r'[a-zA-Z0-9_:]+')
 _nbt_path_re = re.compile(r'[a-zA-Z0-9_.[\]{}:"]+')
 _arg_re = re.compile(r'\$\(' + _nbt_path_re.pattern + r'\)')
+_float_arg_re = re.compile(r'[-+]?[0-9.]*' + _arg_re.pattern + r'[0-9.]*')
+_int_arg_re = re.compile(r'[-+]?[0-9]*' + _arg_re.pattern + r'[0-9]*')
 _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
 _backslash_map = {'\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
@@ -163,6 +165,58 @@ def de_arg(v: any) -> any:
 def is_arg(v: any) -> bool:
     return isinstance(v, Arg) or (isinstance(v, str) and _arg_re.search(v))
 
+
+def is_int_arg(v: any) -> bool:
+    """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
+    that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
+    return (isinstance(v, int) and not isinstance(v, bool)) or isinstance(v, Arg) or (
+            isinstance(v, str) and _int_arg_re.fullmatch(v) is not None)
+
+
+def de_int_arg(v: any) -> any:
+    """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
+    that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
+    if is_int_arg(v) and not isinstance(v, int):
+        return str(v)
+    return v
+
+
+def check_int_arg(v: any) -> None:
+    """Validates that ``is_num_arg(v)`` returns True, or if v is a collection, applies this test recursively."""
+    if not isinstance(v, str) and isinstance(v, Iterable):
+        for x in v:
+            check_int_arg(x)
+    else:
+        if not is_int_arg(v):
+            raise ValueError(f'{v}: Not an int or valid macro argument')
+    return v
+
+
+def is_float_arg(v: any) -> bool:
+    """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
+    that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
+    return isinstance(v, float) or isinstance(v, Arg) or (isinstance(v, str) and _float_arg_re.fullmatch(v) is not None)
+
+
+def de_float_arg(v: any) -> any:
+    """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
+    that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
+    if is_float_arg(v) and not isinstance(v, float):
+        return str(v)
+    return v
+
+
+def check_float_arg(v: any) -> None:
+    """Validates that ``is_num_arg(v)`` returns True, or if v is a collection, applies this test recursively."""
+    if not isinstance(v, str) and isinstance(v, Iterable):
+        for x in v:
+            check_float_arg(x)
+    else:
+        if not is_float_arg(v):
+            raise ValueError(f'{v}: Not a float or valid macro argument')
+    return v
+
+
 def _quote(value):
     if isinstance(value, str):
         # If we don't quote these, the string "true" will become a boolean "true", etc.
@@ -215,7 +269,7 @@ def _strip_not(path):
     return path
 
 
-def _not_ify(value: StrOrArg | Iterable[StrOrArg]) -> str | Iterable[str]:
+def _not_ify(value: StrOrArg | Iterable[StrOrArg]) -> str | Tuple[str, ...]:
     if isinstance(value, StrOrArg):
         s = str(value)
         if not s.startswith('!'):
@@ -234,7 +288,7 @@ def _bool(value: BoolOrArg | None) -> str | None:
 
 
 def _float(value: FloatOrArg) -> str:
-    if is_arg(value):
+    if not isinstance(value, float) and is_float_arg(value):
         return str(value)
     return str(round(value, settings.float_precision))
 
@@ -414,7 +468,7 @@ def as_angle(angle: Angle) -> Angle:
     :param angle: The (probable) angle.
     :return: The input value.
     """
-    angle = de_arg(angle)
+    angle = de_float_arg(angle)
     if isinstance(angle, (int, float, str)):
         return angle
     elif isinstance(angle, RelCoord):
@@ -436,8 +490,8 @@ def as_yaw(angle: Angle | StrOrArg | None) -> Angle | None:
     :param angle: The (probable) yaw angle.
     :return: The input value.
     """
-    if is_arg(angle):
-        return angle
+    if is_float_arg(angle):
+        return de_float_arg(angle)
     if angle is not None:
         if isinstance(angle, str):
             angle = as_facing(angle).rotation[0]
@@ -459,8 +513,8 @@ def as_pitch(angle: Angle | None) -> Angle | None:
     :param angle: The (probable) pitch angle.
     :return: The input value.
     """
-    if is_arg(angle):
-        return angle
+    if is_float_arg(angle):
+        return de_float_arg(angle)
     if angle is not None:
         angle = as_angle(angle)
         yv = angle.value if isinstance(angle, RelCoord) else angle
@@ -1198,40 +1252,42 @@ def as_duration(duration: DurationDef | None) -> TimeSpec | str | None:
     return TimeSpec(duration)
 
 
+def is_number(v: any) -> bool:
+    return isinstance(v, (float, int)) and not isinstance(v, bool)
+
+
 def as_range(spec: Range) -> str:
     """
     Checks if the argument is a valid numeric range.
 
-     "Valid" means a single number or bool, or a two-element list or tuple that define the endpoints. If a bool, it will
-     be treated as 1 or 0. For a two-element range, one of the endpoints may be None to define an open-ended range.
+    "Valid" means a single number, or a two-element list or tuple of numbers defining the endpoints. Any of these may
+    also be a numeric macro argument, as defined by the is_num_arg() method. One of the endpoints may be None to
+    define an open-ended range.
 
-    An Arg or a tuple of one or two Args is also valid.
 
     :param spec: The (probable) range.
-    :return: A string for the range, either the single number of a range using '..' between the two values, one of which
+    :return: A string for the range, either a single number or a range using '..' between the two numbers, one of which
         can be None.
     """
-    if is_arg(spec):
-        return str(spec)
-    if isinstance(spec, bool):
-        return str(int(spec))
-    if isinstance(spec, (float, int)):
-        return str(spec)
+    if not isinstance(spec, Sequence) or isinstance(spec, str):
+        spec = [spec]
 
+    results = []
     for i, v in enumerate(spec):
-        # Arg, not StrOrArg, because only entire numbers work here
-        if v is not None and not isinstance(v, (float, int, Arg)):
-            raise ValueError(f'{v}: Must be None or a number')
-    s = '' if spec[0] is None else spec[0]
-    e = '' if spec[1] is None else spec[1]
-    if isinstance(s, (float, int)) and isinstance(e, (float, int)) and s > e:
+        if is_float_arg(v) or is_number(v) or v is None:
+            results.append('' if v is None else v)
+        else:
+            raise ValueError(f'{spec}: Must be a number or a number-valid macro')
+    if len(results) == 1:
+        return str(results[0])
+    if isinstance(results[0], (float, int)) and isinstance(results[1], (float, int)) and results[0] > results[1]:
         raise ValueError('Start is greater than end')
-    return str(s) + '..' + str(e)
+    return f'{results[0]}..{results[1]}'
 
 
 BoolOrArg = Union[bool, Arg]
-IntOrArg = Union[int, Arg]
-FloatOrArg = Union[float, Arg]
+IntOrArg = Union[int, Arg, str]
+FloatOrArg = Union[float, Arg, str]
 StrOrArg = Union[str, Arg]
 
 NbtDef = Union[Nbt, Mapping]
@@ -1239,9 +1295,9 @@ FacingDef = Union[int, str, Facing]
 DurationDef = Union[StrOrArg, FloatOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
 Angle = Union[FloatOrArg, StrOrArg, RelCoord]
-IntCoord = Union[IntOrArg, IntRelCoord, str]
+IntCoord = Union[IntOrArg, IntRelCoord]
 Position = Tuple[Coord, Coord, Coord]
 XYZ = Tuple[FloatOrArg, FloatOrArg, FloatOrArg]
 Column = Tuple[Coord, Coord]
 IntColumn = Tuple[IntCoord, IntCoord]
-Range = Union[FloatOrArg, BoolOrArg, StrOrArg, Tuple[Optional[FloatOrArg], Optional[FloatOrArg]]]
+Range = Union[FloatOrArg, Tuple[Optional[FloatOrArg], Optional[FloatOrArg]]]

@@ -29,7 +29,10 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
     as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
-    as_resource_path, as_resources, as_yaw, de_arg, is_arg, to_id, to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, \
+    as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, is_arg, is_int_arg, to_id, to_name, \
+    FacingDef, Facing, \
+    Arg, \
+    StrOrArg, IntOrArg, \
     BoolOrArg, FloatOrArg, _arg_re
 from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
@@ -950,7 +953,7 @@ class Selector(TargetSpec):
     def limit(self, limit: IntOrArg) -> Selector:
         """Add a result count limit to the selector."""
         self._single = limit == 1
-        return self._unique_arg('limit', str(limit))
+        return self._unique_arg('limit', de_int_arg(limit))
 
     @_fluent
     def level(self, level_range: Range) -> Selector:
@@ -1113,17 +1116,19 @@ class _IfClause(Command):
 class _StoreClause(Command):
     @_fluent
     def block(self, pos: Position, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
-        self._add('block', *pos, as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type), scale)
+        self._add('block', *pos, as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type), de_float_arg(scale))
         return self._start(_ExecuteMod())
 
     @_fluent
     def entity(self, target: Target, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
-        self._add('entity', as_target(target), as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type), scale)
+        self._add('entity', as_target(target), as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type),
+                  de_float_arg(scale))
         return self._start(_ExecuteMod())
 
     @_fluent
     def storage(self, target: StrOrArg, nbt_path: StrOrArg, data_type: str, scale: FloatOrArg = 1) -> _ExecuteMod:
-        self._add('storage', as_resource(target), as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type), scale)
+        self._add('storage', as_resource(target), as_nbt_path(nbt_path), _in_group(DATA_TYPE, data_type),
+                  de_float_arg(scale))
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -1294,7 +1299,7 @@ class _AttributeBaseAct(Command):
 class _AttributeModifierAct(Command):
     @_fluent
     def add(self, uuid: StrOrArg | Uuid, name: StrOrArg, value: FloatOrArg) -> str:
-        self._add('add', as_uuid(uuid), f'"{name}"', value)
+        self._add('add', as_uuid(uuid), f'"{name}"', de_float_arg(value))
         return str(self)
 
     @_fluent
@@ -1374,7 +1379,7 @@ class _BossbarSet(Command):
 
     @_fluent
     def max(self, value: IntOrArg) -> str:
-        self._add('max', value)
+        self._add('max', de_int_arg(value))
         return str(self)
 
     @_fluent
@@ -1503,7 +1508,7 @@ class _DataSource(Command):
     def string(self, data_target: DataTarget, nbt_path: StrOrArg = None, start: IntOrArg = None,
                end: IntOrArg = None) -> str:
         self._add('string', data_single_str(data_target))
-        self._add_opt(as_nbt_path(nbt_path), start, end)
+        self._add_opt(as_nbt_path(nbt_path), de_int_arg(start), de_int_arg(end))
         return str(self)
 
 
@@ -1556,7 +1561,7 @@ class _DataMod(Command):
         self._add('get', data_single_str(data_target))
         if not nbt_path and scale is not None:
             raise ValueError('Must give dir to use scale')
-        self._add_opt(as_nbt_path(nbt_path), scale)
+        self._add_opt(as_nbt_path(nbt_path), de_float_arg(scale))
         return str(self)
 
     @_fluent
@@ -1582,7 +1587,7 @@ class _RandomMod(Command):
         if is_arg(range):
             self._add(range)
         else:
-            self._add(f'{de_arg(range[0])}..{de_arg(range[1])}')
+            self._add(f'{de_int_arg(range[0])}..{de_int_arg(range[1])}')
         self._add_opt(as_name(sequence))
         return str(self)
 
@@ -1595,7 +1600,7 @@ class _RandomMod(Command):
         if sequence != '*':
             sequence = as_name(sequence)
         self._add(sequence)
-        self._add_opt(de_arg(seed), de_arg(include_world_seed), de_arg(include_sequence_id))
+        self._add_opt(de_int_arg(seed), de_arg(include_world_seed), de_arg(include_sequence_id))
         return str(self)
 
 
@@ -1654,23 +1659,23 @@ class _DebugMod(Command):
 
 class _EffectAction(Command):
     @_fluent
-    def give(self, target: Target, effect: Effect | StrOrArg, duration: IntOrArg | StrOrArg = None,
+    def give(self, target: Target, effect: Effect | StrOrArg, duration: IntOrArg = None,
              amplifier: IntOrArg = None, hide_particles: BoolOrArg = None, /) -> str:
         if amplifier is not None and duration is None:
             raise ValueError('must give seconds to use amplifier')
         if hide_particles is not None and amplifier is None:
             raise ValueError('must give amplifier to use hide_particles')
-        if isinstance(duration, str):
+        if isinstance(duration, str) and not is_int_arg(duration):
             if duration != INFINITE:
                 raise ValueError(f'{duration}: Invalid duration')
-        elif duration is not None and not isinstance(duration, Arg):
+        elif isinstance(duration, int):
             seconds_range = range(MAX_EFFECT_SECONDS + 1)
             if duration not in seconds_range:
                 raise ValueError(f'{duration}: Not in range {seconds_range}')
         if isinstance(effect, str):
             effect = Effect(effect)
         self._add('give', as_target(target), effect)
-        self._add_opt(duration, amplifier, _bool(hide_particles))
+        self._add_opt(de_int_arg(duration), de_int_arg(amplifier), _bool(hide_particles))
         return str(self)
 
     @_fluent
@@ -1687,13 +1692,13 @@ class _EffectAction(Command):
 class _ExperienceMod(Command):
     @_fluent
     def add(self, target: Target, amount: IntOrArg, which: StrOrArg = None) -> str:
-        self._add('add', as_target(target), amount)
+        self._add('add', as_target(target), de_int_arg(amount))
         self._add_opt(_in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
     @_fluent
     def set(self, target: Target, amount: IntOrArg, which: StrOrArg = None) -> str:
-        self._add('set', as_target(target), amount)
+        self._add('set', as_target(target), de_int_arg(amount))
         self._add_opt(_in_group(EXPERIENCE_POINTS, which))
         return str(self)
 
@@ -1994,17 +1999,17 @@ class _ScoreboardPlayersMod(Command):
 
     @_fluent
     def set(self, score: ScoreName, value: IntOrArg) -> str:
-        self._add('set', as_score(score), value)
+        self._add('set', as_score(score), de_int_arg(value))
         return str(self)
 
     @_fluent
     def add(self, score: ScoreName, value: IntOrArg) -> str:
-        self._add('add', as_score(score), value)
+        self._add('add', as_score(score), de_int_arg(value))
         return str(self)
 
     @_fluent
     def remove(self, score: ScoreName, value: IntOrArg) -> str:
-        self._add('remove', as_score(score), value)
+        self._add('remove', as_score(score), de_int_arg(value))
         return str(self)
 
     @_fluent
@@ -2893,7 +2898,7 @@ def setidletimeout(minutes: int) -> str:
     return str(cmd)
 
 
-def setworldspawn(pos: Position = None, yaw: FloatOrArg | StrOrArg = None) -> str:
+def setworldspawn(pos: Position = None, yaw: FloatOrArg = None) -> str:
     """Sets the dir spawn."""
     cmd = Command()
     cmd._add('$setworldspawn')
@@ -3530,20 +3535,20 @@ class Score(Command, Expression):
     def init(self, value: IntOrArg = 0) -> Iterable[str]:
         """Initializes the score by ensuring the objective exists, and setting its value to the provided value."""
         # noinspection PyArgumentList
-        return (scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(value))
+        return (scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(de_int_arg(value)))
 
     def get(self) -> str:
         """Return a 'get' command for the score."""
         return self._cmd().get(self)
 
-    def set(self, value: IntOrArg | str | Command | Score | Expression) -> str | list[Command]:
+    def set(self, value: IntOrArg | Command | Score | Expression) -> str | list[Command]:
         """
         Returns a 'set' command for the score. If the value is a command, returns a command that sets the value to
         the result of that command. If the value is an expression, returns the commands required to set this score to
         the value of that expression.
         """
-        if isinstance(value, (int, Arg)):
-            return self._cmd().set(self, value)
+        if isinstance(value, int) or is_int_arg(value):
+            return self._cmd().set(self, de_int_arg(value))
         elif isinstance(value, Score):
             return self._cmd().operation(self, EQ, value)
         elif isinstance(value, BinaryOp):
@@ -3553,11 +3558,11 @@ class Score(Command, Expression):
 
     def add(self, value: IntOrArg) -> str:
         """Returns an 'add' command for the score."""
-        return self._cmd().add(self, value)
+        return self._cmd().add(self, de_int_arg(value))
 
     def remove(self, value: IntOrArg) -> str:
         """Return sa 'remove' command for the score."""
-        return self._cmd().remove(self, value)
+        return self._cmd().remove(self, de_int_arg(value))
 
     def reset(self) -> str:
         """Returns a 'reset' command for the score."""
