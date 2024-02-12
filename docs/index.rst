@@ -196,9 +196,78 @@ These will not prevent all errors, but it does mean errors are much
 more likely to be caught by language and runtime rules rather than
 by minecraft when the script is loaded.
 
+Example
+=======
 
-Usage
-=====
+The ``example`` module contains a program that will generate an
+example datapack, called ``warning``. The primary function ``monitor``
+checks players who have opted in to see if they're standing on top
+of a bad block. If so, the first time it tells them to run, and
+subsequent times it says "NOW!!!"
+
+.. literalinclude:: ../example/warning.py
+   :language: python
+   :linenos:
+
+
+It starts out by creating the pack. It then adds a block tag named
+``bad_blocks``, listing the types of blocks considered bad.
+
+It then creates two ``Score`` objects, one for each player who opts
+in, the other is used to tell the system to stop.
+
+Then comes the main function ``monitor`` function.
+
+After that, ``monitor`` is added to the pack's ``function_set``.
+
+Then we create a ``schedule`` command to invoke the function after
+one second. That is used in several places, so we just create it
+here once and reuse it.
+
+Now we create all the other functions: ``init`` starts the system
+running, while ``halt`` stops it; ``start`` opts the player in to
+the system, and ``stop`` opts them out.
+
+Finally, we save the pack to a directory.
+
+To try this out, you can create a save. If you call it 'PynecraftWorld',
+then the path you give to this command is the path to that save
+dir. Then you can enter the world, run
+
+::
+        /function warning::init
+        /function warning::start
+
+Now if you step on a bad block, you will be warned to move off it
+until you do.
+
+You can see several of the basic features ``pynecraft`` at work here:
+
+* The datapack has a pretty natural Python structure.
+
+* You don't have to remember (and correctly type) a bunch of files
+  into a particular tree structure.
+
+* If you make typos or other errors, the compile will let you know
+  before you get any farther.
+
+* Simplifications like ``Score`` let you code more naturally,
+  handling the actual expressions correctly for you. Similarly,
+  setting a tag to a list of block names is simpler than a map with
+  that list inside a ``"values"`` tag would be, and that's nearly
+  always what you want.
+
+* The ``execute`` command's ``run`` will allow you to make several
+  commands conditional on a single test in your code. This will mean
+  multiple executions of the same test in the generated file, but
+  typically these will be fast enough that the redunancy won't
+  matter. If there are more commands, you can split out all the
+  work into a separate function and run it by the outer ``execute``
+  command.
+
+
+Usage Overview
+==============
 
 Here is an expression that will print a minecraft ``give`` command
 (of course, usually you won’t want to print commands, you want to
@@ -245,13 +314,14 @@ This lets you say once what the constraint is and then use it across
 several commands, which is both briefer and easier to modify.
 
 This remembers the prefix that says which entity to run the command
-as, and the use it three times (it is ``as_()`` because ``as`` is
-a keyword in python.) Each returned command object is immutable,
-so you can reuse them without worrying about affecting future calls.
+as, and the use it three times. (We use ``as_()`` because ``as``
+is a keyword in python, which is how all such conflicts are handled).
+Each returned command object is immutable, so you can reuse them
+without worry.
 
 The ``execute`` command is another place where you could do this,
-but ~ou can also do this by giving ``run()`` multiple commands to
-run, and it will generate a command for each one.
+but you can also give ``run()`` multiple commands, and it
+will generate a command for each one.
 
 ::
 
@@ -259,6 +329,14 @@ run, and it will generate a command for each one.
         say('Ready to go!'),
         function('my_pack:go_to_it')
         say('Done!'))
+
+gives you
+
+::
+
+    execute as @e[tag=runner] run say Ready to go!
+    execute as @e[tag=runner] run function my_pack:go_to_it
+    execute as @e[tag=runner] run say Done!
 
 *Macro Commands*
 ----------------
