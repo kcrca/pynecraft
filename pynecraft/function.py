@@ -6,7 +6,7 @@ import math
 import os
 import shutil
 from re import Pattern
-from typing import Any
+from typing import Any, MutableMapping
 
 from .base import _JsonEncoder, _in_group, _to_list, _to_tuple
 from .commands import *
@@ -535,11 +535,24 @@ class DataPack:
         if path.exists():
             shutil.rmtree(path)
         path.mkdir(parents=True)
+        self._cleanup()
         self.function_set.save(path / self._data_dir())
         self._save_dict(self._json, path / self._data_dir())
         _write_json(self._mcmeta, path / 'pack.mcmeta')
         with open(path / 'README', 'w') as fp:
             fp.write("Files in this tree were auto-generated using pynecraft. Hand modifications will be lost!")
+
+    def _cleanup(self) -> None:
+        if 'tags/' in self._json:
+            self._cleanup_values(self._json['tags/'])
+
+    def _cleanup_values(self, values: MutableMapping) -> None:
+        for k, v in values.items():
+            if isinstance(v, MutableMapping):
+                if 'values' not in v:
+                    self._cleanup_values(v)
+            elif isinstance(v, Iterable):
+                values[k] = {'values': _to_list(v)}
 
     def _save_dict(self, d: dict, path: Path):
         for k, v in d.items():
@@ -609,7 +622,12 @@ class DataPack:
         self._mcmeta['pack'].setdefault('filter', []).append(f)
 
     def tags(self, tag_set: str) -> dict:
-        """Returns defined tags. You can add to this dict to add tags to the datapack. """
+        """
+        Returns defined tags. You can add to this dict to add tags to the datapack. As a convenience, if a tag's
+        value is a list (or tuple), it is replaced with {'values': *tag_value*}, so you don't have to remember that.
+        So saying ``tags(BLOCKS)['hard'] = ['stone', 'slate']`` is the same as saying  ``tags(BLOCKS)['hard'] = {
+        'values': ['stone', 'slate']}``. And it's easier.
+        """
         return self._get_json('tags', TAG_SETS, tag_set)
 
     def advancements(self, advancement_set: str) -> dict[str, dict]:

@@ -317,12 +317,18 @@ class TestFunctions(unittest.TestCase):
         with open(expected / 'f1.mcfunction') as fp:
             self.assertIn('packer', fp.read())
 
-        blocks = pack.tags('blocks')
+        blocks = pack.tags(BLOCKS)
         blocks['air'] = {'values': ['air', 'cave_air']}
+        blocks['stoneish'] = ['stone', 'slate']
         pack.save(self.tmp_path)
         tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'tags' / 'blocks'
         self.assertTrue(tags_dir.exists())
-        self.assertTrue((tags_dir / 'air.json').exists())
+        with open(tags_dir / 'air.json') as fp:
+            written_air= json.load(fp)
+        self.assertEqual({'values': ['air', 'cave_air']}, written_air)
+        with open(tags_dir / 'stoneish.json') as fp:
+            written_air= json.load(fp)
+        self.assertEqual({'values': ['stone', 'slate']}, written_air, 'List not expanded to dict')
 
         pack1 = pack
         pack2 = DataPack.load(self.tmp_path, 'packer')
