@@ -81,6 +81,13 @@ Pynecraft has the following modules:
     be done directly with commands, but these provide simpler
     mechanisms.
 
+``info``
+    Some useful standard information about minecraft that is useful
+    in commands, such as the hex values of colors, the list of note
+    block instruments, the kinds of fish, as well as a ``Fish``
+    class with helpful methods, etc. Oh, and lists of all blocks,
+    items, and mobs.
+
 Notes on Design
 ===============
 
@@ -343,8 +350,7 @@ gives you
 In Minecraft, macro commands are marked with a ``$``, and substitute
 incoming values using ``$(foo)``.  Pynecraft just requires you to
 mark where you are using incoming arguments, and prepends the ``$``
-if needed.  So for example, you could have use macro arguments like
-this:
+if needed.  So for example, you could use macro arguments like this:
 
 ::
 
@@ -384,12 +390,12 @@ function. This level of flexibility would severely limit the amount
 of checking pynecraft could do, and is unlikely to be commonly used,
 so it doesn't provide for it any other way.)
 
-*Functions*
------------
+Packs and Functions
+-------------------
 
 Of course, usually you won't want to print commands, you want to
 put them in functions and put those functions in a data pack. The
-``pynecraft.functions`` types help you do this. You can start with
+``pynecraft.functions`` module help you do this. You can start with
 a top-level data pack:
 
 ::
@@ -397,9 +403,9 @@ a top-level data pack:
         pack = DataPack('my_pack', minecraft_saves / 'my_pack_world')
 
 This creates a data pack named ``my_pack`` that will get saved in
-the minecraft world ``my_pack_world``. This is often useful for
-testing, because you can then go into that world and test the pack.
-Any directory will work.
+the minecraft world ``my_pack_world``.  You can then go into that
+world and use or test the pack. But you can use any directory, not
+just a save.
 
 Each pack has a top-level ``functions`` directory, which can have
 one level of function directories beneath it (that's the current
@@ -420,8 +426,8 @@ to still exist with an older version of the code. If another function
 calls it, but you forget to change the name there, that would be
 confusing and possibly harmful.
 
-Because of how minecraft lays out its files, if you actually give
-a path to the root of a save, DataPack will use the appropriate
+Because of the way minecraft lays out its files, if you actually
+give a path to the root of a save, DataPack will use the appropriate
 subpath, rather than the save itself. And it will own *that*
 directory, not the entire save. This means that "my_pack_world" is
 a save, the directory it will own is ``my_pack_world/datapacks/my_pack``.
@@ -451,7 +457,7 @@ world's save path):
                 |-- hellow_world.mcfunction     The specific function
 
 
-The DataPack field ``functions`` is a FunctionSet object, and you
+The DataPack field ``function_set`` is a FunctionSet object, and you
 can add your own FunctionSet objects to it to create subdirectories.
 Again, Minecraft limits you to one level of depth, pynecraft just
 enforces it.
