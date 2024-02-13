@@ -112,6 +112,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual('a.b.c', as_nbt_path('a.b.c'))
         self.assertEqual('$(a)', as_nbt_path(Arg('a')))
         self.assertEqual('a.$(b).c', as_nbt_path('a.$(b).c'))
+        self.assertEqual('a.b[-1]', as_nbt_path('a.b[-1]'))
         with self.assertRaises(ValueError):
             as_nbt_path('')
         with self.assertRaises(ValueError):

@@ -28,7 +28,7 @@ _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#
                             ''', re.VERBOSE)
 _name_re = re.compile(r'[\w+.-]+')
 _nbt_key_re = re.compile(r'[a-zA-Z0-9_:]+')
-_nbt_path_re = re.compile(r'[a-zA-Z0-9_.[\]{}:"]+')
+_nbt_path_re = re.compile(r'[-a-zA-Z0-9_.[\]{}:"]+')
 _arg_re = re.compile(r'\$\(' + _nbt_path_re.pattern + r'\)')
 _float_arg_re = re.compile(r'[-+]?[0-9.]*' + _arg_re.pattern + r'[0-9.]*')
 _int_arg_re = re.compile(r'[-+]?[0-9]*' + _arg_re.pattern + r'[0-9]*')
@@ -322,6 +322,10 @@ def as_nbt_key(key: StrOrArg) -> StrOrArg:
 
 
 def as_nbt_path(path: StrOrArg | None) -> str | None:
+    """
+    Checks if the argument is a valid NBT path. This uses a heuristic that will catch many invalid paths, but by  no
+    means all.
+    """
     if path is None:
         return None
     if is_arg(path):
