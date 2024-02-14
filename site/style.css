@@ -8,9 +8,6 @@ body {
   font-family: sans-serif;
   margin: auto;
 }
-h1, h2, h3 {
-    text-align: center;
-}
 .outer {
     width: 50em;
     margin: auto;
