@@ -16,7 +16,7 @@ part is the minecraft commands that go in functions. The syntax is
 rather haphazard, and small typos can be difficult to figure out.
 
 Pynecraft is designed to help with this. You can write your scripts
-in python, and then save the resulting commands in functions. It
+using python, and then save the resulting commands in functions. It
 also has simplifications of several odd or complicated parts of the
 minecraft commands. For example, the scoreboard is complicated, but
 pynecraft's ``Score`` class lets you say things like ``score.set(1)``
