@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Pynecraft: Datapacks Written in Pyton</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <meta content="pynecraft is a library for creating data packs from Python code" name="description"/>
+    <!--suppress GrazieInspection -->
+    <meta content="minecraft resource pack data pack data pack resourcepack tags functions test testing"
+          name="keywords">
+</head>
+
+<!-- version: 0.7 -->
+
+<body>
+<div class="outer">
+
+    <div class="heading">
+        <h1><code>pynecraft</code></h1>
+        <h3>Write Your DataPacks in Python</h3>
+        <i>Version 0.7</i>
+    </div>
+
+    <div class="tabcontent" id="Overview">
+        <p><b>Current Version: 0.7</b>
+        <p>
+            Writing data packs requires handling a lot of details, from putting things in the right folders in the
+            correct
+            format, to how those things are expressed in the first place. All errors are discovered during reload, or
+            possibly at
+            run time, rather than when you're editing the files in the first place.
+        <p>
+            In contrast, Python (and other real programming languages) have syntax checkers, errors for misspelled
+            function names,
+            IDEs that do auto-completion and checks for improper data types. And of course you have
+            basic programming language tools, like functions with parameters that generate similar output for varying
+            input, and loops that do things across multiple inputs.
+        <p>
+            <code>pynecraft</code> is a Python package that lets you create a data pack and its functions in Python,
+            so you can take advantage of all this.
+            It represents the data pack as an object that understands much of the layout of the data pack, and
+            provides ways to generate commands inside functions from within Python, as well as JSON files all
+	    around the datapack. This means you have all the power
+            of a real programming language to generate your commands, including syntax and other error checks, python
+            functions that generate minecraft commands that can be used in minecraft functions. And pynecraft also knows
+            where to store what files in a data pack, and how to generate some boilerplate, like the
+            <code>pack.mcmeta</code>.
+        <p>
+            As a simple example, the following is a "hello_world" data pack:
+        <pre>
+	    pack = DataPack('hello_world')
+	    pack.function_set.add(Function('hello').add(say('Hello, World!')))
+	    pack.save(minecraft_world)
+	    </pre>
+        We create a DataPack object, and add a Function to it. That function has, as its sole command, the result of
+        calling <code>say</code>, which is a pynecraft function that returns a minecraft <code>say</code> command with
+        the provided string. We add
+        it to the function <code>hello_world:hello</code> inside the <code>hello_world</code> data pack. Any
+        number of commands can be added at once, or any other time before the <code>save()</code>, which writes out the data
+        pack files to a specified directory.
+        <p>
+	If 'minecraft_world' is a minecraft world save, the <code>save()</code> method will create:
+        <pre>
+	    minecraft_world
+	    |-- datapacks
+		|-- hello_world
+		    |-- README                 # A generated warning not to edit this by hand
+		    |-- pack.mcmeta
+		    |-- data
+			|-- functions
+			    |-- hello.mcfunction
+				"say Hello, World!"
+	    </pre>
+        <p>
+            Pynecraft also has simple calls for obscure or complex minecraft mechanisms. For example, there is a
+            Score class that holds the definition of a score (name and objective). You can use it as a parameter
+	    to commands like <code>scoreboard</code>, but more importantly, it has methods to generate commands simply,
+	    such as <code>score.add(15)</code> to generate <code>scoreboard players add <i>player objective</i> 15</code>.
+        <p>
+            Other examples include:
+        <ul>
+            <li>
+                <code>Item.of(<i>block</i>)</code>, which returns the NBT required to store an item including its state
+                and data as (say) an item you would summon into the world to be picked up by a player
+            <li>
+                The <code>Sign</code> class that generates all the messy NBT to set sign texts and commands, so
+		<p>
+                <ol>
+                    <code>Sign((None, 'hi', 'there'), (tell(p(), 'Hello!'),)).place((0, 100, 0), WEST)</code>
+                </ol>
+		<p>
+                which gives a list of three lines of text for the sign and one <code>tell</code> command, generates the lovely…
+		<p>
+                <ol>
+                    <code>setblock 0 100 0 oak_sign[rotation=4]{front_text: {messages: ['{"text": "", "clickEvent":
+                        {"action": "run_command", "value": "/tell @p Hello!"}}', '{"text": "hi"}', '{"text":
+                        "there"}', '{"text": ""}']}}</code>
+                </ol>
+		<p>
+                …a command that places an oak sign facing west at 0 100 0 with three lines of text which, when touched by the
+                player, tells them "Hello!" (in case you couldn't decode all that NBT). (Actually it generates two commands, the
+                first of which sets that block to <code>air</code>, to work around the fact that setting a sign at a
+                place sometimes will
+                not overwrite an existing sign, which is another thing you'd probably prefer not to worry about, and pynecraft takes
+		care of for you.)
+        </ul>
+
+        You can find more details in the <a href='https://pynecraft.readthedocs.io/en/latest/#'>module documentation</a>.
+        There is also an example in the source
+        for a simple pack that warns users who are standing on dangerous blocks. There are also two other projects of mine
+	that use pynecraft, one simple (<a href="https://github.com/kcrca/megavillage/tree/main/megavillage">megavillage</a>)
+        and one very complex (<a href="https://github.com/kcrca/restworld/tree/main/restworld">RestWorld</a>, not for
+        the faint of heart).
+
+        <h2>Getting Started</h2>
+
+        Installing is easy, it's a standard python package hosted at pypi.com, installed in the standard way:
+        <pre>
+	pip install pynecraft
+	</pre>
+
+        <h2>A Note</h2>
+        Pynecraft was created to support my <a href="/restworld">RestWorld project</a>, which uses functions and tags
+        heavily. I have rarely used other parts of data packs, so there is only trivial support for anything else &mdash; loot
+        tables, advancements, etc. I am more than willing to take on collaborators or advice about
+        what to do with these areas to expand support for them. Please contact me, either via the <a
+            href="https://discord.gg/ksmuc4qqvy">discord</a> or by
+        <a href="https://github.com/kcrca/pynecraft/issues">filing a support ticket</a>.
+
+        <h2>Resources</h2>
+        Here are some useful resources:
+
+        <ul>
+            <li><a href="https://pynecraft.readthedocs.io/en/latest/#">The python docs</a>.
+            <li><a href="https://discord.gg/ksmuc4qqvy">The discord</a>.
+            <li><a href="https://github.com/kcrca/pynecraft">The GitHub repository</a> which has the current source,
+            <li><a href="https://github.com/kcrca/pynecraft/issues">Issue tickets</a> on GitHub.
+            <li><a href="https://github.com/kcrca/pynecraft/blob/main/example/warning.py">The <code>warning</code>
+                example</a>, a basic
+                example that is part of the package.
+            <li><a href="https://github.com/kcrca/megavillage/tree/main/megavillage">The <code>megavillage</code>
+                project</a>, a simple
+                project of mine (YouTube videos coming soon!).
+            <li><a href="https://github.com/kcrca/restworld/tree/main/restworld">The <code>RestWorld</code> project</a>,
+                a very complex use
+                that is the original target, whose <a href="/restworld/">very own website is here</a>.
+        </ul>
+
+
+        <h2>Finally…</h2>
+        <p>
+            I wrote pynecraft because I was working on my <a href="restworld/">RestWorld resource pack test world</a>.
+            It makes extensive use of functions and command blocks, and after using a macro to generate things for a
+            while,
+            it was clear that this was ugly and difficult. So I wrote this to make it easier, and it made a big
+            difference.
+            The "say what I mean to say" stage of development nearly entirely vanished. I still had bugs and made
+            mistakes,
+            but they were almost never typos or command syntax problems. And with some of the simplification tools, I
+            also stopped making mistakes about how relatively complicated things were done.
+
+        <p>
+            After using this for a year or so, I want to make it available to others, so enjoy! Let me know what you
+            think at either the <a href="https://discord.gg/ksmuc4qqvy">discord</a>, or the
+            <a href="https://github.com/kcrca/pynecraft/issues">bug/feature link</a>!
+
+    </div>
+    <!--CopyrightBegin -->
+    <p class="license"><a rel="license" href="LICENSE">
+    <span
+            property="dct:title">`pynecraft`</span> at <a
+            rel="cc:attributionURL">claritypack.com/pynecraft</a>
+    <br>is licensed under the <a rel="license" href="LICENSE">MIT License</a>.
+    <br>© 2023&ndash;2024 by Ken Arnold.
+        <!--CopyrightEnd-->
+    <p class="timestamp">Page Last Edited: Feb 13 15:46:29 2024
+
+</div>
+
+<script>
+
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    document.getElementById(tabName).style.display = "block";
+    activeButtons = document.getElementsByClassName(tabName);
+    for (i = 0; i < activeButtons.length; i++) {
+        activeButtons[i].className += " active";
+    }
+}
+
+function downloadAll(evt) {
+    dlinks = document.getElementsByClassName("download_pack");
+    function downloadNext(i) {
+        if (i >= dlinks.length) {
+            return;
+        }
+        dlinks[i].click();
+        setTimeout(function() { downloadNext(i + 1); }, 500);
+    }
+    setTimeout(function() { downloadNext(0); }, 500);
+}
+
+tab_name = location.hash.substring(1);
+if (!tab_name) {
+    tab_name = "Overview";
+}
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    openTab(null, tab_name);
+});
+
+</script>
+</body>
+
+</html>
