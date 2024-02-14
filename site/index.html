@@ -41,7 +41,7 @@
             so you can take advantage of all this.
             It represents the data pack as an object that understands much of the layout of the data pack, and
             provides ways to generate commands inside functions from within Python, as well as JSON files all
-	    around the datapack. This means you have all the power
+            around the datapack. This means you have all the power
             of a real programming language to generate your commands, including syntax and other error checks, python
             functions that generate minecraft commands that can be used in minecraft functions. And pynecraft also knows
             where to store what files in a data pack, and how to generate some boilerplate, like the
@@ -57,10 +57,11 @@
         calling <code>say</code>, which is a pynecraft function that returns a minecraft <code>say</code> command with
         the provided string. We add
         it to the function <code>hello_world:hello</code> inside the <code>hello_world</code> data pack. Any
-        number of commands can be added at once, or any other time before the <code>save()</code>, which writes out the data
+        number of commands can be added at once, or any other time before the <code>save()</code>, which writes out the
+        data
         pack files to a specified directory.
         <p>
-	If 'minecraft_world' is a minecraft world save, the <code>save()</code> method will create:
+            If 'minecraft_world' is a minecraft world save, the <code>save()</code> method will create:
         <pre>
 	    minecraft_world
 	    |-- datapacks
@@ -75,8 +76,9 @@
         <p>
             Pynecraft also has simple calls for obscure or complex minecraft mechanisms. For example, there is a
             Score class that holds the definition of a score (name and objective). You can use it as a parameter
-	    to commands like <code>scoreboard</code>, but more importantly, it has methods to generate commands simply,
-	    such as <code>score.add(15)</code> to generate <code>scoreboard players add <i>player objective</i> 15</code>.
+            to commands like <code>scoreboard</code>, but more importantly, it has methods to generate commands simply,
+            such as <code>score.add(15)</code> to generate <code>scoreboard players add <i>player objective</i>
+            15</code>.
         <p>
             Other examples include:
         <ul>
@@ -85,54 +87,62 @@
                 and data as (say) an item you would summon into the world to be picked up by a player
             <li>
                 The <code>Sign</code> class that generates all the messy NBT to set sign texts and commands, so
-		<p>
+                <p>
                 <ol>
                     <code>Sign((None, 'hi', 'there'), (tell(p(), 'Hello!'),)).place((0, 100, 0), WEST)</code>
                 </ol>
-		<p>
-                which gives a list of three lines of text for the sign and one <code>tell</code> command, generates the lovely…
-		<p>
+                <p>
+                    which gives a list of three lines of text for the sign and one <code>tell</code> command, generates
+                    the lovely…
+                <p>
                 <ol>
                     <code>setblock 0 100 0 oak_sign[rotation=4]{front_text: {messages: ['{"text": "", "clickEvent":
                         {"action": "run_command", "value": "/tell @p Hello!"}}', '{"text": "hi"}', '{"text":
                         "there"}', '{"text": ""}']}}</code>
                 </ol>
-		<p>
-                …a command that places an oak sign facing west at 0 100 0 with three lines of text which, when touched by the
-                player, tells them "Hello!" (in case you couldn't decode all that NBT). (Actually it generates two commands, the
-                first of which sets that block to <code>air</code>, to work around the fact that setting a sign at a
-                place sometimes will
-                not overwrite an existing sign, which is another thing you'd probably prefer not to worry about, and pynecraft takes
-		care of for you.)
+                <p>
+                    …a command that places an oak sign facing west at 0 100 0 with three lines of text which, when
+                    touched by the
+                    player, tells them "Hello!" (in case you couldn't decode all that NBT). (Actually it generates two
+                    commands, the
+                    first of which sets that block to <code>air</code>, to work around the fact that setting a sign at a
+                    place sometimes will
+                    not overwrite an existing sign, which is another thing you'd probably prefer not to worry about, and
+                    pynecraft takes
+                    care of for you.)
         </ul>
 
         You can find more details in the <a href='https://pynecraft.readthedocs.io/en/latest/#'>module documentation</a>.
         There is also an example in the source
-        for a simple pack that warns users who are standing on dangerous blocks. There are also two other projects of mine
-	that use pynecraft, one simple (<a href="https://github.com/kcrca/megavillage/tree/main/megavillage">megavillage</a>)
+        for a simple pack that warns users who are standing on dangerous blocks. There are also two other projects of
+        mine
+        that use pynecraft, one simple (<a
+            href="https://github.com/kcrca/megavillage/tree/main/megavillage">megavillage</a>)
         and one very complex (<a href="https://github.com/kcrca/restworld/tree/main/restworld">RestWorld</a>, not for
         the faint of heart).
 
         <h2>Getting Started</h2>
 
-	Installing is easy, it's a standard python package <a href="https://pypi.org/manage/project/pynecraft/releases/">hosted at pypi.com</a>,
-	installed in the standard way:
+        Installing is easy, it's a standard python package <a
+            href="https://pypi.org/manage/project/pynecraft/releases/">hosted at pypi.com</a>,
+        installed in the standard way:
         <pre>
 	pip install pynecraft
 	</pre>
-	Pynecraft relies on Python 3.11 (although it probably could be used with somewhat earlier versions).
+        Pynecraft relies on Python 3.11 (although it probably could be used with somewhat earlier versions).
 
         <h2>A Note</h2>
         Pynecraft was created to support my <a href="/restworld">RestWorld project</a>, which uses functions and tags
-        heavily. I have rarely used other parts of data packs, so there is only trivial support for anything else &mdash; loot
+        heavily. I have rarely used other parts of data packs, so there is only trivial support for anything else
+        &mdash; loot
         tables, advancements, etc. I am more than willing to take on collaborators or advice about
         what to do with these areas to expand support for them. Please contact me, either via the <a
             href="https://discord.gg/ksmuc4qqvy">discord</a> or by
         <a href="https://github.com/kcrca/pynecraft/issues">filing a support ticket</a>.
 
-	Pynecraft is also the first python project I've publicly released. If something looks unusual,
-	it's more likely to be a result of this newness than any choice to avoid the usual mechanisms.
-	I'm happy to receive advice on how to make the release better.
+        Pynecraft is also the first python project I've publicly released. If something looks unusual,
+        it's more likely to be a result of this newness than any choice to avoid the usual mechanisms.
+        I'm happy to receive advice on how to make the release better.
 
         <h2>Resources</h2>
         Here are some useful resources:
@@ -157,10 +167,13 @@
         <h2>Finally…</h2>
         <p>
             I wrote pynecraft because I was working on my <a href="restworld/">RestWorld resource pack test world</a>.
-            It makes extensive use of functions and command blocks, and after using a macro system to generate things for a
+            It makes extensive use of functions and command blocks, and after using a macro system to generate things
+            for a
             while, it was clear that this was ugly and difficult. Pynecraft made a big
-            difference. The "saying what I mean to say" stage of development nearly entirely vanished. I still had bugs and made
-            mistakes, out they were almost never typos or command syntax problems. And with some of the simplification tools, I
+            difference. The "saying what I mean to say" stage of development nearly entirely vanished. I still had bugs
+            and made
+            mistakes, out they were almost never typos or command syntax problems. And with some of the simplification
+            tools, I
             also stopped making mistakes about how relatively complicated things were done.
 
         <p>
@@ -170,14 +183,14 @@
 
     </div>
     <!--CopyrightBegin -->
-    <p class="license"><a rel="license" href="LICENSE">
+    <p class="license"><a href="LICENSE" rel="license">
     <span
             property="dct:title">`pynecraft`</span> at <a
             rel="cc:attributionURL">claritypack.com/pynecraft</a>
-    <br>is licensed under the <a rel="license" href="LICENSE">MIT License</a>.
-    <br>© 2023&ndash;2024 by Ken Arnold.
+        <br>is licensed under the <a href="LICENSE" rel="license">MIT License</a>.
+        <br>© 2023&ndash;2024 by Ken Arnold.
         <!--CopyrightEnd-->
-    <p class="timestamp">Page Last Edited: Feb 13 16:38:21 2024
+        <p class="timestamp">Page Last Edited: Feb 13 16:38:21 2024
 
 </div>
 
@@ -221,6 +234,13 @@ if (!tab_name) {
 document.addEventListener("DOMContentLoaded", function(event) {
     openTab(null, tab_name);
 });
+
+
+
+
+
+
+
 
 </script>
 </body>

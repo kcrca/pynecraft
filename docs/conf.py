@@ -18,11 +18,11 @@ sys.path.append(os.path.join(os.path.dirname(__name__), '..'))
 # -- Project information -----------------------------------------------------
 
 project = 'pynecraft'
-copyright = '2022, Ken Arnold'
+copyright = '2022-24, Ken Arnold'
 author = 'Ken Arnold'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '0.7'
 
 # -- General configuration ---------------------------------------------------
 
@@ -48,8 +48,3 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 # html_theme = 'alabaster'
 html_theme = "classic"
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']

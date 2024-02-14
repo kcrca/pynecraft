@@ -1,5 +1,6 @@
-pynecraft
-=========
+#############################################
+**pynecraft**: Write Your DataPacks in Python
+#############################################
 
 .. toctree::
    :maxdepth: 2
@@ -8,53 +9,7 @@ pynecraft
    modules
    pynecraft
 
-Introduction
-============
-
-Minecraft data packs have several complexities. The most complex
-part is the minecraft commands that go in functions. The syntax is
-rather haphazard, and small typos can be difficult to figure out.
-
-Pynecraft is designed to help with this. You can write your scripts
-using python, and then save the resulting commands in functions. It
-also has simplifications of several odd or complicated parts of the
-minecraft commands. For example, the scoreboard is complicated, but
-pynecraft's ``Score`` class lets you say things like ``score.set(1)``
-instead of the command ``scoreboard players set score_name
-score_objective 0`` or whatever.
-
-Beyond the functions, pynecraft has other mechanisms to support
-data packs, although these are still rudimentary, currently covering
-only tags.
-
-Currently pynecraft only supports Java Edition commands.
-
-Why?
-----
-
-Python has tools: Editors, debugger s, formatters, etc. It also
-checks syntax at compile time and run-time type checking. These are
-really useful for eliminating these errors from your commands
-quicker and easier
-
-It is a full language, so you can use it to generate your commands.
-You can have a check for every mob that starts with 'a', or every
-value of a score from one to ten. You can write a python function
-that generates complicated commands based on a few parameters.
-
-There are macro languages that could help with this too, but the
-quoting issues alone can be daunting, and they won't do the syntax
-and run-time validation of commands.
-
-And it is possible to use these to provide the simpler tools mentioned
-above. The simpler.Score class helps you state clearly what you
-want, and it generates the more complicated ``scoreboard`` command
-to do that.  Similarly, you don't have to remember how an item
-stores a blocks' state, you can just create a ``Block`` object and
-ask ``Item.of()`` to return an item for it. And the ``Sign`` class
-understands how to take a list of text lines and commands and build
-the NBT that will encode them.  There are many such support systems
-in pynecraft. And more can be built on top of it.
+.. include:: ../README.rst
 
 Structure
 =========
@@ -100,28 +55,21 @@ Representing the coordinates as three-tuples is pretty normal in
 python, but how to handle the block type? And the options?
 
 For the block type, pynecraft lets you use several different styles.
-For simple blocks, you can just name the block:
-::
+For simple blocks, you can just name the block::
 
     fill((1, 2, 3), (4, 5, 6), 'air')
 
 There is also a class ``simpler.Block`` that lets you specify both
-block state and nbt:
-
-::
+block state and nbt::
 
     fill((1, 2, 3), (4, 5, 6), Block('oak_sign', {'rotation', 5}, {'Text2': 'Howdy!'))
 
 You can use a ``dict`` to specify block state and NBT (more on NBT
-below).  Or you can just give the specification as a tuple:
-
-::
+below).  Or you can just give the specification as a tuple::
 
     fill((1, 2, 3), (4, 5, 6), ('oak_sign', {'rotation', 5}, {'Text2': 'Howdy!'))
 
-That pretty will handles blocks. You can do similarly with entities:
-
-::
+That pretty will handles blocks. You can do similarly with entities::
 
     summon(('Zombie', {'IsBaby': True}), (1, 2, 3))
 
@@ -239,9 +187,8 @@ Finally, we save the pack to a directory.
 
 To try this out, you can create a save. If you call it 'PynecraftWorld',
 then the path you give to this command is the path to that save
-dir. Then you can enter the world, run
+dir. Then you can enter the world, run::
 
-::
         /function warning::init
         /function warning::start
 
@@ -278,17 +225,13 @@ Usage Overview
 
 Here is an expression that will print a minecraft ``give`` command
 (of course, usually you won’t want to print commands, you want to
-put them in functions, more on this below):
-
-::
+put them in functions, more on this below)::
 
     from pynecraft.commands import setblock       
 
     print(give(a(), 'iron_sword'))
 
-The output will be
-
-::
+The output will be::
 
     give @a iron_sword
 
@@ -296,9 +239,7 @@ For almost every command (except a few specialized server-side
 commands that seem unlikely to appear in functions or command
 blocks), there is a function in ``pynecraft.commands``. These may
 return strings, or intermediate objects that support further chaining
-calls. Here is how you could put together an ``experience`` command:
-
-::
+calls. Here is how you could put together an ``experience`` command::
 
     print(experience().add(s(), 3, LEVELS))
 
@@ -309,9 +250,7 @@ In this case, ``experience()`` returns an object has the methods
 ``experience``.
 
 You can remember this intermediate object and re-use it. One useful
-case for this is in target specifications, which can get complicated:
-
-::
+case for this is in target specifications, which can get complicated::
 
     tgt = e().team('red').distance((None, 20))
     who = give(tgt, 'redstone_dust', 10)
@@ -328,18 +267,14 @@ without worry.
 
 The ``execute`` command is another place where you could do this,
 but you can also give ``run()`` multiple commands, and it
-will generate a command for each one.
-
-::
+will generate a command for each one.:
 
     print(cmd) for cmd in execute().as_(e().tag('runner')).run(
         say('Ready to go!'),
         function('my_pack:go_to_it')
         say('Done!'))
 
-gives you
-
-::
+gives you::
 
     execute as @e[tag=runner] run say Ready to go!
     execute as @e[tag=runner] run function my_pack:go_to_it
@@ -350,35 +285,25 @@ gives you
 In Minecraft, macro commands are marked with a ``$``, and substitute
 incoming values using ``$(foo)``.  Pynecraft just requires you to
 mark where you are using incoming arguments, and prepends the ``$``
-if needed.  So for example, you could use macro arguments like this:
-
-::
+if needed.  So for example, you could use macro arguments like this::
 
     execute().as_(e().tag(Arg('tag'))).run(say(Arg('msg')))
 
-This would give you:
-
-::
+This would give you::
 
     $execute as @e[tag=$(tag)] run say $(msg)
 
-You could even just make the entire target a macro:
-
-::
+You could even just make the entire target a macro::
 
     execute().as_(Arg('tgt')).run(say(Arg('msg')))
 
 In most places you can also simply use a a string, which is most
 useful where the macro value represents part of a value. If you
-want
-
-::
+want::
 
     tell @e[tag=xyz_$(foo)] Shh! There's a wumpus!!!
 
-you can use
-
-::
+you can use::
 
     tell(e().tag('xyz_$(foo)'), 'Shh! There's a wumpus!!!')
 
@@ -396,9 +321,7 @@ Packs and Functions
 Of course, usually you won't want to print commands, you want to
 put them in functions and put those functions in a data pack. The
 ``pynecraft.functions`` module help you do this. You can start with
-a top-level data pack:
-
-::
+a top-level data pack::
 
         pack = DataPack('my_pack', minecraft_saves / 'my_pack_world')
 
@@ -410,9 +333,7 @@ just a save.
 Each pack has a top-level ``functions`` directory, which can have
 one level of function directories beneath it (that's the current
 minecraft rule). If you add a function to the pack, it goes in the
-top level directory:
-
-::
+top level directory::
 
         func = Function('hello_world').add(say('Hello, world!'))
         pack.functions.add(func)
@@ -442,9 +363,7 @@ directory and will delete it!**
 
 And then it will write out the files. In this case, it will create
 a structure like the following (assuming ``my_pack_world`` as the
-world's save path):
-
-::
+world's save path)::
 
         my_pack_save                            Top level of save
         |-- datapack                            Where datapacks go

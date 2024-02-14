@@ -1261,17 +1261,14 @@ def is_number(v: any) -> bool:
 
 
 def as_range(spec: Range) -> str:
-    """
-    Checks if the argument is a valid numeric range.
+    """Checks if the argument is a valid numeric range.
 
     "Valid" means a single number, or a two-element list or tuple of numbers defining the endpoints. Any of these may
     also be a numeric macro argument, as defined by the is_num_arg() method. One of the endpoints may be None to
     define an open-ended range.
 
-
     :param spec: The (probable) range.
-    :return: A string for the range, either a single number or a range using '..' between the two numbers, one of which
-        can be None.
+    :return: A string for the range, either a single number or a range using '..' between the two numbers, one of which can be None.
     """
     if not isinstance(spec, Sequence) or isinstance(spec, str):
         spec = [spec]
