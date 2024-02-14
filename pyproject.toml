@@ -5,7 +5,7 @@ description = "A library for creating minecraft datapacks."
 readme = "README.rst"
 license = {text = "MIT"}
 requires-python = ">=3.11"
-version = "0.7"
+version = "0.7.1"
 dependencies = [ "requests", "bs4", ]
 
 [project.urls]
