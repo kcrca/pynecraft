@@ -8,6 +8,7 @@ import shutil
 from re import Pattern
 from typing import Any, MutableMapping
 
+from . import text_lines
 from .base import _JsonEncoder, _in_group, _to_list, _to_tuple
 from .commands import *
 
@@ -37,17 +38,6 @@ TEMPLATE_POOL = 'template_pool'
 PROCESSOR_LIST = 'processor_list'
 WORLDGEN_SETS = [NOISE_SETTINGS, BIOME, CONFIGURED_CARVER, CONFIGURED_SURFACE_BUILDER, CONFIGURED_FEATURE,
                  CONFIGURED_STRUCTURE_FEATURE, STRUCTURE_SET, TEMPLATE_POOL, PROCESSOR_LIST]
-
-
-def text_lines(*orig: any) -> Iterable[str]:
-    """Converts a number of commands and lines into a sequence of single lines, each terminated by newlines."""
-    result = []
-    for cmd in lines(orig):
-        text = str(cmd)
-        if len(text) > 0 or not text.endswith('\n'):
-            text += '\n'
-        result.append(text)
-    return result
 
 
 def as_function_name(name: str):

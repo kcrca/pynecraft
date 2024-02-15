@@ -2,10 +2,10 @@ import shutil
 import tempfile
 import unittest
 
+from pynecraft import text_lines
 from pynecraft.base import CYAN, DARK_AQUA, EAST, N, SOUTH, SW, WEST
 from pynecraft.commands import *
 from pynecraft.enums import BiomeId
-from pynecraft.function import text_lines
 from pynecraft.simpler import *
 from pynecraft.simpler import _str_values
 
