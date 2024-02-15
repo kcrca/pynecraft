@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Mapping, Sequence, Tuple, Union
 
-from .base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
+from .__init__ import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     _ensure_size, _in_group, _quote, _to_list, as_facing, d, de_arg, r, to_id
 from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, \
     SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \

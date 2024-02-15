@@ -25,7 +25,7 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union, List
 
-from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN, IntColumn, JSON_COLORS, JsonHolder, \
+from .__init__ import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN, IntColumn, JSON_COLORS, JsonHolder, \
     Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
     as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
