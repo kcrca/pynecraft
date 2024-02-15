@@ -16,6 +16,10 @@ Structure
 
 Pynecraft has the following modules:
 
+The top module
+    Support for grouping commands into functions, folders of
+    functions, and the top-level data pack.
+
 ``base``
     The base-level data types, classes, and values
 
@@ -26,10 +30,6 @@ Pynecraft has the following modules:
     The functions, classes, and constants for writing minecraft
     commands in python. These will generate strings that are the
     minecraft commands.
-
-``functions``
-    Support for grouping commands into functions, folders of
-    functions, and the top-level data pack.
 
 ``simpler``
     Simplification classes and functions. Anything done here could

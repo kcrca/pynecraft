@@ -592,8 +592,13 @@ class _ScoreClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def matches(self, range: Range) -> _ExecuteMod:
-        self._add('matches', as_range(range))
+    def matches(self, range: Range | bool) -> _ExecuteMod:
+        """As a special case, you can provide a "range" that is True or False so you can say "matches(True)"."""
+        self._add('matches')
+        if isinstance(range, bool):
+            self._add(int(range))
+        else:
+            self._add(as_range(range))
         return self._start(_ExecuteMod())
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 
-from pynecraft.function import *
+from pynecraft.__init__ import *
 
 
 def loop_func(step):

@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import unittest
 
+from pynecraft.__init__ import Function
 from pynecraft.base import DARK_GREEN, GAMETIME, LT, NORTH, THE_NETHER, WEST, d, days, r, seconds, ticks
 from pynecraft.commands import *
 from pynecraft.commands import AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
     _ScoreboardCriteria, _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
 from pynecraft.enums import BiomeId
-from pynecraft.function import Function
 
 
 def commands(*cmds: str | Command) -> str:
@@ -118,6 +118,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('predicate foo', str(_IfClause().predicate('foo')))
         self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, ('up', 'down'))))
         self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, Score('up', 'down'))))
+        self.assertEqual('score * bar matches 1', str(_IfClause().score(('*', 'bar')).matches(True)))
         self.assertEqual('score * bar matches ..10', str(_IfClause().score(('*', 'bar')).matches((None, 10))))
         self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar')).matches((1, None))))
         self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
