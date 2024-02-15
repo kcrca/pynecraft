@@ -129,6 +129,18 @@ I hope it will help you, too!
 version is certainly possible as a companion project; if someone
 wants to undertake it, please let me know.)
 
+Getting Started
+===============
+
+Installing pynecraft is easy, it's a standard python package `hosted
+at pypi.com <https://pypi.org/manage/project/pynecraft/releases/>`_,
+installed in the standard way::
+
+    pip install pynecraft
+
+Pynecraft relies on Python 3.11 (although it probably could be used
+with somewhat earlier versions).
+
 Resources
 =========
 Here are some useful resources:
