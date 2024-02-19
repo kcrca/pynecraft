@@ -2,7 +2,7 @@ import shutil
 import tempfile
 import unittest
 
-from pynecraft.__init__ import CYAN, DARK_AQUA, EAST, N, SOUTH, SW, WEST
+from pynecraft.base import CYAN, DARK_AQUA, EAST, N, SOUTH, SW, WEST
 from pynecraft.commands import *
 from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines

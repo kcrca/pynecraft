@@ -168,9 +168,11 @@ def camel_to_name(camel):
     """
     return re.sub(r'([a-z])([A-Z]+)', r'\1 \2', camel)
 
+
 rom_val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
 for digit in tuple(rom_val.keys()):
     rom_val[digit.lower()] = rom_val[digit]
+
 
 def roman_to_int(s):
     """

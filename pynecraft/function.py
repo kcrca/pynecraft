@@ -8,7 +8,7 @@ import shutil
 from re import Pattern
 from typing import Any, MutableMapping
 
-from .__init__ import _JsonEncoder, _in_group, _to_list, _to_tuple
+from .base import _JsonEncoder, _in_group, _to_list, _to_tuple
 from .commands import *
 
 BLOCKS = 'blocks'
@@ -463,7 +463,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 18
+LATEST_PACK_VERSION = 31
 
 
 class DataPack:

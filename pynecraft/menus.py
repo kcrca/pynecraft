@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.__init__ import DOWN, Facing, FacingDef, Position, ROTATION_270, UP, as_facing, r
-from pynecraft.commands import BlockDef, Selector, e, execute, fill, function
-from pynecraft.function import Function
-from pynecraft.simpler import WallSign
+from .base import DOWN, Facing, FacingDef, Position, ROTATION_270, UP, as_facing, r
+from .commands import BlockDef, Selector, e, execute, fill, function
+from .function import Function
+from .simpler import WallSign
 
 
 class Menu:

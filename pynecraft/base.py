@@ -1128,6 +1128,9 @@ class Facing:
         other = as_facing(other)
         return self.rotation == other.rotation
 
+    def __hash__(self):
+        return hash(self.name)
+
     @property
     def yaw(self) -> int | float:
         """The yaw (first) value of the rotation."""
