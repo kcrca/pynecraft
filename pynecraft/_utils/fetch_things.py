@@ -75,7 +75,7 @@ class Fetcher(ABC):
 
 class BlockFetcher(Fetcher):
     def __init__(self):
-        super().__init__('blocks', 'https://minecraft.fandom.com/wiki/Block#List_of_blocks')
+        super().__init__('blocks', 'https://minecraft.wiki/Block#List_of_blocks')
 
     def get_start(self, page):
         return page.find('h2', string='List of blocks')
@@ -142,7 +142,7 @@ class ItemFetcher(Fetcher):
                   'Nether Quartz': 'Quartz', 'Slimeball': 'Slime Ball'}
 
     def __init__(self):
-        super().__init__('items', 'https://minecraft.fandom.com/wiki/Item?so=search#List_of_items')
+        super().__init__('items', 'https://minecraft.wiki/Item?so=search#List_of_items')
 
     def get_start(self, page):
         return page.find('h2', string='List of items')
@@ -218,7 +218,7 @@ class ItemFetcher(Fetcher):
 
 class MobFetcher(Fetcher):
     def __init__(self):
-        super().__init__('mobs', 'https://minecraft.fandom.com/wiki/Mob?so=search#List_of_mobs')
+        super().__init__('mobs', 'https://minecraft.wiki/Mob?so=search#List_of_mobs')
 
     def get_start(self, page):
         return page.find('h2', string='List of mobs')

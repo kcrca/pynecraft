@@ -206,6 +206,7 @@ Cracked Deepslate Tiles
 Cracked Nether Bricks
 Cracked Polished Blackstone Bricks
 Cracked Stone Bricks
+Crafter [x] / Crafter
 Crafting Table
 Creeper Head
 Crimson Button
@@ -349,7 +350,6 @@ Granite
 Granite Slab
 Granite Stairs
 Granite Wall
-Grass / Short Grass
 Grass Block
 Gravel
 Gray Banner
@@ -700,6 +700,7 @@ Sculk Vein
 Sea Lantern
 Sea Pickle
 Seagrass
+Short Grass
 Shroomlight
 Shulker Box
 Skeleton Skull
