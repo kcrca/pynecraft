@@ -19,7 +19,7 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-WIKI = 'https://minecraft.fandom.com/wiki/'
+WIKI = 'https://minecraft.wiki/'
 noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
 cwd = Path(sys.path[0])
 
@@ -105,7 +105,7 @@ class PageEnumDesc(EnumDesc):
         soup = self.fetch()
         tables = self.find_tables(soup)
         found = {}
-        assert tables, "No table found"
+        assert tables, f"No table found: {self.name}, {self.url}"
         for table in tables:
             rows = table.find_all('tr')
             for row in rows:
@@ -209,7 +209,7 @@ class Advancement(PageEnumDesc):
             pass
 
     def extract(self, cols):
-        return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col], cols[self.desc_col]))
+        return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col].next, cols[self.desc_col]))
 
     def replace(self, name, value):
         if name == 'THE_END' and value.startswith('story'):
@@ -237,7 +237,7 @@ class Effect(PageEnumDesc):
             self.value_col = col
         elif text.find('Effect') >= 0:
             self.desc_col = col
-        elif text.find('ID (J.E.)') >= 0:
+        elif text.find('ID (JE)') >= 0:
             self.id_col = col
         elif text.find('Type') >= 0:
             # Used to generate a method that returns the positive- or negative-ness of the effect.
@@ -370,12 +370,12 @@ class Particle(PageEnumDesc):
     """ Generates the 'Particle' enum. """
 
     def __init__(self):
-        super().__init__('Particle', WIKI + 'Particles#Types_of_particles', 'Particles')
+        super().__init__('Particle', WIKI + 'Particles_(Java_Edition)#Types_of_particles', 'Java Particles')
         self.value_col = None
         self.desc_col = None
 
     def header(self, col: int, text: str):
-        if text.startswith('Java Edition'):
+        if text == 'ID':
             self.value_col = col
         elif text == 'Description':
             self.desc_col = col
@@ -403,16 +403,14 @@ class PotterySherd(PageEnumDesc):
         self.done = False
 
     def find_tables(self, soup):
-        v = soup.select('table')[:1]
+        v = soup.select('table.sortable')[:1]
         return v
 
     def header(self, col: int, text: str):
         if text.endswith('Item'):
             self.value_col = col
-        elif 'Bedrock' in text:
-            self.done = True
 
-    def extract(self, cols) -> tuple[str, str, str]:
+    def extract(self, cols) -> tuple[str, str, str]|None:
         if self.done:
             return None
         name = clean(cols[self.value_col])
@@ -479,6 +477,7 @@ if __name__ == '__main__':
                 fields = tab.generate()
                 print()
                 print()
+                print(f'# Derived from {tab.url}, {datetime.datetime.now().astimezone().isoformat(timespec="seconds")}')
                 print(noinspection)
                 print('@enum.unique')
                 print(f'class {tab.name}(ValueEnum):')

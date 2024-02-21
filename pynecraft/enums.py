@@ -109,6 +109,7 @@ class Pattern(ValueEnum):
 # Generated enums:
 
 
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class Advancement(ValueEnum):
@@ -415,6 +416,7 @@ _advancement_display = {Advancement.MINECRAFT: "Minecraft", Advancement.STONE_AG
                         Advancement.THE_HEALING_POWER_OF_FRIENDSHIP: "The Healing Power of Friendship!"}
 
 
+# Derived from https://minecraft.wiki/Biome/ID, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class BiomeId(ValueEnum):
@@ -585,6 +587,7 @@ _biomeid_display = {BiomeId.THE_VOID: "The Void", BiomeId.PLAINS: "Plains",
                     BiomeId.END_BARRENS: "End Barrens"}
 
 
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class Effect(ValueEnum):
@@ -671,7 +674,7 @@ _effect_positive = {'speed': True, 'slowness': False, 'haste': True, 'mining_fat
                     'regeneration': True, 'resistance': True, 'fire_resistance': True, 'water_breathing': True,
                     'invisibility': True, 'blindness': False, 'night_vision': True, 'hunger': False, 'weakness': False,
                     'poison': False, 'wither': False, 'health_boost': True, 'absorption': True, 'saturation': True,
-                    'glowing': None, 'levitation': False, 'luck': True, 'unluck': False, 'slow_falling': True,
+                    'glowing': None, 'levitation': None, 'luck': True, 'unluck': False, 'slow_falling': True,
                     'conduit_power': True, 'dolphins_grace': True, 'bad_omen': None, 'hero_of_the_village': True,
                     'darkness': False}
 
@@ -700,6 +703,7 @@ _effect_display = {Effect.SPEED: "Speed", Effect.SLOWNESS: "Slowness", Effect.HA
                    Effect.DARKNESS: "Darkness"}
 
 
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class Enchantment(ValueEnum):
@@ -712,7 +716,7 @@ class Enchantment(ValueEnum):
     CHANNELING = "channeling"
     """During thunderstorms, trident summons a lightning bolt on the target when hitting it."""
     CLEAVING = "cleaving"
-    """Increases damage and shield stunning."""
+    """Increases damage and shield stun time."""
     CURSE_OF_BINDING = "curse_of_binding"
     """Items cannot be removed from armor slots."""
     CURSE_OF_VANISHING = "curse_of_vanishing"
@@ -720,31 +724,31 @@ class Enchantment(ValueEnum):
     DEPTH_STRIDER = "depth_strider"
     """Increases underwater movement speed."""
     EFFICIENCY = "efficiency"
-    """Increases tool speed, as well as the chance for axes to disable shields."""
+    """Increases mining speed."""
     FEATHER_FALLING = "feather_falling"
     """Reduces fall damage."""
     FIRE_ASPECT = "fire_aspect"
     """Sets target on fire."""
     FIRE_PROTECTION = "fire_protection"
-    """Reduces fire damage and burn time.Mutually exclusive with other protections."""
+    """Reduces fire damage and burn time."""
     FLAME = "flame"
     """Arrows shot are ignited and deal fire damage to the target."""
     FORTUNE = "fortune"
     """Increases the amount of block drops."""
     FROST_WALKER = "frost_walker"
-    """Allows the player to walk on water by freezing the water under their feet."""
+    """Freezes the water under the player's feet, allowing them to walk over water."""
     IMPALING = "impaling"
     """Increases damage against aquatic mobs. In Bedrock Edition, increases damage against mobs in water or rain."""
     INFINITY = "infinity"
     """Prevents consumption of arrows."""
     KNOCKBACK = "knockback"
-    """Increases knockback."""
+    """Increases melee knockback."""
     LOOTING = "looting"
     """Increases mob loot."""
     LOYALTY = "loyalty"
     """Trident returns after being thrown."""
     LUCK_OF_THE_SEA = "luck_of_the_sea"
-    """Increases rate of good loot (enchanting books, etc.)."""
+    """Increases rate of treasure bites (enchanting books, etc.)."""
     LURE = "lure"
     """Decreases time for bites."""
     MENDING = "mending"
@@ -758,7 +762,7 @@ class Enchantment(ValueEnum):
     PROJECTILE_PROTECTION = "projectile_protection"
     """Reduces damage from projectiles."""
     PROTECTION = "protection"
-    """Reduces generic damage."""
+    """Reduces most forms of damage."""
     PUNCH = "punch"
     """Increases arrow knockback."""
     QUICK_CHARGE = "quick_charge"
@@ -826,6 +830,7 @@ _enchantment_display = {Enchantment.AQUA_AFFINITY: "Aqua Affinity",
                         Enchantment.UNBREAKING: "Unbreaking"}
 
 
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class GameRule(ValueEnum):
@@ -856,7 +861,7 @@ class GameRule(ValueEnum):
     DO_MOB_LOOT = "doMobLoot"
     """Whether mobs should drop items and experience orbs."""
     DO_MOB_SPAWNING = "doMobSpawning"
-    """Whether mobs should naturally spawn. Does not affect monster spawners."""
+    """Whether mobs should spawn naturally, or via global spawning logic, such as for cats, phantoms, patrols, wandering traders, or zombie sieges. Does not affect special spawning attempts, like monster spawners, raids, or iron golems."""
     DO_PATROL_SPAWNING = "doPatrolSpawning"
     """Whether patrols can spawn."""
     DO_TILE_DROPS = "doTileDrops"
@@ -891,6 +896,8 @@ class GameRule(ValueEnum):
     """Whether to log admin commands to server log."""
     MAX_COMMAND_CHAIN_LENGTH = "maxCommandChainLength"
     """The maximum length of a chain of commands that can be executed during one tick. Applies to command blocks and functions."""
+    MAX_COMMAND_FORK_COUNT = "maxCommandForkCount"
+    """The maximum number of forks (contexts) that can be created during one tick. Applies to command blocks and functions."""
     MAX_ENTITY_CRAMMING = "maxEntityCramming"
     """The maximum number of pushable entities a mob or player can push, before taking 6 entity cramming damage per half-second. Setting to 0 or lower disables the rule. Damage affects Survival-mode or Adventure-mode players, and all mobs but bats. Pushable entities include non-Spectator-mode players, any mob except bats, as well as boats and minecarts."""
     MOB_EXPLOSION_DROP_DECAY = "mobExplosionDropDecay"
@@ -899,8 +906,14 @@ class GameRule(ValueEnum):
     """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals."""
     NATURAL_REGENERATION = "naturalRegeneration"
     """Whether the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)."""
+    PLAYERS_NETHER_PORTAL_CREATIVE_DELAY = "playersNetherPortalCreativeDelay"
+    """Controls the time that a creative player needs to stand in a nether portal before changing dimensions."""
+    PLAYERS_NETHER_PORTAL_DEFAULT_DELAY = "playersNetherPortalDefaultDelay"
+    """Controls the time that a non-creative player needs to stand in a nether portal before changing dimensions."""
     PLAYERS_SLEEPING_PERCENTAGE = "playersSleepingPercentage"
-    """What percentage of players in the Overworld must sleep to skip the night. A percentage value of 0 or less will allow the night to be skipped by just 1 player, and a percentage value more than 100 will prevent players from ever skipping the night."""
+    """What percentage of players in the Overworld must sleep to skip the night. A percentage value of 0 or less allows the night to be skipped by just 1 player, and a percentage value more than 100 prevents players from skipping the night."""
+    PROJECTILES_CAN_BREAK_BLOCKS = "projectilesCanBreakBlocks"
+    """Whether impact projectiles destroy blocks that are destructible by them, i.e. chorus flowers, pointed dripstone, and decorated pots."""
     RANDOM_TICK_SPEED = "randomTickSpeed"
     """How often a random block tick occurs (such as plant growth, leaf decay, etc.) per chunk section per game tick. 0 and negative values disables random ticks, higher numbers increase random ticks. Setting to a high integer results in high speeds of decay and growth. Numbers over 4096 make plant growth or leaf decay instantaneous."""
     REDUCED_DEBUG_INFO = "reducedDebugInfo"
@@ -939,9 +952,11 @@ _gamerule_types = {'announceAdvancements': 'bool', 'blockExplosionDropDecay': 'b
                    'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'enderPearlsVanishOnDeath': 'bool',
                    'fallDamage': 'bool', 'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool',
                    'globalSoundEvents': 'bool', 'keepInventory': 'bool', 'lavaSourceConversion': 'bool',
-                   'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int',
-                   'mobExplosionDropDecay': 'bool', 'mobGriefing': 'bool', 'naturalRegeneration': 'bool',
-                   'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool',
+                   'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxCommandForkCount': 'int',
+                   'maxEntityCramming': 'int', 'mobExplosionDropDecay': 'bool', 'mobGriefing': 'bool',
+                   'naturalRegeneration': 'bool', 'playersNetherPortalCreativeDelay': 'int',
+                   'playersNetherPortalDefaultDelay': 'int', 'playersSleepingPercentage': 'int',
+                   'projectilesCanBreakBlocks': 'bool', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool',
                    'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool', 'snowAccumulationHeight': 'int',
                    'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'tntExplosionDropDecay': 'bool',
                    'universalAnger': 'bool', 'waterSourceConversion': 'bool'}
@@ -967,10 +982,14 @@ _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
                      GameRule.LAVA_SOURCE_CONVERSION: "lava Source Conversion",
                      GameRule.LOG_ADMIN_COMMANDS: "log Admin Commands",
                      GameRule.MAX_COMMAND_CHAIN_LENGTH: "max Command Chain Length",
+                     GameRule.MAX_COMMAND_FORK_COUNT: "max Command Fork Count",
                      GameRule.MAX_ENTITY_CRAMMING: "max Entity Cramming",
                      GameRule.MOB_EXPLOSION_DROP_DECAY: "mob Explosion Drop Decay",
                      GameRule.MOB_GRIEFING: "mob Griefing", GameRule.NATURAL_REGENERATION: "natural Regeneration",
+                     GameRule.PLAYERS_NETHER_PORTAL_CREATIVE_DELAY: "players Nether Portal Creative Delay",
+                     GameRule.PLAYERS_NETHER_PORTAL_DEFAULT_DELAY: "players Nether Portal Default Delay",
                      GameRule.PLAYERS_SLEEPING_PERCENTAGE: "players Sleeping Percentage",
+                     GameRule.PROJECTILES_CAN_BREAK_BLOCKS: "projectiles Can Break Blocks",
                      GameRule.RANDOM_TICK_SPEED: "random Tick Speed", GameRule.REDUCED_DEBUG_INFO: "reduced Debug Info",
                      GameRule.SEND_COMMAND_FEEDBACK: "send Command Feedback",
                      GameRule.SHOW_DEATH_MESSAGES: "show Death Messages",
@@ -982,13 +1001,14 @@ _gamerule_display = {GameRule.ANNOUNCE_ADVANCEMENTS: "announce Advancements",
                      GameRule.WATER_SOURCE_CONVERSION: "water Source Conversion"}
 
 
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class ScoreCriteria(ValueEnum):
     DUMMY = "dummy"
-    """Score is only changed by commands, and not by game events such as death. This is useful for event flags, state mappings, currencies,..."""
+    """Score is changed only by commands, and not by game events such as death. This is useful for event flags, state mappings, currencies,..."""
     TRIGGER = "trigger"
-    """Score is only changed by commands, and not by game events such as death. The /trigger command can be used by a player to set or increment/decrement their own score in an objective with this criterion. The /trigger command fails if the objective has not been "enabled" for the player using it, and the objective is disabled for the player after using the /trigger command on it. Note that the /trigger command can be used by ordinary players even if Cheats are off and they are not an Operator. This is useful for player input via /tellraw interfaces."""
+    """Score is changed only by commands, and not by game events such as death. The /trigger command can be used by a player to set or increment/decrement their own score in an objective with this criterion. The /trigger command fails if the objective has not been "enabled" for the player using it, and the objective is disabled for the player after using the /trigger command on it. Note that the /trigger command can be used by ordinary players even if Cheats are off and they are not an Operator. This is useful for player input via /tellraw interfaces."""
     DEATH_COUNT = "deathCount"
     """Score increments automatically for a player when they die."""
     PLAYER_KILL_COUNT = "playerKillCount"
@@ -1021,193 +1041,212 @@ _scorecriteria_display = {ScoreCriteria.DUMMY: "dummy", ScoreCriteria.TRIGGER: "
                           ScoreCriteria.AIR: "air", ScoreCriteria.ARMOR: "armor"}
 
 
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class Particle(ValueEnum):
     AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
-    """Beacon effects."""
+    """Emitted by entities with effects from a beacon or a conduit."""
     ANGRY_VILLAGER = "angry_villager"
-    """Attacking a villager in a village; when villagers can't breed because there aren't enough beds nearby or when a panda is attacked by a player on the village."""
+    """Produced when hitting villagers or when villagers fail to breed."""
     ASH = "ash"
-    """Naturally generated in soul sand valley biome environment."""
+    """Floats throughout the atmosphere in the soul sand valley biome."""
     BLOCK = "block"
-    """Breaking blocks, sprinting, iron golems walking."""
+    """Produced when blocks are broken, flakes off blocks being brushed, produced when iron golems walk, produced when entities fall a long distance, produced when players sprint, displayed when armor stands are broken, appears when sheep eat grass."""
     BLOCK_MARKER = "block_marker"
-    """Barriers and light when their corresponding item is held."""
+    """Marks the position of barriers and light blocks when they are held in the main hand."""
     BUBBLE = "bubble"
-    """Entities in water, guardian laser beams, fishing."""
+    """Appears around entities splashing in water, emitted by guardian lasers, produced by guardians moving, appears by the fishing bobber and along the path of a fish, trails behind projectiles and eyes of ender underwater."""
     BUBBLE_COLUMN_UP = "bubble_column_up"
-    """Upward bubble columns made by soul sand under water."""
+    """Represents upwards bubble columns."""
     BUBBLE_POP = "bubble_pop"
     """Unused."""
     CAMPFIRE_COSY_SMOKE = "campfire_cosy_smoke"
-    """Smoke produced by campfires and soul campfires."""
+    """Floats off the top of campfires and soul campfires."""
     CAMPFIRE_SIGNAL_SMOKE = "campfire_signal_smoke"
-    """Smoke produced by campfires and soul campfires when above a hay bale."""
+    """Floats off the top of campfires and soul campfires above hay bales."""
     CHERRY_LEAVES = "cherry_leaves"
-    """Falling petals from the cherry leaves."""
+    """Falls off the bottom of cherry leaves."""
     CLOUD = "cloud"
-    """After jumping into water while on fire in Bedrock Edition or an entity dies in Java Edition."""
+    """Appears when placing wet sponges in the Nether, shown when entering a village with the Bad Omen effect."""
     COMPOSTER = "composter"
-    """Filling a composter."""
+    """Produced when placing items in a composter."""
     CRIMSON_SPORE = "crimson_spore"
-    """A crimson particle generated in crimson forest biome environment."""
+    """Floats throughout the atmosphere in the crimson forest biome."""
     CRIT = "crit"
-    """Critical hits, fully charged bow shots, crossbows, evoker fangs."""
+    """Trails behind crossbow shots and fully charged bow shots, produced by evoker fangs, appears when landing a critical hit on an entity."""
     CURRENT_DOWN = "current_down"
-    """Bubble column whirlpools made by magma blocks underwater."""
+    """Represents downwards bubble columns."""
     DAMAGE_INDICATOR = "damage_indicator"
-    """From mobs and players when hurt by a melee attack."""
+    """Appears when a melee attack damages an entity."""
     DOLPHIN = "dolphin"
-    """Trails behind swimming dolphins."""
+    """Trails behind dolphins."""
     DRAGON_BREATH = "dragon_breath"
-    """An ender dragon's breath and dragon fireballs."""
+    """Spit out by the ender dragon, trails behind dragon fireballs, emitted by clouds of dragon's breath, produced when dragon fireballs explode."""
     DRIPPING_DRIPSTONE_LAVA = "dripping_dripstone_lava"
-    """Dripping lava from the pointed dripstone."""
+    """Represents lava drips collected on pointed dripstone with lava above that have not yet dripped down."""
     DRIPPING_DRIPSTONE_WATER = "dripping_dripstone_water"
-    """Dripping water from the pointed dripstone."""
+    """Represents water drips collected on pointed dripstone with water or nothing above that have not yet dripped down."""
     DRIPPING_HONEY = "dripping_honey"
-    """Dripping honey through blocks that haven't dripped down yet."""
+    """Represents honey drips collected on the bottom of full bee nests or beehives that have not yet dripped down."""
     DRIPPING_LAVA = "dripping_lava"
-    """Dripping lava through blocks that haven't dripped down yet."""
+    """Represents lava drips collected on the bottom of blocks with lava above that have not yet dripped down."""
     DRIPPING_OBSIDIAN_TEAR = "dripping_obsidian_tear"
-    """Dripping crying obsidian's particles through blocks that haven't dripped down yet."""
+    """Represents tears collected on the sides or bottom of crying obsidian that have not yet dripped down."""
     DRIPPING_WATER = "dripping_water"
-    """Dripping water through blocks, wet sponges, leaves when raining that haven't dripped down yet."""
+    """Represents water drips collected on the bottom of leaves in rain and blocks with water above or the bottom and sides of wet sponges that have not yet dripped down."""
     DUST = "dust"
-    """Redstone ore, powered redstone dust, redstone torches, powered redstone repeaters."""
+    """Emitted by powered redstone torches, powered levers, redstone ore, powered redstone dust, and powered redstone repeaters."""
     DUST_COLOR_TRANSITION = "dust_color_transition"
-    """Sculk sensor gets triggered."""
+    """Emitted by activated sculk sensors."""
+    DUST_PLUME = "dust_plume"
+    """Shown when adding items to decorated pots."""
     EFFECT = "effect"
-    """Splash potions, lingering potions, bottles o' enchanting, evokers."""
+    """Produced by splash potions."""
+    EGG_CRACK = "egg_crack"
+    """Appears when sniffer eggs are placed on moss blocks, appears when sniffer eggs crack."""
     ELDER_GUARDIAN = "elder_guardian"
-    """Elder guardians."""
+    """Displayed when elder guardians inflict Mining Fatigue."""
     ELECTRIC_SPARK = "electric_spark"
-    """Appears when a lightning bolt hits copper blocks."""
+    """Emitted by lightning rods during thunderstorms, produced when lightning hits copper."""
     ENCHANT = "enchant"
-    """From bookshelves near an enchanting table."""
+    """Floats from bookshelves to enchanting tables."""
     ENCHANTED_HIT = "enchanted_hit"
-    """Attacking with a sword or axe enchanted with Sharpness, Smite, or Bane of Arthropods."""
+    """Appears when hitting entities with a sword or an axe enchanted with Sharpness, Bane of Arthropods, or Smite."""
     END_ROD = "end_rod"
-    """End rods, shulker bullets."""
+    """Emitted by end rods, trails behind shulker bullets."""
     ENTITY_EFFECT = "entity_effect"
-    """Status effects, lingering potions, tipped arrows, trading, withered armor (linger potion particles decrease when the "minimal" particle setting is used)."""
+    """Emitted by tipped arrows, produced by ravagers when stunned, produced when lingering potions break open, emitted by area effect clouds, produced when evokers cast spells, emitted by the wither as it charges up and when its health is below half, produced by entities with effects from sources other than conduits or beacons."""
     EXPLOSION = "explosion"
-    """Explosions, ghast fireballs, wither skulls, ender dragon death, shearing mooshrooms."""
+    """Produced by explosion_emitter particles, shown when shearing mooshrooms, appears when shulker bullets hit the ground, emitted by the ender dragon as it dies, shown when the ender dragon breaks blocks."""
     EXPLOSION_EMITTER = "explosion_emitter"
-    """Explosions, ender dragon death."""
+    """Produced by explosions."""
     FALLING_DRIPSTONE_LAVA = "falling_dripstone_lava"
-    """Falling lava particles from the pointed dripstone."""
+    """Drips off pointed dripstone with lava above."""
     FALLING_DRIPSTONE_WATER = "falling_dripstone_water"
-    """Falling water particles from the pointed dripstone."""
+    """Drips off pointed dripstone with nothing or water above."""
     FALLING_DUST = "falling_dust"
-    """Floating sand, gravel, concrete powder, and anvils."""
+    """Falls off the bottom of floating blocks affected by gravity."""
     FALLING_HONEY = "falling_honey"
-    """Dripping honey through blocks that is dripping down in air."""
+    """Drips off beehives and bee nests that are full of honey."""
     FALLING_LAVA = "falling_lava"
-    """Dripping lava through blocks that is dripping down in air."""
+    """Drips off the bottom of blocks with lava above."""
     FALLING_NECTAR = "falling_nectar"
-    """Nectar on the pollen-loaded bees."""
+    """Falls off bees that have collected pollen."""
     FALLING_OBSIDIAN_TEAR = "falling_obsidian_tear"
-    """Dripping crying obsidian's particles through blocks that is dripping down in air and has fallen to the ground."""
+    """Drips off crying obsidian."""
     FALLING_SPORE_BLOSSOM = "falling_spore_blossom"
-    """Dripping green particle from the spore blossom."""
+    """Drips off of spore blossoms."""
     FALLING_WATER = "falling_water"
-    """Dripping water through blocks that is dripping down in air and has fallen to the ground."""
+    """Drips off of the bottom of blocks with water above, drips off the bottom of leaves during rain, drips off of wet sponges."""
     FIREWORK = "firework"
-    """Firework rocket trail and explosion (trail is not shown when the "minimal" particle setting is used), when dolphins track shipwrecks and underwater ruins."""
+    """Trails behind fireworks, produced when fireworks crafted with firework stars explode."""
     FISHING = "fishing"
-    """Fishing."""
+    """Represents the fish trail when fishing."""
     FLAME = "flame"
-    """Torches, furnaces, magma cubes, spawners."""
+    """Appears inside of monster spawners, produced by magma cubes, represents the flame of torches, emitted by furnaces."""
     FLASH = "flash"
-    """Flash light when firework rocket explodes."""
+    """Shown when fireworks with crafted with firework stars explode."""
     GLOW = "glow"
-    """Glow squid."""
+    """Emitted by glow squid."""
     GLOW_SQUID_INK = "glow_squid_ink"
-    """Glow squid getting hurt."""
+    """Produced by glow squid when hit."""
+    GUST = "gust"
+    """Created when a wind charge hits a block."""
+    GUST_EMITTER = "gust_emitter"
+    """Created when a wind charge hits a block. Spawns a number of gust particles."""
+    GUST_DUST = "gust_dust"
+    """Unknown."""
     HAPPY_VILLAGER = "happy_villager"
-    """Applying bone meal to a crop, trading with villagers, feeding baby animals, walking or jumping on turtle eggs."""
+    """Shown when using bonemeal on plants, appears when trading with villagers, appears when feeding baby animals or dolphins, emitted by villagers upon claiming a job site block or a bed, shown when bees pollinate crops, appears when turtle eggs are placed on sand, appears when turtle eggs hatch."""
     HEART = "heart"
-    """Breeding and taming animals."""
+    """Appears when taming mobs, emitted by breeding mobs, feeding mobs, appears when allays duplicate."""
     INSTANT_EFFECT = "instant_effect"
-    """Instant health/damage splash and lingering potions, spectral arrows."""
+    """Produced when splash potions or lingering potions of Instant Health or Instant Damage break."""
     ITEM = "item"
-    """Eating, thrown eggs, splash potions, eyes of ender, breaking tools."""
+    """Produced when tools break, produced when eating food, produced when splash potions or lingering potions break, shown when eyes of ender break."""
     ITEM_SLIME = "item_slime"
-    """Jumping slimes."""
+    """Shown when slimes jump."""
     ITEM_SNOWBALL = "item_snowball"
-    """Thrown snowballs, creating withers, creating iron golems."""
+    """Produced when thrown snowballs break."""
     LANDING_HONEY = "landing_honey"
-    """Dripping honey through blocks that has fallen to the ground."""
+    """Created when falling_honey particles hit the ground."""
     LANDING_LAVA = "landing_lava"
-    """Dripping lava through blocks that has fallen to the ground."""
+    """Created when falling_lava or falling_dripstone_lava particles hit the ground."""
     LANDING_OBSIDIAN_TEAR = "landing_obsidian_tear"
-    """Dripping crying obsidian's particles through blocks that has fallen to the ground."""
+    """Created when falling_obsidian_tear particles hit the ground."""
     LARGE_SMOKE = "large_smoke"
-    """Fire, minecart with furnace, blazes, water flowing into lava, lava flowing into water."""
+    """Floats off the top of fire, produced by blazes, appears when trying to place water in the Nether, appears when obsidian, stone, or cobblestone is created by lava and water."""
     LAVA = "lava"
-    """Lava bubble."""
+    """Produced by campfires, produced by lava."""
     MYCELIUM = "mycelium"
-    """Mycelium blocks."""
+    """Appears above mycelium, trails behind the wings of phantoms."""
     NAUTILUS = "nautilus"
-    """Activated conduits."""
+    """Appears and floats toward conduits, appears and floats towards mobs being attacked by a conduit."""
     NOTE = "note"
-    """Emitted from note blocks and jukeboxes."""
+    """Produced by jukeboxes, produced by note blocks."""
     POOF = "poof"
-    """Explosions, death of mobs, mobs spawned from a spawner, silverfish infesting blocks."""
+    """Appears when mobs die, shown when ravagers roar after being stunned, produced when silverfish enter stone, appear around mobs spawned by spawners, shown when zombies trample turtle eggs, created when fireworks crafted without stars expire."""
     PORTAL = "portal"
-    """Nether portals, endermen, endermites, ender pearls, eyes of ender, ender chests, dragon eggs, teleporting from eating chorus fruits, end gateway portals."""
+    """Trails behind eyes of ender, shown when eyes of ender break, floats toward where ender pearls break, points toward where dragon eggs teleport, floats toward where players teleport with chorus fruit, appears and floats toward nether portals, appears and floats toward end gateway portals, appears and floats toward ender chests, emitted by endermen, appears and floats toward endermites."""
     RAIN = "rain"
-    """Rain splashes on the ground."""
+    """Appears on the ground during rain."""
+    REVERSE_PORTAL = "reverse_portal"
+    """Floats off the top of respawn anchors."""
     SCRAPE = "scrape"
-    """Scraping oxidation off a copper block with an axe."""
+    """Shown when scraping oxidization off copper."""
     SCULK_CHARGE = "sculk_charge"
-    """Shown as sculk spreads through other blocks."""
+    """Marks the path of a sculk charge."""
     SCULK_CHARGE_POP = "sculk_charge_pop"
-    """Sculk charge ends by popping."""
+    """Appears when a sculk charge ends."""
     SCULK_SOUL = "sculk_soul"
-    """When a mob dies near a sculk catalyst these particles are shown."""
+    """Appears above sculk catalysts when activated."""
     SHRIEK = "shriek"
-    """Shown when a sculk shrieker triggers."""
+    """Emitted by activated sculk shriekers."""
+    SMALL_FLAME = "small_flame"
+    """Represents the flame of candles."""
     SMOKE = "smoke"
-    """Torches, primed TNT, droppers, dispensers, end portals, brewing stands, spawners, furnaces, ghast fireballs, wither skulls, taming, withers, lava (when raining), placing an eye of ender in an end portal frame, redstone torches burning out, food items on campfire."""
+    """Floats off the top of monster spawners, represents the smoke from candles, appears when tnt is primed, floats off the top of wither roses, floats off the top of brewing stands, represents the smoke of torches and soul torches, trails behind ghast fireballs, emitted by withers, trails behind wither skulls, produced when dispensers or droppers fire, trails behind blaze fireballs, emitted by lava and campfires during rain, emitted by furnaces, emitted by blast furnaces, emitted by smokers, produced when placing eyes of ender in an end portal frame, emitted by end portals, produced when redstone torches burn out, floats off the top of food placed on a campfire, shown when campfires and soul campfires are extinguished, shown when failing to tame a mob, trails behind lava particles."""
     SNEEZE = "sneeze"
-    """Baby pandas sneezing."""
+    """Sneezed out by pandas."""
     SNOWFLAKE = "snowflake"
-    """Appears when sinking in powder snow."""
+    """Created by entities in powder snow."""
     SONIC_BOOM = "sonic_boom"
-    """Wardens casting sonic boom."""
+    """Produced by the warden during its sonic boom attack."""
     SOUL = "soul"
-    """Appears when walking on soul sand or soul soil with the Soul Speed Enchantment, when a mob dies near a sculk catalyst."""
+    """Created by players with Soul Speed boots running on soul sand or soul soil."""
     SOUL_FIRE_FLAME = "soul_fire_flame"
-    """Appears on top of soul torches as a flame."""
+    """Represents the flame of soul torches."""
     SPIT = "spit"
-    """Llamas spitting at a player or mob."""
-    SPORE_BLOSSOM_AIR = "spore_blossom_air"
-    """Emits around a spore blossom."""
+    """Spit out by llamas."""
     SPLASH = "splash"
-    """Entities in water, wolves shaking off after swimming, boats."""
+    """Produced by entities splashing in water, produced by villagers sweating during a raid, appears above the surface of the water when fishing, created when falling_water or falling_dripstone_water particles hit the ground, shaken off by wolves after exiting water."""
+    SPORE_BLOSSOM_AIR = "spore_blossom_air"
+    """Floats in the atmosphere around spore blossoms."""
     SQUID_INK = "squid_ink"
-    """Produced by squid when attacked."""
+    """Produced by squid when hit."""
     SWEEP_ATTACK = "sweep_attack"
-    """A sword's sweep attack."""
+    """Appears when a sweeping attack is performed."""
     TOTEM_OF_UNDYING = "totem_of_undying"
-    """Activated totem of undying."""
+    """Produced when a totem of undying is used."""
+    TRIAL_SPAWNER_DETECTION = "trial_spawner_detection"
+    """Produced when a Trial Spawner is activated."""
     UNDERWATER = "underwater"
-    """Seen while underwater."""
+    """Floats in the atmosphere underwater."""
+    VAULT_CONNECTION = "vault_connection"
+    """Produced when a player is near a vault."""
     VIBRATION = "vibration"
-    """Sculk sensor gets triggered."""
+    """Moves from sounds to the warden or a sculk sensor, moves froms note blocks to allays."""
     WARPED_SPORE = "warped_spore"
-    """A warped particle generated in warped forest biome environment."""
+    """Floats in the atmosphere in warped forest biomes."""
     WAX_OFF = "wax_off"
-    """Appears when removing wax from a copper block."""
+    """Produced when scraping wax off copper."""
     WAX_ON = "wax_on"
-    """Appears when waxing a copper block with honeycomb."""
+    """Produced when using honeycomb on copper."""
     WHITE_ASH = "white_ash"
-    """Naturally generated in basalt deltas biome environment."""
+    """Floats in the atmosphere in basalt delta biomes."""
     WITCH = "witch"
-    """Witches."""
+    """Emitted by witches."""
 
     def display_name(self) -> str:
         return _particle_display[self]
@@ -1228,7 +1267,8 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.DRIPPING_HONEY: "Dripping Honey", Particle.DRIPPING_LAVA: "Dripping Lava",
                      Particle.DRIPPING_OBSIDIAN_TEAR: "Dripping Obsidian Tear",
                      Particle.DRIPPING_WATER: "Dripping Water", Particle.DUST: "Dust",
-                     Particle.DUST_COLOR_TRANSITION: "Dust Color Transition", Particle.EFFECT: "Effect",
+                     Particle.DUST_COLOR_TRANSITION: "Dust Color Transition", Particle.DUST_PLUME: "Dust Plume",
+                     Particle.EFFECT: "Effect", Particle.EGG_CRACK: "Egg Crack",
                      Particle.ELDER_GUARDIAN: "Elder Guardian", Particle.ELECTRIC_SPARK: "Electric Spark",
                      Particle.ENCHANT: "Enchant", Particle.ENCHANTED_HIT: "Enchanted Hit", Particle.END_ROD: "End Rod",
                      Particle.ENTITY_EFFECT: "Entity Effect", Particle.EXPLOSION: "Explosion",
@@ -1240,6 +1280,7 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.FALLING_SPORE_BLOSSOM: "Falling Spore Blossom", Particle.FALLING_WATER: "Falling Water",
                      Particle.FIREWORK: "Firework", Particle.FISHING: "Fishing", Particle.FLAME: "Flame",
                      Particle.FLASH: "Flash", Particle.GLOW: "Glow", Particle.GLOW_SQUID_INK: "Glow Squid Ink",
+                     Particle.GUST: "Gust", Particle.GUST_EMITTER: "Gust Emitter", Particle.GUST_DUST: "Gust Dust",
                      Particle.HAPPY_VILLAGER: "Happy Villager", Particle.HEART: "Heart",
                      Particle.INSTANT_EFFECT: "Instant Effect", Particle.ITEM: "Item",
                      Particle.ITEM_SLIME: "Item Slime", Particle.ITEM_SNOWBALL: "Item Snowball",
@@ -1247,19 +1288,21 @@ _particle_display = {Particle.AMBIENT_ENTITY_EFFECT: "Ambient Entity Effect", Pa
                      Particle.LANDING_OBSIDIAN_TEAR: "Landing Obsidian Tear", Particle.LARGE_SMOKE: "Large Smoke",
                      Particle.LAVA: "Lava", Particle.MYCELIUM: "Mycelium", Particle.NAUTILUS: "Nautilus",
                      Particle.NOTE: "Note", Particle.POOF: "Poof", Particle.PORTAL: "Portal", Particle.RAIN: "Rain",
-                     Particle.SCRAPE: "Scrape", Particle.SCULK_CHARGE: "Sculk Charge",
-                     Particle.SCULK_CHARGE_POP: "Sculk Charge Pop", Particle.SCULK_SOUL: "Sculk Soul",
-                     Particle.SHRIEK: "Shriek", Particle.SMOKE: "Smoke", Particle.SNEEZE: "Sneeze",
-                     Particle.SNOWFLAKE: "Snowflake", Particle.SONIC_BOOM: "Sonic Boom", Particle.SOUL: "Soul",
-                     Particle.SOUL_FIRE_FLAME: "Soul Fire Flame", Particle.SPIT: "Spit",
-                     Particle.SPORE_BLOSSOM_AIR: "Spore Blossom Air", Particle.SPLASH: "Splash",
-                     Particle.SQUID_INK: "Squid Ink", Particle.SWEEP_ATTACK: "Sweep Attack",
-                     Particle.TOTEM_OF_UNDYING: "Totem Of Undying", Particle.UNDERWATER: "Underwater",
-                     Particle.VIBRATION: "Vibration", Particle.WARPED_SPORE: "Warped Spore",
-                     Particle.WAX_OFF: "Wax Off", Particle.WAX_ON: "Wax On", Particle.WHITE_ASH: "White Ash",
-                     Particle.WITCH: "Witch"}
+                     Particle.REVERSE_PORTAL: "Reverse Portal", Particle.SCRAPE: "Scrape",
+                     Particle.SCULK_CHARGE: "Sculk Charge", Particle.SCULK_CHARGE_POP: "Sculk Charge Pop",
+                     Particle.SCULK_SOUL: "Sculk Soul", Particle.SHRIEK: "Shriek", Particle.SMALL_FLAME: "Small Flame",
+                     Particle.SMOKE: "Smoke", Particle.SNEEZE: "Sneeze", Particle.SNOWFLAKE: "Snowflake",
+                     Particle.SONIC_BOOM: "Sonic Boom", Particle.SOUL: "Soul",
+                     Particle.SOUL_FIRE_FLAME: "Soul Fire Flame", Particle.SPIT: "Spit", Particle.SPLASH: "Splash",
+                     Particle.SPORE_BLOSSOM_AIR: "Spore Blossom Air", Particle.SQUID_INK: "Squid Ink",
+                     Particle.SWEEP_ATTACK: "Sweep Attack", Particle.TOTEM_OF_UNDYING: "Totem Of Undying",
+                     Particle.TRIAL_SPAWNER_DETECTION: "Trial Spawner Detection", Particle.UNDERWATER: "Underwater",
+                     Particle.VAULT_CONNECTION: "Vault Connection", Particle.VIBRATION: "Vibration",
+                     Particle.WARPED_SPORE: "Warped Spore", Particle.WAX_OFF: "Wax Off", Particle.WAX_ON: "Wax On",
+                     Particle.WHITE_ASH: "White Ash", Particle.WITCH: "Witch"}
 
 
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-02-20T17:27:27-08:00
 # noinspection SpellCheckingInspection,GrazieInspection
 @enum.unique
 class PotterySherd(ValueEnum):
