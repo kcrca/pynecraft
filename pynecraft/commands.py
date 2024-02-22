@@ -1785,8 +1785,9 @@ class _FunctionWith(Command):
         self._add('entity', as_target(target))
         return str(self)
 
-    def storage(self, source: StrOrArg) -> str:
-        self._add('storage', as_resource_path(source))
+    def storage(self, source: StrOrArg, nbt_path: StrOrArg = None) -> str:
+        self._add('storage', source)
+        self._add_opt(as_resource_path(nbt_path))
         return str(self)
 
 
@@ -1865,23 +1866,24 @@ class _LootSource(Command):
         return str(self)
 
     @_fluent
-    def mine(self, pos: Position, thing: StrOrArg) -> str:
+    def mine(self, pos: Position, tool: EntityDef = None) -> str:
         # the 'hand' keywords are also valid resource names, so no separate test is meaningful
-        self._add('mine', *pos, as_resource(thing))
+        self._add('mine', *pos)
+        self._add_opt(as_entity(as_entity(tool)))
         return str(self)
 
 
 class _LootReplaceTarget(Command):
     @_fluent
-    def block(self, pos: Position, slot: int, count: int = None) -> _LootSource:
-        self._add('block', *pos, slot)
-        self._add_opt(count)
+    def block(self, pos: Position, slot: IntOrArg | StrOrArg, count: IntOrArg = None) -> _LootSource:
+        self._add('block', *pos, de_arg(slot))
+        self._add_opt(de_int_arg(count))
         return self._start(_LootSource())
 
     @_fluent
-    def entity(self, target: Target, slot: int, count: int = None) -> _LootSource:
+    def entity(self, target: Target, slot: IntOrArg | StrOrArg, count: IntOrArg = None) -> _LootSource:
         self._add('entity', as_target(target), slot)
-        self._add_opt(count)
+        self._add_opt(de_int_arg(count))
         return self._start(_LootSource())
 
 

@@ -651,7 +651,7 @@ class Offset:
 class ItemFrame(Entity):
     """A class for item frames."""
 
-    def __init__(self, facing: int | str, *, glowing: bool = False, nbt: NbtDef = None, name: str = None):
+    def __init__(self, facing: FacingDef, *, glowing: bool = False, nbt: NbtDef = None, name: str = None):
         """Creates an ItemFrame object facing in the given direction. See as_facing() for useful values."""
         nbt = Nbt.as_nbt(nbt) if nbt else Nbt({})
         nbt = nbt.merge({'Facing': as_facing(facing).number, 'Fixed': True})
