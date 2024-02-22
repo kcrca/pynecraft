@@ -1098,6 +1098,10 @@ class TimeSpec:
         self._as_units = _int_or_float(value)
 
 
+def _sign(v: float | int) -> int:
+    return -1 if v < 0 else 0 if v == 0 else 1
+
+
 class Facing:
     """This class represents information about facing in a given direction."""
 
@@ -1167,6 +1171,13 @@ class Facing:
             start[2] + distance * self.delta[2]
         )
 
+    @property
+    def block_delta(self) -> list[int, int, int]:
+        res = []
+        for x in self.delta:
+            res.append(_sign(x))
+        return res
+
     def turn(self, rotated_by: int):
         """
         Returns a Facing that is this one rotating by the specified amount. Must be a multiple of 90 or one of the
@@ -1204,10 +1215,10 @@ for __i, __r in enumerate(SIGN_DIRECTIONS):
         _facing[__i].h_number = __i
         _facing[__r] = _facing[__i]
     else:
-        __deg = round((0 + __i * 22.5 + 720) % 360, 1)
+        __deg = round((__i * 22.5 + 720) % 360, 1)
         __angle = math.radians(__deg)
         # noinspection PyTypeChecker
-        _facing[__r] = Facing(__r, (math.cos(__angle), 0, math.sin(__angle)), ((720 + __deg) % 360, 0), math.nan, __i)
+        _facing[__r] = Facing(__r, (-math.sin(__angle), 0, math.cos(__angle)), ((720 + __deg) % 360, 0), math.nan, __i)
         _facing[__i] = _facing[__r]
 
 _facing_info = {NORTH: (0, -1, 0), EAST: (1, 0, 270), SOUTH: (0, 1, 180), WEST: (-1, 0, 90)}
