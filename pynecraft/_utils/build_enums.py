@@ -410,7 +410,7 @@ class PotterySherd(PageEnumDesc):
         if text.endswith('Item'):
             self.value_col = col
 
-    def extract(self, cols) -> tuple[str, str, str]|None:
+    def extract(self, cols) -> tuple[str, str, str] | None:
         if self.done:
             return None
         name = clean(cols[self.value_col])
@@ -459,6 +459,29 @@ class BiomeIds(PageEnumDesc):
         return desc, value, desc
 
 
+class Pattern(PageEnumDesc):
+    """Generates the banner pattern enum."""
+
+    def __init__(self):
+        super().__init__('Pattern', WIKI + 'Banner/Patterns', 'patterns')
+        self.value_col = self.desc_col = self.name_col = None
+
+    def find_tables(self, soup):
+        v = soup.select('table.sortable')[:1]
+        return v
+
+    def header(self, col: int, text: str):
+        if 'In-game' in text:
+            self.desc_col = col
+        elif text.startswith('Patter'):
+            self.name_col = col
+        elif text == 'Code':
+            self.value_col = col
+
+    def extract(self, cols):
+        return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col].next, cols[self.desc_col]))
+
+
 if __name__ == '__main__':
     with open(cwd / '..' / 'enums.py', 'r+') as out:
         top = []
@@ -472,8 +495,8 @@ if __name__ == '__main__':
         out.writelines(top)
         with redirect_stdout(out):
             for tab in (
-                    Advancement(), BiomeIds(), Effect(), Enchantment(), GameRule(), ScoreCriteria(), Particle(),
-                    PotterySherd()):
+                    Pattern(), Advancement(), BiomeIds(), Effect(), Enchantment(), GameRule(), ScoreCriteria(),
+                    Particle(), PotterySherd()):
                 fields = tab.generate()
                 print()
                 print()
