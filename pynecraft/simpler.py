@@ -45,13 +45,13 @@ VILLAGER_PROFESSIONS = (
 )
 """Villager professions."""
 
-DESERT = 'Desert'
-JUNGLE = 'Jungle'
-PLAINS = 'Plains'
-SAVANNA = 'Savanna'
-SNOW = 'Snow'
-SWAMP = 'Swamp'
-TAIGA = 'Taiga'
+DESERT = 'desert'
+JUNGLE = 'jungle'
+PLAINS = 'plains'
+SAVANNA = 'savanna'
+SNOW = 'snow'
+SWAMP = 'swamp'
+TAIGA = 'taiga'
 VILLAGER_BIOMES = (DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, TAIGA)
 """Villager biomes / types."""
 
@@ -741,7 +741,7 @@ class Villager(Entity):
     }
     """The range of experience for each level."""
 
-    def __init__(self, profession: str = 'Unemployed', biome: str = 'Plains', nbt: NbtDef = None, /, name=None,
+    def __init__(self, profession: str = NONE, biome: str = PLAINS, nbt: NbtDef = None, /, name=None,
                  zombie: bool = False):
         """Creates a villager."""
         super().__init__('zombie_villager' if zombie else 'villager', nbt=nbt, name=name)
@@ -792,8 +792,7 @@ class Villager(Entity):
 
     def biome(self, biome: str) -> Villager:
         """Sets the villager's biome."""
-        biome = biome.title()
-        self.merge_nbt({'VillagerData': {'type': _in_group(VILLAGER_BIOMES, biome).lower()}})
+        self.merge_nbt({'VillagerData': {'type': _in_group(VILLAGER_BIOMES, biome)}})
         return self
 
     type = biome
