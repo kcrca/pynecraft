@@ -429,9 +429,9 @@ class ScoreCriteria(PageEnumDesc):
         return camel_to_name(value), value, clean(cols[self.desc_col])
 
 
-class BiomeIds(PageEnumDesc):
+class Biome(PageEnumDesc):
     def __init__(self):
-        super().__init__('BiomeId', WIKI + 'Biome/ID', 'Java Biome IDs')
+        super().__init__('Biome', WIKI + 'Biome/ID', 'Java Biome IDs')
         self.desc_col = None
         self.value_col = None
 
@@ -473,15 +473,24 @@ class Pattern(PageEnumDesc):
 
 
 if __name__ == '__main__':
-    p = pkgutil.iter_modules(pynecraft.__path__)
     known = {}
+
+
+    def add_to_known(v: str, value: str, suffix=None) -> str:
+        if v in known and value != known[v]:
+            if suffix is None:
+                raise ValueError(f'Duplicate: {v}: {known[v]} vs. {value}')
+            v = f'{v}_{suffix}'
+        known[v] = value
+        return v
+
+
+    p = pkgutil.iter_modules(pynecraft.__path__)
     for module in base, commands, function, simpler:
         for v in filter(lambda x: re.fullmatch(r'[A-Z_0-9]+', x), dir(module)):
             value = getattr(module, v)
             if isinstance(value, str):
-                if v in known and value != known[v]:
-                    raise ValueError(f'Duplicate: {v}: {known[v]} vs. {value}')
-                known[v] = value
+                v = add_to_known(v, value)
     with open(cwd / '..' / 'values.py', 'r+') as out:
         top = []
         for line in out:
@@ -495,7 +504,7 @@ if __name__ == '__main__':
         with redirect_stdout(out):
             print('')
             for tab in (
-                    Pattern(), Advancement(), BiomeIds(), Effect(), Enchantment(), GameRule(), ScoreCriteria(),
+                    Pattern(), Advancement(), Biome(), Effect(), Enchantment(), GameRule(), ScoreCriteria(),
                     Particle(), PotterySherd()):
                 fields = tab.generate()
                 print()
@@ -508,7 +517,10 @@ if __name__ == '__main__':
                 names = {}
                 for key in fields:
                     value, desc, name = fields[key]
-                    print(f'{key} = "{value}"')
+                    k = key
+                    if key in known:
+                        k = add_to_known(key, value, tab.name.upper())
+                    print(f'{k} = "{value}"')
                 print(f'{tab.name.upper()}_GROUP = [')
                 print(f'    {", ".join(fields.keys())}')
                 print(f']')
@@ -523,6 +535,6 @@ if __name__ == '__main__':
                 print(f'}}')
 
                 print('')
-                print(f'for __k in {map_name}:')
+                print(f'for __k in tuple({map_name}.keys()):')
                 print(f'    v = {map_name}[__k]')
                 print(f'    {map_name}[v.name] = v')
