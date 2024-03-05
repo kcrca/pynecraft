@@ -1,4 +1,14 @@
 from collections import namedtuple
+from typing import Tuple
+
+from pynecraft.base import StrOrArg, _in_group
+
+
+def _as_things(group: list, *values: StrOrArg) -> str | Tuple[str, ...]:
+    if len(values) == 1:
+        return _in_group(group, values[0])
+    return tuple((_in_group(group, v) for v in values))
+
 
 DISPLAY_NAME = "displayName"
 COLOR = "color"
@@ -9,7 +19,7 @@ DEATH_MESSAGE_VISIBILITY = "deathMessageVisibility"
 COLLISION_RULE = "collisionRule"
 PREFIX = "prefix"
 SUFFIX = "suffix"
-TEAM_OPTIONS_GROUP = [
+TEAM_OPTION_GROUP = [
     DISPLAY_NAME, COLOR, FRIENDLY_FIRE, SEE_FRIENDLY_INVISIBLES, NAMETAG_VISIBILITY, DEATH_MESSAGE_VISIBILITY,
     COLLISION_RULE, PREFIX, SUFFIX
 ]
@@ -39,11 +49,16 @@ team_options = {
     "SUFFIX": TeamOption("Suffix", "suffix", """Modifies the suffix that displays after players' names.""", str),
 }
 
+
+def as_team_option(*values: StrOrArg) -> Tuple[str, ...]:
+    return _as_things(TEAM_OPTION_GROUP, *values)
+
+
 # Generated values:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-02-23T00:35:22-08:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-02-23T10:33:28-08:00
 BASE = "b"
 BOTTOM_STRIPE = "bs"
 TOP_STRIPE = "ts"
@@ -96,7 +111,7 @@ PATTERN_GROUP = [
 ]
 
 Pattern = namedtuple("Pattern", ['name', 'value', 'desc'])
-pattern = {
+patterns = {
     "BASE": Pattern("""Base""", "b", """Fully color Field."""),
     "BOTTOM_STRIPE": Pattern("""Bottom Stripe""", "bs", """Base."""),
     "TOP_STRIPE": Pattern("""Top Stripe""", "ts", """Chief."""),
@@ -140,12 +155,17 @@ pattern = {
     "PIGLIN": Pattern("""Piglin""", "pig", """Snout."""),
 }
 
-for __k in tuple(pattern.keys()):
-    v = pattern[__k]
-    pattern[v.name] = v
+for __k in tuple(patterns.keys()):
+    v = patterns[__k]
+    patterns[v.name] = v
+
+
+def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(PATTERN_GROUP, *values)
+
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-02-23T00:35:23-08:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-02-23T10:33:28-08:00
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
 GETTING_AN_UPGRADE = "story/upgrade_tools"
@@ -162,7 +182,7 @@ ENCHANTER = "story/enchant_item"
 ZOMBIE_DOCTOR = "story/cure_zombie_villager"
 EYE_SPY = "story/follow_ender_eye"
 ENTER_THE_END = "story/enter_the_end"
-NETHER_ADVANCEMENT = "nether/root"
+NETHER = "nether/root"
 RETURN_TO_SENDER = "nether/return_to_sender"
 THOSE_WERE_THE_DAYS = "nether/find_bastion"
 HIDDEN_IN_THE_DEPTHS = "nether/obtain_ancient_debris"
@@ -186,7 +206,7 @@ BRING_HOME_THE_BEACON = "nether/create_beacon"
 A_FURIOUS_COCKTAIL = "nether/all_potions"
 BEACONATOR = "nether/create_full_beacon"
 HOW_DID_WE_GET_HERE = "nether/all_effects"
-THE_END_ADVANCEMENT = "end/root"
+THE_END = "end/root"
 FREE_THE_END = "end/kill_dragon"
 THE_NEXT_GENERATION = "end/dragon_egg"
 REMOTE_GETAWAY = "end/enter_end_gateway"
@@ -195,7 +215,7 @@ YOU_NEED_A_MINT = "end/dragon_breath"
 THE_CITY_AT_THE_END_OF_THE_GAME = "end/find_end_city"
 SKYS_THE_LIMIT = "end/elytra"
 GREAT_VIEW_FROM_UP_HERE = "end/levitate"
-ADVENTURE_ADVANCEMENT = "adventure/root"
+ADVENTURE = "adventure/root"
 VOLUNTARY_EXILE = "adventure/voluntary_exile"
 IS_IT_A_BIRD = "adventure/spyglass_at_parrot"
 MONSTER_HUNTER = "adventure/kill_a_mob"
@@ -230,7 +250,7 @@ IS_IT_A_PLANE = "adventure/spyglass_at_dragon"
 VERY_VERY_FRIGHTENING = "adventure/very_very_frightening"
 SNIPER_DUEL = "adventure/sniper_duel"
 BULLSEYE = "adventure/bullseye"
-HUSBANDRY_ADVANCEMENT = "husbandry/root"
+HUSBANDRY = "husbandry/root"
 BEE_OUR_GUEST = "husbandry/safely_harvest_honey"
 THE_PARROTS_AND_THE_BATS = "husbandry/breed_an_animal"
 YOUVE_GOT_A_FRIEND_IN_ME = "husbandry/allay_deliver_item_to_player"
@@ -278,7 +298,7 @@ ADVANCEMENT_GROUP = [
 ]
 
 Advancement = namedtuple("Advancement", ['name', 'value', 'desc'])
-advancement = {
+advancements = {
     "MINECRAFT": Advancement("""Minecraft""", "story/root", """The heart and story of the game."""),
     "STONE_AGE": Advancement("""Stone Age""", "story/mine_stone", """Mine Stone with your new Pickaxe."""),
     "GETTING_AN_UPGRADE": Advancement("""Getting an Upgrade""", "story/upgrade_tools",
@@ -466,12 +486,17 @@ advancement = {
                                                    """Team up with an axolotl and win a fight."""),
 }
 
-for __k in tuple(advancement.keys()):
-    v = advancement[__k]
-    advancement[v.name] = v
+for __k in tuple(advancements.keys()):
+    v = advancements[__k]
+    advancements[v.name] = v
+
+
+def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(ADVANCEMENT_GROUP, *values)
+
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-02-23T00:35:23-08:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-02-23T10:33:28-08:00
 THE_VOID = "the_void"
 PLAINS = "plains"
 SUNFLOWER_PLAINS = "sunflower_plains"
@@ -549,7 +574,7 @@ BIOME_GROUP = [
 ]
 
 Biome = namedtuple("Biome", ['name', 'value', 'desc'])
-biome = {
+biomes = {
     "THE_VOID": Biome("""The Void""", "the_void", """The Void."""),
     "PLAINS": Biome("""Plains""", "plains", """Plains."""),
     "SUNFLOWER_PLAINS": Biome("""Sunflower Plains""", "sunflower_plains", """Sunflower Plains."""),
@@ -619,12 +644,17 @@ biome = {
     "END_BARRENS": Biome("""End Barrens""", "end_barrens", """End Barrens."""),
 }
 
-for __k in tuple(biome.keys()):
-    v = biome[__k]
-    biome[v.name] = v
+for __k in tuple(biomes.keys()):
+    v = biomes[__k]
+    biomes[v.name] = v
+
+
+def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(BIOME_GROUP, *values)
+
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-02-23T00:35:23-08:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-02-23T10:33:28-08:00
 SPEED = "speed"
 SLOWNESS = "slowness"
 HASTE = "haste"
@@ -666,7 +696,7 @@ EFFECT_GROUP = [
 ]
 
 Effect = namedtuple("Effect", ['name', 'value', 'desc', 'positive', 'id'])
-effect = {
+effects = {
     "SPEED": Effect("""Speed""", "speed",
                     """Increases walking speed; higher levels make the affected entity faster and increases the player's field of view when affected.""",
                     "True", "1"),
@@ -750,12 +780,17 @@ effect = {
     "DARKNESS": Effect("""Darkness""", "darkness", """Darkens the players screen.""", "False", "33"),
 }
 
-for __k in tuple(effect.keys()):
-    v = effect[__k]
-    effect[v.name] = v
+for __k in tuple(effects.keys()):
+    v = effects[__k]
+    effects[v.name] = v
+
+
+def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(EFFECT_GROUP, *values)
+
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-02-23T00:35:23-08:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-02-23T10:33:29-08:00
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
 BLAST_PROTECTION = "blast_protection"
@@ -805,7 +840,7 @@ ENCHANTMENT_GROUP = [
 ]
 
 Enchantment = namedtuple("Enchantment", ['name', 'value', 'desc', 'max_level'])
-enchantment = {
+enchantments = {
     "AQUA_AFFINITY": Enchantment("""Aqua Affinity""", "aqua_affinity", """Increases underwater mining speed.""", 1),
     "BANE_OF_ARTHROPODS": Enchantment("""Bane of Arthropods""", "bane_of_arthropods",
                                       """Increases damage and applies Slowness IV to arthropod mobs (spiders, cave spiders, silverfish, endermites and bees).""",
@@ -864,12 +899,17 @@ enchantment = {
     "UNBREAKING": Enchantment("""Unbreaking""", "unbreaking", """Reduces durability damage.""", 3),
 }
 
-for __k in tuple(enchantment.keys()):
-    v = enchantment[__k]
-    enchantment[v.name] = v
+for __k in tuple(enchantments.keys()):
+    v = enchantments[__k]
+    enchantments[v.name] = v
+
+
+def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(ENCHANTMENT_GROUP, *values)
+
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-02-23T00:35:23-08:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-02-23T10:33:29-08:00
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
 COMMAND_BLOCK_OUTPUT = "commandBlockOutput"
@@ -920,7 +960,7 @@ SPECTATORS_GENERATE_CHUNKS = "spectatorsGenerateChunks"
 TNT_EXPLOSION_DROP_DECAY = "tntExplosionDropDecay"
 UNIVERSAL_ANGER = "universalAnger"
 WATER_SOURCE_CONVERSION = "waterSourceConversion"
-GAMERULE_GROUP = [
+GAME_RULE_GROUP = [
     ANNOUNCE_ADVANCEMENTS, BLOCK_EXPLOSION_DROP_DECAY, COMMAND_BLOCK_OUTPUT, COMMAND_MODIFICATION_BLOCK_LIMIT,
     DISABLE_ELYTRA_MOVEMENT_CHECK, DISABLE_RAIDS, DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS, DO_FIRE_TICK, DO_INSOMNIA,
     DO_IMMEDIATE_RESPAWN, DO_LIMITED_CRAFTING, DO_MOB_LOOT, DO_MOB_SPAWNING, DO_PATROL_SPAWNING, DO_TILE_DROPS,
@@ -935,7 +975,7 @@ GAMERULE_GROUP = [
 ]
 
 GameRule = namedtuple("GameRule", ['name', 'value', 'desc', 'rule_type'])
-gamerule = {
+game_rules = {
     "ANNOUNCE_ADVANCEMENTS": GameRule("""announce Advancements""", "announceAdvancements",
                                       """Whether advancements should be announced in chat.""", bool),
     "BLOCK_EXPLOSION_DROP_DECAY": GameRule("""block Explosion Drop Decay""", "blockExplosionDropDecay",
@@ -1067,12 +1107,17 @@ gamerule = {
                                         """Whether new sources of water are allowed to form.""", bool),
 }
 
-for __k in tuple(gamerule.keys()):
-    v = gamerule[__k]
-    gamerule[v.name] = v
+for __k in tuple(game_rules.keys()):
+    v = game_rules[__k]
+    game_rules[v.name] = v
 
-# ScoreCriterias
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-02-23T00:35:23-08:00
+
+def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(GAME_RULE_GROUP, *values)
+
+
+# ScoreCriteria
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-02-23T10:33:29-08:00
 DUMMY = "dummy"
 TRIGGER = "trigger"
 DEATH_COUNT = "deathCount"
@@ -1084,12 +1129,12 @@ LEVEL = "level"
 FOOD = "food"
 AIR = "air"
 ARMOR = "armor"
-SCORECRITERIA_GROUP = [
+SCORE_CRITERIA_GROUP = [
     DUMMY, TRIGGER, DEATH_COUNT, PLAYER_KILL_COUNT, TOTAL_KILL_COUNT, HEALTH, XP, LEVEL, FOOD, AIR, ARMOR
 ]
 
 ScoreCriteria = namedtuple("ScoreCriteria", ['name', 'value', 'desc'])
-scorecriteria = {
+score_criteria = {
     "DUMMY": ScoreCriteria("""dummy""", "dummy",
                            """Score is changed only by commands, and not by game events such as death. This is useful for event flags, state mappings, currencies,..."""),
     "TRIGGER": ScoreCriteria("""trigger""", "trigger",
@@ -1113,12 +1158,17 @@ scorecriteria = {
                            """Ranges from 0 to 20; represents the amount of armor points the player has. May appear as 0 for players before their armor has changed for the first time."""),
 }
 
-for __k in tuple(scorecriteria.keys()):
-    v = scorecriteria[__k]
-    scorecriteria[v.name] = v
+for __k in tuple(score_criteria.keys()):
+    v = score_criteria[__k]
+    score_criteria[v.name] = v
+
+
+def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(SCORE_CRITERIA_GROUP, *values)
+
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-02-23T00:35:23-08:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-02-23T10:33:29-08:00
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -1236,7 +1286,7 @@ PARTICLE_GROUP = [
 ]
 
 Particle = namedtuple("Particle", ['name', 'value', 'desc'])
-particle = {
+particles = {
     "AMBIENT_ENTITY_EFFECT": Particle("""Ambient Entity Effect""", "ambient_entity_effect",
                                       """Emitted by entities with effects from a beacon or a conduit."""),
     "ANGRY_VILLAGER": Particle("""Angry Villager""", "angry_villager",
@@ -1398,12 +1448,17 @@ particle = {
     "WITCH": Particle("""Witch""", "witch", """Emitted by witches."""),
 }
 
-for __k in tuple(particle.keys()):
-    v = particle[__k]
-    particle[v.name] = v
+for __k in tuple(particles.keys()):
+    v = particles[__k]
+    particles[v.name] = v
+
+
+def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(PARTICLE_GROUP, *values)
+
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-02-23T00:35:23-08:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-02-23T10:33:29-08:00
 ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
 ARCHER_POTTERY_SHERD = "archer_pottery_sherd"
 ARMS_UP_POTTERY_SHERD = "arms_up_pottery_sherd"
@@ -1424,7 +1479,7 @@ SHEAF_POTTERY_SHERD = "sheaf_pottery_sherd"
 SHELTER_POTTERY_SHERD = "shelter_pottery_sherd"
 SKULL_POTTERY_SHERD = "skull_pottery_sherd"
 SNORT_POTTERY_SHERD = "snort_pottery_sherd"
-POTTERYSHERD_GROUP = [
+POTTERY_SHERD_GROUP = [
     ANGLER_POTTERY_SHERD, ARCHER_POTTERY_SHERD, ARMS_UP_POTTERY_SHERD, BLADE_POTTERY_SHERD, BREWER_POTTERY_SHERD,
     BURN_POTTERY_SHERD, DANGER_POTTERY_SHERD, EXPLORER_POTTERY_SHERD, FRIEND_POTTERY_SHERD, HEART_POTTERY_SHERD,
     HEARTBREAK_POTTERY_SHERD, HOWL_POTTERY_SHERD, MINER_POTTERY_SHERD, MOURNER_POTTERY_SHERD, PLENTY_POTTERY_SHERD,
@@ -1432,7 +1487,7 @@ POTTERYSHERD_GROUP = [
 ]
 
 PotterySherd = namedtuple("PotterySherd", ['name', 'value', 'desc'])
-potterysherd = {
+pottery_sherds = {
     "ANGLER_POTTERY_SHERD": PotterySherd("""Angler Pottery Sherd""", "angler_pottery_sherd", """"""),
     "ARCHER_POTTERY_SHERD": PotterySherd("""Archer Pottery Sherd""", "archer_pottery_sherd", """"""),
     "ARMS_UP_POTTERY_SHERD": PotterySherd("""Arms Up Pottery Sherd""", "arms_up_pottery_sherd", """"""),
@@ -1455,6 +1510,10 @@ potterysherd = {
     "SNORT_POTTERY_SHERD": PotterySherd("""Snort Pottery Sherd""", "snort_pottery_sherd", """"""),
 }
 
-for __k in tuple(potterysherd.keys()):
-    v = potterysherd[__k]
-    potterysherd[v.name] = v
+for __k in tuple(pottery_sherds.keys()):
+    v = pottery_sherds[__k]
+    pottery_sherds[v.name] = v
+
+
+def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(POTTERY_SHERD_GROUP, *values)

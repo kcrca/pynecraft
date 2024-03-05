@@ -9,6 +9,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, \
+    as_particle, as_team_option, enchantments, game_rules, team_options
+
 if TYPE_CHECKING:
     pass
 
@@ -35,7 +38,6 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     Arg, \
     StrOrArg, IntOrArg, \
     BoolOrArg, FloatOrArg, _arg_re
-from .enums import Advancement, BiomeId, Effect, Enchantment, GameRule, Particle, ScoreCriteria, TeamOption
 
 
 def _fluent(method):
@@ -47,13 +49,13 @@ def _fluent(method):
     return inner
 
 
-def as_biome(biome: Biome, allow_not: bool = False) -> str:
+def as_biome(biome: StrOrArg, allow_not: bool = False) -> str:
     """
     Returns a string version of the given biome. A string version is preferred because new biome types can be added
     by datapacks.
     """
-    if isinstance(biome, (BiomeId, Arg)):
-        return str(biome)
+    if is_arg(biome):
+        return de_arg(biome)
     return as_resource(biome, allow_not=allow_not)
 
 
@@ -293,6 +295,10 @@ def as_slot(slot: StrOrArg | None) -> str | None:
     if not re.fullmatch(r'[a-z]+(\.[a-z0-9]+)?', slot):
         raise ValueError(f'{slot}: Bad slot specification')
     return slot
+
+
+def as_criteria(*criteria):
+    return (_in_group(SCORE_CRITERIA_GROUP, c) for c in criteria)
 
 
 NEAREST = 'nearest'
@@ -603,10 +609,9 @@ class _ScoreClause(Command):
 
 
 class AdvancementCriteria(Command):
-    def __init__(self, advancement: AdvancementDef, criteria: BoolOrArg | StrOrArg | tuple[StrOrArg, BoolOrArg]):
+    def __init__(self, advancement: StrOrArg, criteria: BoolOrArg | StrOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
-        if is_arg(advancement):
-            advancement = str(advancement)
+        advancement = as_advancement(advancement)
         if is_arg(criteria):
             self._add(f'{advancement}={str(criteria)}')
         elif isinstance(criteria, BoolOrArg):
@@ -1074,7 +1079,7 @@ def storage(store: StrOrArg) -> StorageDataTarget:
 
 class _IfClause(Command):
     @_fluent
-    def biome(self, pos: Position, biome: Biome) -> _ExecuteMod:
+    def biome(self, pos: Position, biome: StrOrArg) -> _ExecuteMod:
         self._add('biome', *pos, as_biome(biome))
         return self._start(_ExecuteMod())
 
@@ -1664,7 +1669,7 @@ class _DebugMod(Command):
 
 class _EffectAction(Command):
     @_fluent
-    def give(self, target: Target, effect: Effect | StrOrArg, duration: IntOrArg = None,
+    def give(self, target: Target, effect: StrOrArg, duration: IntOrArg = None,
              amplifier: IntOrArg = None, hide_particles: BoolOrArg = None, /) -> str:
         if amplifier is not None and duration is None:
             raise ValueError('must give seconds to use amplifier')
@@ -1677,19 +1682,17 @@ class _EffectAction(Command):
             seconds_range = range(MAX_EFFECT_SECONDS + 1)
             if duration not in seconds_range:
                 raise ValueError(f'{duration}: Not in range {seconds_range}')
-        if isinstance(effect, str):
-            effect = Effect(effect)
+        effect = as_resource(effect)
         self._add('give', as_target(target), effect)
         self._add_opt(de_int_arg(duration), de_int_arg(amplifier), _bool(hide_particles))
         return str(self)
 
     @_fluent
-    def clear(self, target: Target = None, effect: Effect | StrOrArg = None) -> str:
+    def clear(self, target: Target = None, effect: StrOrArg = None) -> str:
         if effect is not None and target is None:
             raise ValueError('must give target to use effect')
         self._add('clear')
-        if isinstance(effect, str):
-            effect = Effect(effect)
+        effect = as_resource(effect)
         self._add_opt(as_target(target), effect)
         return str(self)
 
@@ -1743,7 +1746,7 @@ class _FilterClause(Command):
 
 class _BiomeFilterClause(Command):
     @_fluent
-    def replace(self, biome: Biome | StrOrArg) -> str:
+    def replace(self, biome: StrOrArg) -> str:
         self._add('replace', as_biome(biome))
         return str(self)
 
@@ -1910,21 +1913,12 @@ class _LootTarget(Command):
 
 
 class _ScoreboardCriteria(Command):
-    def __init__(self, criterion: StrOrArg | ScoreCriteria, *criteria: StrOrArg | ScoreCriteria):
+    def __init__(self, criterion: StrOrArg, *criteria: StrOrArg):
         super().__init__()
-        self._as_criteria(criterion)
-        self._add(criterion)
+        self._add(as_criteria(criterion))
         if criteria:
-            self._as_criteria(*criteria)
+            self._add(*as_criteria(*criteria))
             self._add('.' + '.'.join(str(x) for x in criteria), space=False)
-
-    @staticmethod
-    def _as_criteria(*criteria):
-        for c in criteria:
-            try:
-                ScoreCriteria(c)
-            except ValueError:
-                as_resource(c)
 
 
 class _ScoreboardObjectivesMod(Command):
@@ -1934,13 +1928,9 @@ class _ScoreboardObjectivesMod(Command):
         return str(self)
 
     @_fluent
-    def add(self, objective: str, score_criteria: ScoreCriteria | _ScoreboardCriteria | str,
-            display_name: str = None) -> str:
-        try:
-            score_criteria = ScoreCriteria(score_criteria)
-        except ValueError:
-            score_criteria = _ScoreboardCriteria(score_criteria)
-        self._add('add', as_name(objective), score_criteria)
+    def add(self, objective: str, score_criteria: StrOrArg, display_name: str = None) -> str:
+        score_criteria = as_criteria(score_criteria)
+        self._add('add', as_name(objective), as_criteria(score_criteria))
         self._add_opt(as_name(display_name))
         return str(self)
 
@@ -2181,8 +2171,9 @@ class _TeamMod(Command):
         return str(self)
 
     @_fluent
-    def modify(self, team: StrOrArg, option: TeamOption | str, value: StrOrArg | BoolOrArg) -> str:
-        value_type = TeamOption.value_spec(TeamOption(option))
+    def modify(self, team: StrOrArg, option: StrOrArg, value: StrOrArg | BoolOrArg) -> str:
+        option = as_team_option(option)
+        value_type = team_options[option].type
         if value_type == bool:
             if not isinstance(value, (bool, Arg)):
                 raise ValueError(f'{value}: Must be bool')
@@ -2422,34 +2413,28 @@ class _ListMod(Command):
         return str(self)
 
 
-def _as_advancement(advancement: AdvancementDef):
-    if isinstance(advancement, (Arg, str)):
-        return str(advancement)
-    return advancement
-
-
 class _AdvancementMod(Command):
     def everything(self):
         self._add('everything')
         return str(self)
 
-    def only(self, advancement: AdvancementDef, criterion: StrOrArg = None) -> str:
-        advancement = _as_advancement(advancement)
+    def only(self, advancement: StrOrArg, criterion: StrOrArg = None) -> str:
+        advancement = as_advancement(advancement)
         self._add('only', advancement)
         self._add_opt(criterion)
         return str(self)
 
-    def from_(self, advancement: AdvancementDef) -> str:
+    def from_(self, advancement: StrOrArg) -> str:
         return self._setup('from', advancement)
 
-    def through(self, advancement: AdvancementDef) -> str:
+    def through(self, advancement: StrOrArg) -> str:
         return self._setup('through', advancement)
 
-    def until(self, advancement: AdvancementDef) -> str:
+    def until(self, advancement: StrOrArg) -> str:
         return self._setup('until', advancement)
 
     def _setup(self, param, advancement):
-        self._add(param, _as_advancement(advancement))
+        self._add(param, as_advancement(advancement))
         return str(self)
 
 
@@ -2593,21 +2578,16 @@ def effect() -> _EffectAction:
     return cmd._start(_EffectAction())
 
 
-def enchant(target: Target, enchantment: Enchantment | StrOrArg | IntOrArg, level: IntOrArg = None) -> str:
+def enchant(target: Target, enchantment: StrOrArg | IntOrArg, level: IntOrArg = None) -> str:
     """Adds an enchantment to a player's selected item."""
     cmd = Command()
     cmd._add('$enchant', as_target(target))
-    if isinstance(enchantment, (str, int)):
-        try:
-            enchantment = Enchantment(enchantment)
-        except ValueError:
-            pass
+    enchantment = as_enchantment(enchantment)
     cmd._add(enchantment)
-    if level is not None:
-        if type(enchantment) == Enchantment:
-            max_level = enchantment.max_level()
-            if level not in range(max_level + 1):
-                raise ValueError(f'Level not in range [0..{max_level}]')
+    if level is not None and enchantment in enchantments:
+        max_level = enchantments[enchantment]
+        if level not in range(max_level + 1):
+            raise ValueError(f'Level not in range [0..{max_level}]')
         cmd._add_opt(level)
     return str(cmd)
 
@@ -2636,7 +2616,7 @@ def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClau
     return cmd._start(_FilterClause())
 
 
-def fillbiome(start_pos: Position, end_pos: Position, biome: Biome) -> _BiomeFilterClause:
+def fillbiome(start_pos: Position, end_pos: Position, biome: StrOrArg) -> _BiomeFilterClause:
     cmd = Command()
     cmd._add('$fillbiome', *start_pos, *end_pos, as_biome(biome))
     return cmd._start(_BiomeFilterClause())
@@ -2679,26 +2659,25 @@ def gamemode(gamemode: StrOrArg, target: Target = None) -> str:
     return str(cmd)
 
 
-def gamerule(rule: GameRule | StrOrArg | IntOrArg, value: BoolOrArg | IntOrArg = None) -> str:
+def gamerule(rule: StrOrArg | IntOrArg, value: BoolOrArg | IntOrArg = None) -> str:
     """Sets or queries a game rule value."""
     cmd = Command()
-    if isinstance(rule, (str, int)):
-        rule = GameRule(rule)
+    rule = as_gamerule(rule)
     cmd._add('$gamerule', rule)
     if isinstance(value, Arg) or isinstance(rule, Arg):
         cmd._add(value)
     elif value is not None:
-        rule_type = rule.rule_type()
-        if rule_type == 'int':
+        rule_type = game_rules[rule].type
+        if rule_type == int:
             if type(value) != int:
                 raise ValueError(f'{rule}: int value required')
             cmd._add(int(value))
-        elif rule_type == 'bool':
+        elif rule_type == bool:
             if type(value) != bool:
                 raise ValueError(f'{rule}: bool value required')
             cmd._add(_bool(value))
         else:
-            raise ValueError(f'{rule_type}: Unexpected rule type (gamerule "{rule}")')
+            raise ValueError(f'{rule_type}: Unexpected rule type {rule_type} (gamerule "{rule}")')
     return str(cmd)
 
 
@@ -2774,10 +2753,10 @@ def op(target: Target) -> str:
     return str(cmd)
 
 
-def particle(particle: Particle | StrOrArg, *params) -> str:
+def particle(particle: StrOrArg, *params) -> str:
     """Creates particles. The syntax of the command is quite variant and conditional, so nearly no checks are made."""
     cmd = Command()
-    cmd._add('$particle', str(particle))
+    cmd._add('$particle', as_particle(particle))
     for param in params:
         if isinstance(param, str) or not isinstance(param, Iterable):
             cmd._add(param)
@@ -3404,7 +3383,7 @@ class _Evaluate:
         if re.search(fr'\bt[0-9]{{2}} {self._scratch_objective}', command):
             if not self.scratches_used:
                 # noinspection PyArgumentList
-                self.append(scoreboard().objectives().add(self._scratch_objective, ScoreCriteria.DUMMY))
+                self.append(scoreboard().objectives().add(self._scratch_objective, DUMMY))
                 self.scratches_used = True
         self.commands.append(command)
 
@@ -3542,7 +3521,7 @@ class Score(Command, Expression):
     def init(self, value: IntOrArg = 0) -> Iterable[str]:
         """Initializes the score by ensuring the objective exists, and setting its value to the provided value."""
         # noinspection PyArgumentList
-        return (scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY)), (self.set(de_int_arg(value)))
+        return (scoreboard().objectives().add(self.objective, DUMMY)), (self.set(de_int_arg(value)))
 
     def get(self) -> str:
         """Return a 'get' command for the score."""
@@ -3757,8 +3736,6 @@ RawDataTarget = Union[Position, TargetSpec, StrOrArg]
 DataTarget = Union[RawDataTarget, DataTargetBase]
 SomeBlockDefs = Union[BlockDef, Iterable[BlockDef]]
 SomeMappings = Union[Mapping, Iterable[Mapping]]
-Biome = Union[StrOrArg, BiomeId]
-AdvancementDef = Union[Advancement, StrOrArg]
 
 
 def lines(*orig: any) -> list[str]:

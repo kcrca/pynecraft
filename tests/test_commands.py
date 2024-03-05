@@ -6,8 +6,8 @@ from pynecraft.base import DARK_GREEN, GAMETIME, LT, NORTH, THE_NETHER, WEST, d,
 from pynecraft.commands import *
 from pynecraft.commands import AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
     _ScoreboardCriteria, _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
-from pynecraft.enums import BiomeId
 from pynecraft.function import Function
+from pynecraft.values import *
 
 
 def commands(*cmds: str | Command) -> str:
@@ -20,23 +20,23 @@ class TestCommands(unittest.TestCase):
     def test_advancement(self):
         self.assertEqual('advancement grant @s everything', advancement(GIVE, s()).everything())
         self.assertEqual('advancement grant @s only husbandry/balanced_diet pig',
-                         advancement(GIVE, s()).only(Advancement.A_BALANCED_DIET, "pig"))
-        self.assertEqual('advancement grant @s from husbandry/wax_on', advancement(GIVE, s()).from_(Advancement.WAX_ON))
+                         advancement(GIVE, s()).only(A_BALANCED_DIET, "pig"))
+        self.assertEqual('advancement grant @s from husbandry/wax_on', advancement(GIVE, s()).from_(WAX_ON))
         self.assertEqual('advancement grant @s through husbandry/wax_on',
-                         advancement(GIVE, s()).through(Advancement.WAX_ON))
+                         advancement(GIVE, s()).through(WAX_ON))
         self.assertEqual('advancement grant @s until husbandry/wax_on',
-                         advancement(GIVE, s()).until(Advancement.WAX_ON))
+                         advancement(GIVE, s()).until(WAX_ON))
 
         self.assertEqual('advancement revoke @s everything', advancement(REVOKE, s()).everything())
         self.assertEqual('advancement revoke @s only husbandry/balanced_diet pig',
-                         advancement(REVOKE, s()).only(Advancement.A_BALANCED_DIET,
+                         advancement(REVOKE, s()).only(A_BALANCED_DIET,
                                                        "pig"))
         self.assertEqual('advancement revoke @s from husbandry/wax_on',
-                         advancement(REVOKE, s()).from_(Advancement.WAX_ON))
+                         advancement(REVOKE, s()).from_(WAX_ON))
         self.assertEqual('advancement revoke @s through husbandry/wax_on',
-                         advancement(REVOKE, s()).through(Advancement.WAX_ON))
+                         advancement(REVOKE, s()).through(WAX_ON))
         self.assertEqual('advancement revoke @s until husbandry/wax_on',
-                         advancement(REVOKE, s()).until(Advancement.WAX_ON))
+                         advancement(REVOKE, s()).until(WAX_ON))
 
     def test_execute(self):
         self.assertEqual('execute align xz', str(execute().align('xz')))
@@ -122,7 +122,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar')).matches((1, None))))
         self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
         self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar')).matches(3)))
-        self.assertEqual('biome 1 ~2 ^3 desert', str(_IfClause().biome((1, r(2), d(3)), BiomeId.DESERT)))
+        self.assertEqual('biome 1 ~2 ^3 desert', str(_IfClause().biome((1, r(2), d(3)), DESERT)))
         self.assertEqual('entity @e[tag=foo]', str(_IfClause().entity(e().tag('foo'))))
         self.assertEqual('loaded 1 ~2 ^3', str(_IfClause().loaded((1, r(2), d(3)))))
         with self.assertRaises(ValueError):
@@ -515,13 +515,13 @@ class TestCommands(unittest.TestCase):
 
     def test_target_advancements(self):
         self.assertEqual('@a[advancements={husbandry/wax_on=true}]', str(a().advancements(
-            AdvancementCriteria(Advancement.WAX_ON, True))))
+            AdvancementCriteria(WAX_ON, True))))
         self.assertEqual('@a[advancements={husbandry/wax_on={stuff=false}}]', str(a().advancements(AdvancementCriteria(
-            Advancement.WAX_ON, ('stuff', False)))))
+            WAX_ON, ('stuff', False)))))
         self.assertEqual('@a[advancements={husbandry/wax_on={stuff=false},story/smelt_iron={stuff=false}}]',
                          str(a().advancements(
-                             AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
-                             AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
+                             AdvancementCriteria(WAX_ON, ('stuff', False)),
+                             AdvancementCriteria(ACQUIRE_HARDWARE, ('stuff', False)))))
         self.assertEqual('$advancement grant @s from $(from)', advancement(GRANT, s()).from_(Arg('from')))
         self.assertEqual('@a[advancements={v$(k)=$(k)}]', str(a().advancements(
             AdvancementCriteria('v$(k)', Arg('k')))))
@@ -542,7 +542,7 @@ class TestCommands(unittest.TestCase):
                 'slug').sort(
                 ARBITRARY).limit(15).level((3, 15)).gamemode(SURVIVAL).name('Robin').x_rotation(9).y_rotation(
                 (None, 24)).type('cougar').nbt({"hi": "there"}).advancements(
-                AdvancementCriteria(Advancement.A_SEEDY_PLACE, True)).predicate("nada")))
+                AdvancementCriteria(A_SEEDY_PLACE, True)).predicate("nada")))
         self.assertEqual(
             '@a[team=!Raiders, name=!xyzzy, gamemode=!creative, type=!worm]',
             str(a().not_team('Raiders').not_name("xyzzy").not_gamemode(CREATIVE).not_type("worm")))
@@ -678,42 +678,42 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$data get entity $(s)', data().get(entity(Arg('s'))))
 
     def test_effect(self):
-        self.assertEqual('effect give @s speed', effect().give(s(), Effect.SPEED))
-        self.assertEqual('effect give @s speed 100', effect().give(s(), Effect.SPEED, 100))
-        self.assertEqual('effect give @s speed 100 2', effect().give(s(), Effect.SPEED, 100, 2))
-        self.assertEqual('effect give @s speed 100 2 true', effect().give(s(), Effect.SPEED, 100, 2, True))
-        self.assertEqual('effect give @s speed infinite', effect().give(s(), Effect.SPEED, INFINITE))
+        self.assertEqual('effect give @s speed', effect().give(s(), SPEED))
+        self.assertEqual('effect give @s speed 100', effect().give(s(), SPEED, 100))
+        self.assertEqual('effect give @s speed 100 2', effect().give(s(), SPEED, 100, 2))
+        self.assertEqual('effect give @s speed 100 2 true', effect().give(s(), SPEED, 100, 2, True))
+        self.assertEqual('effect give @s speed infinite', effect().give(s(), SPEED, INFINITE))
         self.assertEqual('effect clear', effect().clear())
         self.assertEqual('effect clear @s', effect().clear(s()))
         self.assertEqual('effect clear @s speed', effect().clear(s(), 'speed'))
-        self.assertEqual('effect clear @s speed', effect().clear(s(), Effect.SPEED))
+        self.assertEqual('effect clear @s speed', effect().clear(s(), SPEED))
         self.assertEqual('$effect give $(tgt) $(e) $(d) $(a) $(h)',
                          effect().give(Arg('tgt'), Arg('e'), Arg('d'), Arg('a'), Arg('h')))
         self.assertEqual('$effect give $(tgt) $(e) +$(d)1 +$(a)2 $(h)',
                          effect().give(Arg('tgt'), Arg('e'), '+$(d)1', '+$(a)2', Arg('h')))
         with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, -1)
+            effect().give(s(), SPEED, -1)
         with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, MAX_EFFECT_SECONDS + 100)
+            effect().give(s(), SPEED, MAX_EFFECT_SECONDS + 100)
         with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, None, 2)
+            effect().give(s(), SPEED, None, 2)
         with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, None, None, True)
+            effect().give(s(), SPEED, None, None, True)
         with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, 100, None, True)
+            effect().give(s(), SPEED, 100, None, True)
         with self.assertRaises(ValueError):
-            effect().clear(None, Effect.SPEED)
+            effect().clear(None, SPEED)
         with self.assertRaises(ValueError):
-            effect().give(s(), Effect.SPEED, 'foo')
+            effect().give(s(), SPEED, 'foo')
 
     def test_enchant(self):
-        self.assertEqual('enchant @s lure', enchant(s(), Enchantment.LURE))
+        self.assertEqual('enchant @s lure', enchant(s(), LURE))
         self.assertEqual('enchant @s lure', enchant(s(), 'lure'))
-        self.assertEqual('enchant @s lure 2', enchant(s(), Enchantment.LURE, 2))
+        self.assertEqual('enchant @s lure 2', enchant(s(), LURE, 2))
         self.assertEqual('enchant @s 12', enchant(s(), 12))
         self.assertEqual('enchant @s 12 2', enchant(s(), 12, 2))
         with self.assertRaises(ValueError):
-            enchant(s(), Enchantment.LURE, 17)
+            enchant(s(), LURE, 17)
 
     def test_jfr(self):
         self.assertEqual('jfr start', jfr(START))
@@ -771,9 +771,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone outline', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').outline()))
 
     def test_fillbiome(self):
-        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach', str(fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH)))
+        self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach', str(fillbiome((1, r(2), d(3)), (4, 5, 6), BEACH)))
         self.assertEqual('fillbiome 1 ~2 ^3 4 5 6 beach replace m:ice',
-                         fillbiome((1, r(2), d(3)), (4, 5, 6), BiomeId.BEACH).replace('m:ice'))
+                         fillbiome((1, r(2), d(3)), (4, 5, 6), BEACH).replace('m:ice'))
 
     def test_data_mod(self):
         self.assertEqual('get entity @s', str(_DataMod().get(s())))
@@ -843,18 +843,18 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('gamemode survival @s', gamemode(SURVIVAL, s()))
 
     def test_gamerule(self):
-        self.assertEqual('gamerule disableRaids', gamerule(GameRule.DISABLE_RAIDS))
-        self.assertEqual('gamerule disableRaids true', gamerule(GameRule.DISABLE_RAIDS, True))
-        self.assertEqual('gamerule maxCommandChainLength 13', gamerule(GameRule.MAX_COMMAND_CHAIN_LENGTH, 13))
+        self.assertEqual('gamerule disableRaids', gamerule(DISABLE_RAIDS))
+        self.assertEqual('gamerule disableRaids true', gamerule(DISABLE_RAIDS, True))
+        self.assertEqual('gamerule maxCommandChainLength 13', gamerule(MAX_COMMAND_CHAIN_LENGTH, 13))
         self.assertEqual('gamerule disableRaids true', gamerule('disableRaids', True))
         self.assertEqual('$gamerule $(r) $(v)', gamerule(Arg('r'), Arg('v')))
-        self.assertEqual('$gamerule disableRaids $(v)', gamerule(GameRule.DISABLE_RAIDS, Arg('v')))
+        self.assertEqual('$gamerule disableRaids $(v)', gamerule(DISABLE_RAIDS, Arg('v')))
         self.assertEqual('$gamerule $(r) 12', gamerule(Arg('r'), 12))
         self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
         with self.assertRaises(ValueError):
-            gamerule(GameRule.DISABLE_RAIDS, 17)
+            gamerule(DISABLE_RAIDS, 17)
         with self.assertRaises(ValueError):
-            gamerule(GameRule.MAX_COMMAND_CHAIN_LENGTH, True)
+            gamerule(MAX_COMMAND_CHAIN_LENGTH, True)
         with self.assertRaises(ValueError):
             gamerule('nothing', 17)
 
@@ -924,10 +924,10 @@ class TestCommands(unittest.TestCase):
                          loot().replace().entity(a(), 12, 3).kill(p()))
 
     def test_particle_command(self):
-        self.assertEqual('particle ash', particle(Particle.ASH))
-        self.assertEqual('particle ash 1 ~2 ^3', particle(Particle.ASH, (1, r(2), d(3))))
+        self.assertEqual('particle ash', particle(ASH))
+        self.assertEqual('particle ash 1 ~2 ^3', particle(ASH, (1, r(2), d(3))))
         self.assertEqual('particle ash 1 ~2 ^3 4 ~5 ^6 2.1 15 force',
-                         particle(Particle.ASH, (1, r(2), d(3)), (4, r(5), d(6)), 2.1, 15, FORCE))
+                         particle(ASH, (1, r(2), d(3)), (4, r(5), d(6)), 2.1, 15, FORCE))
 
     def test_place(self):
         self.assertEqual('place feature m:b', place().feature('m:b'))
@@ -962,12 +962,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('debug function foo', debug().function(Function('foo')))
 
     def test_scoreboard_objectives(self):
-        self.assertEqual('scoreboard objectives add obj food', scoreboard().objectives().add('obj', ScoreCriteria.FOOD))
+        self.assertEqual('scoreboard objectives add obj food', scoreboard().objectives().add('obj', FOOD))
         self.assertEqual('scoreboard objectives add obj drink', scoreboard().objectives().add('obj', 'drink'))
         self.assertEqual('list', _ScoreboardObjectivesMod().list())
-        self.assertEqual('add obj food', _ScoreboardObjectivesMod().add('obj', ScoreCriteria.FOOD))
-        self.assertEqual('add obj food howdy', _ScoreboardObjectivesMod().add('obj', ScoreCriteria.FOOD, 'howdy'))
-        self.assertEqual('add obj air', _ScoreboardObjectivesMod().add('obj', ScoreCriteria.AIR))
+        self.assertEqual('add obj food', _ScoreboardObjectivesMod().add('obj', FOOD))
+        self.assertEqual('add obj food howdy', _ScoreboardObjectivesMod().add('obj', FOOD, 'howdy'))
+        self.assertEqual('add obj air', _ScoreboardObjectivesMod().add('obj', AIR))
         self.assertEqual('remove obj', _ScoreboardObjectivesMod().remove('obj'))
         self.assertEqual('setdisplay sidebar', _ScoreboardObjectivesMod().setdisplay(SIDEBAR))
         self.assertEqual('setdisplay sidebar.team.blue obj',
@@ -1015,8 +1015,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('reset fred', _ScoreboardPlayersMod().reset('fred'))
 
     def test_scoreboard_criteria(self):
-        self.assertEqual('air', str(_ScoreboardCriteria(ScoreCriteria.AIR)))
-        self.assertEqual('has.air', str(_ScoreboardCriteria('has', ScoreCriteria.AIR)))
+        self.assertEqual('air', str(_ScoreboardCriteria(AIR)))
+        self.assertEqual('has.air', str(_ScoreboardCriteria('has', AIR)))
         self.assertEqual('killed_by.m:zombie', str(_ScoreboardCriteria('killed_by', 'm:zombie')))
         self.assertEqual('on.team.purple', str(_ScoreboardCriteria('on', 'team', 'purple')))
 
@@ -1105,32 +1105,32 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('team join foo', team().join('foo'))
         self.assertEqual('team join foo @r', team().join('foo', rand()))
         self.assertEqual('team leave foo @r', team().leave('foo', rand()))
-        self.assertEqual('team modify foo displayName bar', team().modify('foo', TeamOption.DISPLAY_NAME, 'bar'))
-        self.assertEqual('team modify foo friendlyFire true', team().modify('foo', TeamOption.FRIENDLY_FIRE, True))
+        self.assertEqual('team modify foo displayName bar', team().modify('foo', DISPLAY_NAME, 'bar'))
+        self.assertEqual('team modify foo friendlyFire true', team().modify('foo', FRIENDLY_FIRE, True))
         self.assertEqual('team modify foo nametagVisibility hideForOwnTeam',
-                         team().modify('foo', TeamOption.NAMETAG_VISIBILITY, HIDE_FOR_OWN_TEAM))
+                         team().modify('foo', NAMETAG_VISIBILITY, HIDE_FOR_OWN_TEAM))
         self.assertEqual('team modify foo deathMessageVisibility hideForOtherTeams',
-                         team().modify('foo', TeamOption.DEATH_MESSAGE_VISIBILITY, HIDE_FOR_OTHER_TEAMS))
+                         team().modify('foo', DEATH_MESSAGE_VISIBILITY, HIDE_FOR_OTHER_TEAMS))
         self.assertEqual('team modify foo collisionRule pushOwnTeam',
-                         team().modify('foo', TeamOption.COLLISION_RULE, PUSH_OWN_TEAM))
-        self.assertEqual('team modify foo prefix pre', team().modify('foo', TeamOption.PREFIX, 'pre'))
-        self.assertEqual('team modify foo suffix post', team().modify('foo', TeamOption.SUFFIX, 'post'))
-        self.assertEqual('$team modify $(t) color $(v)', team().modify(Arg('t'), TeamOption.COLOR, Arg('v')))
+                         team().modify('foo', COLLISION_RULE, PUSH_OWN_TEAM))
+        self.assertEqual('team modify foo prefix pre', team().modify('foo', PREFIX, 'pre'))
+        self.assertEqual('team modify foo suffix post', team().modify('foo', SUFFIX, 'post'))
+        self.assertEqual('$team modify $(t) color $(v)', team().modify(Arg('t'), COLOR, Arg('v')))
         self.assertEqual('$team empty $(team)', team().empty(Arg('team')))
         with self.assertRaises(ValueError):
-            team().modify('foo', TeamOption.DISPLAY_NAME, True)
+            team().modify('foo', DISPLAY_NAME, True)
         with self.assertRaises(ValueError):
-            team().modify('foo', TeamOption.FRIENDLY_FIRE, 'false')
+            team().modify('foo', FRIENDLY_FIRE, 'false')
         with self.assertRaises(ValueError):
-            team().modify('foo', TeamOption.NAMETAG_VISIBILITY, 'bar')
+            team().modify('foo', NAMETAG_VISIBILITY, 'bar')
         with self.assertRaises(ValueError):
-            team().modify('foo', TeamOption.DEATH_MESSAGE_VISIBILITY, 'bar')
+            team().modify('foo', DEATH_MESSAGE_VISIBILITY, 'bar')
         with self.assertRaises(ValueError):
-            team().modify('foo', TeamOption.COLLISION_RULE, 'bar')
+            team().modify('foo', COLLISION_RULE, 'bar')
         with self.assertRaises(ValueError):
-            team().modify('foo', TeamOption.PREFIX, True)
+            team().modify('foo', PREFIX, True)
         with self.assertRaises(ValueError):
-            team().modify('foo', TeamOption.SUFFIX, True)
+            team().modify('foo', SUFFIX, True)
 
     def test_teleport_commands(self):
         self.assertEqual('tp @r', str(teleport(rand())))
@@ -1240,7 +1240,7 @@ class TestCommands(unittest.TestCase):
             as_slot('foo.12.12')
 
     def test_as_biome(self):
-        self.assertEqual('desert', str(as_biome(BiomeId.DESERT)))
+        self.assertEqual('desert', str(as_biome(DESERT)))
         self.assertEqual('dessert', str(as_biome('dessert')))
         self.assertEqual('$(b)', str(as_biome(Arg('b'))))
 
@@ -1452,11 +1452,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
             AdvancementCriteria(Arg('c'), Arg('b')))))
         self.assertEqual('@a[advancements={husbandry/wax_on={stuff=$(b)}}]', str(a().advancements(AdvancementCriteria(
-            Advancement.WAX_ON, ('stuff', Arg('b'))))))
+            WAX_ON, ('stuff', Arg('b'))))))
         self.assertEqual('@a[advancements={husbandry/wax_on={stuff=false},story/smelt_iron={stuff=false}}]',
                          str(a().advancements(
-                             AdvancementCriteria(Advancement.WAX_ON, ('stuff', False)),
-                             AdvancementCriteria(Advancement.ACQUIRE_HARDWARE, ('stuff', False)))))
+                             AdvancementCriteria(WAX_ON, ('stuff', False)),
+                             AdvancementCriteria(ACQUIRE_HARDWARE, ('stuff', False)))))
         self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
             AdvancementCriteria('$(c)', '$(b)'))))
         self.assertEqual('@a[advancements={k$(c)=v$(b)}]', str(a().advancements(

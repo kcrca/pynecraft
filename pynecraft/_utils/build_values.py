@@ -10,7 +10,6 @@ from a wiki, which may change at any time. If I knew of a better way to get this
 from __future__ import annotations
 
 import datetime
-import pkgutil
 import re
 import sys
 from abc import ABC, abstractmethod
@@ -20,8 +19,8 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-import pynecraft
-from pynecraft import base, commands, function, simpler
+# import pynecraft
+# from pynecraft import base, commands, function, simpler
 
 WIKI = 'https://minecraft.wiki/'
 noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
@@ -41,6 +40,9 @@ class EnumDesc(ABC):
 
     def added_values(self, value):
         return ''
+
+    def pluralize(self):
+        return 's'
 
 
 class PageEnumDesc(EnumDesc):
@@ -169,11 +171,11 @@ def to_desc(text):
     return text
 
 
-def camel_to_name(camel):
+def camel_to_name(camel, sep=' ') -> str:
     """
     :return: The input string mapped from "CamelCase" to "Camel Case".
     """
-    return re.sub(r'([a-z])([A-Z]+)', r'\1 \2', camel)
+    return re.sub(r'([a-z])([A-Z]+)', r'\1' + sep + r'\2', camel)
 
 
 rom_val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
@@ -416,6 +418,9 @@ class ScoreCriteria(PageEnumDesc):
         self.desc_col = None
         self.value_col = None
 
+    def pluralize(self):
+        return ''
+
     def header(self, col: int, text: str):
         if text.endswith('name'):
             self.value_col = col
@@ -485,12 +490,12 @@ if __name__ == '__main__':
         return v
 
 
-    p = pkgutil.iter_modules(pynecraft.__path__)
-    for module in base, commands, function, simpler:
-        for v in filter(lambda x: re.fullmatch(r'[A-Z_0-9]+', x), dir(module)):
-            value = getattr(module, v)
-            if isinstance(value, str):
-                v = add_to_known(v, value)
+    # p = pkgutil.iter_modules(pynecraft.__path__)
+    # for module in base, commands, function, simpler:
+    #     for v in filter(lambda x: re.fullmatch(r'[A-Z_0-9]+', x), dir(module)):
+    #         value = getattr(module, v)
+    #         if isinstance(value, str):
+    #             v = add_to_known(v, value)
     with open(cwd / '..' / 'values.py', 'r+') as out:
         top = []
         for line in out:
@@ -509,7 +514,7 @@ if __name__ == '__main__':
                 fields = tab.generate()
                 print()
                 print()
-                print(f'# {tab.name}s')
+                print(f'# {tab.name}{tab.pluralize()}')
                 print(f'# Derived from {tab.url}, {datetime.datetime.now().astimezone().isoformat(timespec="seconds")}')
 
                 value_fields = ['name', 'value', 'desc']
@@ -521,11 +526,12 @@ if __name__ == '__main__':
                     if key in known:
                         k = add_to_known(key, value, tab.name.upper())
                     print(f'{k} = "{value}"')
-                print(f'{tab.name.upper()}_GROUP = [')
+                group_name = f'{camel_to_name(tab.name, "_").upper()}_GROUP'
+                print(f'{group_name} = [')
                 print(f'    {", ".join(fields.keys())}')
                 print(f']')
 
-                map_name = tab.name.lower()
+                map_name = camel_to_name(tab.name, '_').lower() + tab.pluralize()
                 print('')
                 print(f'{tab.name} = namedtuple("{tab.name}", {value_fields})')
                 print(f'{map_name} = {{')
@@ -538,3 +544,9 @@ if __name__ == '__main__':
                 print(f'for __k in tuple({map_name}.keys()):')
                 print(f'    v = {map_name}[__k]')
                 print(f'    {map_name}[v.name] = v')
+
+                print('')
+                print('')
+                print(f'def as_{tab.name.lower()}(*values: StrOrArg) -> str | Tuple[str, ...]:')
+                print(f'    return _as_things({group_name}, *values)')
+                print('')
