@@ -2,12 +2,12 @@ import shutil
 import tempfile
 import unittest
 
-from pynecraft.base import CYAN, DARK_AQUA, EAST, N, SOUTH, SW, WEST
+from pynecraft.base import CYAN, DARK_AQUA, EAST, N, SOUTH, SW
 from pynecraft.commands import *
-from pynecraft.enums import BiomeId
 from pynecraft.function import text_lines
 from pynecraft.simpler import *
 from pynecraft.simpler import _str_values
+from pynecraft.values import BRICK
 
 
 class TestSimpler(unittest.TestCase):
@@ -18,7 +18,6 @@ class TestSimpler(unittest.TestCase):
         shutil.rmtree(self.tmp_path)
 
     def test_sign_lines(self):
-        s = Sign((None, 'hi', 'there'), (tell(p(), 'Hello!'),)).place((0, 100, 0), WEST)
         self.assertEqual(
             """{messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}""",
             str(Sign.lines_nbt(("one", "two", "three", "four"))))
@@ -347,7 +346,7 @@ class TestSimpler(unittest.TestCase):
             f'fill ~1 ~2 ~3 ^4 ^5 ^6 oak_sign[rotation={i}] replace #signs[rotation={i}]' for i in range(16)
         ), lines(v.replace_rotation('oak_sign', '#signs')))
 
-        self.assertEqual(['fillbiome ~1 ~2 ~3 ^4 ^5 ^6 plains replace poi'], lines(v.fillbiome(BiomeId.PLAINS, 'poi')))
+        self.assertEqual(['fillbiome ~1 ~2 ~3 ^4 ^5 ^6 plains replace poi'], lines(v.fillbiome(PLAINS, 'poi')))
 
     def test_offset(self):
         self.assertEqual(r(1, 2, 3), Offset(1, 2, 3).r(0, 0, 0))
@@ -466,7 +465,7 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual(
             {'Count': 1, 'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9}]}}},
             shield.nbt)
-        shield.add_pattern(Pattern.BRICK, PURPLE)
+        shield.add_pattern(BRICK, PURPLE)
         self.assertEqual(
             {'Count': 1, 'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9},
                                                                                  {'Pattern': 'bri', 'Color': 10}]}}},

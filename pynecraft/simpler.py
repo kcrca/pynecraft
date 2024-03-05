@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Callable, Mapping, Sequence, Tuple, Union
+from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
-from .base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
+from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     _ensure_size, _in_group, _quote, _to_list, as_facing, d, de_arg, r, to_id
-from .commands import Biome, Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, \
+from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, \
     SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
     fillbiome, setblock
-from .enums import Pattern
+from pynecraft.values import as_pattern
 
 ARMORER = 'Armorer'
 BUTCHER = 'Butcher'
@@ -339,7 +339,7 @@ class ItemDisplay(Display):
 
 def _str_values(state):
     """Convert any non-str primitive values into str, because BlockDisplay requires it (ugh)."""
-    if isinstance(state, Mapping):
+    if isinstance(state, MutableMapping):
         for k, v in state.items():
             state[k] = _str_values(v)
         return state
@@ -365,7 +365,7 @@ class BlockDisplay(Display):
 class TextDisplay(Display):
     """An object that represents a text_display entity."""
 
-    def __init__(self, text: str | JsonText | Sequence[JsonText] = None, nbt: NbtDef = None):
+    def __init__(self, text: StrOrArg | JsonText | Sequence[JsonText] = None, nbt: NbtDef = None):
         """
         Creates a TextDisplay with the given text, if any. The text can be a string, a JsonText object, or a list or
         tuple of JsonText objects.
@@ -431,12 +431,12 @@ class Shield(Item):
         super().__init__('shield')
         self.merge_nbt({'tag': {'BlockEntityTag': {'Patterns': []}}})
 
-    def add_pattern(self, pattern: StrOrArg | Pattern, color: IntOrArg | StrOrArg) -> Shield:
+    def add_pattern(self, pattern: StrOrArg, color: IntOrArg | StrOrArg) -> Shield:
         """Add a pattern to the shield."""
         color = as_color_num(color)
         patterns = self.nbt['tag']['BlockEntityTag'].get_list('Patterns')
         if isinstance(pattern, str):
-            pattern = Pattern(pattern)
+            pattern = as_pattern(pattern)
         patterns.append(Nbt({'Pattern': str(pattern), 'Color': color}))
         return self
 
@@ -507,7 +507,7 @@ class Region:
             f = f.replace(replace)
         yield f
 
-    def fillbiome(self, biome: Biome, replace: Biome = None) -> Command:
+    def fillbiome(self, biome: StrOrArg, replace: StrOrArg = None) -> Command:
         f = fillbiome(self.start, self.end, as_biome(biome))
         if replace:
             f = f.replace(as_biome(replace))

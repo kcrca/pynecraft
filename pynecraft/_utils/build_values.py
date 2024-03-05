@@ -10,6 +10,7 @@ from a wiki, which may change at any time. If I knew of a better way to get this
 from __future__ import annotations
 
 import datetime
+import glob
 import re
 import sys
 from abc import ABC, abstractmethod
@@ -18,9 +19,6 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-
-# import pynecraft
-# from pynecraft import base, commands, function, simpler
 
 WIKI = 'https://minecraft.wiki/'
 noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
@@ -196,6 +194,56 @@ def roman_to_int(s):
         else:
             int_val += rom_val[s[i]]
     return int_val
+
+
+class TeamOptions(PageEnumDesc):
+    """Generates the Team Options data. """
+
+    def __init__(self):
+        super().__init__('TeamOption', WIKI + 'Commands/team', 'team_options')
+        vis = ['never', 'hideForOtherTeams', 'hideForOwnTeam', 'always']
+        self.data = {
+            "displayName": '"JsonDef"',
+            "color": '"JsonDef"',
+            "friendlyFire": bool,
+            "seeFriendlyInvisibles": bool,
+            "nametagVisibility": vis,
+            "deathMessageVisibility": vis,
+            "collisionRule": ['always', 'never', 'pushOtherTeams', 'pushOwnTeam'],
+            "prefix": '"JsonDef"',
+            "suffix": '"JsonDef"'}
+
+    def fetch(self):
+        tab = '<table>'
+        real = super().fetch()
+        arg = real.find('span', id='Arguments')
+        for p in arg.find_all_next('p'):
+            if p.text == '<option>\n':
+                dl = p.find_next('dl')
+                for li in dl.find_all('li'):
+                    colon = li.text.index(':')
+                    name = li.text[:colon]
+                    desc = li.text[colon + 1:].strip()
+                    tab += f'<tr><td>{name}</td><td>{desc}</td></tr>'
+        tab += '</table>'
+        return BeautifulSoup(tab, 'html.parser')
+
+    def find_tables(self, soup):
+        return soup.find_all('table')
+
+    def header(self, col: int, text: str):
+        pass
+
+    def added_fields(self):
+        return ['type']
+
+    def added_values(self, value):
+        type = self.data[value]
+        type_str = 'str' if type == str else 'bool' if type == bool else type
+        return f', {type_str}'
+
+    def extract(self, cols) -> tuple[str, str, str]:
+        return camel_to_name(cols[0].text), cols[0].text, cols[1].text
 
 
 class Advancement(PageEnumDesc):
@@ -490,6 +538,13 @@ if __name__ == '__main__':
         return v
 
 
+    dir = Path(__file__).parent.parent
+    for f in glob.glob(f'{dir}/*.py'):
+        for i, line in enumerate(open(f)):
+            m = re.fullmatch(r"([A-Z_0-9]+) = '(.*)'\n", line)
+            if m:
+                known[m.group(1)] = m.group(2)
+
     # p = pkgutil.iter_modules(pynecraft.__path__)
     # for module in base, commands, function, simpler:
     #     for v in filter(lambda x: re.fullmatch(r'[A-Z_0-9]+', x), dir(module)):
@@ -509,6 +564,7 @@ if __name__ == '__main__':
         with redirect_stdout(out):
             print('')
             for tab in (
+                    TeamOptions(),
                     Pattern(), Advancement(), Biome(), Effect(), Enchantment(), GameRule(), ScoreCriteria(),
                     Particle(), PotterySherd()):
                 fields = tab.generate()
@@ -520,15 +576,22 @@ if __name__ == '__main__':
                 value_fields = ['name', 'value', 'desc']
                 value_fields.extend(tab.added_fields())
                 names = {}
+                dups = f'__{tab.name.lower()}_dups'
+                print(f'{dups} = {{}}')
+                group = []
                 for key in fields:
                     value, desc, name = fields[key]
                     k = key
-                    if key in known:
+                    if key not in known:
                         k = add_to_known(key, value, tab.name.upper())
-                    print(f'{k} = "{value}"')
+                        print(f'{k} = "{value}"')
+                        group.append(k)
+                    else:
+                        print(f'{dups}["{known[k]}"] = "{value}"')
+                        group.append(f'"{value}"')
                 group_name = f'{camel_to_name(tab.name, "_").upper()}_GROUP'
                 print(f'{group_name} = [')
-                print(f'    {", ".join(fields.keys())}')
+                print(f'    {", ".join(group)}')
                 print(f']')
 
                 map_name = camel_to_name(tab.name, '_').lower() + tab.pluralize()
@@ -544,9 +607,10 @@ if __name__ == '__main__':
                 print(f'for __k in tuple({map_name}.keys()):')
                 print(f'    v = {map_name}[__k]')
                 print(f'    {map_name}[v.name] = v')
+                print(f'    {map_name}[v.value] = v')
 
                 print('')
                 print('')
                 print(f'def as_{tab.name.lower()}(*values: StrOrArg) -> str | Tuple[str, ...]:')
-                print(f'    return _as_things({group_name}, *values)')
+                print(f'    return _as_things({group_name}, {dups}, *values)')
                 print('')

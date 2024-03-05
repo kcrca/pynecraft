@@ -1,13 +1,13 @@
 from typing import Tuple
 
 from pynecraft.commands import Commands, DataTarget, SUCCESS, Score, data, execute, scoreboard
-from pynecraft.enums import ScoreCriteria
+from pynecraft.values import DUMMY
 
 PYNECRAFT = 'pynecraft'
 
 
 def utils_init() -> Commands:
-    return scoreboard().objectives().add(PYNECRAFT, ScoreCriteria.DUMMY)
+    return scoreboard().objectives().add(PYNECRAFT, DUMMY)
 
 
 class Scores:

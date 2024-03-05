@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, \
-    as_particle, as_team_option, enchantments, game_rules, team_options
+    as_particle, as_teamoption, enchantments, game_rules, team_options
 
 if TYPE_CHECKING:
     pass
@@ -297,8 +297,8 @@ def as_slot(slot: StrOrArg | None) -> str | None:
     return slot
 
 
-def as_criteria(*criteria):
-    return (_in_group(SCORE_CRITERIA_GROUP, c) for c in criteria)
+def as_criteria(criteria):
+    return _in_group(SCORE_CRITERIA_GROUP, criteria)
 
 
 NEAREST = 'nearest'
@@ -1912,15 +1912,6 @@ class _LootTarget(Command):
         return self._start(_LootReplaceTarget())
 
 
-class _ScoreboardCriteria(Command):
-    def __init__(self, criterion: StrOrArg, *criteria: StrOrArg):
-        super().__init__()
-        self._add(as_criteria(criterion))
-        if criteria:
-            self._add(*as_criteria(*criteria))
-            self._add('.' + '.'.join(str(x) for x in criteria), space=False)
-
-
 class _ScoreboardObjectivesMod(Command):
     @_fluent
     def list(self) -> str:
@@ -2172,7 +2163,7 @@ class _TeamMod(Command):
 
     @_fluent
     def modify(self, team: StrOrArg, option: StrOrArg, value: StrOrArg | BoolOrArg) -> str:
-        option = as_team_option(option)
+        option = as_teamoption(option)
         value_type = team_options[option].type
         if value_type == bool:
             if not isinstance(value, (bool, Arg)):
@@ -2181,8 +2172,11 @@ class _TeamMod(Command):
         elif value_type == str:
             if not isinstance(value, (str, Arg)):
                 raise ValueError(f'{value}: Must be str')
+        elif value_type == 'JsonDef':
+            if not isinstance(value, (JsonDef, Arg)):
+                raise ValueError(f'{value}: Must be JsonDef')
         else:
-            if not isinstance(value, Arg) and value not in value_type:
+            if not is_arg(value) and value not in value_type:
                 raise ValueError(f'{value}: Must be one of {value_type}')
         self._add('modify', as_team(team), option, value)
         return str(self)
@@ -2582,10 +2576,10 @@ def enchant(target: Target, enchantment: StrOrArg | IntOrArg, level: IntOrArg = 
     """Adds an enchantment to a player's selected item."""
     cmd = Command()
     cmd._add('$enchant', as_target(target))
-    enchantment = as_enchantment(enchantment)
+    enchantment = as_enchantment(as_resource(enchantment))
     cmd._add(enchantment)
     if level is not None and enchantment in enchantments:
-        max_level = enchantments[enchantment]
+        max_level = enchantments[enchantment].max_level
         if level not in range(max_level + 1):
             raise ValueError(f'Level not in range [0..{max_level}]')
         cmd._add_opt(level)
@@ -2664,10 +2658,10 @@ def gamerule(rule: StrOrArg | IntOrArg, value: BoolOrArg | IntOrArg = None) -> s
     cmd = Command()
     rule = as_gamerule(rule)
     cmd._add('$gamerule', rule)
-    if isinstance(value, Arg) or isinstance(rule, Arg):
-        cmd._add(value)
+    if is_arg(value) or is_arg(rule):
+        cmd._add(de_arg(value))
     elif value is not None:
-        rule_type = game_rules[rule].type
+        rule_type = game_rules[rule].rule_type
         if rule_type == int:
             if type(value) != int:
                 raise ValueError(f'{rule}: int value required')

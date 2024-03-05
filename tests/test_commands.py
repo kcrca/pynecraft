@@ -5,8 +5,9 @@ import unittest
 from pynecraft.base import DARK_GREEN, GAMETIME, LT, NORTH, THE_NETHER, WEST, d, days, r, seconds, ticks
 from pynecraft.commands import *
 from pynecraft.commands import AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
-    _ScoreboardCriteria, _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
+    _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
 from pynecraft.function import Function
+from pynecraft.simpler import DESERT
 from pynecraft.values import *
 
 
@@ -710,8 +711,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('enchant @s lure', enchant(s(), LURE))
         self.assertEqual('enchant @s lure', enchant(s(), 'lure'))
         self.assertEqual('enchant @s lure 2', enchant(s(), LURE, 2))
-        self.assertEqual('enchant @s 12', enchant(s(), 12))
-        self.assertEqual('enchant @s 12 2', enchant(s(), 12, 2))
         with self.assertRaises(ValueError):
             enchant(s(), LURE, 17)
 
@@ -963,7 +962,6 @@ class TestCommands(unittest.TestCase):
 
     def test_scoreboard_objectives(self):
         self.assertEqual('scoreboard objectives add obj food', scoreboard().objectives().add('obj', FOOD))
-        self.assertEqual('scoreboard objectives add obj drink', scoreboard().objectives().add('obj', 'drink'))
         self.assertEqual('list', _ScoreboardObjectivesMod().list())
         self.assertEqual('add obj food', _ScoreboardObjectivesMod().add('obj', FOOD))
         self.assertEqual('add obj food howdy', _ScoreboardObjectivesMod().add('obj', FOOD, 'howdy'))
@@ -980,6 +978,8 @@ class TestCommands(unittest.TestCase):
                          _ScoreboardObjectivesMod().modify('obj').numberformat().fixed('bubble'))
         self.assertEqual('modify obj numberformat blank',
                          _ScoreboardObjectivesMod().modify('obj').numberformat().blank())
+        with self.assertRaises(ValueError):
+            scoreboard().objectives().add('obj', 'drink')
 
     def test_scoreboard_players(self):
         self.assertEqual('scoreboard players enable * obj', str(scoreboard().players().enable((Star(), 'obj'))))
@@ -1013,12 +1013,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('reset @a', _ScoreboardPlayersMod().reset((a(), None)))
         self.assertEqual('reset @a', _ScoreboardPlayersMod().reset(a()))
         self.assertEqual('reset fred', _ScoreboardPlayersMod().reset('fred'))
-
-    def test_scoreboard_criteria(self):
-        self.assertEqual('air', str(_ScoreboardCriteria(AIR)))
-        self.assertEqual('has.air', str(_ScoreboardCriteria('has', AIR)))
-        self.assertEqual('killed_by.m:zombie', str(_ScoreboardCriteria('killed_by', 'm:zombie')))
-        self.assertEqual('on.team.purple', str(_ScoreboardCriteria('on', 'team', 'purple')))
 
     def test_publish_command(self):
         self.assertEqual('publish', publish())
@@ -1241,8 +1235,14 @@ class TestCommands(unittest.TestCase):
 
     def test_as_biome(self):
         self.assertEqual('desert', str(as_biome(DESERT)))
-        self.assertEqual('dessert', str(as_biome('dessert')))
         self.assertEqual('$(b)', str(as_biome(Arg('b'))))
+        try:
+            BIOME_GROUP.append('dessert')
+            self.assertEqual('dessert', str(as_biome('dessert')))
+        finally:
+            BIOME_GROUP.remove('dessert')
+        with self.assertRaises(ValueError):
+            as_biome('dessert')
 
     def test_time_command(self):
         self.assertEqual('time add 9', time().add(9))

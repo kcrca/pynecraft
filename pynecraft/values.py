@@ -1,16 +1,31 @@
 from collections import namedtuple
 from typing import Tuple
 
-from pynecraft.base import StrOrArg, _in_group
+from pynecraft.base import StrOrArg, _in_group, de_arg, is_arg
 
 
-def _as_things(group: list, *values: StrOrArg) -> str | Tuple[str, ...]:
+def _value(v, dups: dict):
+    if is_arg(v):
+        return de_arg(v)
+    try:
+        return dups[v]
+    except KeyError:
+        return v
+
+
+def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, ...]:
     if len(values) == 1:
-        return _in_group(group, values[0])
-    return tuple((_in_group(group, v) for v in values))
+        return _in_group(group, _value(values[0], dups))
+    return tuple((_in_group(group, _value(v, dups)) for v in values))
 
 
-DISPLAY_NAME = "displayName"
+# Generated values:
+
+
+# TeamOptions
+# Derived from https://minecraft.wiki/Commands/team, 2024-03-05T13:23:04-08:00
+__teamoption_dups = {}
+__teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
 FRIENDLY_FIRE = "friendlyFire"
 SEE_FRIENDLY_INVISIBLES = "seeFriendlyInvisibles"
@@ -20,45 +35,50 @@ COLLISION_RULE = "collisionRule"
 PREFIX = "prefix"
 SUFFIX = "suffix"
 TEAM_OPTION_GROUP = [
-    DISPLAY_NAME, COLOR, FRIENDLY_FIRE, SEE_FRIENDLY_INVISIBLES, NAMETAG_VISIBILITY, DEATH_MESSAGE_VISIBILITY,
+    "displayName", COLOR, FRIENDLY_FIRE, SEE_FRIENDLY_INVISIBLES, NAMETAG_VISIBILITY, DEATH_MESSAGE_VISIBILITY,
     COLLISION_RULE, PREFIX, SUFFIX
 ]
 
-TeamOption = namedtuple("Advancement", ['name', 'value', 'desc', 'type'])
+TeamOption = namedtuple("TeamOption", ['name', 'value', 'desc', 'type'])
 team_options = {
-    "DISPLAY_NAME": TeamOption("Display Name", "displayName", """Set the display name of the team.""", str),
-    "COLOR": TeamOption("Color", "color",
+    "DISPLAY_NAME": TeamOption("""display Name""", "displayName", """Set the display name of the team.""", "JsonDef"),
+    "COLOR": TeamOption("""color""", "color",
                         """Decide the color of the team and players in chat, above their head, on the Tab menu, and on the sidebar. Also changes the color of the outline of the entities caused by the Glowing effect.""",
-                        str),
-    "FRIENDLY_FIRE": TeamOption("Friendly Fire", "friendlyFire",
-                                """Enable/Disable players inflicting damage on each other when on the same team. (Note": players can still inflict status effects on each other.) Does not affect some non-player entities in a team.""",
+                        "JsonDef"),
+    "FRIENDLY_FIRE": TeamOption("""friendly Fire""", "friendlyFire",
+                                """Enable/Disable players inflicting damage on each other when on the same team. (Note: players can still inflict status effects on each other.) Does not affect some non-player entities in a team.""",
                                 bool),
-    "SEE_FRIENDLY_INVISIBLES": TeamOption("See Friendly Invisibles", "seeFriendlyInvisibles",
+    "SEE_FRIENDLY_INVISIBLES": TeamOption("""see Friendly Invisibles""", "seeFriendlyInvisibles",
                                           """Decide players can see invisible players on their team as whether semi-transparent or completely invisible.""",
                                           bool),
-    "NAMETAG_VISIBILITY": TeamOption("Nametag Visibility", "nametagVisibility",
+    "NAMETAG_VISIBILITY": TeamOption("""nametag Visibility""", "nametagVisibility",
                                      """Decide whose name tags above their heads can be seen.""",
                                      ['never', 'hideForOtherTeams', 'hideForOwnTeam', 'always']),
-    "DEATH_MESSAGE_VISIBILITY": TeamOption("Death Message Visibility", "deathMessageVisibility",
+    "DEATH_MESSAGE_VISIBILITY": TeamOption("""death Message Visibility""", "deathMessageVisibility",
                                            """Control the visibility of death messages for players.""",
                                            ['never', 'hideForOtherTeams', 'hideForOwnTeam', 'always']),
-    "COLLISION_RULE": TeamOption("Collision Rule", "collisionRule",
+    "COLLISION_RULE": TeamOption("""collision Rule""", "collisionRule",
                                  """Controls the way the entities on the team collide with other entities.""",
-                                 ['never', 'pushOtherTeams', 'pushOwnTeam', 'always']),
-    "PREFIX": TeamOption("Prefix", "prefix", """Modifies the prefix that displays before players' names.""", str),
-    "SUFFIX": TeamOption("Suffix", "suffix", """Modifies the suffix that displays after players' names.""", str),
+                                 ['always', 'never', 'pushOtherTeams', 'pushOwnTeam']),
+    "PREFIX": TeamOption("""prefix""", "prefix", """Modifies the prefix that displays before players' names.""",
+                         "JsonDef"),
+    "SUFFIX": TeamOption("""suffix""", "suffix", """Modifies the suffix that displays after players' names.""",
+                         "JsonDef"),
 }
 
+for __k in tuple(team_options.keys()):
+    v = team_options[__k]
+    team_options[v.name] = v
+    team_options[v.value] = v
 
-def as_team_option(*values: StrOrArg) -> Tuple[str, ...]:
-    return _as_things(TEAM_OPTION_GROUP, *values)
 
-
-# Generated values:
+def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(TEAM_OPTION_GROUP, __teamoption_dups, *values)
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-02-23T10:33:28-08:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-03-05T13:23:04-08:00
+__pattern_dups = {}
 BASE = "b"
 BOTTOM_STRIPE = "bs"
 TOP_STRIPE = "ts"
@@ -158,14 +178,16 @@ patterns = {
 for __k in tuple(patterns.keys()):
     v = patterns[__k]
     patterns[v.name] = v
+    patterns[v.value] = v
 
 
 def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(PATTERN_GROUP, *values)
+    return _as_things(PATTERN_GROUP, __pattern_dups, *values)
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-02-23T10:33:28-08:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-03-05T13:23:04-08:00
+__advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
 GETTING_AN_UPGRADE = "story/upgrade_tools"
@@ -182,7 +204,7 @@ ENCHANTER = "story/enchant_item"
 ZOMBIE_DOCTOR = "story/cure_zombie_villager"
 EYE_SPY = "story/follow_ender_eye"
 ENTER_THE_END = "story/enter_the_end"
-NETHER = "nether/root"
+__advancement_dups["nether"] = "nether/root"
 RETURN_TO_SENDER = "nether/return_to_sender"
 THOSE_WERE_THE_DAYS = "nether/find_bastion"
 HIDDEN_IN_THE_DEPTHS = "nether/obtain_ancient_debris"
@@ -206,7 +228,7 @@ BRING_HOME_THE_BEACON = "nether/create_beacon"
 A_FURIOUS_COCKTAIL = "nether/all_potions"
 BEACONATOR = "nether/create_full_beacon"
 HOW_DID_WE_GET_HERE = "nether/all_effects"
-THE_END = "end/root"
+__advancement_dups["the_end"] = "end/root"
 FREE_THE_END = "end/kill_dragon"
 THE_NEXT_GENERATION = "end/dragon_egg"
 REMOTE_GETAWAY = "end/enter_end_gateway"
@@ -215,7 +237,7 @@ YOU_NEED_A_MINT = "end/dragon_breath"
 THE_CITY_AT_THE_END_OF_THE_GAME = "end/find_end_city"
 SKYS_THE_LIMIT = "end/elytra"
 GREAT_VIEW_FROM_UP_HERE = "end/levitate"
-ADVENTURE = "adventure/root"
+__advancement_dups["adventure"] = "adventure/root"
 VOLUNTARY_EXILE = "adventure/voluntary_exile"
 IS_IT_A_BIRD = "adventure/spyglass_at_parrot"
 MONSTER_HUNTER = "adventure/kill_a_mob"
@@ -250,7 +272,7 @@ IS_IT_A_PLANE = "adventure/spyglass_at_dragon"
 VERY_VERY_FRIGHTENING = "adventure/very_very_frightening"
 SNIPER_DUEL = "adventure/sniper_duel"
 BULLSEYE = "adventure/bullseye"
-HUSBANDRY = "husbandry/root"
+__advancement_dups["husbandry"] = "husbandry/root"
 BEE_OUR_GUEST = "husbandry/safely_harvest_honey"
 THE_PARROTS_AND_THE_BATS = "husbandry/breed_an_animal"
 YOUVE_GOT_A_FRIEND_IN_ME = "husbandry/allay_deliver_item_to_player"
@@ -279,18 +301,18 @@ THE_HEALING_POWER_OF_FRIENDSHIP = "husbandry/kill_axolotl_target"
 ADVANCEMENT_GROUP = [
     MINECRAFT, STONE_AGE, GETTING_AN_UPGRADE, ACQUIRE_HARDWARE, SUIT_UP, HOT_STUFF, ISNT_IT_IRON_PICK,
     NOT_TODAY_THANK_YOU, ICE_BUCKET_CHALLENGE, DIAMONDS, WE_NEED_TO_GO_DEEPER, COVER_ME_WITH_DIAMONDS, ENCHANTER,
-    ZOMBIE_DOCTOR, EYE_SPY, ENTER_THE_END, NETHER, RETURN_TO_SENDER, THOSE_WERE_THE_DAYS, HIDDEN_IN_THE_DEPTHS,
+    ZOMBIE_DOCTOR, EYE_SPY, ENTER_THE_END, "nether/root", RETURN_TO_SENDER, THOSE_WERE_THE_DAYS, HIDDEN_IN_THE_DEPTHS,
     SUBSPACE_BUBBLE, A_TERRIBLE_FORTRESS, WHO_IS_CUTTING_ONIONS, OH_SHINY, THIS_BOAT_HAS_LEGS, UNEASY_ALLIANCE,
     WAR_PIGS, COUNTRY_LODE_TAKE_ME_HOME, COVER_ME_IN_DEBRIS, SPOOKY_SCARY_SKELETON, INTO_FIRE, NOT_QUITE_NINE_LIVES,
     FEELS_LIKE_HOME, HOT_TOURIST_DESTINATIONS, WITHERING_HEIGHTS, LOCAL_BREWERY, BRING_HOME_THE_BEACON,
-    A_FURIOUS_COCKTAIL, BEACONATOR, HOW_DID_WE_GET_HERE, THE_END, FREE_THE_END, THE_NEXT_GENERATION, REMOTE_GETAWAY,
-    THE_END_AGAIN, YOU_NEED_A_MINT, THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE, ADVENTURE,
-    VOLUNTARY_EXILE, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL, CRAFTING_A_NEW_LOOK,
-    STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100, SWEET_DREAMS,
-    HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED, POSTMORTAL,
-    HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC,
+    A_FURIOUS_COCKTAIL, BEACONATOR, HOW_DID_WE_GET_HERE, "end/root", FREE_THE_END, THE_NEXT_GENERATION, REMOTE_GETAWAY,
+    THE_END_AGAIN, YOU_NEED_A_MINT, THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE,
+    "adventure/root", VOLUNTARY_EXILE, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL,
+    CRAFTING_A_NEW_LOOK, STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100,
+    SWEET_DREAMS, HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED,
+    POSTMORTAL, HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC,
     CAREFUL_RESTORATION, ADVENTURING_TIME, SOUND_OF_MUSIC, LIGHT_AS_A_RABBIT, IS_IT_A_PLANE, VERY_VERY_FRIGHTENING,
-    SNIPER_DUEL, BULLSEYE, HUSBANDRY, BEE_OUR_GUEST, THE_PARROTS_AND_THE_BATS, YOUVE_GOT_A_FRIEND_IN_ME,
+    SNIPER_DUEL, BULLSEYE, "husbandry/root", BEE_OUR_GUEST, THE_PARROTS_AND_THE_BATS, YOUVE_GOT_A_FRIEND_IN_ME,
     WHATEVER_FLOATS_YOUR_GOAT, BEST_FRIENDS_FOREVER, GLOW_AND_BEHOLD, FISHY_BUSINESS, TOTAL_BEELOCATION, BUKKIT_BUKKIT,
     SMELLS_INTERESTING, A_SEEDY_PLACE, WAX_ON, TWO_BY_TWO, BIRTHDAY_SONG, A_COMPLETE_CATALOGUE, TACTICAL_FISHING,
     WHEN_THE_SQUAD_HOPS_INTO_TOWN, LITTLE_SNIFFS, A_BALANCED_DIET, SERIOUS_DEDICATION, WAX_OFF, THE_CUTEST_PREDATOR,
@@ -489,21 +511,23 @@ advancements = {
 for __k in tuple(advancements.keys()):
     v = advancements[__k]
     advancements[v.name] = v
+    advancements[v.value] = v
 
 
 def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(ADVANCEMENT_GROUP, *values)
+    return _as_things(ADVANCEMENT_GROUP, __advancement_dups, *values)
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-02-23T10:33:28-08:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-03-05T13:23:04-08:00
+__biome_dups = {}
 THE_VOID = "the_void"
-PLAINS = "plains"
+__biome_dups["plains"] = "plains"
 SUNFLOWER_PLAINS = "sunflower_plains"
 SNOWY_PLAINS = "snowy_plains"
 ICE_SPIKES = "ice_spikes"
-DESERT = "desert"
-SWAMP = "swamp"
+__biome_dups["desert"] = "desert"
+__biome_dups["swamp"] = "swamp"
 MANGROVE_SWAMP = "mangrove_swamp"
 FOREST = "forest"
 FLOWER_FOREST = "flower_forest"
@@ -512,15 +536,15 @@ DARK_FOREST = "dark_forest"
 OLD_GROWTH_BIRCH_FOREST = "old_growth_birch_forest"
 OLD_GROWTH_PINE_TAIGA = "old_growth_pine_taiga"
 OLD_GROWTH_SPRUCE_TAIGA = "old_growth_spruce_taiga"
-TAIGA = "taiga"
+__biome_dups["taiga"] = "taiga"
 SNOWY_TAIGA = "snowy_taiga"
-SAVANNA = "savanna"
+__biome_dups["savanna"] = "savanna"
 SAVANNA_PLATEAU = "savanna_plateau"
 WINDSWEPT_HILLS = "windswept_hills"
 WINDSWEPT_GRAVELLY_HILLS = "windswept_gravelly_hills"
 WINDSWEPT_FOREST = "windswept_forest"
 WINDSWEPT_SAVANNA = "windswept_savanna"
-JUNGLE = "jungle"
+__biome_dups["jungle"] = "jungle"
 SPARSE_JUNGLE = "sparse_jungle"
 BAMBOO_JUNGLE = "bamboo_jungle"
 BADLANDS = "badlands"
@@ -556,20 +580,20 @@ WARPED_FOREST = "warped_forest"
 CRIMSON_FOREST = "crimson_forest"
 SOUL_SAND_VALLEY = "soul_sand_valley"
 BASALT_DELTAS = "basalt_deltas"
-THE_END = "the_end"
+__biome_dups["the_end"] = "the_end"
 END_HIGHLANDS = "end_highlands"
 END_MIDLANDS = "end_midlands"
 SMALL_END_ISLANDS = "small_end_islands"
 END_BARRENS = "end_barrens"
 BIOME_GROUP = [
-    THE_VOID, PLAINS, SUNFLOWER_PLAINS, SNOWY_PLAINS, ICE_SPIKES, DESERT, SWAMP, MANGROVE_SWAMP, FOREST, FLOWER_FOREST,
-    BIRCH_FOREST, DARK_FOREST, OLD_GROWTH_BIRCH_FOREST, OLD_GROWTH_PINE_TAIGA, OLD_GROWTH_SPRUCE_TAIGA, TAIGA,
-    SNOWY_TAIGA, SAVANNA, SAVANNA_PLATEAU, WINDSWEPT_HILLS, WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_FOREST,
-    WINDSWEPT_SAVANNA, JUNGLE, SPARSE_JUNGLE, BAMBOO_JUNGLE, BADLANDS, ERODED_BADLANDS, WOODED_BADLANDS, MEADOW,
+    THE_VOID, "plains", SUNFLOWER_PLAINS, SNOWY_PLAINS, ICE_SPIKES, "desert", "swamp", MANGROVE_SWAMP, FOREST,
+    FLOWER_FOREST, BIRCH_FOREST, DARK_FOREST, OLD_GROWTH_BIRCH_FOREST, OLD_GROWTH_PINE_TAIGA, OLD_GROWTH_SPRUCE_TAIGA,
+    "taiga", SNOWY_TAIGA, "savanna", SAVANNA_PLATEAU, WINDSWEPT_HILLS, WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_FOREST,
+    WINDSWEPT_SAVANNA, "jungle", SPARSE_JUNGLE, BAMBOO_JUNGLE, BADLANDS, ERODED_BADLANDS, WOODED_BADLANDS, MEADOW,
     CHERRY_GROVE, GROVE, SNOWY_SLOPES, FROZEN_PEAKS, JAGGED_PEAKS, STONY_PEAKS, RIVER, FROZEN_RIVER, BEACH, SNOWY_BEACH,
     STONY_SHORE, WARM_OCEAN, LUKEWARM_OCEAN, DEEP_LUKEWARM_OCEAN, OCEAN, DEEP_OCEAN, COLD_OCEAN, DEEP_COLD_OCEAN,
     FROZEN_OCEAN, DEEP_FROZEN_OCEAN, MUSHROOM_FIELDS, DRIPSTONE_CAVES, LUSH_CAVES, DEEP_DARK, NETHER_WASTES,
-    WARPED_FOREST, CRIMSON_FOREST, SOUL_SAND_VALLEY, BASALT_DELTAS, THE_END, END_HIGHLANDS, END_MIDLANDS,
+    WARPED_FOREST, CRIMSON_FOREST, SOUL_SAND_VALLEY, BASALT_DELTAS, "the_end", END_HIGHLANDS, END_MIDLANDS,
     SMALL_END_ISLANDS, END_BARRENS
 ]
 
@@ -647,14 +671,16 @@ biomes = {
 for __k in tuple(biomes.keys()):
     v = biomes[__k]
     biomes[v.name] = v
+    biomes[v.value] = v
 
 
 def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(BIOME_GROUP, *values)
+    return _as_things(BIOME_GROUP, __biome_dups, *values)
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-02-23T10:33:28-08:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-03-05T13:23:04-08:00
+__effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
 HASTE = "haste"
@@ -686,13 +712,13 @@ SLOW_FALLING = "slow_falling"
 CONDUIT_POWER = "conduit_power"
 DOLPHINS_GRACE = "dolphins_grace"
 BAD_OMEN = "bad_omen"
-HERO_OF_THE_VILLAGE = "hero_of_the_village"
+__effect_dups["adventure/hero_of_the_village"] = "hero_of_the_village"
 DARKNESS = "darkness"
 EFFECT_GROUP = [
     SPEED, SLOWNESS, HASTE, MINING_FATIGUE, STRENGTH, INSTANT_HEALTH, INSTANT_DAMAGE, JUMP_BOOST, NAUSEA, REGENERATION,
     RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY, BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON,
     WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, BAD_LUCK, SLOW_FALLING, CONDUIT_POWER,
-    DOLPHINS_GRACE, BAD_OMEN, HERO_OF_THE_VILLAGE, DARKNESS
+    DOLPHINS_GRACE, BAD_OMEN, "hero_of_the_village", DARKNESS
 ]
 
 Effect = namedtuple("Effect", ['name', 'value', 'desc', 'positive', 'id'])
@@ -728,7 +754,7 @@ effects = {
     "RESISTANCE": Effect("""Resistance""", "resistance", """Reduces damage, higher levels reduce more damage.""",
                          "True", "11"),
     "FIRE_RESISTANCE": Effect("""Fire Resistance""", "fire_resistance",
-                              """Prevents the affected entity from taking damage due to Fire, lava and other sources of fire damage.""",
+                              """Prevents the affected entity from taking damage due to fire, lava and other sources of fire damage.""",
                               "True", "12"),
     "WATER_BREATHING": Effect("""Water Breathing""", "water_breathing",
                               """Prevents drowning and lets the affected entity breathe underwater.""", "True", "13"),
@@ -772,7 +798,7 @@ effects = {
     "DOLPHINS_GRACE": Effect("""Dolphin's Grace""", "dolphins_grace",
                              """Increases swimming speed (only obtainable from dolphins).""", "True", "30"),
     "BAD_OMEN": Effect("""Bad Omen""", "bad_omen",
-                       """Causes an illager raid to start upon entering a village (only received from an Illager captain upon its death), higher levels cause a more difficult raid.""",
+                       """Causes an illager raid to start upon entering a village (only received from an illager captain upon its death), higher levels cause a more difficult raid.""",
                        "None", "31"),
     "HERO_OF_THE_VILLAGE": Effect("""Hero of the Village""", "hero_of_the_village",
                                   """Gives discounts on trades with villagers, and makes villagers throw items at the player depending on their profession.""",
@@ -783,14 +809,16 @@ effects = {
 for __k in tuple(effects.keys()):
     v = effects[__k]
     effects[v.name] = v
+    effects[v.value] = v
 
 
 def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(EFFECT_GROUP, *values)
+    return _as_things(EFFECT_GROUP, __effect_dups, *values)
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-02-23T10:33:29-08:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-03-05T13:23:04-08:00
+__enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
 BLAST_PROTECTION = "blast_protection"
@@ -902,14 +930,16 @@ enchantments = {
 for __k in tuple(enchantments.keys()):
     v = enchantments[__k]
     enchantments[v.name] = v
+    enchantments[v.value] = v
 
 
 def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(ENCHANTMENT_GROUP, *values)
+    return _as_things(ENCHANTMENT_GROUP, __enchantment_dups, *values)
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-02-23T10:33:29-08:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-03-05T13:23:04-08:00
+__gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
 COMMAND_BLOCK_OUTPUT = "commandBlockOutput"
@@ -1110,14 +1140,16 @@ game_rules = {
 for __k in tuple(game_rules.keys()):
     v = game_rules[__k]
     game_rules[v.name] = v
+    game_rules[v.value] = v
 
 
 def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(GAME_RULE_GROUP, *values)
+    return _as_things(GAME_RULE_GROUP, __gamerule_dups, *values)
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-02-23T10:33:29-08:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-03-05T13:23:04-08:00
+__scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
 DEATH_COUNT = "deathCount"
@@ -1161,14 +1193,16 @@ score_criteria = {
 for __k in tuple(score_criteria.keys()):
     v = score_criteria[__k]
     score_criteria[v.name] = v
+    score_criteria[v.value] = v
 
 
 def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(SCORE_CRITERIA_GROUP, *values)
+    return _as_things(SCORE_CRITERIA_GROUP, __scorecriteria_dups, *values)
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-02-23T10:33:29-08:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-03-05T13:23:04-08:00
+__particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -1218,7 +1252,7 @@ FALLING_SPORE_BLOSSOM = "falling_spore_blossom"
 FALLING_WATER = "falling_water"
 FIREWORK = "firework"
 FISHING = "fishing"
-FLAME = "flame"
+__particle_dups["flame"] = "flame"
 FLASH = "flash"
 GLOW = "glow"
 GLOW_SQUID_INK = "glow_squid_ink"
@@ -1241,7 +1275,7 @@ NAUTILUS = "nautilus"
 NOTE = "note"
 POOF = "poof"
 PORTAL = "portal"
-RAIN = "rain"
+__particle_dups["rain"] = "rain"
 REVERSE_PORTAL = "reverse_portal"
 SCRAPE = "scrape"
 SCULK_CHARGE = "sculk_charge"
@@ -1266,8 +1300,8 @@ UNDERWATER = "underwater"
 VAULT_CONNECTION = "vault_connection"
 VIBRATION = "vibration"
 WARPED_SPORE = "warped_spore"
-WAX_OFF = "wax_off"
-WAX_ON = "wax_on"
+__particle_dups["husbandry/wax_off"] = "wax_off"
+__particle_dups["husbandry/wax_on"] = "wax_on"
 WHITE_ASH = "white_ash"
 WITCH = "witch"
 PARTICLE_GROUP = [
@@ -1277,12 +1311,13 @@ PARTICLE_GROUP = [
     DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PLUME, EFFECT, EGG_CRACK,
     ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER,
     FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, FALLING_DUST, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR,
-    FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK,
-    GUST, GUST_EMITTER, GUST_DUST, HAPPY_VILLAGER, HEART, INSTANT_EFFECT, ITEM, ITEM_SLIME, ITEM_SNOWBALL,
-    LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, POOF, PORTAL, RAIN,
-    REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMOKE, SNEEZE, SNOWFLAKE,
-    SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING,
-    TRIAL_SPAWNER_DETECTION, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE, WAX_OFF, WAX_ON, WHITE_ASH, WITCH
+    FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, "flame", FLASH, GLOW,
+    GLOW_SQUID_INK, GUST, GUST_EMITTER, GUST_DUST, HAPPY_VILLAGER, HEART, INSTANT_EFFECT, ITEM, ITEM_SLIME,
+    ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE,
+    POOF, PORTAL, "rain", REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME,
+    SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK,
+    SWEEP_ATTACK, TOTEM_OF_UNDYING, TRIAL_SPAWNER_DETECTION, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE,
+    "wax_off", "wax_on", WHITE_ASH, WITCH
 ]
 
 Particle = namedtuple("Particle", ['name', 'value', 'desc'])
@@ -1451,14 +1486,16 @@ particles = {
 for __k in tuple(particles.keys()):
     v = particles[__k]
     particles[v.name] = v
+    particles[v.value] = v
 
 
 def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(PARTICLE_GROUP, *values)
+    return _as_things(PARTICLE_GROUP, __particle_dups, *values)
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-02-23T10:33:29-08:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-03-05T13:23:05-08:00
+__potterysherd_dups = {}
 ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
 ARCHER_POTTERY_SHERD = "archer_pottery_sherd"
 ARMS_UP_POTTERY_SHERD = "arms_up_pottery_sherd"
@@ -1513,7 +1550,8 @@ pottery_sherds = {
 for __k in tuple(pottery_sherds.keys()):
     v = pottery_sherds[__k]
     pottery_sherds[v.name] = v
+    pottery_sherds[v.value] = v
 
 
 def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(POTTERY_SHERD_GROUP, *values)
+    return _as_things(POTTERY_SHERD_GROUP, __potterysherd_dups, *values)
