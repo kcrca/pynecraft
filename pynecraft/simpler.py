@@ -3,11 +3,7 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
-from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
-    _ensure_size, _in_group, _quote, _to_list, as_facing, d, de_arg, r, to_id
-from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, \
-    SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
-    fillbiome, setblock
+from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, _ensure_size, _in_group, _quote, _to_list, as_facing, d, de_arg, r, to_i from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, fillbiome, setblock
 from pynecraft.values import as_pattern
 
 ARMORER = 'Armorer'

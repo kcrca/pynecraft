@@ -9,8 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, \
-    as_particle, as_teamoption, enchantments, game_rules, team_options
+from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, as_teamoption, enchantments, game_rules, team_options
 
 if TYPE_CHECKING:
     pass
@@ -3184,7 +3183,7 @@ class NbtHolder(Command):
 class Entity(NbtHolder):
     """This class supports operations useful for an entity. """
 
-    def __init__(self, id: StrOrArg, nbt: NbtDef = None, name: StrOrArg = None):
+    def __init__(self, id: StrOrArg, nbt: NbtDef = None, name: StrOrArg = None) -> object:
         """Creates a new entity object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``.
 
         :param id: The entity ID.
