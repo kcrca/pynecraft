@@ -9,7 +9,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, as_teamoption, enchantments, game_rules, team_options
+from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, \
+    as_teamoption, enchantments, game_rules, team_options
 
 if TYPE_CHECKING:
     pass
@@ -2772,11 +2773,12 @@ def place() -> _PlaceMod:
     return cmd._start(_PlaceMod())
 
 
-def playsound(sound: str, source: str, target: Target, pos: Position = None, /,
+def playsound(sound: str, source: str, target: Target = None, pos: Position = None, /,
               volume: float = None, pitch: float = None, min_volume: float = None) -> str:
     """Plays a sound."""
     cmd = Command()
-    cmd._add('$playsound', as_resource_path(sound), as_resource_path(source), as_target(target))
+    cmd._add('$playsound', as_resource_path(sound), as_resource_path(source))
+    cmd._add_opt(as_target(target))
     cmd._add_opt_pos(pos)
     cmd._add_opt(volume, pitch, min_volume)
     return str(cmd)
