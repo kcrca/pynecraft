@@ -9,8 +9,8 @@ from importlib.resources import files
 from ._utils.fetch_things import ItemFetcher
 from .base import COLORS, Nbt, NbtDef, to_id, to_name
 from .commands import Block, Entity
-from .enums import PotterySherd
 from .simpler import Item, as_color_num
+from .values import POTTERY_SHERD_GROUP, pottery_sherds
 
 blocks: dict[str, Block] = {}
 """All blocks by name. See ``block_items`` if you want an item for a block."""
@@ -432,4 +432,4 @@ trim_patterns = sorted(
 
 armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 
-sherds = tuple(x.value for x in PotterySherd)
+sherds = tuple(pottery_sherds[x].name for x in POTTERY_SHERD_GROUP)
