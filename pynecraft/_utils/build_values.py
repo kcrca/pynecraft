@@ -521,6 +521,27 @@ class Pattern(PageEnumDesc):
         elif text == 'Code':
             self.value_col = col
 
+    def added_fields(self):
+        return ['sign_text']
+
+    def added_values(self, value):
+        #     @staticmethod
+    #     def sign_text(pattern) -> Tuple[str]:
+    #         return {'': ('Blank',), 'drs': ('Down Right Stripe',), 'dls': ('Down Left Stripe',), 'cr': ('Cross',),
+    #                 'bs': ('Bottom Stripe',), 'ms': ('Middle Stripe',), 'ts': ('Top Stripe',), 'sc': ('Square Cross',),
+    #                 'ls': ('Left Stripe',), 'cs': ('Center Stripe',), 'rs': ('Right Stripe',), 'ss': ('Small Stripes',),
+    #                 'ld': ('Left Diagonal',), 'rud': ('Right Upside-Down', 'Diagonal',),
+    #                 'lud': ('Left Upside-Down', 'Diagonal',), 'rd': ('Right Diagonal',), 'vh': ('Vertical Half', '(Left)',),
+    #                 'vhr': ('Vertical Half', '(Right)',), 'hhb': ('Horizontal Half', '(Bottom)',),
+    #                 'hh': ('Horizontal Half', '(Top)',), 'bl': ('Bottom Left', 'Corner',),
+    #                 'br': ('Bottom Right', 'Corner',), 'tl': ('Top Left', 'Corner',), 'tr': ('Top Right', 'Corner',),
+    #                 'bt': ('Bottom Triangle',), 'tt': ('Top Triangle',), 'bts': ('Bottom Triangle', 'Sawtooth',),
+    #                 'tts': ('Top Triangle', 'Sawtooth',), 'mc': ('Middle Circle',), 'mr': ('Middle Rhombus',),
+    #                 'bo': ('Border',), 'cbo': ('Curly Border',), 'gra': ('Gradient',), 'gru': ('Gradient', 'Upside-Down',),
+    #                 'cre': ('Creeper',), 'bri': ('Brick',), 'sku': ('Skull',), 'flo': ('Flower',), 'moj': ('Mojang',),
+    #                 'glb': ('Globe',), 'pig': ('Pig',), }[pattern.value]
+
+
     def extract(self, cols):
         return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col].next, cols[self.desc_col]))
 
