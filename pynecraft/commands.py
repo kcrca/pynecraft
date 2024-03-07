@@ -496,6 +496,11 @@ RAIN = 'rain'
 THUNDER = 'thunder'
 WEATHER_TYPES = [CLEAR, RAIN, THUNDER]
 
+ADD_VALUE = 'add_value'
+ADD_MULTIPLIED_BASE = 'add_multiplied_base'
+ADD_MULTIPLIED_TOTAL = 'add_multiplied_total'
+ATTRIBUTE_MODIFIER_ACTION_GROUP = [ADD_VALUE, ADD_MULTIPLIED_BASE, ADD_MULTIPLIED_TOTAL]
+
 GIVE = 'give'
 GIVE_CLEAR = [GIVE, CLEAR]
 
@@ -1308,8 +1313,9 @@ class _AttributeBaseAct(Command):
 
 class _AttributeModifierAct(Command):
     @_fluent
-    def add(self, uuid: StrOrArg | Uuid, name: StrOrArg, value: FloatOrArg) -> str:
+    def add(self, uuid: StrOrArg | Uuid, name: StrOrArg, value: FloatOrArg, op: str = None) -> str:
         self._add('add', as_uuid(uuid), f'"{name}"', de_float_arg(value))
+        self._add_opt(_in_group(ATTRIBUTE_MODIFIER_ACTION_GROUP, op))
         return str(self)
 
     @_fluent

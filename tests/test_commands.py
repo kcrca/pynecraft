@@ -592,6 +592,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('base set 1.2', str(_AttributeMod().base().set(1.2)))
         self.assertEqual('modifier add 1-2-3-f "robin" 1.3',
                          str(_AttributeMod().modifier().add('1-2-3-f', 'robin', 1.3)))
+        self.assertEqual('modifier add 1-2-3-f "robin" 1.3 add_value',
+                         str(_AttributeMod().modifier().add('1-2-3-f', 'robin', 1.3, ADD_VALUE)))
         self.assertEqual('modifier remove 1-2-3-f', str(_AttributeMod().modifier().remove('1-2-3-f')))
         self.assertEqual('modifier value get 1-2-3-f', str(_AttributeMod().modifier().value('1-2-3-f')))
         self.assertEqual('modifier value get 1-2-3-f 1.3', str(_AttributeMod().modifier().value('1-2-3-f', 1.3)))
