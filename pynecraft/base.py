@@ -686,7 +686,12 @@ class Nbt(UserDict):
 
     @classmethod
     def _write_key(cls, key, sout):
+        quote = ':' in key
+        if quote:
+            sout.write('"')
         sout.write(key)
+        if quote:
+            sout.write('"')
         sout.write(':')
 
     @classmethod
