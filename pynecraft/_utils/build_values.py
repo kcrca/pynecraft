@@ -521,11 +521,8 @@ class Pattern(PageEnumDesc):
         elif text == 'Code':
             self.value_col = col
 
-    def added_fields(self):
-        return ['sign_text']
 
-    def added_values(self, value):
-        #     @staticmethod
+    #     @staticmethod
     #     def sign_text(pattern) -> Tuple[str]:
     #         return {'': ('Blank',), 'drs': ('Down Right Stripe',), 'dls': ('Down Left Stripe',), 'cr': ('Cross',),
     #                 'bs': ('Bottom Stripe',), 'ms': ('Middle Stripe',), 'ts': ('Top Stripe',), 'sc': ('Square Cross',),
