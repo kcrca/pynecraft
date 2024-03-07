@@ -401,9 +401,10 @@ class Item(Entity):
         """The nbt for this item."""
         item = as_block(item)
         item_id = item.id
-        if item_id.find(':') < 0:
+        # !! Remove this hack?
+        if item_id and item_id.find(':') < 0:
             item_id = 'minecraft:' + item_id
-        retval = Nbt({'id': item_id, 'Count': 1})
+        retval = Nbt({'id': item_id})
         # Filled maps are stored directly, not shunted an inner tag
         if item_id:
             if item_id == 'minecraft:filled_map':
@@ -411,11 +412,11 @@ class Item(Entity):
                 if nbt:
                     retval = retval.merge(nbt)
             elif item.nbt:
-                retval['tag']['BlockEntityTag'] = item.nbt
+                retval['components']['block_entity_data'] = item.nbt
         try:
             block_state = item.state
             if block_state:
-                retval['tag']['BlockStateTag'] = block_state
+                retval['components']['block_state'] = block_state
         except AttributeError:
             pass
         if nbt:
