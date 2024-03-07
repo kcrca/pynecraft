@@ -367,11 +367,11 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual({'Facing': 5, 'Fixed': True}, ItemFrame(EAST).nbt)
         self.assertEqual({'Facing': 5}, ItemFrame(EAST).fixed(False).nbt)
         self.assertEqual(
-            {'Facing': 5, 'Fixed': True, 'Item': {'Count': 1, 'id': 'minecraft:my_name',
+            {'Facing': 5, 'Fixed': True, 'Item': {'id': 'minecraft:my_name',
                                                   'tag': {'display': {'Name': {'text': 'My Name'}}}}},
             ItemFrame(EAST).named('My Name').nbt)
         self.assertEqual({'Facing': 5, 'Fixed': True, 'foo': 12}, ItemFrame(EAST, nbt={'foo': 12}).nbt)
-        self.assertEqual({'Facing': 5, 'Fixed': True, 'Item': {'id': 'minecraft:obsidian', 'Count': 1}},
+        self.assertEqual({'Facing': 5, 'Fixed': True, 'Item': {'id': 'minecraft:obsidian'}},
                          ItemFrame(EAST).item('obsidian').nbt)
 
     def test_villager(self):
@@ -382,29 +382,29 @@ class TestSimpler(unittest.TestCase):
             Villager(CHILD, 'plains').nbt)
         self.assertEqual(Nbt({
             'Offers': {'Recipes': [
-                {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
+                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}},
             ]},
             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon')).nbt)
         self.assertEqual(Nbt({
-            'Offers': {'Recipes': [{'buy': {'Count': 1, 'id': 'stone'}, 'buyB': {'Count': 1, 'id': 'melon'},
-                                    'rewardExp': True, 'sell': {'Count': 1, 'id': 'torch'}}]},
+            'Offers': {'Recipes': [{'buy': {'id': 'stone'}, 'buyB': {'id': 'melon'},
+                                    'rewardExp': True, 'sell': {'id': 'torch'}}]},
             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon', 'torch')).nbt)
         self.assertEqual(Nbt(
-            {'Offers': {'Recipes': [{'buy': {'id': 'stone', 'Count': 1},
+            {'Offers': {'Recipes': [{'buy': {'id': 'stone'},
                                      'rewardExp': True, 'sell': {'id': 'iron_axe', 'Count': {'damage': 12}}}]},
              'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', ('iron_axe', {'damage': 12}))).nbt)
         self.assertEqual(Nbt({
             'Offers': {'Recipes': [
-                {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
-                {'buy': {'Count': 1, 'id': 'stone'}, 'rewardExp': True, 'sell': {'Count': 1, 'id': 'melon'}},
+                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}},
+                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}},
             ]},
             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon'), Trade('stone', 'melon').nbt()).nbt)
         self.assertEqual(Nbt({
-            'Inventory': [{'id': 'minecraft:iron_hoe', 'Count': 1},
+            'Inventory': [{'id': 'minecraft:iron_hoe'},
                           {'id': 'minecraft:wheat', 'Count': 25}],
             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).inventory('iron_hoe', ('wheat', 25)).nbt)
@@ -454,24 +454,25 @@ class TestSimpler(unittest.TestCase):
 
     def test_item(self):
         self.assertEqual('dirt', Item('dirt').id)
-        self.assertEqual({'id': 'dirt', 'Count': 1}, Item('dirt').nbt)
-        self.assertEqual({'id': 'dirt', 'Count': 1, 'foo': 17}, Item('dirt', nbt={'foo': 17}).nbt)
-        self.assertEqual({'id': 'minecraft:filled_map', 'Count': 1}, Item.nbt_for('filled_map'))
+        self.assertEqual({'id': 'dirt'}, Item('dirt').nbt)
+        self.assertEqual({'id': 'dirt', 'Count': 2}, Item('dirt', 2).nbt)
+        self.assertEqual({'id': 'dirt', 'foo': 17}, Item('dirt', nbt={'foo': 17}).nbt)
+        self.assertEqual({'id': 'minecraft:filled_map'}, Item.nbt_for('filled_map'))
 
     def test_shield(self):
         shield = Shield()
-        self.assertEqual({'id': 'shield', 'Count': 1, 'tag': {'BlockEntityTag': {'Patterns': []}}}, shield.nbt)
+        self.assertEqual({'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': []}}}, shield.nbt)
         shield.add_pattern('drs', CYAN)
         self.assertEqual(
-            {'Count': 1, 'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9}]}}},
+            {'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9}]}}},
             shield.nbt)
         shield.add_pattern(BRICK, PURPLE)
         self.assertEqual(
-            {'Count': 1, 'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9},
+            {'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': 'drs', 'Color': 9},
                                                                                  {'Pattern': 'bri', 'Color': 10}]}}},
             shield.nbt)
         shield.clear_patterns()
-        self.assertEqual({'id': 'shield', 'Count': 1, 'tag': {'BlockEntityTag': {'Patterns': []}}}, shield.nbt)
+        self.assertEqual({'id': 'shield', 'tag': {'BlockEntityTag': {'Patterns': []}}}, shield.nbt)
 
     def test_painting(self):
         self.assertEqual({'variant': 'stage'}, Painting('stage').nbt)
@@ -518,7 +519,7 @@ class TestSimpler(unittest.TestCase):
     def test_macro(self):
         shield = Shield().add_pattern(Arg('pat'), Arg('c'))
         self.assertEqual(
-            {'Count': 1, 'id': 'shield',
+            {'id': 'shield',
              'tag': {'BlockEntityTag': {'Patterns': [{'Pattern': '$(pat)', 'Color': '$(c)'}]}}},
             shield.nbt)
         self.assertEqual('$(c)', as_color(Arg('c')))

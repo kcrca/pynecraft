@@ -392,7 +392,9 @@ class Item(Entity):
 
     def __init__(self, id: str, count: int = 1, name=None, nbt=None):
         super().__init__(id, name=name)
-        self.merge_nbt({'id': id, 'Count': count})
+        self.merge_nbt({'id': id})
+        if count != 1:
+            self.merge_nbt({'Count': count})
         if nbt:
             self.merge_nbt(nbt)
 
@@ -720,6 +722,10 @@ class Trade:
         })
         if len(self.buy) > 1:
             values['buyB'] = {'id': self.buy[1][0], 'Count': self.buy[1][1]}
+        ones = []
+        for k,v in values.items():
+            if k != 'rewardExp' and v['Count'] == 1:
+                del v['Count']
         values.set_or_clear('maxUses', self.max_uses)
         return values
 
@@ -817,7 +823,8 @@ class Villager(Entity):
             if not isinstance(i, tuple):
                 i = (i, 1)
             item_nbt = Item.nbt_for(as_block(i[0]))
-            item_nbt['Count'] = i[1]
+            if i[1] != 1:
+                item_nbt['Count'] = i[1]
             inventory.append(Nbt(item_nbt))
         return self
 

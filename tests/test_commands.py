@@ -182,6 +182,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('stone{a: 17}', str(Block('stone').merge_state({}).merge_nbt({'a': 17})))
         self.assertEqual('stone{a: 17}', str(Block('stone').merge_nbt({'a': 17})))
         self.assertEqual('stone[b=c]{a: 17}', str(Block('stone').merge_state({'b': 'c'}).merge_nbt({'a': 17})))
+        self.assertEqual("stick[custom_data={'foo': 'bar'}]", str(Block('stick', {'custom_data': {'foo': 'bar'}})))
 
         self.assertEqual('stone{a: 16, b: howdy}',
                          str(Block('stone').merge_nbt({'a': 17}).merge_nbt({'a': 16, 'b': 'howdy'})))
