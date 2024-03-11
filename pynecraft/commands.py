@@ -278,6 +278,8 @@ def as_score(score: ScoreName | None) -> Score | None:
     raise ValueError(f'{str(score)}: Invalid score')
 
 
+_single_slot_re = r'[a-z]+(\.([a-z]+))*(\.[0-9]+|\.\*)?'
+_SLOT_RE = re.compile(_single_slot_re + rf'(-{_single_slot_re})?')
 def as_slot(slot: StrOrArg | None) -> str | None:
     """Checks if the argument is a valid slot specification, or None.
 
@@ -292,7 +294,7 @@ def as_slot(slot: StrOrArg | None) -> str | None:
         return str(slot)
     if slot is None:
         return None
-    if not re.fullmatch(r'[a-z]+(\.[a-z0-9]+)?', slot):
+    if not _SLOT_RE.fullmatch(slot):
         raise ValueError(f'{slot}: Bad slot specification')
     return slot
 
@@ -1101,6 +1103,12 @@ class _IfClause(Command):
     @_fluent
     def data(self, data_target: DataTarget, nbt_path: StrOrArg) -> _ExecuteMod:
         self._add('data', data_target_str(data_target), as_nbt_path(nbt_path))
+        return self._start(_ExecuteMod())
+
+    @_fluent
+    def item(self, item_target: ItemTarget, slot: StrOrArg, item: StrOrArg) -> _ExecuteMod:
+        # data target is a superset of item target
+        self._add('item', as_data_target(item_target), as_slot(slot), de_arg(item))
         return self._start(_ExecuteMod())
 
     @_fluent
@@ -3735,6 +3743,7 @@ SignCommands = Iterable[SignCommand]
 Commands = Iterable[Union[Command, str]]
 RawDataTarget = Union[Position, TargetSpec, StrOrArg]
 DataTarget = Union[RawDataTarget, DataTargetBase]
+ItemTarget = Union[Position | EntityDef]
 SomeBlockDefs = Union[BlockDef, Iterable[BlockDef]]
 SomeMappings = Union[Mapping, Iterable[Mapping]]
 

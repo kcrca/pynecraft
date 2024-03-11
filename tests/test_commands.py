@@ -89,10 +89,16 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('if function foo', str(_ExecuteMod().if_().function('foo')))
         self.assertEqual('unless function foo', str(_ExecuteMod().unless().function('foo')))
         self.assertEqual('store result block 1 ~2 ^3 {} short 1.3', str(
-            _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT,
-                                              1.3)))
+            _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT, 1.3)))
         self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
         self.assertEqual('entity @p', str(_ExecuteMod().entity(p())))
+        self.assertEqual('if item block 1 2 3 armor.* #iron_armor',
+                         str(_ExecuteMod().if_().item((1, 2, 3), 'armor.*', '#iron_armor')))
+        self.assertEqual('if item entity @s armor.* #iron_armor',
+                         str(_ExecuteMod().if_().item(s(), 'armor.*', '#iron_armor')))
+        self.assertEqual('if item entity $(x) armor.* #iron_armor',
+                         str(_ExecuteMod().if_().item(entity(Arg('x')), 'armor.*', '#iron_armor')))
+
         with self.assertRaises(ValueError):
             _ExecuteMod().align('foo')
         with self.assertRaises(ValueError):
@@ -1233,6 +1239,10 @@ class TestCommands(unittest.TestCase):
     def test_as_slot(self):
         self.assertIsNone(as_slot(None))
         self.assertEqual('foo.1', as_slot('foo.1'))
+        self.assertEqual('foo.*', as_slot('foo.*'))
+        self.assertEqual('player.crafting.0', as_slot('player.crafting.0'))
+        self.assertEqual('player.crafting.*', as_slot('player.crafting.*'))
+        self.assertEqual('player.crafting.0-player.crafting.9', as_slot('player.crafting.0-player.crafting.9'))
         with self.assertRaises(ValueError):
             as_slot('foo.12.12')
 
