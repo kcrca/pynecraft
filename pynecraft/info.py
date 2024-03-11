@@ -185,6 +185,9 @@ instruments = (
 )
 """The instruments note blocks can play."""
 
+wolves = ('ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods')
+"""Wolf variants."""
+
 
 class Horse(Entity):
     """Data about a horse."""
