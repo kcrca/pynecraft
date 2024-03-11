@@ -4,7 +4,7 @@ import dataclasses
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
-    _ensure_size, _in_group, _quote, _to_list, as_facing, d, de_arg, r, to_id
+    _ensure_size, _in_group, _to_list, as_facing, d, de_arg, r, to_id
 from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, \
     SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
     fillbiome, setblock
@@ -276,25 +276,26 @@ class Book:
         """Returns the book as an Item object. This is useful for things like putting the book into a container."""
         item = Item.nbt_for('written_book')
         nbt = self.nbt()
-        try:
-            pages = nbt['pages']
-            if pages:
-                nbt['pages'] = _quote(pages)
-        except KeyError:
-            pass
+        # try:
+        #     pages = nbt['components']['written_book_content']['pages']
+        #     if pages:
+        #         nbt['components']['written_book_content']['pages'] = _quote(pages)
+        # except KeyError:
+        #     pass
 
-        return Nbt({'Book': item.merge({'tag': nbt})})
+        return Nbt({'Book': nbt})
 
     def nbt(self):
         """Returns the NBT for the book."""
         cur_page = self._cur_page
         self.next_page()
         jt = Nbt()
-        jt['title'] = self.title
-        jt['author'] = self.author
+        components = {'written_book_content': {'author': self.author,
+                                               'title': self.title,
+                                               'pages': [JsonList(x) for x in self._pages[:]]}}
         if self.display_name:
-            jt['display_name'] = {'Lore': self.display_name}
-        jt['pages'] = [JsonList(x) for x in self._pages[:]]
+            components['custom_data'] = {'Lore': self.display_name}
+        jt['components'] = components
         self._cur_page = cur_page
         self._pages.pop()
         return jt
@@ -432,20 +433,20 @@ class Shield(Item):
     def __init__(self):
         """Creates a new shield."""
         super().__init__('shield')
-        self.merge_nbt({'tag': {'BlockEntityTag': {'Patterns': []}}})
+        self.merge_nbt({'components': {'banner_patterns': []}})
 
     def add_pattern(self, pattern: StrOrArg, color: IntOrArg | StrOrArg) -> Shield:
         """Add a pattern to the shield."""
-        color = as_color_num(color)
-        patterns = self.nbt['tag']['BlockEntityTag'].get_list('Patterns')
+        color = as_color(color)
+        patterns = self.nbt['components'].get_list('banner_patterns')
         if isinstance(pattern, str):
             pattern = as_pattern(pattern)
-        patterns.append(Nbt({'Pattern': str(pattern), 'Color': color}))
+        patterns.append(Nbt({'pattern': str(pattern), 'color': color}))
         return self
 
     def clear_patterns(self) -> Shield:
         """Remove all patterns from the shield."""
-        self.nbt['tag']['BlockEntityTag']['Patterns'] = []
+        self.nbt['components']['banner_patterns'] = []
         return self
 
 
@@ -675,14 +676,14 @@ class ItemFrame(Entity):
         block = as_block(name)
         if block is None:
             try:
-                del self.nbt['Item']['tag']['display']['Name']
+                del self.nbt['Item']['components']['custom_name']
             except KeyError:
                 pass  # Must not be there already, ignore the error
         else:
             if 'Item' not in self.nbt:
                 self.item(block)
             nbt = self.nbt
-            nbt['Item']['tag']['display']['Name'] = JsonText.text(block.name)
+            nbt['Item']['components']['custom_name'] = JsonText.text(block.name)
         return self
 
 
@@ -723,7 +724,7 @@ class Trade:
         if len(self.buy) > 1:
             values['buyB'] = {'id': self.buy[1][0], 'Count': self.buy[1][1]}
         ones = []
-        for k,v in values.items():
+        for k, v in values.items():
             if k != 'rewardExp' and v['Count'] == 1:
                 del v['Count']
         values.set_or_clear('maxUses', self.max_uses)
