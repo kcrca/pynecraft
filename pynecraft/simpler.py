@@ -433,7 +433,16 @@ class Shield(Item):
     def __init__(self):
         """Creates a new shield."""
         super().__init__('shield')
-        self.merge_nbt({'components': {'banner_patterns': []}})
+
+    def color(self, color: StrOrArg | None) -> Shield:
+        if color:
+            self.nbt['components']['base_color'] = de_arg(color)
+        else:
+            try:
+                del self.nbt['components']['base_color']
+            except KeyError:
+                pass
+        return self
 
     def add_pattern(self, pattern: StrOrArg, color: IntOrArg | StrOrArg) -> Shield:
         """Add a pattern to the shield."""
@@ -446,7 +455,10 @@ class Shield(Item):
 
     def clear_patterns(self) -> Shield:
         """Remove all patterns from the shield."""
-        self.nbt['components']['banner_patterns'] = []
+        try:
+            del self.nbt['components']['banner_patterns']
+        except KeyError:
+            pass
         return self
 
 

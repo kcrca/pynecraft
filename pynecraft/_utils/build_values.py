@@ -506,6 +506,7 @@ class Pattern(PageEnumDesc):
     """Generates the banner pattern enum."""
 
     def __init__(self):
+        print('PATTERN HACK: Remove this', file=sys.stderr)
         super().__init__('Pattern', WIKI + 'Banner/Patterns', 'patterns')
         self.value_col = self.desc_col = self.name_col = None
 
@@ -520,7 +521,6 @@ class Pattern(PageEnumDesc):
             self.name_col = col
         elif text == 'Code':
             self.value_col = col
-
 
     #     @staticmethod
     #     def sign_text(pattern) -> Tuple[str]:
@@ -538,9 +538,23 @@ class Pattern(PageEnumDesc):
     #                 'cre': ('Creeper',), 'bri': ('Brick',), 'sku': ('Skull',), 'flo': ('Flower',), 'moj': ('Mojang',),
     #                 'glb': ('Globe',), 'pig': ('Pig',), }[pattern.value]
 
-
     def extract(self, cols):
-        return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col].next, cols[self.desc_col]))
+        hack_map = {
+            'b': 'base', 'bs': 'stripe_bottom', 'ts': 'stripe_top', 'ls': 'stripe_left', 'rs': 'stripe_right',
+            'cs': 'stripe_center', 'ms': 'stripe_middle', 'drs': 'stripe_downright',
+            'dls': 'stripe_downleft', 'ss': 'small_stripes', 'cr': 'cross', 'sc': 'straight_cross',
+            'ld': 'diagonal_left', 'rud': 'diagonal_right', 'lud': 'diagonal_up_left',
+            'rd': 'diagonal_up_right', 'vh': 'half_vertical', 'vhr': 'half_vertical_right',
+            'hh': 'half_horizontal', 'hhb': 'half_horizontal_bottom', 'bl': 'square_bottom_left',
+            'br': 'square_bottom_right', 'tl': 'square_top_left', 'tr': 'square_top_right', 'bt': 'triangle_bottom',
+            'tt': 'triangle_top', 'bts': 'triangles_bottom', 'tts': 'triangles_top',
+            'mc': 'circle',
+            'mr': 'rhombus', 'bo': 'border', 'cbo': 'curly_border', 'bri': 'bricks', 'gra': 'gradient',
+            'gru': 'gradient_up', 'cre': 'creeper', 'sku': 'skull', 'flo': 'flower', 'moj': 'mojang',
+            'glb': 'globe', 'pig': 'piglin'
+        }
+        value = clean(cols[self.value_col].next)
+        return hack_map[value].upper(), hack_map[value], clean(cols[self.desc_col])
 
 
 if __name__ == '__main__':

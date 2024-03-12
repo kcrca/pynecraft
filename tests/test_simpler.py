@@ -7,7 +7,7 @@ from pynecraft.commands import *
 from pynecraft.function import text_lines
 from pynecraft.simpler import *
 from pynecraft.simpler import _str_values
-from pynecraft.values import BRICK
+from pynecraft.values import BRICKS
 
 
 class TestSimpler(unittest.TestCase):
@@ -461,18 +461,27 @@ class TestSimpler(unittest.TestCase):
 
     def test_shield(self):
         shield = Shield()
-        self.assertEqual({'id': 'shield', 'components': {'banner_patterns': []}}, shield.nbt)
-        shield.add_pattern('drs', CYAN)
+        self.assertEqual({'id': 'shield'}, shield.nbt)
+        shield.color(WHITE)
         self.assertEqual(
-            {'id': 'shield', 'components': {'banner_patterns': [{'pattern': 'drs', 'color': 'cyan'}]}},
+            {'id': 'shield', 'components': {'base_color': 'white'}},
             shield.nbt)
-        shield.add_pattern(BRICK, PURPLE)
+        shield.add_pattern('stripe_top', CYAN)
+        self.assertEqual(
+            {'id': 'shield',
+             'components': {'base_color': 'white', 'banner_patterns': [{'pattern': 'stripe_top', 'color': 'cyan'}]}},
+            shield.nbt)
+        shield.add_pattern(BRICKS, PURPLE)
         self.assertEqual(
             {'id': 'shield', 'components': {
-                'banner_patterns': [{'pattern': 'drs', 'color': 'cyan'}, {'pattern': 'bri', 'color': 'purple'}]}},
+                'base_color': 'white',
+                'banner_patterns': [{'pattern': 'stripe_top', 'color': 'cyan'},
+                                    {'pattern': 'bricks', 'color': 'purple'}]}},
             shield.nbt)
         shield.clear_patterns()
-        self.assertEqual({'id': 'shield', 'components': {'banner_patterns': []}}, shield.nbt)
+        self.assertEqual({'id': 'shield', 'components': {'base_color': 'white'}}, shield.nbt)
+        shield.color(None)
+        self.assertEqual({'id': 'shield', 'components': {}}, shield.nbt)
 
     def test_painting(self):
         self.assertEqual({'variant': 'stage'}, Painting('stage').nbt)

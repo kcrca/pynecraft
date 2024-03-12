@@ -280,6 +280,8 @@ def as_score(score: ScoreName | None) -> Score | None:
 
 _single_slot_re = r'[a-z]+(\.([a-z]+))*(\.[0-9]+|\.\*)?'
 _SLOT_RE = re.compile(_single_slot_re + rf'(-{_single_slot_re})?')
+
+
 def as_slot(slot: StrOrArg | None) -> str | None:
     """Checks if the argument is a valid slot specification, or None.
 
@@ -3199,7 +3201,7 @@ class NbtHolder(Command):
 class Entity(NbtHolder):
     """This class supports operations useful for an entity. """
 
-    def __init__(self, id: StrOrArg, nbt: NbtDef = None, name: StrOrArg = None) -> object:
+    def __init__(self, id: StrOrArg, nbt: NbtDef = None, *, name: StrOrArg = None):
         """Creates a new entity object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``.
 
         :param id: The entity ID.
