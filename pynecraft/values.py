@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2024-03-12T15:15:44-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-03-12T15:15:44-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -131,47 +131,47 @@ PATTERN_GROUP = [
 
 Pattern = namedtuple("Pattern", ['name', 'value', 'desc'])
 patterns = {
-    "BASE": Pattern("""BASE""", "base", """Fully color Field."""),
-    "STRIPE_BOTTOM": Pattern("""STRIPE_BOTTOM""", "stripe_bottom", """Base."""),
-    "STRIPE_TOP": Pattern("""STRIPE_TOP""", "stripe_top", """Chief."""),
-    "STRIPE_LEFT": Pattern("""STRIPE_LEFT""", "stripe_left", """Pale Dexter."""),
-    "STRIPE_RIGHT": Pattern("""STRIPE_RIGHT""", "stripe_right", """Pale Sinister."""),
-    "STRIPE_CENTER": Pattern("""STRIPE_CENTER""", "stripe_center", """Pale."""),
-    "STRIPE_MIDDLE": Pattern("""STRIPE_MIDDLE""", "stripe_middle", """Fess."""),
-    "STRIPE_DOWNRIGHT": Pattern("""STRIPE_DOWNRIGHT""", "stripe_downright", """Bend."""),
-    "STRIPE_DOWNLEFT": Pattern("""STRIPE_DOWNLEFT""", "stripe_downleft", """Bend Sinister."""),
-    "SMALL_STRIPES": Pattern("""SMALL_STRIPES""", "small_stripes", """Paly."""),
-    "CROSS": Pattern("""CROSS""", "cross", """Saltire."""),
-    "STRAIGHT_CROSS": Pattern("""STRAIGHT_CROSS""", "straight_cross", """Cross."""),
-    "DIAGONAL_LEFT": Pattern("""DIAGONAL_LEFT""", "diagonal_left", """Per Bend Sinister."""),
-    "DIAGONAL_RIGHT": Pattern("""DIAGONAL_RIGHT""", "diagonal_right", """Per Bend."""),
-    "DIAGONAL_UP_LEFT": Pattern("""DIAGONAL_UP_LEFT""", "diagonal_up_left", """Per Bend Inverted."""),
-    "DIAGONAL_UP_RIGHT": Pattern("""DIAGONAL_UP_RIGHT""", "diagonal_up_right", """Per Bend Sinister Inverted."""),
-    "HALF_VERTICAL": Pattern("""HALF_VERTICAL""", "half_vertical", """Per Pale."""),
-    "HALF_VERTICAL_RIGHT": Pattern("""HALF_VERTICAL_RIGHT""", "half_vertical_right", """Per Pale Inverted."""),
-    "HALF_HORIZONTAL": Pattern("""HALF_HORIZONTAL""", "half_horizontal", """Per Fess."""),
-    "HALF_HORIZONTAL_BOTTOM": Pattern("""HALF_HORIZONTAL_BOTTOM""", "half_horizontal_bottom", """Per Fess Inverted."""),
-    "SQUARE_BOTTOM_LEFT": Pattern("""SQUARE_BOTTOM_LEFT""", "square_bottom_left", """Base Dexter Canton."""),
-    "SQUARE_BOTTOM_RIGHT": Pattern("""SQUARE_BOTTOM_RIGHT""", "square_bottom_right", """Base Sinister Canton."""),
-    "SQUARE_TOP_LEFT": Pattern("""SQUARE_TOP_LEFT""", "square_top_left", """Chief Dexter Canton."""),
-    "SQUARE_TOP_RIGHT": Pattern("""SQUARE_TOP_RIGHT""", "square_top_right", """Chief Sinister Canton."""),
-    "TRIANGLE_BOTTOM": Pattern("""TRIANGLE_BOTTOM""", "triangle_bottom", """Chevron."""),
-    "TRIANGLE_TOP": Pattern("""TRIANGLE_TOP""", "triangle_top", """Inverted Chevron."""),
-    "TRIANGLES_BOTTOM": Pattern("""TRIANGLES_BOTTOM""", "triangles_bottom", """Base Indented."""),
-    "TRIANGLES_TOP": Pattern("""TRIANGLES_TOP""", "triangles_top", """Chief Indented."""),
-    "CIRCLE": Pattern("""CIRCLE""", "circle", """Roundel."""),
-    "RHOMBUS": Pattern("""RHOMBUS""", "rhombus", """Lozenge."""),
-    "BORDER": Pattern("""BORDER""", "border", """Bordure."""),
-    "CURLY_BORDER": Pattern("""CURLY_BORDER""", "curly_border", """Bordure Indented."""),
-    "BRICKS": Pattern("""BRICKS""", "bricks", """Field Masoned."""),
-    "GRADIENT": Pattern("""GRADIENT""", "gradient", """Gradient."""),
-    "GRADIENT_UP": Pattern("""GRADIENT_UP""", "gradient_up", """Base Gradient."""),
-    "CREEPER": Pattern("""CREEPER""", "creeper", """Creeper Charge."""),
-    "SKULL": Pattern("""SKULL""", "skull", """Skull Charge."""),
-    "FLOWER": Pattern("""FLOWER""", "flower", """Flower Charge."""),
-    "MOJANG": Pattern("""MOJANG""", "mojang", """Thing."""),
-    "GLOBE": Pattern("""GLOBE""", "globe", """Globe."""),
-    "PIGLIN": Pattern("""PIGLIN""", "piglin", """Snout."""),
+    "BASE": Pattern("""Base""", "base", """Fully color Field."""),
+    "STRIPE_BOTTOM": Pattern("""Stripe Bottom""", "stripe_bottom", """Base."""),
+    "STRIPE_TOP": Pattern("""Stripe Top""", "stripe_top", """Chief."""),
+    "STRIPE_LEFT": Pattern("""Stripe Left""", "stripe_left", """Pale Dexter."""),
+    "STRIPE_RIGHT": Pattern("""Stripe Right""", "stripe_right", """Pale Sinister."""),
+    "STRIPE_CENTER": Pattern("""Stripe Center""", "stripe_center", """Pale."""),
+    "STRIPE_MIDDLE": Pattern("""Stripe Middle""", "stripe_middle", """Fess."""),
+    "STRIPE_DOWNRIGHT": Pattern("""Stripe Downright""", "stripe_downright", """Bend."""),
+    "STRIPE_DOWNLEFT": Pattern("""Stripe Downleft""", "stripe_downleft", """Bend Sinister."""),
+    "SMALL_STRIPES": Pattern("""Small Stripes""", "small_stripes", """Paly."""),
+    "CROSS": Pattern("""Cross""", "cross", """Saltire."""),
+    "STRAIGHT_CROSS": Pattern("""Straight Cross""", "straight_cross", """Cross."""),
+    "DIAGONAL_LEFT": Pattern("""Diagonal Left""", "diagonal_left", """Per Bend Sinister."""),
+    "DIAGONAL_RIGHT": Pattern("""Diagonal Right""", "diagonal_right", """Per Bend."""),
+    "DIAGONAL_UP_LEFT": Pattern("""Diagonal Up Left""", "diagonal_up_left", """Per Bend Inverted."""),
+    "DIAGONAL_UP_RIGHT": Pattern("""Diagonal Up Right""", "diagonal_up_right", """Per Bend Sinister Inverted."""),
+    "HALF_VERTICAL": Pattern("""Half Vertical""", "half_vertical", """Per Pale."""),
+    "HALF_VERTICAL_RIGHT": Pattern("""Half Vertical Right""", "half_vertical_right", """Per Pale Inverted."""),
+    "HALF_HORIZONTAL": Pattern("""Half Horizontal""", "half_horizontal", """Per Fess."""),
+    "HALF_HORIZONTAL_BOTTOM": Pattern("""Half Horizontal Bottom""", "half_horizontal_bottom", """Per Fess Inverted."""),
+    "SQUARE_BOTTOM_LEFT": Pattern("""Square Bottom Left""", "square_bottom_left", """Base Dexter Canton."""),
+    "SQUARE_BOTTOM_RIGHT": Pattern("""Square Bottom Right""", "square_bottom_right", """Base Sinister Canton."""),
+    "SQUARE_TOP_LEFT": Pattern("""Square Top Left""", "square_top_left", """Chief Dexter Canton."""),
+    "SQUARE_TOP_RIGHT": Pattern("""Square Top Right""", "square_top_right", """Chief Sinister Canton."""),
+    "TRIANGLE_BOTTOM": Pattern("""Triangle Bottom""", "triangle_bottom", """Chevron."""),
+    "TRIANGLE_TOP": Pattern("""Triangle Top""", "triangle_top", """Inverted Chevron."""),
+    "TRIANGLES_BOTTOM": Pattern("""Triangles Bottom""", "triangles_bottom", """Base Indented."""),
+    "TRIANGLES_TOP": Pattern("""Triangles Top""", "triangles_top", """Chief Indented."""),
+    "CIRCLE": Pattern("""Circle""", "circle", """Roundel."""),
+    "RHOMBUS": Pattern("""Rhombus""", "rhombus", """Lozenge."""),
+    "BORDER": Pattern("""Border""", "border", """Bordure."""),
+    "CURLY_BORDER": Pattern("""Curly Border""", "curly_border", """Bordure Indented."""),
+    "BRICKS": Pattern("""Bricks""", "bricks", """Field Masoned."""),
+    "GRADIENT": Pattern("""Gradient""", "gradient", """Gradient."""),
+    "GRADIENT_UP": Pattern("""Gradient Up""", "gradient_up", """Base Gradient."""),
+    "CREEPER": Pattern("""Creeper""", "creeper", """Creeper Charge."""),
+    "SKULL": Pattern("""Skull""", "skull", """Skull Charge."""),
+    "FLOWER": Pattern("""Flower""", "flower", """Flower Charge."""),
+    "MOJANG": Pattern("""Mojang""", "mojang", """Thing."""),
+    "GLOBE": Pattern("""Globe""", "globe", """Globe."""),
+    "PIGLIN": Pattern("""Piglin""", "piglin", """Snout."""),
 }
 
 for __k in tuple(patterns.keys()):
@@ -185,7 +185,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-03-12T15:15:44-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -518,7 +518,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-03-12T15:15:44-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -678,7 +678,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-03-12T15:15:44-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -817,7 +817,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-03-12T15:15:44-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -938,7 +938,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-03-12T15:15:44-07:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -1148,7 +1148,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-03-12T15:15:44-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1201,7 +1201,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-03-12T15:15:44-07:00
 __particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
@@ -1494,7 +1494,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-03-11T18:09:29-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-03-12T15:15:44-07:00
 __potterysherd_dups = {}
 ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
 ARCHER_POTTERY_SHERD = "archer_pottery_sherd"
