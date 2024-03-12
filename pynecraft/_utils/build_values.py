@@ -68,23 +68,27 @@ class PageEnumDesc(EnumDesc):
         cache = cwd / '.enum_cache' / (self.name + '.html')
         cache.parent.mkdir(exist_ok=True)
         html = None
+        now = datetime.datetime.now()
+        html_time = now
         if cache.exists():
             mtime = datetime.datetime.fromtimestamp(cache.stat().st_mtime)
-            if mtime + datetime.timedelta(weeks=1) > datetime.datetime.now():
+            if mtime + datetime.timedelta(weeks=1) > now:
                 try:
                     with open(cache) as f:
                         html = f.read()
                 except IOError:
                     cache.unlink()
                     raise
+                html_time = mtime
             else:
                 cache.unlink()
+                html_time = now
         if not html:
             html = requests.get(self.url).text
             with open(cache, 'w') as f:
                 f.write(html)
 
-        return BeautifulSoup(html, 'html.parser')
+        return html_time, BeautifulSoup(html, 'html.parser')
 
     def replace(self, name: str, value: str):
         return name
@@ -109,7 +113,7 @@ class PageEnumDesc(EnumDesc):
         """
         Invokes fetch(), uses the abstract methods to scrape the relevant content, and then generates the actual enum.
         """
-        soup = self.fetch()
+        html_time, soup = self.fetch()
         tables = self.find_tables(soup)
         found = {}
         assert tables, f"No table found: {self.name}, {self.url}"
@@ -136,7 +140,7 @@ class PageEnumDesc(EnumDesc):
                     if name in found:
                         raise KeyError(f'{name}: Duplicate name: ({value}, {found[name]})')
                     found[name] = (value, desc, display_name)
-        return found
+        return html_time, found
 
     def find_tables(self, soup):
         return soup.find_all('table', attrs={'data-description': self.data_desc})
@@ -215,7 +219,7 @@ class TeamOptions(PageEnumDesc):
 
     def fetch(self):
         tab = '<table>'
-        real = super().fetch()
+        html_time, real = super().fetch()
         arg = real.find('span', id='Arguments')
         for p in arg.find_all_next('p'):
             if p.text == '<option>\n':
@@ -226,7 +230,7 @@ class TeamOptions(PageEnumDesc):
                     desc = li.text[colon + 1:].strip()
                     tab += f'<tr><td>{name}</td><td>{desc}</td></tr>'
         tab += '</table>'
-        return BeautifulSoup(tab, 'html.parser')
+        return html_time, BeautifulSoup(tab, 'html.parser')
 
     def find_tables(self, soup):
         return soup.find_all('table')
@@ -568,11 +572,11 @@ if __name__ == '__main__':
                     TeamOptions(),
                     Pattern(), Advancement(), Biome(), Effect(), Enchantment(), GameRule(), ScoreCriteria(),
                     Particle(), PotterySherd()):
-                fields = tab.generate()
+                html_time, fields = tab.generate()
                 print()
                 print()
                 print(f'# {tab.name}{tab.pluralize()}')
-                print(f'# Derived from {tab.url}, {datetime.datetime.now().astimezone().isoformat(timespec="seconds")}')
+                print(f'# Derived from {tab.url}, {html_time.astimezone().isoformat(timespec="seconds")}')
 
                 value_fields = ['name', 'value', 'desc']
                 value_fields.extend(tab.added_fields())

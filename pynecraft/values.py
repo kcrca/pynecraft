@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2024-03-12T15:02:56-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-03-12T15:02:56-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -185,7 +185,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-03-12T15:03:47-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -518,7 +518,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-03-12T15:03:47-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -678,7 +678,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-03-12T15:03:49-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -817,7 +817,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-03-12T15:03:49-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -938,7 +938,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-03-12T15:03:49-07:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -1148,7 +1148,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-03-12T15:03:50-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1201,7 +1201,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-03-12T15:03:50-07:00
 __particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
@@ -1494,7 +1494,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-03-12T15:15:44-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-03-12T15:03:50-07:00
 __potterysherd_dups = {}
 ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
 ARCHER_POTTERY_SHERD = "archer_pottery_sherd"
