@@ -221,7 +221,7 @@ class Horse(Entity):
         self.color = Horse.Color(color)
         self.markings = Horse.Markings(markings)
         self.variant = int(color) + int(markings)
-        super().__init__('horse', name=name, nbt={'Variant': self.variant})
+        super().__init__('horse', nbt={'Variant': self.variant}, name=name)
         if nbt:
             self.merge_nbt(nbt)
         self.tag_name = f'{to_id(name)}_horses'
@@ -300,7 +300,7 @@ class Fish(Entity):
         Creates a new fish with the given variant, and (if present) name. If not given, the desc() will be used as
         the name.
         """
-        super().__init__('tropical_fish', name=name, nbt=Nbt(Variant=variant))
+        super().__init__('tropical_fish', nbt=Nbt(Variant=variant), name=name)
         self.variant = variant
         self.name = name if name else self.desc()
 

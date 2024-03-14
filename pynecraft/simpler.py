@@ -5,7 +5,8 @@ from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     _ensure_size, _in_group, _to_list, as_facing, d, de_arg, r, to_id
-from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonList, JsonText, \
+from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonDef, JsonList, \
+    JsonText, \
     SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
     fillbiome, setblock
 from pynecraft.values import as_pattern
@@ -236,13 +237,30 @@ class WallSign(Sign):
 class Book:
     """A class for a book."""
 
-    def __init__(self, title: str = None, author: str = None, display_name: str = None):
+    def __init__(self, title: str = None, author: str = None, display_name: JsonDef | Tuple[JsonDef, ...] = None):
         """Creates a book object."""
         self.title = title
         self.author = author
+        self._display_name = None
         self.display_name = display_name
         self._pages = []
         self._cur_page = JsonList()
+
+    @property
+    def display_name(self) -> Tuple[JsonText, ...] | None:
+        return self._display_name
+
+    @display_name.setter
+    def display_name(self, display_name: JsonDef | Tuple[JsonDef, ...] = None) -> None:
+        if display_name is None:
+            self._display_name = None
+        else:
+            self._display_name = []
+            if isinstance(display_name, str):
+                self._display_name.append(str(JsonText.as_json(display_name)))
+            else:
+                for x in display_name:
+                    self._display_name.append(JsonText.as_json(x))
 
     # Two kinds of books: Written and signed. In theory, they should hold the same kind
     # of text, but the unsigned book cannot have rich text. Hopefully in the future this _will_ be possible, so
@@ -270,35 +288,25 @@ class Book:
 
     def as_entity(self):
         """Returns the book as an Entity object. This is useful for a ``give`` command."""
-        return Entity('written_book', nbt=self.nbt())
+        return Entity('written_book', components=self.nbt())
 
     def as_item(self):
         """Returns the book as an Item object. This is useful for things like putting the book into a container."""
-        item = Item.nbt_for('written_book')
         nbt = self.nbt()
-        # try:
-        #     pages = nbt['components']['written_book_content']['pages']
-        #     if pages:
-        #         nbt['components']['written_book_content']['pages'] = _quote(pages)
-        # except KeyError:
-        #     pass
-
-        return Nbt({'Book': nbt})
+        item = Item.nbt_for('written_book', {'components': nbt})
+        return Nbt({'Book': item})
 
     def nbt(self):
         """Returns the NBT for the book."""
         cur_page = self._cur_page
         self.next_page()
-        jt = Nbt()
-        components = {'written_book_content': {'author': self.author,
-                                               'title': self.title,
-                                               'pages': [JsonList(x) for x in self._pages[:]]}}
+        components = {'written_book_content': {
+            'author': self.author, 'title': self.title, 'pages': [JsonList(x) for x in self._pages[:]]}}
         if self.display_name:
-            components['custom_data'] = {'Lore': self.display_name}
-        jt['components'] = components
+            components['lore'] = self.display_name
         self._cur_page = cur_page
         self._pages.pop()
-        return jt
+        return components
 
 
 class Display(Entity):
@@ -310,8 +318,8 @@ class Display(Entity):
         {'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
                             'right_rotation': [0.0, 0.0, 0.0, 1.0], 'scale': [1.0, 1.0, 1.0]}})
 
-    def __init__(self, id: str, nbt=None, name=None):
-        super().__init__(id, nbt, name)
+    def __init__(self, id: str, *args, **kwargs):
+        super().__init__(id, **kwargs)
         # Without this, a simple change to the transform cannot be given at summon time.
         # Crazily, this is "as intended": https://bugs.mojang.com/browse/MC-259838
         self.merge_nbt(Display.INIT_TRANSFORMATION)
@@ -366,12 +374,12 @@ class BlockDisplay(Display):
 class TextDisplay(Display):
     """An object that represents a text_display entity."""
 
-    def __init__(self, text: StrOrArg | JsonText | Sequence[JsonText] = None, nbt: NbtDef = None):
+    def __init__(self, text: StrOrArg | JsonText | Sequence[JsonText] = None, *args, **kwargs):
         """
         Creates a TextDisplay with the given text, if any. The text can be a string, a JsonText object, or a list or
         tuple of JsonText objects.
         """
-        super().__init__('text_display', nbt)
+        super().__init__('text_display', *args, **kwargs)
         self.text(text)
 
     def text(self, text) -> TextDisplay:
@@ -419,7 +427,7 @@ class Item(Entity):
         try:
             block_state = item.state
             if block_state:
-                retval['components']['block_state'] = block_state
+                retval['components'] = block_state
         except AttributeError:
             pass
         if nbt:
