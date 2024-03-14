@@ -3030,10 +3030,7 @@ def tellraw(target: Target, *message: JsonDef) -> str:
     cmd._add('$tellraw', target)
     jl = JsonList()
     for m in message:
-        if isinstance(m, str):
-            jl.append(JsonText.text(m))
-        else:
-            jl.append(JsonText.as_json(m))
+        jl.append(JsonText.as_json(m))
     if len(jl) == 1:
         jl = jl[0]
     cmd._add(jl)
@@ -3108,10 +3105,10 @@ def literal(text: str):
 
 
 @functools.total_ordering
-class NbtHolder(Command):
+class Block(Command):
     """This class represents a thing that has NBT values. These include blocks and entities."""
 
-    def __init__(self, id: StrOrArg = None, name: StrOrArg = None):
+    def __init__(self, id: StrOrArg = None, state=None, nbt=None, *, name: StrOrArg = None):
         """Creates a holder.
 
         Typically, the ID is an in-game ID, such as 'air' or 'minecraft:smooth_stone', and the name is derived
@@ -3131,6 +3128,7 @@ class NbtHolder(Command):
         :param name: The name to display to your user, derived from ID if not provided.
         """
         super().__init__()
+        id = de_arg(id)
         if (id, name) == (None, None):
             raise ValueError('Must specify at least one of id or name')
         if isinstance(id, str):
@@ -3161,6 +3159,12 @@ class NbtHolder(Command):
             self.sign_text = name
             self.full_text = name
 
+        if state is None:
+            state = {}
+        self.merge_nbt(nbt)
+        self.state = Nbt()
+        self.merge_state(state)
+
     def __lt__(self, other):
         return self.name < other.name
 
@@ -3190,39 +3194,77 @@ class NbtHolder(Command):
         added = ''
         if len(self.nbt) > 0:
             added = str(self.nbt)
-        return super().__str__() + added
+        s = super().__str__() + added
+        if self.state:
+            at = len(self.id)
+            s = s[:at] + self._state_str() + s[at:]
+        return s
 
-    def merge_nbt(self, nbt: NbtDef) -> NbtHolder:
+    def merge_nbt(self, nbt: NbtDef) -> Block:
         """Merge NBT into our nbt."""
         self.nbt = self.nbt.merge(Nbt.as_nbt(nbt))
         return self
 
+    def merge_state(self, state: Mapping) -> Block:
+        """Merge state into our state."""
+        self.state = self.state.merge(Nbt.as_nbt(state))
+        return self
 
-class Entity(NbtHolder):
+    @staticmethod
+    def _state_value(v):
+        if isinstance(v, bool):
+            return _bool(v)
+        return str(v)
+
+    def _state_str(self):
+        comma = ', ' if Nbt.use_spaces else ','
+        return '[' + comma.join((k + '=' + self._state_value(v)) for k, v in self.state.items()) + ']'
+
+
+class Entity(Block):
     """This class supports operations useful for an entity. """
 
-    def __init__(self, id: StrOrArg, nbt: NbtDef = None, *, name: StrOrArg = None):
-        """Creates a new entity object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``.
+    def __init__(self, id: StrOrArg = None, nbt: NbtDef = None, components: NbtDef = None, *, name: StrOrArg = None,
+                 state: NbtDef = None):
+        """
+        Creates a new entity object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``.
+
+        Note that the nbt comes before the components, but that "components" is just another name for "state",
+        which comes before nbt in the Block superclass. This is because for entities, components (state) are much
+        rarer than nbt, but for blocks it is the other way around. Although functionally "components" and "state" are
+        the same thing in pynecraft -- that is, they behave the same, yield the same strings, etc. -- they are
+        different in Minecraft terminology. You can ignore this and treat an Entity has having state, or you can
+        respect it and treat it as having components. It's up to you.
 
         :param id: The entity ID.
-        :param nbt: Any NBT for the entity.s
+        :param nbt: Any NBT for the entity.
+        :param components: Any component data for the entity. This just an alias for Block's state field, to
+                        be compatible with terminology. But syntacitically they behave the same.
         :param name: The entity's human-friendly name.
+        :param state: Can be used instead of 'components', but you can't specify both
         """
+        if state:
+            if components:
+                raise ValueError('Specify either state or components, not both')
+            components = state
         self._custom_name = False
         self._custom_name_visible = False
         id = de_arg(id)
-        super().__init__(id, name)
-        self.merge_nbt(nbt)
+        super().__init__(id, components, nbt, name=name)
 
     @property
-    def name(self):
-        """The entity name (same as the NbtHolder's name)."""
-        return super().name
+    def components(self):
+        """The object's name."""
+        return self.state
 
-    @name.setter
+    def merge_components(self, components: NbtDef) -> Entity:
+        super().merge_state(components)
+        return self
+
+    @Block.name.setter
     def name(self, name: str):
         """Sets the entity name and, if we're managing it, the custom name."""
-        NbtHolder.name.fset(self, name)
+        Block.name.fset(self, name)
         self._update_custom_name()
 
     def custom_name(self, manage: bool = True) -> Entity:
@@ -3284,43 +3326,6 @@ class Entity(NbtHolder):
         if self.id.find(':') >= 0:
             return self.id
         return 'minecraft:' + self.id
-
-
-class Block(NbtHolder):
-    """This class supports operations useful for a block. """
-
-    def __init__(self, id: StrOrArg, state=None, nbt=None, name: StrOrArg = None):
-        """Creates a new block object. See ``NbtHolder.__init__()`` for interpretation of ``id`` and ``name``. Block
-        state is represented as an NBT object. """
-        id = de_arg(id)
-        super().__init__(id, name)
-        if state is None:
-            state = {}
-        self.merge_nbt(nbt)
-        self.state = {}
-        self.merge_state(state)
-
-    def __str__(self):
-        s: str = super().__str__()
-        if self.state:
-            at = len(self.id)
-            s = s[:at] + self._state_str() + s[at:]
-        return s
-
-    @staticmethod
-    def _state_value(v):
-        if isinstance(v, bool):
-            return _bool(v)
-        return str(v)
-
-    def _state_str(self):
-        comma = ', ' if Nbt.use_spaces else ','
-        return '[' + comma.join((k + '=' + self._state_value(v)) for k, v in self.state.items()) + ']'
-
-    def merge_state(self, state: Mapping):
-        """Merge state into our state."""
-        self.state.update(state)
-        return self
 
 
 class _Evaluate:
@@ -3671,7 +3676,9 @@ class JsonText(UserDict, JsonHolder):
 
     def color(self, color: StrOrArg) -> JsonText:
         """Adds a ``color`` field to a JSON node."""
-        self['color'] = de_arg(_in_group(JSON_COLORS, color))
+        if color[0] != '#':
+            color = _in_group(JSON_COLORS, de_arg(color))
+        self['color'] = color
         return self
 
     def font(self, font: StrOrArg) -> JsonText:
@@ -3722,14 +3729,18 @@ class JsonText(UserDict, JsonHolder):
         return _JsonTextHoverAction(self, ev)
 
     @classmethod
-    def as_json(cls, mapping: Mapping):
+    def as_json(cls, text: Mapping | str | JsonText):
         """Returns a JsonText object built from the given mapped values."""
-        if mapping is None or isinstance(mapping, JsonText):
-            return mapping
-        elif isinstance(mapping, Mapping):
-            return cls(mapping)
+        if text is None or isinstance(text, JsonText):
+            return text
+        if is_arg(text):
+            return de_arg(text)
+        if isinstance(text, str):
+            return JsonText.text(text)
+        elif isinstance(text, Mapping):
+            return cls(text)
         else:
-            raise ValueError(f'{mapping}: Not a dictionary')
+            raise ValueError(f'{text}: Not a dictionary')
 
 
 MappingOrArg = Union[Mapping, StrOrArg]

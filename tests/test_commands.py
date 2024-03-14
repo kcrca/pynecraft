@@ -188,7 +188,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('stone{a: 17}', str(Block('stone').merge_state({}).merge_nbt({'a': 17})))
         self.assertEqual('stone{a: 17}', str(Block('stone').merge_nbt({'a': 17})))
         self.assertEqual('stone[b=c]{a: 17}', str(Block('stone').merge_state({'b': 'c'}).merge_nbt({'a': 17})))
-        self.assertEqual("stick[custom_data={'foo': 'bar'}]", str(Block('stick', {'custom_data': {'foo': 'bar'}})))
+        self.assertEqual("stick[custom_data={foo: bar}]", str(Block('stick', {'custom_data': {'foo': 'bar'}})))
 
         self.assertEqual('stone{a: 16, b: howdy}',
                          str(Block('stone').merge_nbt({'a': 17}).merge_nbt({'a': 16, 'b': 'howdy'})))
@@ -205,6 +205,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('bat{a: 17}', str(Entity('bat').merge_nbt({'a': 17})))
         self.assertEqual('bat{a: 16, b: howdy}',
                          str(Entity('bat').merge_nbt({'a': 17}).merge_nbt({'a': 16, 'b': 'howdy'})))
+        self.assertEqual('bat[c=18]', str(Entity('bat', components={'c': 18})))
+        self.assertEqual('bat[c=18]{a: 17}', str(Entity('bat', {'a': 17}, {'c': 18})))
         self.assertEqual('minecraft:bat', Entity('bat').full_id())
         self.assertEqual('minecraft:bat', Entity('minecraft:bat').full_id())
         self.assertEqual('dp:mouse', Entity('dp:mouse').full_id())
@@ -219,7 +221,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$summon $(mob) $(x) $(y) $(z)', Entity(Arg('mob')).summon((Arg('x'), Arg('y'), Arg('z'))))
         self.assertEqual('v$(k)', str(Entity('v$(k)')))
         self.assertEqual('$(k)', str(Entity(Arg('k'))))
-        self.assertEqual('$(k){b: foo}', str(Entity(Arg('k'), {'b': 'foo'})))
+        self.assertEqual('$(k){b: foo}', str(Entity(Arg('k'), nbt={'b': 'foo'})))
 
     def test_json_text(self):
         sort_keys = Nbt.sort_keys
@@ -1088,7 +1090,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('summon m:z 1 ~2 ^3 {NoAI: true}', summon('m:z', (1, r(2), d(3)), Nbt({'NoAI': True})))
         # The replace() is because the order isn't defined, either way is good
         self.assertEqual('summon m:z 1 ~2 ^3 {Tags: [t1, t2]}',
-                         summon(Entity('m:z', {'Tags': ['t1']}), (1, r(2), d(3)), Nbt({'Tags': ['t2']})).replace(
+                         summon(Entity('m:z', nbt={'Tags': ['t1']}), (1, r(2), d(3)), Nbt({'Tags': ['t2']})).replace(
                              't2, t1', 't1, t2'))
 
     def test_tag_command(self):
@@ -1220,21 +1222,21 @@ class TestCommands(unittest.TestCase):
         self.assertIsNone(as_entity(None))
         self.assertEqual(Entity('foo'), as_entity('foo'))
         self.assertEqual(Entity('foo'), as_entity(Entity('foo')))
-        self.assertEqual(Entity('foo', {'nbt': 1}), as_entity(('foo', {'nbt': 1})))
+        self.assertEqual(Entity('foo', nbt={'nbt': 1}), as_entity(('foo', {'nbt': 1})))
         with self.assertRaises(ValueError):
             as_entity(',17')
 
     def test_nbt_holder(self):
-        self.assertEqual('foo', NbtHolder(name='foo').name)
+        self.assertEqual('foo', Block(name='foo').name)
         self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]}},
-                         NbtHolder(name='Foo|Bar').sign_nbt())
+                         Block(name='Foo|Bar').sign_nbt())
         self.assertEqual({'back_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]}},
-                         NbtHolder(name='Foo|Bar').sign_nbt(front=False))
+                         Block(name='Foo|Bar').sign_nbt(front=False))
         self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]},
                           'back_text': {'messages': [{'text': ''}, {'text': 'Foo'}, {'text': 'Bar'}, {'text': ''}]}},
-                         NbtHolder(name='Foo|Bar').sign_nbt(front=None))
+                         Block(name='Foo|Bar').sign_nbt(front=None))
         with self.assertRaises(ValueError):
-            NbtHolder()
+            Block()
 
     def test_as_slot(self):
         self.assertIsNone(as_slot(None))
