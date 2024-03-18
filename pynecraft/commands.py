@@ -3676,7 +3676,7 @@ class JsonText(UserDict, JsonHolder):
 
     def color(self, color: StrOrArg) -> JsonText:
         """Adds a ``color`` field to a JSON node."""
-        if color[0] != '#':
+        if not (isinstance(color, str) and color[0] == '#'):
             color = _in_group(JSON_COLORS, de_arg(color))
         self['color'] = color
         return self

@@ -368,7 +368,7 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual({'Facing': 5}, ItemFrame(EAST).fixed(False).nbt)
         self.assertEqual(
             {'Facing': 5, 'Fixed': True,
-             'Item': {'id': 'minecraft:my_name', 'components': {'custom_name': {'text': 'My Name'}}}},
+             'Item': {'id': 'minecraft:my_name', 'components': {'minecraft:custom_name': {'text': 'My Name'}}}},
             ItemFrame(EAST).named('My Name').nbt)
         self.assertEqual({'Facing': 5, 'Fixed': True, 'foo': 12}, ItemFrame(EAST, nbt={'foo': 12}).nbt)
         self.assertEqual({'Facing': 5, 'Fixed': True, 'Item': {'id': 'minecraft:obsidian'}},
@@ -419,14 +419,25 @@ class TestSimpler(unittest.TestCase):
 
     def test_display(self):
         self.assertEqual(
-            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
-            str(TextDisplay('foo').summon(r(0, 0, 0), facing=NORTH)))
+            {'text': '{"text": "foo"}',
+             'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'right_rotation': [0.0, 0.0, 0.0, 1.0],
+                                'scale': [1.0, 1.0, 1.0], 'translation': [0.0, 0.0, 0.0]}},
+            TextDisplay('foo').nbt)
         self.assertEqual(
-            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [0.5f, 0.5f, 0.5f], translation: [0.0f, 0.0f, 0.0f]}}""",
-            str(TextDisplay('foo').scale(0.5).summon(r(0, 0, 0), facing=NORTH)))
+            {'text': '{"text": "foo"}',
+             'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'right_rotation': [0.0, 0.0, 0.0, 1.0],
+                                'scale': [0.5, 0.5, 0.5], 'translation': [0.0, 0.0, 0.0]}},
+            TextDisplay('foo').scale(0.5).nbt)
         self.assertEqual(
-            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 2.0f, 3.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
-            str(TextDisplay('foo').scale((1, 2, 3)).summon(r(0, 0, 0), facing=NORTH)))
+            {'text': '{"text": "foo"}',
+             'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'right_rotation': [0.0, 0.0, 0.0, 1.0],
+                                'scale': [1.0, 2.0, 3.0], 'translation': [0.0, 0.0, 0.0]}},
+            TextDisplay('foo').scale((1, 2, 3)).nbt)
+        self.assertEqual(
+            {'text': '{"text": "foo"}',
+             'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'right_rotation': [0.0, 0.0, 0.0, 1.0],
+                                'scale': [1.0, 2.0, 3.0], 'translation': [0.0, 0.0, 0.0]}},
+            TextDisplay('foo', nbt={'transformation': {'scale': [1.0, 2.0, 3.0]}}).nbt)
 
     def test_block_display(self):
         self.assertEqual({}, _str_values({}))
@@ -441,7 +452,7 @@ class TestSimpler(unittest.TestCase):
             """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "foo"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
             str(TextDisplay('foo').summon(r(0, 0, 0), facing=NORTH)))
         self.assertEqual(
-            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: {text: bar}, transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
+            """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: '{"text": "bar"}', transformation: {left_rotation: [0.0f, 0.0f, 0.0f, 1.0f], right_rotation: [0.0f, 0.0f, 0.0f, 1.0f], scale: [1.0f, 1.0f, 1.0f], translation: [0.0f, 0.0f, 0.0f]}}""",
             str(TextDisplay('foo').text('bar').summon(r(0, 0, 0), facing=NORTH)))
         self.assertEqual({'text': '[{"text": "foo", "italic": "true"}]',
                           'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0],

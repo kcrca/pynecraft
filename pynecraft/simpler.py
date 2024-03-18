@@ -322,18 +322,25 @@ class Display(Entity):
         super().__init__(id, **kwargs)
         # Without this, a simple change to the transform cannot be given at summon time.
         # Crazily, this is "as intended": https://bugs.mojang.com/browse/MC-259838
-        self.merge_nbt(Display.INIT_TRANSFORMATION)
+        # We have to be careful because the supplied nbt may override part of the transformation.
+        if 'transformation' not in self.nbt:
+            self.merge_nbt(Display.INIT_TRANSFORMATION)
+        else:
+            tr = self.nbt['transformation']
+            for t, v in Display.INIT_TRANSFORMATION['transformation'].items():
+                if t not in tr:
+                    tr[t] = v
 
     def scale(self, value: float | Tuple[float, float, float]) -> Display:
         """
         Sets the scale transformation. If only given one value, it uses that for all three scale values. Otherwise,
         it must be given the three values.
         """
-        if isinstance(value, float):
+        if isinstance(value, (int, float)):
             value = [float(value), float(value), float(value)]
         else:
             value = tuple(float(x) for x in value)
-        self.merge_nbt({'transformation': {'scale': value}})
+        self.merge_nbt({'transformation': {'scale': list(value)}})
         return self
 
 
@@ -384,7 +391,7 @@ class TextDisplay(Display):
 
     def text(self, text) -> TextDisplay:
         if isinstance(text, str):
-            text = JsonText.text(text)
+            text = str(JsonText.text(text))
         elif isinstance(text, (JsonText, Sequence)):
             text = str(text).replace("'", '"')
         if text is not None:
@@ -696,14 +703,14 @@ class ItemFrame(Entity):
         block = as_block(name)
         if block is None:
             try:
-                del self.nbt['Item']['components']['custom_name']
+                del self.nbt['Item']['components']['minecraft:custom_name']
             except KeyError:
                 pass  # Must not be there already, ignore the error
         else:
             if 'Item' not in self.nbt:
                 self.item(block)
             nbt = self.nbt
-            nbt['Item']['components']['custom_name'] = JsonText.text(block.name)
+            nbt['Item']['components']['minecraft:custom_name'] = JsonText.text(block.name)
         return self
 
 

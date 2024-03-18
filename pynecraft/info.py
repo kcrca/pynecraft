@@ -430,9 +430,9 @@ trim_materials = sorted((
     'emerald', 'redstone', 'lapis', 'amethyst', 'quartz', 'netherite', 'diamond', 'gold', 'iron', 'copper'))
 
 trim_patterns = sorted(
-    ('coast', 'dune', 'eye', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire', 'tide', 'vex',
-     'ward', 'wayfinder', 'wild'))
+    ('bolt', 'coast', 'dune', 'eye', 'flow', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire',
+     'tide', 'vex', 'ward', 'wayfinder', 'wild'))
 
 armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 
-sherds = tuple(pottery_sherds[x].name for x in POTTERY_SHERD_GROUP)
+sherds = tuple(pottery_sherds[x].value for x in POTTERY_SHERD_GROUP)

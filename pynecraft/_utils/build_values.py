@@ -443,8 +443,7 @@ class PotterySherd(PageEnumDesc):
     def __init__(self):
         super().__init__('PotterySherd', WIKI + 'Pottery_Sherd', 'Pottery Sherds')
         self.value_col = None
-        self.desc_col = None
-        self.done = False
+        self.extras = ['Flow Pottery Sherd', 'Guster Pottery Sherd', 'Scrape Pottery Sherd']
 
     def find_tables(self, soup):
         v = soup.select('table.sortable')[:1]
@@ -455,9 +454,12 @@ class PotterySherd(PageEnumDesc):
             self.value_col = col
 
     def extract(self, cols) -> tuple[str, str, str] | None:
-        if self.done:
-            return None
-        name = clean(cols[self.value_col])
+        if self.extras:
+            name = self.extras.pop()
+        else:
+            name = clean(cols[self.value_col])
+            if name in self.extras:
+                raise ValueError('Remove hack for 1.21 sherds')
         value = name.lower().replace(' ', '_')
         return name, value, ''
 
