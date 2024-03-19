@@ -241,9 +241,9 @@ class TestCommands(unittest.TestCase):
             self.assertEqual('{"selector": "@a", "separator": {"color": "red", "text": "_"}}',
                              str(JsonText.entity(a(), RED, '_')))
             self.assertEqual('{"keybind": "b.id"}', str(JsonText.keybind('b.id')))
-            self.assertEqual('{"nbt": "m:a/b", "entity": "@a"}', str(JsonText.nbt('m:a/b', a())))
+            self.assertEqual('{"nbt": "m:a/b", "entity": "@a"}', str(JsonText.nbt(a(), 'm:a/b')))
             self.assertEqual('{"nbt": "m:a/b", "block": "1 ~2 ^3", "interpret": true, "separator": "_"}',
-                             str(JsonText.nbt('m:a/b', (1, r(2), d(3)), interpret=True, separator='_')))
+                             str(JsonText.nbt((1, r(2), d(3)), 'm:a/b', interpret=True, separator='_')))
             self.assertEqual('{"text": "boo", "extra": []}', str(JsonText.text('boo').extra()))
             self.assertEqual('{"text": "boo", "extra": ["foo", {"text": "bar"}]}',
                              str(JsonText.text('boo').extra('foo', JsonText.text('bar'))))
@@ -322,9 +322,9 @@ class TestCommands(unittest.TestCase):
             self.assertEqual('{"selector": "$(s)", "separator": {"color": "$(c)", "text": "$(t)"}}',
                              str(JsonText.entity(Arg('s'), Arg('c'), Arg('t'))))
             self.assertEqual('{"keybind": "$(s)"}', str(JsonText.keybind(Arg('s'))))
-            self.assertEqual('{"nbt": "$(p)", "entity": "@p"}', str(JsonText.nbt(Arg('p'), p())))
+            self.assertEqual('{"nbt": "$(p)", "entity": "@p"}', str(JsonText.nbt(p(), Arg('p'))))
             self.assertEqual('{"nbt": "$(p)", "entity": "@p", "interpret": "$(i)", "separator": "$(s)"}',
-                             str(JsonText.nbt(Arg('p'), p(), Arg('i'), Arg('s'))))
+                             str(JsonText.nbt(p(), Arg('p'), Arg('i'), Arg('s'))))
             self.assertEqual('{"text": "boo", "extra": ["$(e)", {"text": "$(b)"}]}',
                              str(JsonText.text('boo').extra(Arg('e'), JsonText.text(Arg('b')))))
             self.assertEqual('{"text": "foo", "color": "$(c)"}', str(JsonText.text('foo').color(Arg('c'))))

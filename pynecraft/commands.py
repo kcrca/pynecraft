@@ -3654,7 +3654,7 @@ class JsonText(UserDict, JsonHolder):
         return cls({'keybind': de_arg(keybind_id)})
 
     @classmethod
-    def nbt(cls, resource_path: StrOrArg, data_target: DataTarget, interpret: BoolOrArg = None,
+    def nbt(cls,data_target: DataTarget,  resource_path: StrOrArg, interpret: BoolOrArg = None,
             separator: StrOrArg = None) -> JsonText:
         """Returns a JSON text NBt node."""
         target_key, target_value = data_target_str(data_target).split(' ', 1)
