@@ -157,7 +157,8 @@ class Arg:
 
 def de_arg(v: any) -> any:
     if not isinstance(v, str) and isinstance(v, Sequence):
-        v = tuple(de_arg(x) for x in v)
+        c = v.__class__
+        v = c(de_arg(x) for x in v)
     return str(v) if isinstance(v, Arg) else v
 
 

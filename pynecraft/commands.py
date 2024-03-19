@@ -3659,6 +3659,8 @@ class JsonText(UserDict, JsonHolder):
         """Returns a JSON text NBt node."""
         target_key, target_value = data_target_str(data_target).split(' ', 1)
         jt = cls({'nbt': as_resource_path(resource_path), target_key: target_value})
+        jt['source'] = target_key
+        jt[target_key] = target_value
         if interpret is not None:
             jt['interpret'] = de_arg(interpret)
         if separator is not None:
