@@ -320,7 +320,7 @@ class Effect(PageEnumDesc):
         return ['positive', 'id']
 
     def added_values(self, value):
-        return f', "{self.types[value]}", "{self.ids[value]}"'
+        return f', {self.types[value]}, "{self.ids[value]}"'
 
 
 class Enchantment(PageEnumDesc):

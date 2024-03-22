@@ -93,11 +93,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
         self.assertEqual('entity @p', str(_ExecuteMod().entity(p())))
         self.assertEqual('if item block 1 2 3 armor.* #iron_armor',
-                         str(_ExecuteMod().if_().item((1, 2, 3), 'armor.*', '#iron_armor')))
+                         str(_ExecuteMod().if_().items((1, 2, 3), 'armor.*', '#iron_armor')))
         self.assertEqual('if item entity @s armor.* #iron_armor',
-                         str(_ExecuteMod().if_().item(s(), 'armor.*', '#iron_armor')))
+                         str(_ExecuteMod().if_().items(s(), 'armor.*', '#iron_armor')))
         self.assertEqual('if item entity $(x) armor.* #iron_armor',
-                         str(_ExecuteMod().if_().item(entity(Arg('x')), 'armor.*', '#iron_armor')))
+                         str(_ExecuteMod().if_().items(entity(Arg('x')), 'armor.*', '#iron_armor')))
 
         with self.assertRaises(ValueError):
             _ExecuteMod().align('foo')

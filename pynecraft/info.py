@@ -429,9 +429,9 @@ tropical_fish = {
 trim_materials = sorted((
     'emerald', 'redstone', 'lapis', 'amethyst', 'quartz', 'netherite', 'diamond', 'gold', 'iron', 'copper'))
 
-trim_patterns = sorted(
-    ('bolt', 'coast', 'dune', 'eye', 'flow', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire',
-     'tide', 'vex', 'ward', 'wayfinder', 'wild'))
+trim_patterns = sorted((
+    'bolt', 'coast', 'dune', 'eye', 'flow', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire',
+    'tide', 'vex', 'ward', 'wayfinder', 'wild'))
 
 armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 

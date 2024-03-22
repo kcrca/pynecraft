@@ -406,9 +406,8 @@ class TextDisplay(Display):
 class Item(Entity):
     """An object that represents an Item."""
 
-    def __init__(self, id: str, count: int = 1, name=None, nbt=None):
-        super().__init__(id, name=name)
-        self.merge_nbt({'id': id})
+    def __init__(self, id: str, count: int = 1, name=None, nbt=None, components=None):
+        super().__init__(id, components=components, name=name)
         if count != 1:
             self.merge_nbt({'Count': count})
         if nbt:

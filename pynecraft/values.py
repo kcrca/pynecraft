@@ -24,7 +24,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2024-03-16T15:17:52-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2024-03-20T17:01:01-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -64,7 +64,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-03-16T15:17:52-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-03-20T17:01:02-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -172,7 +172,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-03-16T15:17:52-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-03-20T17:01:02-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -258,6 +258,13 @@ IS_IT_A_PLANE = "adventure/spyglass_at_dragon"
 VERY_VERY_FRIGHTENING = "adventure/very_very_frightening"
 SNIPER_DUEL = "adventure/sniper_duel"
 BULLSEYE = "adventure/bullseye"
+MINECRAFT_TRIALS_EDITION = "adventure/minecraft_trials_edition"
+CRAFTERS_CRAFTING_CRAFTERS = "adventure/crafters_crafting_crafters"
+LIGHTEN_UP = "adventure/lighten_up"
+WHO_NEEDS_ROCKETS = "adventure/who_needs_rockets"
+UNDER_LOCK_AND_KEY = "adventure/under_lock_and_key"
+BLOWBACK = "adventure/blowback"
+OVEROVERKILL = "adventure/overoverkill"
 __advancement_dups["husbandry"] = "husbandry/root"
 BEE_OUR_GUEST = "husbandry/safely_harvest_honey"
 THE_PARROTS_AND_THE_BATS = "husbandry/breed_an_animal"
@@ -285,7 +292,7 @@ WITH_OUR_POWERS_COMBINED = "husbandry/froglights"
 PLANTING_THE_PAST = "husbandry/plant_any_sniffer_seed"
 THE_HEALING_POWER_OF_FRIENDSHIP = "husbandry/kill_axolotl_target"
 ADVANCEMENT_GROUP = [
-    MINECRAFT, STONE_AGE, GETTING_AN_UPGRADE, ACQUIRE_HARDWARE, SUIT_UP, HOT_STUFF, ISNT_IT_IRON_PICK, NOT_TODAY_THANK_YOU, ICE_BUCKET_CHALLENGE, DIAMONDS, WE_NEED_TO_GO_DEEPER, COVER_ME_WITH_DIAMONDS, ENCHANTER, ZOMBIE_DOCTOR, EYE_SPY, ENTER_THE_END, "nether/root", RETURN_TO_SENDER, THOSE_WERE_THE_DAYS, HIDDEN_IN_THE_DEPTHS, SUBSPACE_BUBBLE, A_TERRIBLE_FORTRESS, WHO_IS_CUTTING_ONIONS, OH_SHINY, THIS_BOAT_HAS_LEGS, UNEASY_ALLIANCE, WAR_PIGS, COUNTRY_LODE_TAKE_ME_HOME, COVER_ME_IN_DEBRIS, SPOOKY_SCARY_SKELETON, INTO_FIRE, NOT_QUITE_NINE_LIVES, FEELS_LIKE_HOME, HOT_TOURIST_DESTINATIONS, WITHERING_HEIGHTS, LOCAL_BREWERY, BRING_HOME_THE_BEACON, A_FURIOUS_COCKTAIL, BEACONATOR, HOW_DID_WE_GET_HERE, "end/root", FREE_THE_END, THE_NEXT_GENERATION, REMOTE_GETAWAY, THE_END_AGAIN, YOU_NEED_A_MINT, THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE, "adventure/root", VOLUNTARY_EXILE, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL, CRAFTING_A_NEW_LOOK, STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100, SWEET_DREAMS, HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED, POSTMORTAL, HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC, CAREFUL_RESTORATION, ADVENTURING_TIME, SOUND_OF_MUSIC, LIGHT_AS_A_RABBIT, IS_IT_A_PLANE, VERY_VERY_FRIGHTENING, SNIPER_DUEL, BULLSEYE, "husbandry/root", BEE_OUR_GUEST, THE_PARROTS_AND_THE_BATS, YOUVE_GOT_A_FRIEND_IN_ME, WHATEVER_FLOATS_YOUR_GOAT, BEST_FRIENDS_FOREVER, GLOW_AND_BEHOLD, FISHY_BUSINESS, TOTAL_BEELOCATION, BUKKIT_BUKKIT, SMELLS_INTERESTING, A_SEEDY_PLACE, WAX_ON, TWO_BY_TWO, BIRTHDAY_SONG, A_COMPLETE_CATALOGUE, TACTICAL_FISHING, WHEN_THE_SQUAD_HOPS_INTO_TOWN, LITTLE_SNIFFS, A_BALANCED_DIET, SERIOUS_DEDICATION, WAX_OFF, THE_CUTEST_PREDATOR, WITH_OUR_POWERS_COMBINED, PLANTING_THE_PAST, THE_HEALING_POWER_OF_FRIENDSHIP
+    MINECRAFT, STONE_AGE, GETTING_AN_UPGRADE, ACQUIRE_HARDWARE, SUIT_UP, HOT_STUFF, ISNT_IT_IRON_PICK, NOT_TODAY_THANK_YOU, ICE_BUCKET_CHALLENGE, DIAMONDS, WE_NEED_TO_GO_DEEPER, COVER_ME_WITH_DIAMONDS, ENCHANTER, ZOMBIE_DOCTOR, EYE_SPY, ENTER_THE_END, "nether/root", RETURN_TO_SENDER, THOSE_WERE_THE_DAYS, HIDDEN_IN_THE_DEPTHS, SUBSPACE_BUBBLE, A_TERRIBLE_FORTRESS, WHO_IS_CUTTING_ONIONS, OH_SHINY, THIS_BOAT_HAS_LEGS, UNEASY_ALLIANCE, WAR_PIGS, COUNTRY_LODE_TAKE_ME_HOME, COVER_ME_IN_DEBRIS, SPOOKY_SCARY_SKELETON, INTO_FIRE, NOT_QUITE_NINE_LIVES, FEELS_LIKE_HOME, HOT_TOURIST_DESTINATIONS, WITHERING_HEIGHTS, LOCAL_BREWERY, BRING_HOME_THE_BEACON, A_FURIOUS_COCKTAIL, BEACONATOR, HOW_DID_WE_GET_HERE, "end/root", FREE_THE_END, THE_NEXT_GENERATION, REMOTE_GETAWAY, THE_END_AGAIN, YOU_NEED_A_MINT, THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE, "adventure/root", VOLUNTARY_EXILE, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL, CRAFTING_A_NEW_LOOK, STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100, SWEET_DREAMS, HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED, POSTMORTAL, HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC, CAREFUL_RESTORATION, ADVENTURING_TIME, SOUND_OF_MUSIC, LIGHT_AS_A_RABBIT, IS_IT_A_PLANE, VERY_VERY_FRIGHTENING, SNIPER_DUEL, BULLSEYE, MINECRAFT_TRIALS_EDITION, CRAFTERS_CRAFTING_CRAFTERS, LIGHTEN_UP, WHO_NEEDS_ROCKETS, UNDER_LOCK_AND_KEY, BLOWBACK, OVEROVERKILL, "husbandry/root", BEE_OUR_GUEST, THE_PARROTS_AND_THE_BATS, YOUVE_GOT_A_FRIEND_IN_ME, WHATEVER_FLOATS_YOUR_GOAT, BEST_FRIENDS_FOREVER, GLOW_AND_BEHOLD, FISHY_BUSINESS, TOTAL_BEELOCATION, BUKKIT_BUKKIT, SMELLS_INTERESTING, A_SEEDY_PLACE, WAX_ON, TWO_BY_TWO, BIRTHDAY_SONG, A_COMPLETE_CATALOGUE, TACTICAL_FISHING, WHEN_THE_SQUAD_HOPS_INTO_TOWN, LITTLE_SNIFFS, A_BALANCED_DIET, SERIOUS_DEDICATION, WAX_OFF, THE_CUTEST_PREDATOR, WITH_OUR_POWERS_COMBINED, PLANTING_THE_PAST, THE_HEALING_POWER_OF_FRIENDSHIP
 ]
 
 Advancement = namedtuple("Advancement", ['name', 'value', 'desc'])
@@ -374,6 +381,13 @@ advancements = {
     "VERY_VERY_FRIGHTENING": Advancement("""Very Very Frightening""", "adventure/very_very_frightening", """Strike a Villager with lightning."""), 
     "SNIPER_DUEL": Advancement("""Sniper Duel""", "adventure/sniper_duel", """Kill a Skeleton from at least 50 meters away."""), 
     "BULLSEYE": Advancement("""Bullseye""", "adventure/bullseye", """Hit the bullseye of a Target block from at least 30 meters away."""), 
+    "MINECRAFT_TRIALS_EDITION": Advancement("""Minecraft: Trial(s) Edition""", "adventure/minecraft_trials_edition", """Step foot in a Trial Chamber."""), 
+    "CRAFTERS_CRAFTING_CRAFTERS": Advancement("""Crafters Crafting Crafters""", "adventure/crafters_crafting_crafters", """Be near a Crafter when it crafts a Crafter."""), 
+    "LIGHTEN_UP": Advancement("""Lighten Up""", "adventure/lighten_up", """Scrape a Copper Bulb with an Axe to make it brighter."""), 
+    "WHO_NEEDS_ROCKETS": Advancement("""Who Needs Rockets?""", "adventure/who_needs_rockets", """Use a Wind Charge to launch yourself upwards 7 blocks."""), 
+    "UNDER_LOCK_AND_KEY": Advancement("""Under Lock and Key""", "adventure/under_lock_and_key", """Use a Trial Key on a Vault."""), 
+    "BLOWBACK": Advancement("""Blowback""", "adventure/blowback", """Kill a Breeze with a deflected Breeze-shot Wind Charge."""), 
+    "OVEROVERKILL": Advancement("""Over-Overkill""", "adventure/overoverkill", """Deal 50 hearts of damage in a single hit using the Mace."""), 
     "HUSBANDRY": Advancement("""Husbandry""", "husbandry/root", """The world is full of friends and food."""), 
     "BEE_OUR_GUEST": Advancement("""Bee Our Guest""", "husbandry/safely_harvest_honey", """Use a Campfire to collect Honey from a Beehive using a Glass Bottle without aggravating the Bees."""), 
     "THE_PARROTS_AND_THE_BATS": Advancement("""The Parrots and the Bats""", "husbandry/breed_an_animal", """Breed two animals together."""), 
@@ -414,7 +428,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-03-16T15:17:52-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-03-20T17:01:02-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -564,7 +578,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-03-16T15:17:53-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-03-20T17:01:04-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -605,39 +619,39 @@ EFFECT_GROUP = [
 
 Effect = namedtuple("Effect", ['name', 'value', 'desc', 'positive', 'id'])
 effects = {
-    "SPEED": Effect("""Speed""", "speed", """Increases walking speed; higher levels make the affected entity faster and increases the player's field of view when affected.""", "True", "1"), 
-    "SLOWNESS": Effect("""Slowness""", "slowness", """Decreases walking speed; higher levels make the affected entity slower and decreases the player's field of view when affected.""", "False", "2"), 
-    "HASTE": Effect("""Haste""", "haste", """Increases mining and attack speed, higher levels increase the player's mining and attack speed.""", "True", "3"), 
-    "MINING_FATIGUE": Effect("""Mining Fatigue""", "mining_fatigue", """Decreases mining and attack speed, higher levels decrease the player's mining and attack speed.""", "False", "4"), 
-    "STRENGTH": Effect("""Strength""", "strength", """Increases melee damage, higher levels make the affected entity do more melee damage.""", "True", "5"), 
-    "INSTANT_HEALTH": Effect("""Instant Health""", "instant_health", """Heals living entities, damages undead, higher levels heal more health and do more damage.""", "True", "6"), 
-    "INSTANT_DAMAGE": Effect("""Instant Damage""", "instant_damage", """Damages living entities, heals undead, higher levels do more damage and heal more health.""", "False", "7"), 
-    "JUMP_BOOST": Effect("""Jump Boost""", "jump_boost", """Increases jump height and reduces fall damage, higher levels make the affected entity jump higher and reduces more fall damage.""", "True", "8"), 
-    "NAUSEA": Effect("""Nausea""", "nausea", """Wobbles and warps the screen, and increasingly gets worse.""", "False", "9"), 
-    "REGENERATION": Effect("""Regeneration""", "regeneration", """Regenerates health over time, higher levels make health regenerate quicker.""", "True", "10"), 
-    "RESISTANCE": Effect("""Resistance""", "resistance", """Reduces damage, higher levels reduce more damage.""", "True", "11"), 
-    "FIRE_RESISTANCE": Effect("""Fire Resistance""", "fire_resistance", """Prevents the affected entity from taking damage due to fire, lava and other sources of fire damage.""", "True", "12"), 
-    "WATER_BREATHING": Effect("""Water Breathing""", "water_breathing", """Prevents drowning and lets the affected entity breathe underwater.""", "True", "13"), 
-    "INVISIBILITY": Effect("""Invisibility""", "invisibility", """Grants invisibility, making the affected entity invisible (but not the item they hold or the armor they wear), and reduces other mobs' detection range for the affected entity, higher levels reduce other mobs' detection range more.""", "True", "14"), 
-    "BLINDNESS": Effect("""Blindness""", "blindness", """Impairs vision and disables the ability to sprint and critical hit.""", "False", "15"), 
-    "NIGHT_VISION": Effect("""Night Vision""", "night_vision", """Lets the player see well in darkness and underwater.""", "True", "16"), 
-    "HUNGER": Effect("""Hunger""", "hunger", """Increases food exhaustion, higher levels cause the player to starve quicker.""", "False", "17"), 
-    "WEAKNESS": Effect("""Weakness""", "weakness", """Decreases melee damage, higher levels decrease more melee damage.""", "False", "18"), 
-    "POISON": Effect("""Poison""", "poison", """Inflicts damage over time (but can't kill), higher levels do more damage per second, doesn't affect undead.""", "False", "19"), 
-    "WITHER": Effect("""Wither""", "wither", """Inflicts damage over time (can kill), higher levels do more damage per second.""", "False", "20"), 
-    "HEALTH_BOOST": Effect("""Health Boost""", "health_boost", """Increases maximum health, higher levels give the affected entity more maximum health.""", "True", "21"), 
-    "ABSORPTION": Effect("""Absorption""", "absorption", """Adds damage absorption (additional hearts that can't be regenerated), higher levels give more absorption.""", "True", "22"), 
-    "SATURATION": Effect("""Saturation""", "saturation", """Restores hunger and saturation.""", "True", "23"), 
-    "GLOWING": Effect("""Glowing""", "glowing", """Outlines the affected entity (can be seen through blocks).""", "None", "24"), 
-    "LEVITATION": Effect("""Levitation""", "levitation", """Floats the affected entity upward.""", "None", "25"), 
-    "LUCK": Effect("""Luck""", "luck", """Can increase chances of high-quality and more loot, higher levels increase the chances of better loot.""", "True", "26"), 
-    "BAD_LUCK": Effect("""Bad Luck""", "unluck", """Can reduce chances of high-quality and more loot, higher levels reduce the chance of good loot.""", "False", "27"), 
-    "SLOW_FALLING": Effect("""Slow Falling""", "slow_falling", """Decreases falling speed and negates fall damage.""", "True", "28"), 
-    "CONDUIT_POWER": Effect("""Conduit Power""", "conduit_power", """Increases underwater visibility and mining speed, prevents drowning.""", "True", "29"), 
-    "DOLPHINS_GRACE": Effect("""Dolphin's Grace""", "dolphins_grace", """Increases swimming speed (only obtainable from dolphins).""", "True", "30"), 
-    "BAD_OMEN": Effect("""Bad Omen""", "bad_omen", """Causes an illager raid to start upon entering a village (only received from an illager captain upon its death), higher levels cause a more difficult raid.""", "None", "31"), 
-    "HERO_OF_THE_VILLAGE": Effect("""Hero of the Village""", "hero_of_the_village", """Gives discounts on trades with villagers, and makes villagers throw items at the player depending on their profession.""", "True", "32"), 
-    "DARKNESS": Effect("""Darkness""", "darkness", """Darkens the players screen.""", "False", "33"), 
+    "SPEED": Effect("""Speed""", "speed", """Increases walking speed; higher levels make the affected entity faster and increases the player's field of view when affected.""", True, "1"), 
+    "SLOWNESS": Effect("""Slowness""", "slowness", """Decreases walking speed; higher levels make the affected entity slower and decreases the player's field of view when affected.""", False, "2"), 
+    "HASTE": Effect("""Haste""", "haste", """Increases mining and attack speed, higher levels increase the player's mining and attack speed.""", True, "3"), 
+    "MINING_FATIGUE": Effect("""Mining Fatigue""", "mining_fatigue", """Decreases mining and attack speed, higher levels decrease the player's mining and attack speed.""", False, "4"), 
+    "STRENGTH": Effect("""Strength""", "strength", """Increases melee damage, higher levels make the affected entity do more melee damage.""", True, "5"), 
+    "INSTANT_HEALTH": Effect("""Instant Health""", "instant_health", """Heals living entities, damages undead, higher levels heal more health and do more damage.""", True, "6"), 
+    "INSTANT_DAMAGE": Effect("""Instant Damage""", "instant_damage", """Damages living entities, heals undead, higher levels do more damage and heal more health.""", False, "7"), 
+    "JUMP_BOOST": Effect("""Jump Boost""", "jump_boost", """Increases jump height and reduces fall damage, higher levels make the affected entity jump higher and reduces more fall damage.""", True, "8"), 
+    "NAUSEA": Effect("""Nausea""", "nausea", """Wobbles and warps the screen, and increasingly gets worse.""", False, "9"), 
+    "REGENERATION": Effect("""Regeneration""", "regeneration", """Regenerates health over time, higher levels make health regenerate quicker.""", True, "10"), 
+    "RESISTANCE": Effect("""Resistance""", "resistance", """Reduces damage, higher levels reduce more damage.""", True, "11"), 
+    "FIRE_RESISTANCE": Effect("""Fire Resistance""", "fire_resistance", """Prevents the affected entity from taking damage due to fire, lava and other sources of fire damage.""", True, "12"), 
+    "WATER_BREATHING": Effect("""Water Breathing""", "water_breathing", """Prevents drowning and lets the affected entity breathe underwater.""", True, "13"), 
+    "INVISIBILITY": Effect("""Invisibility""", "invisibility", """Grants invisibility, making the affected entity invisible (but not the item they hold or the armor they wear), and reduces other mobs' detection range for the affected entity, higher levels reduce other mobs' detection range more.""", True, "14"), 
+    "BLINDNESS": Effect("""Blindness""", "blindness", """Impairs vision and disables the ability to sprint and critical hit.""", False, "15"), 
+    "NIGHT_VISION": Effect("""Night Vision""", "night_vision", """Lets the player see well in darkness and underwater.""", True, "16"), 
+    "HUNGER": Effect("""Hunger""", "hunger", """Increases food exhaustion, higher levels cause the player to starve quicker.""", False, "17"), 
+    "WEAKNESS": Effect("""Weakness""", "weakness", """Decreases melee damage, higher levels decrease more melee damage.""", False, "18"), 
+    "POISON": Effect("""Poison""", "poison", """Inflicts damage over time (but can't kill), higher levels do more damage per second, doesn't affect undead.""", False, "19"), 
+    "WITHER": Effect("""Wither""", "wither", """Inflicts damage over time (can kill), higher levels do more damage per second.""", False, "20"), 
+    "HEALTH_BOOST": Effect("""Health Boost""", "health_boost", """Increases maximum health, higher levels give the affected entity more maximum health.""", True, "21"), 
+    "ABSORPTION": Effect("""Absorption""", "absorption", """Adds damage absorption (additional hearts that can't be regenerated), higher levels give more absorption.""", True, "22"), 
+    "SATURATION": Effect("""Saturation""", "saturation", """Restores hunger and saturation.""", True, "23"), 
+    "GLOWING": Effect("""Glowing""", "glowing", """Outlines the affected entity (the outline can be seen through blocks).""", None, "24"), 
+    "LEVITATION": Effect("""Levitation""", "levitation", """Floats the affected entity upward.""", None, "25"), 
+    "LUCK": Effect("""Luck""", "luck", """Increases chances of better and more loot, higher levels increase the chances of better and more loot.""", True, "26"), 
+    "BAD_LUCK": Effect("""Bad Luck""", "unluck", """Reduces chances of better and more loot from fishing and chests, higher levels reduces the chances of good loot even more.""", False, "27"), 
+    "SLOW_FALLING": Effect("""Slow Falling""", "slow_falling", """Decreases falling speed and negates fall damage.""", True, "28"), 
+    "CONDUIT_POWER": Effect("""Conduit Power""", "conduit_power", """Increases underwater visibility and mining speed, prevents drowning.""", True, "29"), 
+    "DOLPHINS_GRACE": Effect("""Dolphin's Grace""", "dolphins_grace", """Increases swimming speed (only obtainable from dolphins and commands).""", True, "30"), 
+    "BAD_OMEN": Effect("""Bad Omen""", "bad_omen", """Causes an illager raid to start upon entering a village (only received from an illager captain after killing it or commands), higher levels cause a more difficult raid.""", None, "31"), 
+    "HERO_OF_THE_VILLAGE": Effect("""Hero of the Village""", "hero_of_the_village", """Gives discounts on trades with villagers, and makes villagers throw items at the player depending on their profession.""", True, "32"), 
+    "DARKNESS": Effect("""Darkness""", "darkness", """Darkens the player's screen.""", False, "33"), 
 }
 
 for __k in tuple(effects.keys()):
@@ -652,7 +666,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-03-16T15:17:53-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-03-20T17:01:04-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -754,7 +768,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-03-16T15:17:54-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-03-20T17:01:04-07:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -876,7 +890,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-03-16T15:17:54-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-03-20T17:01:05-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -920,7 +934,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-03-16T15:17:54-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-03-20T17:01:05-07:00
 __particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
@@ -1102,7 +1116,7 @@ particles = {
     "POOF": Particle("""Poof""", "poof", """Appears when mobs die, shown when ravagers roar after being stunned, produced when silverfish enter stone, appear around mobs spawned by spawners, shown when zombies trample turtle eggs, created when fireworks crafted without stars expire."""), 
     "PORTAL": Particle("""Portal""", "portal", """Trails behind eyes of ender, shown when eyes of ender break, floats toward where ender pearls break, points toward where dragon eggs teleport, floats toward where players teleport with chorus fruit, appears and floats toward nether portals, appears and floats toward end gateway portals, appears and floats toward ender chests, emitted by endermen, appears and floats toward endermites."""), 
     "RAIN": Particle("""Rain""", "rain", """Appears on the ground during rain."""), 
-    "REVERSE_PORTAL": Particle("""Reverse Portal""", "reverse_portal", """Floats off the top of respawn anchors."""), 
+    "REVERSE_PORTAL": Particle("""Reverse Portal""", "reverse_portal", """Floats off the top of respawn anchors that have some level of charge."""), 
     "SCRAPE": Particle("""Scrape""", "scrape", """Shown when scraping oxidization off copper."""), 
     "SCULK_CHARGE": Particle("""Sculk Charge""", "sculk_charge", """Marks the path of a sculk charge."""), 
     "SCULK_CHARGE_POP": Particle("""Sculk Charge Pop""", "sculk_charge_pop", """Appears when a sculk charge ends."""), 
@@ -1144,7 +1158,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-03-16T15:17:54-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-03-20T17:01:05-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
