@@ -3688,14 +3688,14 @@ class JsonText(UserDict, JsonHolder):
         self['font'] = de_arg(as_resource_path(font))
         return self
 
-    def bold(self) -> JsonText:
+    def bold(self, v: BoolOrArg = True) -> JsonText:
         """Adds a ``bold`` field to a JSON node."""
-        self['bold'] = True
+        self['bold'] = de_arg(v)
         return self
 
-    def italic(self) -> JsonText:
+    def italic(self, v: BoolOrArg = True) -> JsonText:
         """Adds a ``italic`` field to a JSON node."""
-        self['italic'] = True
+        self['italic'] = de_arg(v)
         return self
 
     def underlined(self, v: BoolOrArg = True) -> JsonText:
@@ -3703,14 +3703,20 @@ class JsonText(UserDict, JsonHolder):
         self['underlined'] = de_arg(v)
         return self
 
-    def strikethrough(self) -> JsonText:
+    def strikethrough(self, v: BoolOrArg = True) -> JsonText:
         """Adds a ``strikethrough`` field to a JSON node."""
-        self['strikethrough'] = True
+        self['strikethrough'] = de_arg(v)
         return self
 
-    def obfuscated(self) -> JsonText:
+    def obfuscated(self, v: BoolOrArg = True) -> JsonText:
         """Adds an ``obfuscated`` field to a JSON node."""
-        self['obfuscated'] = True
+        self['obfuscated'] = de_arg(v)
+        return self
+
+    def plain(self)->JsonText:
+        """Resets all text attributes in this node."""
+        for v in 'italic', 'bold', 'underlined', 'strikethrough', 'obfuscated':
+            self[v] = False
         return self
 
     def insertion(self, to_insert: StrOrArg) -> JsonText:
