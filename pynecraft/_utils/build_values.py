@@ -289,7 +289,6 @@ class Effect(PageEnumDesc):
         self.name_col = None
         self.type_col = None
         self.types = {}
-        self.ids = {}
 
     def header(self, col: int, text: str):
         if text == 'Display name':
@@ -313,14 +312,13 @@ class Effect(PageEnumDesc):
         type_desc = cols[self.type_col].text
         name = clean(cols[self.value_col])
         self.types[name] = True if 'Positive' in type_desc else False if 'Negative' in type_desc else None
-        self.ids[name] = int(clean(cols[self.id_col]))
         return (clean(cols[x].text) for x in (self.name_col, self.value_col, self.desc_col))
 
     def added_fields(self):
-        return ['positive', 'id']
+        return ['positive']
 
     def added_values(self, value):
-        return f', {self.types[value]}, "{self.ids[value]}"'
+        return f', {self.types[value]}'
 
 
 class Enchantment(PageEnumDesc):
