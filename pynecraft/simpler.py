@@ -4,7 +4,7 @@ import dataclasses
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
-    _ensure_size, _in_group, _to_list, as_facing, d, de_arg, r, to_id
+    _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
 from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonDef, JsonList, \
     JsonText, \
     SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
@@ -272,13 +272,13 @@ class Book:
         self.author = author
         self.display_name = display_name
 
-    def add(self, *txt: JsonText | str):
+    def add(self, *txt: JsonText | StrOrArg):
         """Add text to the current page of the book."""
         if self.title is None:
             raise ValueError("Cannot add Json text to unsigned book")
         for t in txt:
-            if isinstance(t, str):
-                t = JsonText.text(t)
+            if isinstance(t, str) or is_arg(t):
+                t = JsonText.text(de_arg(t))
             self._cur_page.append(t)
 
     def next_page(self):

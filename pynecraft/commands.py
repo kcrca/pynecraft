@@ -3603,6 +3603,12 @@ class JsonText(UserDict, JsonHolder):
     You should mostly use the various static factory methods to get a well-formed JSON text component.
     """
 
+    def __init__(self, txt: StrOrArg | Mapping):
+        if isinstance(txt, str) and not is_arg(txt):
+            super().__init__({'text': de_arg(txt)})
+        else:
+            super().__init__(txt)
+
     def __str__(self):
         return json.dumps(self, cls=_JsonEncoder)
 
@@ -3654,7 +3660,7 @@ class JsonText(UserDict, JsonHolder):
         return cls({'keybind': de_arg(keybind_id)})
 
     @classmethod
-    def nbt(cls,data_target: DataTarget,  resource_path: StrOrArg, interpret: BoolOrArg = None,
+    def nbt(cls, data_target: DataTarget, resource_path: StrOrArg, interpret: BoolOrArg = None,
             separator: StrOrArg = None) -> JsonText:
         """Returns a JSON text NBt node."""
         target_key, target_value = data_target_str(data_target).split(' ', 1)
@@ -3713,7 +3719,7 @@ class JsonText(UserDict, JsonHolder):
         self['obfuscated'] = de_arg(v)
         return self
 
-    def plain(self)->JsonText:
+    def plain(self) -> JsonText:
         """Resets all text attributes in this node."""
         for v in 'italic', 'bold', 'underlined', 'strikethrough', 'obfuscated':
             self[v] = False
