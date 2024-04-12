@@ -923,6 +923,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('particle ash 1 ~2 ^3', particle(ASH, (1, r(2), d(3))))
         self.assertEqual('particle ash 1 ~2 ^3 4 ~5 ^6 2.1 15 force',
                          particle(ASH, (1, r(2), d(3)), (4, r(5), d(6)), 2.1, 15, FORCE))
+        self.assertEqual('particle falling_dust{block_state: sand} 1 ~2 ^3', particle((FALLING_DUST, {'block_state': 'sand'}), (1, r(2), d(3))))
 
     def test_place(self):
         self.assertEqual('place feature m:b', place().feature('m:b'))

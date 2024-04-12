@@ -2763,10 +2763,15 @@ def op(target: Target) -> str:
     return str(cmd)
 
 
-def particle(particle: StrOrArg, *params) -> str:
+def particle(particle: StrOrArg | EntityDef, *params) -> str:
     """Creates particles. The syntax of the command is quite variant and conditional, so nearly no checks are made."""
     cmd = Command()
-    cmd._add('$particle', as_particle(particle))
+    cmd._add('$particle')
+    if isinstance(particle, str) or is_arg(particle):
+        particle = as_particle(particle)
+    else:
+        particle = as_entity(particle)
+    cmd._add(particle)
     for param in params:
         if isinstance(param, str) or not isinstance(param, Iterable):
             cmd._add(param)
@@ -3603,7 +3608,7 @@ class JsonText(UserDict, JsonHolder):
     You should mostly use the various static factory methods to get a well-formed JSON text component.
     """
 
-    def __init__(self, txt: StrOrArg | Mapping):
+    def __init__(self, txt: StrOrArg | Mapping = None):
         if isinstance(txt, str) and not is_arg(txt):
             super().__init__({'text': de_arg(txt)})
         else:

@@ -465,34 +465,31 @@ class TestSimpler(unittest.TestCase):
 
     def test_item(self):
         self.assertEqual('dirt', Item('dirt').id)
-        self.assertEqual({'id': 'dirt'}, Item('dirt').nbt)
-        self.assertEqual({'id': 'dirt', 'Count': 2}, Item('dirt', 2).nbt)
-        self.assertEqual({'id': 'dirt', 'foo': 17}, Item('dirt', nbt={'foo': 17}).nbt)
+        self.assertEqual({'id': 'minecraft:dirt'}, Item.nbt_for('dirt'))
+        self.assertEqual({'id': 'minecraft:dirt', 'Count': 2}, Item.nbt_for('dirt', {'Count': 2}))
+        self.assertEqual({'id': 'minecraft:dirt', 'foo': 17}, Item.nbt_for('dirt', nbt={'foo': 17}))
         self.assertEqual({'id': 'minecraft:filled_map'}, Item.nbt_for('filled_map'))
 
     def test_shield(self):
         shield = Shield()
-        self.assertEqual({'id': 'shield'}, shield.nbt)
+        self.assertEqual({}, shield.nbt)
         shield.color(WHITE)
-        self.assertEqual(
-            {'id': 'shield', 'components': {'base_color': 'white'}},
-            shield.nbt)
+        self.assertEqual({'components': {'base_color': 'white'}}, shield.nbt)
         shield.add_pattern('stripe_top', CYAN)
         self.assertEqual(
-            {'id': 'shield',
-             'components': {'base_color': 'white', 'banner_patterns': [{'pattern': 'stripe_top', 'color': 'cyan'}]}},
+            {'components': {'base_color': 'white', 'banner_patterns': [{'pattern': 'stripe_top', 'color': 'cyan'}]}},
             shield.nbt)
         shield.add_pattern(BRICKS, PURPLE)
         self.assertEqual(
-            {'id': 'shield', 'components': {
+            {'components': {
                 'base_color': 'white',
                 'banner_patterns': [{'pattern': 'stripe_top', 'color': 'cyan'},
                                     {'pattern': 'bricks', 'color': 'purple'}]}},
             shield.nbt)
         shield.clear_patterns()
-        self.assertEqual({'id': 'shield', 'components': {'base_color': 'white'}}, shield.nbt)
+        self.assertEqual({'components': {'base_color': 'white'}}, shield.nbt)
         shield.color(None)
-        self.assertEqual({'id': 'shield', 'components': {}}, shield.nbt)
+        self.assertEqual({'components': {}}, shield.nbt)
 
     def test_painting(self):
         self.assertEqual({'variant': 'stage'}, Painting('stage').nbt)
@@ -539,6 +536,6 @@ class TestSimpler(unittest.TestCase):
     def test_macro(self):
         shield = Shield().add_pattern(Arg('pat'), Arg('c'))
         self.assertEqual(
-            {'id': 'shield', 'components': {'banner_patterns': [{'pattern': '$(pat)', 'color': '$(c)'}]}}, shield.nbt)
+            {'components': {'banner_patterns': [{'pattern': '$(pat)', 'color': '$(c)'}]}}, shield.nbt)
         self.assertEqual('$(c)', as_color(Arg('c')))
         self.assertEqual('$(c)', as_color_num(Arg('c')))
