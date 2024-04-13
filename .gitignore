@@ -15,6 +15,6 @@ logs/
 /dist/
 /pynecraft/.??*
 .coverage
-.enum_cache
+.value_cache
 htmlcov
 pynecraft.egg-info/

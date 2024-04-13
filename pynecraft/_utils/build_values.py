@@ -2,7 +2,7 @@
 
 """
 
-Rebuilds pynecraft.enum.py using current data. This is inherently a bit crufty and sensitive, because it reads data
+Rebuilds pynecraft.values.py using current data. This is inherently a bit crufty and sensitive, because it reads data
 from a wiki, which may change at any time. If I knew of a better way to get this info, I'd use it.
 
 """
@@ -25,7 +25,7 @@ noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
 cwd = Path(sys.path[0])
 
 
-class EnumDesc(ABC):
+class ValuesDesc(ABC):
     def __init__(self, name: str):
         self.name = name
 
@@ -43,14 +43,14 @@ class EnumDesc(ABC):
         return 's'
 
 
-class PageEnumDesc(EnumDesc):
-    """This abstract class is subclassed for each enum whose elements are read from a web page. """
+class PageValuesDesc(ValuesDesc):
+    """This abstract class is subclassed for each group of values whose elements are read from a web page."""
 
     def __init__(self, name: str | None, url, data_desc: str | None):
         """
-        :param name: The enum name.
+        :param name: The value name.
         :param url: The URL of the page
-        :param data_desc: The docstring for the generated enum.
+        :param data_desc: The docstring for the generated value.
         """
         super().__init__(name)
         self.url = url
@@ -59,13 +59,13 @@ class PageEnumDesc(EnumDesc):
     def fetch(self):
         """
         Fetches the page, using the implemented abstract methods to retrieve the data. If there is an HTML file in
-        ``.enum_cache`` for the page, it will be used if it is less than a week old. This speeds up development of
+        ``.value_cache`` for the page, it will be used if it is less than a week old. This speeds up development of
         this program so repeated runs are faster.
 
         The web pages are pretty inconsistent, though not entirely. But nowhere near enough to share much code in the
         scraping of them.
         """
-        cache = cwd / '.enum_cache' / (self.name + '.html')
+        cache = cwd / '.value_cache' / (self.name + '.html')
         cache.parent.mkdir(exist_ok=True)
         html = None
         now = datetime.datetime.now()
@@ -111,7 +111,7 @@ class PageEnumDesc(EnumDesc):
 
     def generate(self):
         """
-        Invokes fetch(), uses the abstract methods to scrape the relevant content, and then generates the actual enum.
+        Invokes fetch(), uses the abstract methods to scrape the relevant content, and then generates the actual values.
         """
         html_time, soup = self.fetch()
         tables = self.find_tables(soup)
@@ -200,7 +200,7 @@ def roman_to_int(s):
     return int_val
 
 
-class TeamOptions(PageEnumDesc):
+class TeamOptions(PageValuesDesc):
     """Generates the Team Options data. """
 
     def __init__(self):
@@ -250,8 +250,8 @@ class TeamOptions(PageEnumDesc):
         return camel_to_name(cols[0].text), cols[0].text, cols[1].text
 
 
-class Advancement(PageEnumDesc):
-    """ Generates the 'Advancement' enum. """
+class Advancement(PageValuesDesc):
+    """ Generates the 'Advancement' values. """
 
     def __init__(self):
         super().__init__('Advancement', WIKI + 'Advancement#List_of_advancements', 'advancements')
@@ -278,8 +278,8 @@ class Advancement(PageEnumDesc):
         return name
 
 
-class Effect(PageEnumDesc):
-    """ Generates the 'Effect' enum. """
+class Effect(PageValuesDesc):
+    """ Generates the 'Effect' values. """
 
     def __init__(self):
         super().__init__('Effect', WIKI + 'Effect?so=search#Effect_list', 'Effects')
@@ -321,8 +321,8 @@ class Effect(PageEnumDesc):
         return f', {self.types[value]}'
 
 
-class Enchantment(PageEnumDesc):
-    """ Generates the 'Enchantment' enum. """
+class Enchantment(PageValuesDesc):
+    """ Generates the 'Enchantment' values. """
 
     def __init__(self):
         super().__init__('Enchantment', WIKI + 'Enchanting#Summary_of_enchantments',
@@ -358,8 +358,8 @@ class Enchantment(PageEnumDesc):
         return f', {self.maxes[value]}'
 
 
-class GameRule(PageEnumDesc):
-    """ Generates the 'GameRule' enum. """
+class GameRule(PageValuesDesc):
+    """ Generates the 'GameRule' values. """
 
     def __init__(self):
         super().__init__('GameRule', WIKI + 'Game_rule?so=search#List_of_game_rules', None)
@@ -408,8 +408,8 @@ class GameRule(PageEnumDesc):
         return f', {self.types[value]}'
 
 
-class Particle(PageEnumDesc):
-    """ Generates the 'Particle' enum. """
+class Particle(PageValuesDesc):
+    """ Generates the 'Particle' values. """
 
     def __init__(self):
         super().__init__('Particle', WIKI + 'Particles_(Java_Edition)#Types_of_particles', 'Java Particles')
@@ -423,7 +423,7 @@ class Particle(PageEnumDesc):
             self.desc_col = col
 
     def extract(self, cols):
-        if len(cols) != 4:
+        if len(cols) < 2:
             return None
         value = clean(cols[self.value_col].text)
         if value == '—':
@@ -435,8 +435,8 @@ class Particle(PageEnumDesc):
         return name, value, desc
 
 
-class PotterySherd(PageEnumDesc):
-    """Generates the PotterySherd enum."""
+class PotterySherd(PageValuesDesc):
+    """Generates the PotterySherd values."""
 
     def __init__(self):
         super().__init__('PotterySherd', WIKI + 'Pottery_Sherd', 'Pottery Sherds')
@@ -462,8 +462,8 @@ class PotterySherd(PageEnumDesc):
         return name, value, ''
 
 
-class ScoreCriteria(PageEnumDesc):
-    """ Generates the 'ScoreCriteria' enum. """
+class ScoreCriteria(PageValuesDesc):
+    """ Generates the 'ScoreCriteria' values. """
 
     def __init__(self):
         super().__init__('ScoreCriteria', WIKI + 'Scoreboard#Criteria', 'Criteria')
@@ -486,7 +486,7 @@ class ScoreCriteria(PageEnumDesc):
         return camel_to_name(value), value, clean(cols[self.desc_col])
 
 
-class Biome(PageEnumDesc):
+class Biome(PageValuesDesc):
     def __init__(self):
         super().__init__('Biome', WIKI + 'Biome/ID', 'Java Biome IDs')
         self.desc_col = None
@@ -506,8 +506,8 @@ class Biome(PageEnumDesc):
         return desc, value, desc
 
 
-class Pattern(PageEnumDesc):
-    """Generates the banner pattern enum."""
+class Pattern(PageValuesDesc):
+    """Generates the banner pattern values."""
 
     def __init__(self):
         super().__init__('Pattern', WIKI + 'Banner/Patterns', 'patterns')
