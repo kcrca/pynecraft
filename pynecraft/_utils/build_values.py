@@ -20,6 +20,8 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
+from pynecraft.base import to_id
+
 WIKI = 'https://minecraft.wiki/'
 noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
 cwd = Path(sys.path[0])
@@ -529,6 +531,47 @@ class Pattern(PageValuesDesc):
         name = clean(cols[self.value_col].text).lower().replace('_', ' ').title()
         return name, clean(cols[self.value_col].next.text), clean(cols[self.desc_col].text)
 
+class Disc(PageValuesDesc):
+    """Generaets the Disc values."""
+
+    def __init__(self):
+        super().__init__('Disc', WIKI + 'Music_Disc#Discs', 'Disc listing')
+        self.name_col=None
+        self.desc_col = None
+        self.composer_col = None
+        self.composers = {}
+        self.names = {13: "thirteen", 11: "eleven", 5: "five"}
+
+    def find_tables(self, soup):
+        return soup.find_all('table', attrs={'data-description': self.data_desc})
+
+    def header(self, col: int, text: str):
+        if text.startswith('In-game'):
+            self.name_col = col
+        elif text.startswith('Composer'):
+            self.composer_col = col
+        elif 'Desc' in text:
+            self.desc_col = col
+
+    def extract(self, cols) -> tuple[str, str, str]:
+        name = clean(cols[self.name_col])
+        value = f'music_disc_{to_id(name)}'
+        try :
+            num = int(name)
+            name = self.names[num]
+        except ValueError:
+            pass
+        desc = clean(cols[self.desc_col])
+        composer = clean(cols[self.composer_col])
+        self.composers[value] = composer
+        return name, value, desc
+
+    def added_fields(self):
+        return ['composer']
+
+    def added_values(self, value):
+        return f', "{self.composers[value]}"'
+
 
 if __name__ == '__main__':
     known = {}
@@ -571,7 +614,7 @@ if __name__ == '__main__':
             for tab in (
                     TeamOptions(),
                     Pattern(), Advancement(), Biome(), Effect(), Enchantment(), GameRule(), ScoreCriteria(),
-                    Particle(), PotterySherd()):
+                    Particle(), PotterySherd(), Disc()):
                 html_time, fields = tab.generate()
                 print()
                 print()
