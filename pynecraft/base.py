@@ -1307,7 +1307,7 @@ def as_range(spec: Range) -> str:
 
 BoolOrArg = Union[bool, Arg]
 IntOrArg = Union[int, Arg, str]
-FloatOrArg = Union[float, Arg, str]
+FloatOrArg = Union[int, float, Arg, str]
 StrOrArg = Union[str, Arg]
 
 NbtDef = Union[Nbt, Mapping]

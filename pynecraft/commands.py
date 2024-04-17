@@ -2763,8 +2763,10 @@ def op(target: Target) -> str:
     return str(cmd)
 
 
-def particle(particle: StrOrArg | EntityDef, *params) -> str:
-    """Creates particles. The syntax of the command is quite variant and conditional, so nearly no checks are made."""
+def particle(
+        particle: StrOrArg | EntityDef, pos: Position = None, delta: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] = None,
+        speed: FloatOrArg = None, count: IntOrArg = None, mode: StrOrArg = None, *viewers: EntityDef) -> str:
+    """Creates particles."""
     cmd = Command()
     cmd._add('$particle')
     if isinstance(particle, str) or is_arg(particle):
@@ -2772,11 +2774,13 @@ def particle(particle: StrOrArg | EntityDef, *params) -> str:
     else:
         particle = as_entity(particle)
     cmd._add(particle)
-    for param in params:
-        if isinstance(param, str) or not isinstance(param, Iterable):
-            cmd._add(param)
-        else:
-            cmd._add(*param)
+    cmd._add_opt_pos(pos)
+    cmd._add_opt_pos(delta)
+    if mode and not is_arg(mode):
+        mode = _in_group(PARTICLE_MODES, mode)
+    cmd._add_opt(speed, count, mode)
+    for v in viewers:
+        cmd._add(v)
     return str(cmd)
 
 

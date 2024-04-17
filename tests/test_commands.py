@@ -921,9 +921,16 @@ class TestCommands(unittest.TestCase):
     def test_particle_command(self):
         self.assertEqual('particle ash', particle(ASH))
         self.assertEqual('particle ash 1 ~2 ^3', particle(ASH, (1, r(2), d(3))))
-        self.assertEqual('particle ash 1 ~2 ^3 4 ~5 ^6 2.1 15 force',
-                         particle(ASH, (1, r(2), d(3)), (4, r(5), d(6)), 2.1, 15, FORCE))
-        self.assertEqual('particle falling_dust{block_state: sand} 1 ~2 ^3', particle((FALLING_DUST, {'block_state': 'sand'}), (1, r(2), d(3))))
+        self.assertEqual('particle ash 1 ~2 ^3 4 5 6.7 2.1 15 force',
+                         particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE))
+        self.assertEqual('particle ash 1 ~2 ^3 4 5 6.7 2.1 15 force @a',
+                         particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE, a()))
+        self.assertEqual('particle ash 1 ~2 ^3 4 5 6.7 2.1 15 force @a @e[tag=foo]',
+                         particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE, a(), e().tag('foo')))
+        self.assertEqual('particle falling_dust{block_state: sand} 1 ~2 ^3',
+                         particle((FALLING_DUST, {'block_state': 'sand'}), (1, r(2), d(3))))
+        self.assertEqual('particle falling_dust{block_state: sand} 1 ~2 ^3',
+                         particle(Entity(FALLING_DUST, {'block_state': 'sand'}), (1, r(2), d(3))))
 
     def test_place(self):
         self.assertEqual('place feature m:b', place().feature('m:b'))
