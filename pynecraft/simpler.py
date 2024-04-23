@@ -64,9 +64,9 @@ class Sign(Block):
     """Whether signs are waxed by default."""
 
     def __init__(self, text: SignMessages = (), /, commands: SignCommands = (), wood='oak', state: Mapping = None,
-                 nbt: NbtDef = None, hanging=False, front=True):
+                 nbt: NbtDef = None, hanging=False, front=None):
         """
-        Creates a sign object. The text and commands are passed to front().
+        Creates a sign object. The text, commands, and front are passed to messages().
         """
         self.hanging = hanging
         wood = to_id(wood)
@@ -160,7 +160,7 @@ class Sign(Block):
 
     @classmethod
     def change(cls, pos: Position, messages: SignMessages = None, commands: SignCommands = None,
-               front=True, start=0) -> Commands:
+               front=None, start=0) -> Commands:
         messages = messages if messages else (None, None, None, None)
         commands = commands if commands else (None, None, None, None)
         cmds = []
