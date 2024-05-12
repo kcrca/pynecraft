@@ -160,7 +160,7 @@ def clean(cell) -> str:
     if not isinstance(cell, str):
         cell = cell.text
     s = re.sub(r'\s{2,}', ' ', cell.strip())
-    s = s.replace(u'\u200c', '').strip()  # Discard the zero-width non-joiners
+    s = re.sub(u'[\u200c\u200b]', '', s).strip()  # Discard the zero-width non-joiners
     return re.sub(r'\s*[\[*].*', '', s, flags=re.DOTALL)  # Discard footnotes
 
 
@@ -285,7 +285,6 @@ class Effect(PageValuesDesc):
 
     def __init__(self):
         super().__init__('Effect', WIKI + 'Effect?so=search#Effect_list', 'Effects')
-        self.id_col = None
         self.desc_col = None
         self.value_col = None
         self.name_col = None
@@ -293,14 +292,12 @@ class Effect(PageValuesDesc):
         self.types = {}
 
     def header(self, col: int, text: str):
-        if text == 'Display name':
+        if text.find('In-game name') >= 0:
             self.name_col = col
-        elif text.startswith('Name'):
+        elif text.find('Technical') >= 0:
             self.value_col = col
         elif text.find('Effect') >= 0:
             self.desc_col = col
-        elif text.find('ID (JE)') >= 0:
-            self.id_col = col
         elif text.find('Type') >= 0:
             # Used to generate a method that returns the positive- or negative-ness of the effect.
             self.type_col = col
@@ -308,9 +305,6 @@ class Effect(PageValuesDesc):
             pass
 
     def extract(self, cols):
-        if 'N/A' in cols[self.id_col].text:
-            # Filter out non-Java-Edition effects.
-            return None
         type_desc = cols[self.type_col].text
         name = clean(cols[self.value_col])
         self.types[name] = True if 'Positive' in type_desc else False if 'Negative' in type_desc else None
@@ -432,7 +426,7 @@ class Particle(PageValuesDesc):
             return None
         if value[-1] == '*':
             value = value[:-1]
-        name = value.replace('_', ' ').title()
+        name = clean(value.replace('_', ' ')).title()
         desc = clean(cols[self.desc_col])
         return name, value, desc
 
@@ -531,6 +525,7 @@ class Pattern(PageValuesDesc):
         name = clean(cols[self.value_col].text).lower().replace('_', ' ').title()
         return name, clean(cols[self.value_col].next.text), clean(cols[self.desc_col].text)
 
+
 class Disc(PageValuesDesc):
     """Generaets the Disc values."""
 
@@ -554,14 +549,14 @@ class Disc(PageValuesDesc):
             self.desc_col = col
 
     def extract(self, cols) -> tuple[str, str, str]:
-        name = clean(cols[self.name_col])
+        name = re.sub('[()]', '', clean(cols[self.name_col]))
         value = f'music_disc_{to_id(name)}'
-        try :
+        try:
             num = int(name)
             name = self.names[num]
         except ValueError:
             pass
-        desc = clean(cols[self.desc_col])
+        desc = clean(cols[self.desc_col]) if self.desc_col else None
         composer = clean(cols[self.composer_col])
         self.composers[value] = composer
         return name, value, desc
@@ -593,12 +588,6 @@ if __name__ == '__main__':
             if m:
                 known[m.group(1)] = m.group(2)
 
-    # p = pkgutil.iter_modules(pynecraft.__path__)
-    # for module in base, commands, function, simpler:
-    #     for v in filter(lambda x: re.fullmatch(r'[A-Z_0-9]+', x), dir(module)):
-    #         value = getattr(module, v)
-    #         if isinstance(value, str):
-    #             v = add_to_known(v, value)
     with open(cwd / '..' / 'values.py', 'r+') as out:
         top = []
         for line in out:
@@ -628,7 +617,7 @@ if __name__ == '__main__':
                 print(f'{dups} = {{}}')
                 group = []
                 for key in fields:
-                    value, desc, name = fields[key]
+                    value, _, name = fields[key]
                     k = key
                     if key not in known:
                         k = add_to_known(key, value, tab.name.upper())
@@ -648,7 +637,11 @@ if __name__ == '__main__':
                 print(f'{map_name} = {{')
                 for key in fields:
                     value, desc, name = fields[key]
-                    print(f'    "{key}": {tab.name}("""{name}""", "{value}", """{desc}"""{tab.added_values(value)}), ')
+                    if desc:
+                        desc = f'"""{desc}"""'
+                    else:
+                        desc = 'None'
+                    print(f'    "{key}": {tab.name}("""{name}""", "{value}", {desc}{tab.added_values(value)}),')
                 print(f'}}')
 
                 print('')

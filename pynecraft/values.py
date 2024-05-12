@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2024-04-12T17:44:25-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2024-05-11T17:48:24-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-04-12T17:44:26-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-05-11T17:48:24-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -189,7 +189,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-04-12T17:44:26-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-05-11T17:48:25-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -275,6 +275,7 @@ IS_IT_A_PLANE = "adventure/spyglass_at_dragon"
 VERY_VERY_FRIGHTENING = "adventure/very_very_frightening"
 SNIPER_DUEL = "adventure/sniper_duel"
 BULLSEYE = "adventure/bullseye"
+ISNT_IT_SCUTE = "adventure/brush_armadillo"
 MINECRAFT_TRIALS_EDITION = "adventure/minecraft_trials_edition"
 CRAFTERS_CRAFTING_CRAFTERS = "adventure/crafters_crafting_crafters"
 LIGHTEN_UP = "adventure/lighten_up"
@@ -283,7 +284,6 @@ UNDER_LOCK_AND_KEY = "adventure/under_lock_and_key"
 REVAULTING = "adventure/revaulting"
 BLOWBACK = "adventure/blowback"
 OVEROVERKILL = "adventure/overoverkill"
-ISNT_IT_SCUTE = "adventure/brush_armadillo"
 __advancement_dups["husbandry"] = "husbandry/root"
 BEE_OUR_GUEST = "husbandry/safely_harvest_honey"
 THE_PARROTS_AND_THE_BATS = "husbandry/breed_an_animal"
@@ -312,7 +312,7 @@ PLANTING_THE_PAST = "husbandry/plant_any_sniffer_seed"
 THE_HEALING_POWER_OF_FRIENDSHIP = "husbandry/kill_axolotl_target"
 GOOD_AS_NEW = "husbandry/repair_wolf_armor"
 THE_WHOLE_PACK = "husbandry/whole_pack"
-SNIP_IT = "husbandry/remove_wolf_armor"
+SHEAR_BRILLIANCE = "husbandry/remove_wolf_armor"
 ADVANCEMENT_GROUP = [
     MINECRAFT, STONE_AGE, GETTING_AN_UPGRADE, ACQUIRE_HARDWARE, SUIT_UP, HOT_STUFF, ISNT_IT_IRON_PICK,
     NOT_TODAY_THANK_YOU, ICE_BUCKET_CHALLENGE, DIAMONDS, WE_NEED_TO_GO_DEEPER, COVER_ME_WITH_DIAMONDS, ENCHANTER,
@@ -327,13 +327,13 @@ ADVANCEMENT_GROUP = [
     SWEET_DREAMS, HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED,
     POSTMORTAL, HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC,
     CAREFUL_RESTORATION, ADVENTURING_TIME, SOUND_OF_MUSIC, LIGHT_AS_A_RABBIT, IS_IT_A_PLANE, VERY_VERY_FRIGHTENING,
-    SNIPER_DUEL, BULLSEYE, MINECRAFT_TRIALS_EDITION, CRAFTERS_CRAFTING_CRAFTERS, LIGHTEN_UP, WHO_NEEDS_ROCKETS,
-    UNDER_LOCK_AND_KEY, REVAULTING, BLOWBACK, OVEROVERKILL, ISNT_IT_SCUTE, "husbandry/root", BEE_OUR_GUEST,
+    SNIPER_DUEL, BULLSEYE, ISNT_IT_SCUTE, MINECRAFT_TRIALS_EDITION, CRAFTERS_CRAFTING_CRAFTERS, LIGHTEN_UP,
+    WHO_NEEDS_ROCKETS, UNDER_LOCK_AND_KEY, REVAULTING, BLOWBACK, OVEROVERKILL, "husbandry/root", BEE_OUR_GUEST,
     THE_PARROTS_AND_THE_BATS, YOUVE_GOT_A_FRIEND_IN_ME, WHATEVER_FLOATS_YOUR_GOAT, BEST_FRIENDS_FOREVER,
     GLOW_AND_BEHOLD, FISHY_BUSINESS, TOTAL_BEELOCATION, BUKKIT_BUKKIT, SMELLS_INTERESTING, A_SEEDY_PLACE, WAX_ON,
     TWO_BY_TWO, BIRTHDAY_SONG, A_COMPLETE_CATALOGUE, TACTICAL_FISHING, WHEN_THE_SQUAD_HOPS_INTO_TOWN, LITTLE_SNIFFS,
     A_BALANCED_DIET, SERIOUS_DEDICATION, WAX_OFF, THE_CUTEST_PREDATOR, WITH_OUR_POWERS_COMBINED, PLANTING_THE_PAST,
-    THE_HEALING_POWER_OF_FRIENDSHIP, GOOD_AS_NEW, THE_WHOLE_PACK, SNIP_IT
+    THE_HEALING_POWER_OF_FRIENDSHIP, GOOD_AS_NEW, THE_WHOLE_PACK, SHEAR_BRILLIANCE
 ]
 
 Advancement = namedtuple("Advancement", ['name', 'value', 'desc'])
@@ -477,6 +477,8 @@ advancements = {
                                """Kill a Skeleton from at least 50 meters away."""),
     "BULLSEYE": Advancement("""Bullseye""", "adventure/bullseye",
                             """Hit the bullseye of a Target block from at least 30 meters away."""),
+    "ISNT_IT_SCUTE": Advancement("""Isn't It Scute?""", "adventure/brush_armadillo",
+                                 """Get Armadillo Scutes from an Armadillo using a Brush."""),
     "MINECRAFT_TRIALS_EDITION": Advancement("""Minecraft: Trial(s) Edition""", "adventure/minecraft_trials_edition",
                                             """Step foot in a Trial Chamber."""),
     "CRAFTERS_CRAFTING_CRAFTERS": Advancement("""Crafters Crafting Crafters""", "adventure/crafters_crafting_crafters",
@@ -493,8 +495,6 @@ advancements = {
                             """Kill a Breeze with a deflected Breeze-shot Wind Charge."""),
     "OVEROVERKILL": Advancement("""Over-Overkill""", "adventure/overoverkill",
                                 """Deal 50 hearts of damage in a single hit using the Mace."""),
-    "ISNT_IT_SCUTE": Advancement("""Isn't it Scute?""", "adventure/brush_armadillo",
-                                 """Get Armadillo Scutes from an Armadillo using a Brush."""),
     "HUSBANDRY": Advancement("""Husbandry""", "husbandry/root", """The world is full of friends and food."""),
     "BEE_OUR_GUEST": Advancement("""Bee Our Guest""", "husbandry/safely_harvest_honey",
                                  """Use a Campfire to collect Honey from a Beehive using a Glass Bottle without aggravating the Bees."""),
@@ -544,8 +544,8 @@ advancements = {
     "GOOD_AS_NEW": Advancement("""Good as New""", "husbandry/repair_wolf_armor",
                                """Repair a damaged Wolf Armor using Armadillo Scutes."""),
     "THE_WHOLE_PACK": Advancement("""The Whole Pack""", "husbandry/whole_pack", """Tame one of each Wolf variant."""),
-    "SNIP_IT": Advancement("""Snip it!""", "husbandry/remove_wolf_armor",
-                           """Remove Wolf Armor from a Wolf using Shears."""),
+    "SHEAR_BRILLIANCE": Advancement("""Shear Brilliance""", "husbandry/remove_wolf_armor",
+                                    """Remove Wolf Armor from a Wolf using Shears."""),
 }
 
 for __k in tuple(advancements.keys()):
@@ -559,7 +559,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-04-12T17:44:26-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-05-11T17:48:25-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -719,7 +719,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-04-12T17:44:27-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-05-11T17:48:25-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -748,24 +748,25 @@ GLOWING = "glowing"
 LEVITATION = "levitation"
 LUCK = "luck"
 BAD_LUCK = "unluck"
+FATAL_POISON = "fatal_poison"
 SLOW_FALLING = "slow_falling"
 CONDUIT_POWER = "conduit_power"
 DOLPHINS_GRACE = "dolphins_grace"
 BAD_OMEN = "bad_omen"
 __effect_dups["adventure/hero_of_the_village"] = "hero_of_the_village"
 DARKNESS = "darkness"
-INFESTED = "infested"
-OOZING = "oozing"
-WEAVING = "weaving"
-WIND_CHARGED = "wind_charged"
-RAID_OMEN = "raid_omen"
 TRIAL_OMEN = "trial_omen"
+RAID_OMEN = "raid_omen"
+WIND_CHARGED = "wind_charged"
+WEAVING = "weaving"
+OOZING = "oozing"
+INFESTED = "infested"
 EFFECT_GROUP = [
     SPEED, SLOWNESS, HASTE, MINING_FATIGUE, STRENGTH, INSTANT_HEALTH, INSTANT_DAMAGE, JUMP_BOOST, NAUSEA, REGENERATION,
     RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY, BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON,
-    WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, BAD_LUCK, SLOW_FALLING, CONDUIT_POWER,
-    DOLPHINS_GRACE, BAD_OMEN, "hero_of_the_village", DARKNESS, INFESTED, OOZING, WEAVING, WIND_CHARGED, RAID_OMEN,
-    TRIAL_OMEN
+    WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, BAD_LUCK, FATAL_POISON, SLOW_FALLING,
+    CONDUIT_POWER, DOLPHINS_GRACE, BAD_OMEN, "hero_of_the_village", DARKNESS, TRIAL_OMEN, RAID_OMEN, WIND_CHARGED,
+    WEAVING, OOZING, INFESTED
 ]
 
 Effect = namedtuple("Effect", ['name', 'value', 'desc', 'positive'])
@@ -828,13 +829,15 @@ effects = {
     "SATURATION": Effect("""Saturation""", "saturation", """Restores hunger and saturation.""", True),
     "GLOWING": Effect("""Glowing""", "glowing",
                       """Outlines the affected entity (the outline can be seen through blocks).""", None),
-    "LEVITATION": Effect("""Levitation""", "levitation", """Floats the affected entity upward.""", None),
+    "LEVITATION": Effect("""Levitation""", "levitation", """Floats the affected entity upward.""", False),
     "LUCK": Effect("""Luck""", "luck",
                    """Increases chances of better and more loot, higher levels increase the chances of better and more loot.""",
                    True),
     "BAD_LUCK": Effect("""Bad Luck""", "unluck",
                        """Reduces chances of better and more loot from fishing and chests, higher levels reduces the chances of good loot even more.""",
                        False),
+    "FATAL_POISON": Effect("""Fatal Poison""", "fatal_poison",
+                           """Inflicts damage over time and can potentially kill the player.""", False),
     "SLOW_FALLING": Effect("""Slow Falling""", "slow_falling", """Decreases falling speed and negates fall damage.""",
                            True),
     "CONDUIT_POWER": Effect("""Conduit Power""", "conduit_power",
@@ -847,18 +850,17 @@ effects = {
                                   """Gives discounts on trades with villagers, and makes villagers throw items at the player depending on their profession.""",
                                   True),
     "DARKNESS": Effect("""Darkness""", "darkness", """Darkens the player's screen.""", False),
-    "INFESTED": Effect("""Infested""", "infested",
-                       """Gives the entity a 5% chance to spawn between 1 and 3 silverfish when hurt.""", False),
-    "OOZING": Effect("""Oozing""", "oozing", """Makes the entity spawn 2 slimes upon death.""", False),
-    "WEAVING": Effect("""Weaving""", "weaving", """Affected entities will spread cobweb blocks upon death.""", False),
-    "WIND_CHARGED": Effect("""Wind Charged""", "wind_charged",
-                           """Affected entities will emit a wind burst upon death.""", False),
-    "RAID_OMEN": Effect("""Raid Omen""", "raid_omen",
-                        """A variant that Bad Omen can transform into if the player enters a village. It has a duration of 30 seconds. Once the Raid Omen expires, a raid will start at the location the player gained the Raid Omen.""",
-                        None),
     "TRIAL_OMEN": Effect("""Trial Omen""", "trial_omen",
-                         """A variant that Bad Omen can transform into if the player is within detection range of a Trial Spawner that is not Ominous. The Trial Omen has a duration of 15 minutes multiplied by the transformed Bad Omen's level. Players that have Trial Omen are surrounded by ominous particles.""",
-                         None),
+                         """Transforms nearby trial spawners into ominous trial spawners.""", None),
+    "RAID_OMEN": Effect("""Raid Omen""", "raid_omen",
+                        """Starts a raid at the location the player gained the Raid Omen, once the effect expires.""",
+                        None),
+    "WIND_CHARGED": Effect("""Wind Charged""", "wind_charged", """Affected entities emit a burst of wind upon death.""",
+                           False),
+    "WEAVING": Effect("""Weaving""", "weaving", """Affected entities spread cobweb blocks upon death.""", False),
+    "OOZING": Effect("""Oozing""", "oozing", """Makes the entity spawn 2 slimes upon death.""", False),
+    "INFESTED": Effect("""Infested""", "infested",
+                       """Gives the entity a 10% chance to spawn between 1 and 3 silverfish when hurt.""", False),
 }
 
 for __k in tuple(effects.keys()):
@@ -872,15 +874,17 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-04-12T17:44:28-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-05-11T21:23:06-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
 BLAST_PROTECTION = "blast_protection"
+BREACH = "breach"
 CHANNELING = "channeling"
 CLEAVING = "cleaving"
 CURSE_OF_BINDING = "curse_of_binding"
 CURSE_OF_VANISHING = "curse_of_vanishing"
+DENSITY = "density"
 DEPTH_STRIDER = "depth_strider"
 EFFICIENCY = "efficiency"
 FEATHER_FALLING = "feather_falling"
@@ -913,16 +917,14 @@ SOUL_SPEED = "soul_speed"
 SWEEPING_EDGE = "sweeping_edge"
 SWIFT_SNEAK = "swift_sneak"
 THORNS = "thorns"
-DENSITY = "density"
-BREACH = "breach"
-WIND_BURST = "wind_burst"
 UNBREAKING = "unbreaking"
+WIND_BURST = "wind_burst"
 ENCHANTMENT_GROUP = [
-    AQUA_AFFINITY, BANE_OF_ARTHROPODS, BLAST_PROTECTION, CHANNELING, CLEAVING, CURSE_OF_BINDING, CURSE_OF_VANISHING,
-    DEPTH_STRIDER, EFFICIENCY, FEATHER_FALLING, FIRE_ASPECT, FIRE_PROTECTION, FLAME, FORTUNE, FROST_WALKER, IMPALING,
-    INFINITY, KNOCKBACK, LOOTING, LOYALTY, LUCK_OF_THE_SEA, LURE, MENDING, MULTISHOT, PIERCING, POWER,
-    PROJECTILE_PROTECTION, PROTECTION, PUNCH, QUICK_CHARGE, RESPIRATION, RIPTIDE, SHARPNESS, SILK_TOUCH, SMITE,
-    SOUL_SPEED, SWEEPING_EDGE, SWIFT_SNEAK, THORNS, DENSITY, BREACH, WIND_BURST, UNBREAKING
+    AQUA_AFFINITY, BANE_OF_ARTHROPODS, BLAST_PROTECTION, BREACH, CHANNELING, CLEAVING, CURSE_OF_BINDING,
+    CURSE_OF_VANISHING, DENSITY, DEPTH_STRIDER, EFFICIENCY, FEATHER_FALLING, FIRE_ASPECT, FIRE_PROTECTION, FLAME,
+    FORTUNE, FROST_WALKER, IMPALING, INFINITY, KNOCKBACK, LOOTING, LOYALTY, LUCK_OF_THE_SEA, LURE, MENDING, MULTISHOT,
+    PIERCING, POWER, PROJECTILE_PROTECTION, PROTECTION, PUNCH, QUICK_CHARGE, RESPIRATION, RIPTIDE, SHARPNESS,
+    SILK_TOUCH, SMITE, SOUL_SPEED, SWEEPING_EDGE, SWIFT_SNEAK, THORNS, UNBREAKING, WIND_BURST
 ]
 
 Enchantment = namedtuple("Enchantment", ['name', 'value', 'desc', 'max_level'])
@@ -933,6 +935,9 @@ enchantments = {
                                       5),
     "BLAST_PROTECTION": Enchantment("""Blast Protection""", "blast_protection",
                                     """Reduces explosion damage and knockback.""", 4),
+    "BREACH": Enchantment("""Breach""", "breach",
+                          """Reduces the effectiveness of the armor on the target. The armor's effectiveness is reduced by 15% per level.""",
+                          4),
     "CHANNELING": Enchantment("""Channeling""", "channeling",
                               """During thunderstorms, a thrown trident summons a lightning bolt on the target when hitting it.""",
                               1),
@@ -941,6 +946,8 @@ enchantments = {
                                     """Items cannot be removed from armor slots.""", 1),
     "CURSE_OF_VANISHING": Enchantment("""Curse of Vanishing""", "curse_of_vanishing", """Item disappears on death.""",
                                       1),
+    "DENSITY": Enchantment("""Density""", "density",
+                           """Increases the damage dealt per block fallen, increasing by 0.5 per level.""", 5),
     "DEPTH_STRIDER": Enchantment("""Depth Strider""", "depth_strider", """Increases underwater movement speed.""", 3),
     "EFFICIENCY": Enchantment("""Efficiency""", "efficiency", """Increases mining speed.""", 5),
     "FEATHER_FALLING": Enchantment("""Feather Falling""", "feather_falling", """Reduces fall damage.""", 4),
@@ -982,14 +989,10 @@ enchantments = {
     "SWEEPING_EDGE": Enchantment("""Sweeping Edge""", "sweeping_edge", """Increases sweeping attack damage.""", 3),
     "SWIFT_SNEAK": Enchantment("""Swift Sneak""", "swift_sneak", """Increases sneaking speed.""", 3),
     "THORNS": Enchantment("""Thorns""", "thorns", """Taking damage causes the attacker to also take damage.""", 3),
-    "DENSITY": Enchantment("""Density""", "density", """Increases the damage per block fallen with the mace.""", 5),
-    "BREACH": Enchantment("""Breach""", "breach",
-                          """Reduces the effectiveness of the armor on the target. The armor's effectiveness is reduced by 15% per level.""",
-                          4),
-    "WIND_BURST": Enchantment("""Wind Burst""", "wind_burst",
-                              """Emits a burst of wind (like that of a wind charge) upon hitting an entity, launching the attacker upward and shoving nearby entities away from the launch point. This can be used to chain smash attacks. The strength of the wind burst increases per level.""",
-                              3),
     "UNBREAKING": Enchantment("""Unbreaking""", "unbreaking", """Reduces durability damage.""", 3),
+    "WIND_BURST": Enchantment("""Wind Burst""", "wind_burst",
+                              """Emits a burst of wind (like that of a wind charge) upon executing a mace smash attack on an entity, launching the attacker upward. It can be used to chain smash attacks together, and the strength of the launch increases per level.""",
+                              3),
 }
 
 for __k in tuple(enchantments.keys()):
@@ -1003,7 +1006,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-04-12T17:44:28-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-05-11T21:23:06-07:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -1050,6 +1053,7 @@ REDUCED_DEBUG_INFO = "reducedDebugInfo"
 SEND_COMMAND_FEEDBACK = "sendCommandFeedback"
 SHOW_DEATH_MESSAGES = "showDeathMessages"
 SNOW_ACCUMULATION_HEIGHT = "snowAccumulationHeight"
+SPAWN_CHUNK_RADIUS = "spawnChunkRadius"
 SPAWN_RADIUS = "spawnRadius"
 SPECTATORS_GENERATE_CHUNKS = "spectatorsGenerateChunks"
 TNT_EXPLOSION_DROP_DECAY = "tntExplosionDropDecay"
@@ -1065,8 +1069,8 @@ GAME_RULE_GROUP = [
     MAX_ENTITY_CRAMMING, MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING, NATURAL_REGENERATION,
     PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, PLAYERS_SLEEPING_PERCENTAGE,
     PROJECTILES_CAN_BREAK_BLOCKS, RANDOM_TICK_SPEED, REDUCED_DEBUG_INFO, SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES,
-    SNOW_ACCUMULATION_HEIGHT, SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLOSION_DROP_DECAY, UNIVERSAL_ANGER,
-    WATER_SOURCE_CONVERSION
+    SNOW_ACCUMULATION_HEIGHT, SPAWN_CHUNK_RADIUS, SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLOSION_DROP_DECAY,
+    UNIVERSAL_ANGER, WATER_SOURCE_CONVERSION
 ]
 
 GameRule = namedtuple("GameRule", ['name', 'value', 'desc', 'rule_type'])
@@ -1187,6 +1191,8 @@ game_rules = {
     "SNOW_ACCUMULATION_HEIGHT": GameRule("""snow Accumulation Height""", "snowAccumulationHeight",
                                          """The maximum number of snow layers that can be accumulated on each block.""",
                                          int),
+    "SPAWN_CHUNK_RADIUS": GameRule("""spawn Chunk Radius""", "spawnChunkRadius",
+                                   """The size of the spawn chunks of the world.""", int),
     "SPAWN_RADIUS": GameRule("""spawn Radius""", "spawnRadius",
                              """The number of blocks outward from the world spawn coordinates that a player spawns in when first joining a server or when dying without a personal spawnpoint. Has no effect on servers where the default game mode is Adventure.""",
                              int),
@@ -1213,7 +1219,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-04-12T17:44:29-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-05-11T21:23:06-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1233,9 +1239,9 @@ SCORE_CRITERIA_GROUP = [
 ScoreCriteria = namedtuple("ScoreCriteria", ['name', 'value', 'desc'])
 score_criteria = {
     "DUMMY": ScoreCriteria("""dummy""", "dummy",
-                           """Score that can only changed by commands, and not automatically by the game. This can be used for storing integer states and variables, which then can be used with the scoreboard's operations to do arithmetic calculation."""),
+                           """Score that can be changed only by commands, and not automatically by the game. This can be used for storing integer states and variables, which then can be used with the scoreboard's operations to do arithmetic calculation."""),
     "TRIGGER": ScoreCriteria("""trigger""", "trigger",
-                             """Score that can be changed by commands, and not automatically by the game. The /trigger command can be used by players to set or increment and decrement their own score. The command will fail if the objective has not been "enabled" for the player using it. If the player uses it, the objective will be automatically disabled for them afterward. By default, all trigger objectives are disabled for any players. Ordinary players can use the /trigger command, even if cheats are disabled or if they are not server operators, in which case this is useful for safely taking non-operator player input."""),
+                             """Score that can be changed by commands, and not automatically by the game. The /trigger command can be used by players to set or increment and decrement their own score. The command fails if the objective has not been "enabled" for the player using it. If the player uses it, the objective is automatically disabled for them afterward. By default, all trigger objectives are disabled for any players. Ordinary players can use the /trigger command, even if cheats are disabled or if they are not server operators, in which case this is useful for safely taking non-operator player input."""),
     "DEATH_COUNT": ScoreCriteria("""death Count""", "deathCount",
                                  """Score increments automatically for a player when they die."""),
     "PLAYER_KILL_COUNT": ScoreCriteria("""player Kill Count""", "playerKillCount",
@@ -1266,7 +1272,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-04-12T17:44:29-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-05-11T21:23:07-07:00
 __particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
@@ -1517,7 +1523,7 @@ particles = {
     "NAUTILUS": Particle("""Nautilus""", "nautilus",
                          """Appears and floats toward conduits, appears and floats towards mobs being attacked by a conduit."""),
     "NOTE": Particle("""Note""", "note", """Produced by jukeboxes, produced by note blocks."""),
-    "OMINOUS_SPAWNING": Particle("""Ominous Spawning""", "ominous_spawning", """"""),
+    "OMINOUS_SPAWNING": Particle("""Ominous Spawning""", "ominous_spawning", None),
     "POOF": Particle("""Poof""", "poof",
                      """Appears when mobs die, shown when ravagers roar after being stunned, produced when silverfish enter stone, appear around mobs spawned by spawners, shown when zombies trample turtle eggs, created when fireworks crafted without stars expire."""),
     "PORTAL": Particle("""Portal""", "portal",
@@ -1582,7 +1588,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-04-12T17:44:30-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-05-11T21:23:07-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1613,26 +1619,26 @@ POTTERY_SHERD_GROUP = [
 
 PotterySherd = namedtuple("PotterySherd", ['name', 'value', 'desc'])
 pottery_sherds = {
-    "SCRAPE_POTTERY_SHERD": PotterySherd("""Scrape Pottery Sherd""", "scrape_pottery_sherd", """"""),
-    "GUSTER_POTTERY_SHERD": PotterySherd("""Guster Pottery Sherd""", "guster_pottery_sherd", """"""),
-    "FLOW_POTTERY_SHERD": PotterySherd("""Flow Pottery Sherd""", "flow_pottery_sherd", """"""),
-    "BLADE_POTTERY_SHERD": PotterySherd("""Blade Pottery Sherd""", "blade_pottery_sherd", """"""),
-    "BREWER_POTTERY_SHERD": PotterySherd("""Brewer Pottery Sherd""", "brewer_pottery_sherd", """"""),
-    "BURN_POTTERY_SHERD": PotterySherd("""Burn Pottery Sherd""", "burn_pottery_sherd", """"""),
-    "DANGER_POTTERY_SHERD": PotterySherd("""Danger Pottery Sherd""", "danger_pottery_sherd", """"""),
-    "EXPLORER_POTTERY_SHERD": PotterySherd("""Explorer Pottery Sherd""", "explorer_pottery_sherd", """"""),
-    "FRIEND_POTTERY_SHERD": PotterySherd("""Friend Pottery Sherd""", "friend_pottery_sherd", """"""),
-    "HEART_POTTERY_SHERD": PotterySherd("""Heart Pottery Sherd""", "heart_pottery_sherd", """"""),
-    "HEARTBREAK_POTTERY_SHERD": PotterySherd("""Heartbreak Pottery Sherd""", "heartbreak_pottery_sherd", """"""),
-    "HOWL_POTTERY_SHERD": PotterySherd("""Howl Pottery Sherd""", "howl_pottery_sherd", """"""),
-    "MINER_POTTERY_SHERD": PotterySherd("""Miner Pottery Sherd""", "miner_pottery_sherd", """"""),
-    "MOURNER_POTTERY_SHERD": PotterySherd("""Mourner Pottery Sherd""", "mourner_pottery_sherd", """"""),
-    "PLENTY_POTTERY_SHERD": PotterySherd("""Plenty Pottery Sherd""", "plenty_pottery_sherd", """"""),
-    "PRIZE_POTTERY_SHERD": PotterySherd("""Prize Pottery Sherd""", "prize_pottery_sherd", """"""),
-    "SHEAF_POTTERY_SHERD": PotterySherd("""Sheaf Pottery Sherd""", "sheaf_pottery_sherd", """"""),
-    "SHELTER_POTTERY_SHERD": PotterySherd("""Shelter Pottery Sherd""", "shelter_pottery_sherd", """"""),
-    "SKULL_POTTERY_SHERD": PotterySherd("""Skull Pottery Sherd""", "skull_pottery_sherd", """"""),
-    "SNORT_POTTERY_SHERD": PotterySherd("""Snort Pottery Sherd""", "snort_pottery_sherd", """"""),
+    "SCRAPE_POTTERY_SHERD": PotterySherd("""Scrape Pottery Sherd""", "scrape_pottery_sherd", None),
+    "GUSTER_POTTERY_SHERD": PotterySherd("""Guster Pottery Sherd""", "guster_pottery_sherd", None),
+    "FLOW_POTTERY_SHERD": PotterySherd("""Flow Pottery Sherd""", "flow_pottery_sherd", None),
+    "BLADE_POTTERY_SHERD": PotterySherd("""Blade Pottery Sherd""", "blade_pottery_sherd", None),
+    "BREWER_POTTERY_SHERD": PotterySherd("""Brewer Pottery Sherd""", "brewer_pottery_sherd", None),
+    "BURN_POTTERY_SHERD": PotterySherd("""Burn Pottery Sherd""", "burn_pottery_sherd", None),
+    "DANGER_POTTERY_SHERD": PotterySherd("""Danger Pottery Sherd""", "danger_pottery_sherd", None),
+    "EXPLORER_POTTERY_SHERD": PotterySherd("""Explorer Pottery Sherd""", "explorer_pottery_sherd", None),
+    "FRIEND_POTTERY_SHERD": PotterySherd("""Friend Pottery Sherd""", "friend_pottery_sherd", None),
+    "HEART_POTTERY_SHERD": PotterySherd("""Heart Pottery Sherd""", "heart_pottery_sherd", None),
+    "HEARTBREAK_POTTERY_SHERD": PotterySherd("""Heartbreak Pottery Sherd""", "heartbreak_pottery_sherd", None),
+    "HOWL_POTTERY_SHERD": PotterySherd("""Howl Pottery Sherd""", "howl_pottery_sherd", None),
+    "MINER_POTTERY_SHERD": PotterySherd("""Miner Pottery Sherd""", "miner_pottery_sherd", None),
+    "MOURNER_POTTERY_SHERD": PotterySherd("""Mourner Pottery Sherd""", "mourner_pottery_sherd", None),
+    "PLENTY_POTTERY_SHERD": PotterySherd("""Plenty Pottery Sherd""", "plenty_pottery_sherd", None),
+    "PRIZE_POTTERY_SHERD": PotterySherd("""Prize Pottery Sherd""", "prize_pottery_sherd", None),
+    "SHEAF_POTTERY_SHERD": PotterySherd("""Sheaf Pottery Sherd""", "sheaf_pottery_sherd", None),
+    "SHELTER_POTTERY_SHERD": PotterySherd("""Shelter Pottery Sherd""", "shelter_pottery_sherd", None),
+    "SKULL_POTTERY_SHERD": PotterySherd("""Skull Pottery Sherd""", "skull_pottery_sherd", None),
+    "SNORT_POTTERY_SHERD": PotterySherd("""Snort Pottery Sherd""", "snort_pottery_sherd", None),
 }
 
 for __k in tuple(pottery_sherds.keys()):
@@ -1646,7 +1652,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-04-12T17:59:08-07:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-05-11T21:23:07-07:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1664,56 +1670,35 @@ OTHERSIDE = "music_disc_otherside"
 FIVE = "music_disc_5"
 PIGSTEP = "music_disc_pigstep"
 RELIC = "music_disc_relic"
+CREATOR = "music_disc_creator"
+CREATOR_MUSIC_BOX = "music_disc_creator_music_box"
+PRECIPICE = "music_disc_precipice"
 DISC_GROUP = [
     THIRTEEN, CAT, "music_disc_blocks", CHIRP, FAR, MALL, MELLOHI, STAL, STRAD, WARD, ELEVEN, WAIT, OTHERSIDE, FIVE,
-    PIGSTEP, RELIC
+    PIGSTEP, RELIC, CREATOR, CREATOR_MUSIC_BOX, PRECIPICE
 ]
 
 Disc = namedtuple("Disc", ['name', 'value', 'desc', 'composer'])
 discs = {
-    "THIRTEEN": Disc("""thirteen""", "music_disc_13",
-                     """A somewhat unsettling, cave-themed ambient piece consisting mostly of echoed synthesized ambient sounds that closely resemble those that play in the game's caves, resonating metallic clinks, and quiet wind blowing. The entire track is wholly engulfed in reverb. At different points in the piece, muffled bow firings, a heavily reverbed hiss followed by a subsequent heavily reverbed explosion and echoed splashes can be heard in the background. The track goes silent for 13 seconds at the 1:30 mark.""",
-                     "C418"),
-    "CAT": Disc("""cat""", "music_disc_cat",
-                """A light, looping melody plays on a soft synth and is joined by a synth percussion beat. A toothlike synth plays a bass line and some harmonies throughout and is later accompanied by additional chiptune-like synths that provide more layers of harmony. At 1:46, what sounds like an interpolation of part of the melody from the track "Minecraft" plays. The four-note pattern at 2:04 can also be heard at the beginning of "far" and "dog".""",
-                "C418"),
-    "BLOCKS": Disc("""blocks""", "music_disc_blocks",
-                   """An upbeat chiptune-style piece with a shuffling waltz rhythm.""", "C418"),
-    "CHIRP": Disc("""chirp""", "music_disc_chirp",
-                  """A retro tune with a sample from the 1970 MATTEL Bossa Nova Style Program Disc.""", "C418"),
-    "FAR": Disc("""far""", "music_disc_far",
-                """A calm, relaxing nature-like melody played on a watery echoing synth, accompanied by other synths playing chords.""",
-                "C418"),
-    "MALL": Disc("""mall""", "music_disc_mall", """Serene music played on a kalimba along with other instruments.""",
-                 "C418"),
-    "MELLOHI": Disc("""mellohi""", "music_disc_mellohi",
-                    """A slow, slightly melancholic waltz with a sample from a mellotron playing in the background.""",
-                    "C418"),
-    "STAL": Disc("""stal""", "music_disc_stal",
-                 """A moderate jazz-like piece played on a piano, saxophone, and double bass, with recorder interludes.""",
-                 "C418"),
-    "STRAD": Disc("""strad""", "music_disc_strad",
-                  """A tropical-sounding piece with the main melody being played on a steelpan, accompanied by a layered mix of strings, woodwinds, and soft synths, and supported by a glitchy electronic tribal percussion beat, ending on some melancholy melodica chords. Bits and pieces of the melody from "Minecraft" can be heard throughout, sometimes played on bells in the background.""",
-                  "C418"),
-    "WARD": Disc("""ward""", "music_disc_ward", """Starts off with an excerpt from Chopin's Funeral March.""", "C418"),
-    "ELEVEN": Disc("""eleven""", "music_disc_11",
-                   """A recording that begins with vinyl static, followed by the sounds of someone walking on or breaking stone blocks, heavy breathing, and rustling. Haunting background noises are heard throughout the recording, resembling the ambient sound effects that play in the game's caves (and by extension, the sounds of the disc "13"). After the background noises quiet down for a moment, metallic clicking or scraping noises can be heard, followed by coughing, sounds of page-turning, then more clicking or scraping. The background noises resume more loudly, and the sounds of faster footsteps or breaking stone blocks can be heard, which accelerate until they are replaced with dirt sounds as the background noises approach. A loud, distorted noise is heard roughly a second before the recording abruptly stops. At this point, one hears only quiet beeping, vinyl static, and a hissing noise, and the track ends.""",
-                   "C418"),
-    "WAIT": Disc("""wait""", "music_disc_wait",
-                 """An upbeat remix of "Minecraft". It starts out with some quiet synth Latin percussion and some soft synths playing a melody, and then expands into a chiptune-esque song. This disc was originally named "where are we now".""",
-                 "C418"),
-    "OTHERSIDE": Disc("""otherside""", "music_disc_otherside",
-                      """Starts off as an uplifting and happy retro-style ostinato in a major key. Upon reaching the second half, the song changes to a minor key and progresses into a darker melody, eventually cutting off abruptly. A clock can be heard ticking quickly at the end.""",
-                      "Lena Raine"),
-    "FIVE": Disc("""five""", "music_disc_5",
-                 """A recording that begins with static and a warped noise. After a moment of silence, there is the sound of a flint and steel lighting, fire, a bat, and then walking. The walking becomes heavier and metallic. The sound stops with sounds of breathing followed by a roar which warps into soft, relaxing music. The music soon transitions back, to the sound of footsteps, lava bubbling, and amethyst. A warped noise and a sculk shrieker can be heard activating. Then a coughing sound, something metallic and stone and sand sounds followed by another warped noise can be heard. Then, after a moment of silence, a heartbeat begins and a rising static can be heard in the background. Sounds of deepslate can then be heard, along with strange noises building up and abruptly stopping. A crescendo of overlapping warped sounds is followed then dies down. The footsteps begin again, much quieter now. A sculk sensor clicks, and a warden roars. The wardens roar warps and slows down, and then the disc ends.""",
-                 "Samuel Åberg"),
-    "PIGSTEP": Disc("""Pigstep""", "music_disc_pigstep",
-                    """An intense, somewhat hip-hop-style beat beginning with a repeating tuba-like tune and dubstep-style drop, along with more mellow parts reminiscent of a radio.""",
-                    "Lena Raine"),
-    "RELIC": Disc("""Relic""", "music_disc_relic",
-                  """The recording begins with vinyl static and record grain before abruptly bursting out into an upbeat 8-bit tune of low audio quality. The main melody of "A Time of Legends" and "The Well of Fate" from the original soundtrack of Minecraft Legends is heard later, played on the same 8-bit synthesizer. Later in the song a bass is added to the noise. Slight record grain and warbled pitches can be heard throughout the song.""",
-                  "Aaron Cherof"),
+    "THIRTEEN": Disc("""thirteen""", "music_disc_13", None, "C418"),
+    "CAT": Disc("""cat""", "music_disc_cat", None, ""),
+    "BLOCKS": Disc("""blocks""", "music_disc_blocks", None, ""),
+    "CHIRP": Disc("""chirp""", "music_disc_chirp", None, ""),
+    "FAR": Disc("""far""", "music_disc_far", None, ""),
+    "MALL": Disc("""mall""", "music_disc_mall", None, ""),
+    "MELLOHI": Disc("""mellohi""", "music_disc_mellohi", None, ""),
+    "STAL": Disc("""stal""", "music_disc_stal", None, ""),
+    "STRAD": Disc("""strad""", "music_disc_strad", None, ""),
+    "WARD": Disc("""ward""", "music_disc_ward", None, ""),
+    "ELEVEN": Disc("""eleven""", "music_disc_11", None, ""),
+    "WAIT": Disc("""wait""", "music_disc_wait", None, ""),
+    "OTHERSIDE": Disc("""otherside""", "music_disc_otherside", None, "Lena Raine"),
+    "FIVE": Disc("""five""", "music_disc_5", None, "Samuel Åberg"),
+    "PIGSTEP": Disc("""Pigstep""", "music_disc_pigstep", None, "Lena Raine"),
+    "RELIC": Disc("""Relic""", "music_disc_relic", None, "Aaron Cherof"),
+    "CREATOR": Disc("""Creator""", "music_disc_creator", None, "Lena Raine"),
+    "CREATOR_MUSIC_BOX": Disc("""Creator Music Box""", "music_disc_creator_music_box", None, ""),
+    "PRECIPICE": Disc("""Precipice""", "music_disc_precipice", None, "Aaron Cherof"),
 }
 
 for __k in tuple(discs.keys()):
