@@ -3,13 +3,13 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
-from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
+from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
 from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonDef, JsonList, \
     JsonText, \
     SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
     fillbiome, setblock
-from pynecraft.values import as_pattern
+from pynecraft.values import PaintingInfo, as_pattern, paintings
 
 ARMORER = 'Armorer'
 BUTCHER = 'Butcher'
@@ -854,6 +854,46 @@ class Villager(Entity):
                 item_nbt['Count'] = i[1]
             inventory.append(Nbt(item_nbt))
         return self
+
+
+class Painting(Entity):
+    """
+    Represents a painting. This understands its different "facing" numbering, and the PaintingInfo objects
+    """
+
+    def __init__(self, variant: str):
+        variant = to_id(variant)
+        if variant not in paintings:
+            raise ValueError(f'{variant}: Unknown painting variant')
+        self.variant = variant
+        super().__init__('painting', nbt={'variant': variant})
+
+    @property
+    def info(self) -> PaintingInfo:
+        return paintings[self.variant]
+
+    def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = NORTH, lower_left=False) -> str:
+        """
+        Overrides to add ``ll`` parameter which, if true, uses the lower-left corner consistently for all sizes of
+        paintings.
+        """
+        nbt, facing = self._summon_clean(nbt, facing)
+        if facing:
+            nbt['facing'] = facing.h_number
+        del nbt['Facing']
+        del nbt['Rotation']
+        nbt['variant'] = self.variant
+        if lower_left:
+            movement = facing.turn(90)
+            x, y = self.info.size
+            pos = _to_list(pos)
+            if x > 2:
+                adj = x - 3
+                pos[0] += adj * movement.dx
+                pos[2] += adj * movement.dz
+            if y > 2:
+                pos[1] += 1
+        return super().summon(pos, nbt)
 
 
 def as_color(color: IntOrArg | StrOrArg | None) -> str | None:
