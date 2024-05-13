@@ -159,7 +159,7 @@ def clean(cell) -> str:
     """
     if not isinstance(cell, str):
         cell = cell.text
-    s = re.sub(r'\s{2,}', ' ', cell.strip())
+    s = re.sub(r'\s+', ' ', cell.strip())
     s = re.sub(u'[\u200c\u200b]', '', s).strip()  # Discard the zero-width non-joiners
     return re.sub(r'\s*[\[*].*', '', s, flags=re.DOTALL)  # Discard footnotes
 
@@ -527,11 +527,11 @@ class Pattern(PageValuesDesc):
 
 
 class Disc(PageValuesDesc):
-    """Generaets the Disc values."""
+    """Generates the Painting values."""
 
     def __init__(self):
         super().__init__('Disc', WIKI + 'Music_Disc#Discs', 'Disc listing')
-        self.name_col=None
+        self.name_col = None
         self.desc_col = None
         self.composer_col = None
         self.composers = {}
@@ -566,6 +566,59 @@ class Disc(PageValuesDesc):
 
     def added_values(self, value):
         return f', "{self.composers[value]}"'
+
+
+class Painting(PageValuesDesc):
+    """Generates the Painting values."""
+
+    def __init__(self):
+        super().__init__('Painting', WIKI + 'Painting#Canvases', 'Paintings')
+        self.name_col = -1
+        self.desc_col = -2
+        self.artist_col = None
+        self.value_col = None
+        self.artists = {}
+        self.aztec = 0
+
+    def find_tables(self, soup):
+        return soup.find_all('table', attrs={'data-description': self.data_desc})
+
+    def header(self, col: int, text: str):
+        if text.startswith('In-game'):
+            self.value_col = col
+        elif text.startswith('Artist'):
+            self.artist_col = col
+        else:
+            m = re.search(r'([0-9]+)\s*×\s*([0-9]+)\s+blocks', clean(text))
+            if m:
+                self.size = (int(m.group(1)), int(m.group(2)))
+
+    def extract(self, cols) -> tuple[str, str, str]:
+        name = re.sub('[()]', '', clean(cols[self.name_col]))
+        value = f'{clean(cols[self.value_col])}'
+        if value == 'de_aztec':
+            self.aztec += 1
+            if self.aztec == 2:
+                value = 'de_aztec 2'
+        desc = clean(cols[self.desc_col]) if self.desc_col else None
+        artist = clean(cols[self.artist_col])
+        self.artists[value] = (artist, self.size)
+        return name, value, desc
+
+    def added_fields(self):
+        return ['artist', 'size']
+
+    def added_values(self, value):
+        added = self.artists[value]
+        return f', "{added[0]}", {added[1]}'
+
+    class Painting(PageValuesDesc):
+        """Generates the Painting values."""
+
+        def __init__(self):
+            super().__init__('Painting', WIKI + 'Painting#Canvases', 'Paintings')
+            self.name_col = None
+            self.desc_col = None
 
 
 if __name__ == '__main__':
@@ -603,7 +656,7 @@ if __name__ == '__main__':
             for tab in (
                     TeamOptions(),
                     Pattern(), Advancement(), Biome(), Effect(), Enchantment(), GameRule(), ScoreCriteria(),
-                    Particle(), PotterySherd(), Disc()):
+                    Particle(), PotterySherd(), Disc(), Painting()):
                 html_time, fields = tab.generate()
                 print()
                 print()

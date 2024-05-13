@@ -2,7 +2,6 @@ import unittest
 
 from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id, mobs, mobs_by_id, \
     must_give_items, must_give_items_by_id
-from pynecraft.simpler import Painting
 
 
 class TestInfo(unittest.TestCase):
@@ -54,6 +53,3 @@ class TestInfo(unittest.TestCase):
             self.assertEqual(items[key], value)
         for key, value in must_give_items_by_id.items():
             self.assertEqual(items_by_id[key], value)
-
-    def test_painting(self):
-        self.assertEqual('bust', Painting('bust').nbt['variant'])

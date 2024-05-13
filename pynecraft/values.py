@@ -1709,3 +1709,214 @@ for __k in tuple(discs.keys()):
 
 def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(DISC_GROUP, __disc_dups, *values)
+
+
+# Paintings
+# Derived from https://minecraft.wiki/Painting#Canvases, 2024-05-11T22:35:10-07:00
+__painting_dups = {}
+KEBAB = "Kebab med tre pepperoni"
+AZTEC = "de_aztec"
+ALBAN = "Albanian"
+AZTEC2 = "de_aztec 2"
+BOMB = "Target Successfully Bombed"
+PLANT = "Paradisträd"
+WASTELAND = "Wasteland"
+MEDITATIVE = "Meditative"
+WANDERER = "Wanderer"
+GRAHAM = "Graham"
+PRAIRIE_RIDE = "Prairie Ride"
+POOL = "The Pool"
+COURBET = "Bonjour Monsieur Courbet"
+__painting_dups["sunset"] = "sunset_dense"
+SEA = "Seaside"
+CREEBET = "Creebet"
+MATCH = "Match"
+BUST = "Bust"
+STAGE = "The Stage Is Set"
+VOID = "The void"
+SKULL_AND_ROSES = "Skull and Roses"
+__painting_dups["wither"] = "Wither"
+BAROQUE = "Baroque"
+HUMBLE = "Humble"
+ENDBOSS = "Endboss"
+TIDES = "Tides"
+FERN = "Fern"
+SUNFLOWERS = "Sunflowers"
+COTAN = "Cotán"
+OWLEMONS = "Owlemons"
+CAVEBIRD = "Cavebird"
+BOUQUET = "Bouquet"
+BACKYARD = "Backyard"
+POND = "Pond"
+FIGHTERS = "Fighters"
+PASSAGE = "Passage"
+CHANGING = "Changing"
+FINDING = "Finding"
+LOWMIST = "Lowmist"
+SKELETON = "Mortal Coil"
+DONKEY_KONG = "Kong"
+POINTER = "Pointer"
+PIGSCENE = "Pigscene"
+BURNING_SKULL = "Skull On Fire"
+UNPACKED = "Unpacked"
+ORB = "Orb"
+EARTH = "Earth"
+WIND = "Wind"
+WATER = "Water"
+FIRE = "Fire"
+PAINTING_GROUP = [
+    KEBAB, AZTEC, ALBAN, AZTEC2, BOMB, PLANT, WASTELAND, MEDITATIVE, WANDERER, GRAHAM, PRAIRIE_RIDE, POOL, COURBET,
+    "sunset_dense", SEA, CREEBET, MATCH, BUST, STAGE, VOID, SKULL_AND_ROSES, "Wither", BAROQUE, HUMBLE, ENDBOSS, TIDES,
+    FERN, SUNFLOWERS, COTAN, OWLEMONS, CAVEBIRD, BOUQUET, BACKYARD, POND, FIGHTERS, PASSAGE, CHANGING, FINDING, LOWMIST,
+    SKELETON, DONKEY_KONG, POINTER, PIGSCENE, BURNING_SKULL, UNPACKED, ORB, EARTH, WIND, WATER, FIRE
+]
+
+Painting = namedtuple("Painting", ['name', 'value', 'desc', 'artist', 'size'])
+paintings = {
+    "KEBAB": Painting("""kebab""", "Kebab med tre pepperoni", """A kebab with three green chili peppers.""",
+                      "Kristoffer Zetterstrand", (1, 1)),
+    "AZTEC": Painting("""aztec""", "de_aztec",
+                      """Free-look perspective of the map de_aztec from the video game series Counter-Strike.""",
+                      "Kristoffer Zetterstrand", (1, 1)),
+    "ALBAN": Painting("""alban""", "Albanian",
+                      """A man wearing a fez next to a house and a bush. As the name of the painting suggests, it may be a landscape in Albania.""",
+                      "Kristoffer Zetterstrand", (1, 1)),
+    "AZTEC2": Painting("""aztec2""", "de_aztec 2",
+                       """Free-look perspective of the map de_aztec from the video game series Counter-Strike.""",
+                       "Kristoffer Zetterstrand", (1, 1)),
+    "BOMB": Painting("""bomb""", "Target Successfully Bombed",
+                     """The map de_dust2 from the video game series Counter-Strike, named “target successfully bombed” in reference to the video game.""",
+                     "Kristoffer Zetterstrand", (1, 1)),
+    "PLANT": Painting("""plant""", "Paradisträd",
+                      """Still life of two plants in pots. “Paradisträd” is Swedish for “money tree”, which is a common name for the depicted species in Scandinavia.""",
+                      "Kristoffer Zetterstrand", (1, 1)),
+    "WASTELAND": Painting("""wasteland""", "Wasteland",
+                          """A view of some wasteland; a small animal, presumably a rabbit, is sitting on the windowsill.""",
+                          "Kristoffer Zetterstrand", (1, 1)),
+    "MEDITATIVE": Painting("""meditative""", "Meditative",
+                           """A version of Salvador Dali’s Meditative Rose, although with an added stem to reference Minecraft’s removed rose.""",
+                           "Sarah Boeving", (1, 1)),
+    "WANDERER": Painting("""wanderer""", "Wanderer",
+                         """A version of Caspar David Friedrich’s famous painting Wanderer above the Sea of Fog.""",
+                         "Kristoffer Zetterstrand", (1, 2)),
+    "GRAHAM": Painting("""graham""", "Graham",
+                       """King Graham, the player character in the video game series King’s Quest. The original painting is based on Still Life with Quince, Cabbage, Melon, and Cucumber by Juan Sánchez Cotán.""",
+                       "Kristoffer Zetterstrand", (1, 2)),
+    "PRAIRIE_RIDE": Painting("""prairie_ride""", "Prairie Ride",
+                             """A version of Frederic Remington’s The Cowboy. Instead of a cowboy, it shows Noor riding a horse.""",
+                             "Sarah Boeving", (1, 2)),
+    "POOL": Painting("""pool""", "The Pool",
+                     """Some men and women skinny-dipping in a pool over a cube of sorts. Also there is an old man resting in the lower-right edge.""",
+                     "Kristoffer Zetterstrand", (2, 1)),
+    "COURBET": Painting("""courbet""", "Bonjour Monsieur Courbet",
+                        """Two hikers with pointy beards seemingly greeting each other. Based on Gustave Courbet’s painting The Meeting.""",
+                        "Kristoffer Zetterstrand", (2, 1)),
+    "SUNSET": Painting("""sunset""", "sunset_dense", """A view of mountains at sunset.""", "Kristoffer Zetterstrand",
+                       (2, 1)),
+    "SEA": Painting("""sea""", "Seaside",
+                    """Mountains and a lake, with a small photo of a mountain and a bright-colored plant on the window ledge. The texture was changed in Alpha v1.1.1.""",
+                    "Kristoffer Zetterstrand", (2, 1)),
+    "CREEBET": Painting("""creebet""", "Creebet",
+                        """The same painting as Seaside, but the bright-colored plant was replaced with a Creeper head.""",
+                        "Kristoffer Zetterstrand", (2, 1)),
+    "MATCH": Painting("""match""", "Match", """A hand holding a match, causing fire on a white cubic gas fireplace.""",
+                      "Kristoffer Zetterstrand", (2, 2)),
+    "BUST": Painting("""bust""", "Bust", """A bust of Marcus Aurelius surrounded by fire.""", "Kristoffer Zetterstrand",
+                     (2, 2)),
+    "STAGE": Painting("""stage""", "The Stage Is Set",
+                      """Scenery from the video game Space Quest I, with the character Graham from the video game series King’s Quest appearing twice. The texture was changed in Alpha v1.1.1.""",
+                      "Kristoffer Zetterstrand", (2, 2)),
+    "VOID": Painting("""void""", "The void", """An angel praying into a void with fire below.""",
+                     "Kristoffer Zetterstrand", (2, 2)),
+    "SKULL_AND_ROSES": Painting("""skull_and_roses""", "Skull and Roses",
+                                """A skeleton at night with red flowers in the foreground. The original painting is different, depicting a woman sitting in a couch, while the skull is in the middle of a body of glacial water of sorts.""",
+                                "Kristoffer Zetterstrand", (2, 2)),
+    "WITHER": Painting("""wither""", "Wither",
+                       """The creation of the wither. This is the first painting in Minecraft that is not based of a real painting. (See the trivia section for more info.).""",
+                       "Mojang (Jens Bergensten)", (2, 2)),
+    "BAROQUE": Painting("""baroque""", "Baroque",
+                        """A decorated pot, a cake, and a sunflower on a dark background, resembling Baroque painting.""",
+                        "Sarah Boeving", (2, 2)),
+    "HUMBLE": Painting("""humble""", "Humble",
+                       """A version of Grant Wood’s American Gothic, where two villagers are in front of a village house.""",
+                       "Sarah Boeving", (2, 2)),
+    "ENDBOSS": Painting("""endboss""", "Endboss",
+                        """A skeleton in a brick archway. It features a white silhouette of the character Graham from the video game series King’s Quest.""",
+                        "Kristoffer Zetterstrand", (3, 3)),
+    "TIDES": Painting("""tides""", "Tides", """A naked person sitting in a fetal position by a shoreline.""",
+                      "Kristoffer Zetterstrand", (3, 3)),
+    "FERN": Painting("""fern""", "Fern", """A potted fern on a desk with a small fire.""", "Kristoffer Zetterstrand",
+                     (3, 3)),
+    "SUNFLOWERS": Painting("""sunflowers""", "Sunflowers",
+                           """Some potted plants on a table with a two-dimensional sunflower.""",
+                           "Kristoffer Zetterstrand", (3, 3)),
+    "COTAN": Painting("""cotan""", "Cotán",
+                      """A golden apple and an inverted glistering melon slice in a windowsill. The golden apple is tied by a string in the air and the glistering melon slice is sitting on the windowsill. Like Graham, this painting is based on Still Life with Quince, Cabbage, Melon, and Cucumber by Juan Sánchez Cotán.""",
+                      "Kristoffer Zetterstrand", (3, 3)),
+    "OWLEMONS": Painting("""owlemons""", "Owlemons",
+                         """A two-dimensional owl inside a box, next to some lemons. The background is based on Domenico Ghirlandaio's An Old Man and his Grandson.""",
+                         "Kristoffer Zetterstrand", (3, 3)),
+    "CAVEBIRD": Painting("""cavebird""", "Cavebird", """A cave in a cliff with a bird flying overhead.""",
+                         "Kristoffer Zetterstrand", (3, 3)),
+    "BOUQUET": Painting("""bouquet""", "Bouquet",
+                        """A bouquet of flowers next to a stairway with a person sitting beside it.""",
+                        "Kristoffer Zetterstrand", (3, 3)),
+    "BACKYARD": Painting("""backyard""", "Backyard",
+                         """A brick archway with two women sitting in the yard. The scenery is based on the painting The Courtyard of a House in Delft by Pieter de Hooch.""",
+                         "Kristoffer Zetterstrand", (3, 4)),
+    "POND": Painting("""pond""", "Pond",
+                     """A maiden sitting in a pond, next to a half-submerged skeleton. Death and the Maiden was a common motif in Renaissance art, ultimately derived from the Medieval genre Dance of Death.""",
+                     "Kristoffer Zetterstrand", (3, 4)),
+    "FIGHTERS": Painting("""fighters""", "Fighters",
+                         """Two men poised to fight. Paper versions of fighters from the video game International Karate +.""",
+                         "Kristoffer Zetterstrand", (4, 2)),
+    "PASSAGE": Painting("""passage""", "Passage",
+                        """A surreal, mineshaft-like hallway in front of a scene of a beach, with posed skeletons of a person and an extinct giant ground sloth.""",
+                        "Kristoffer Zetterstrand", (4, 2)),
+    "CHANGING": Painting("""changing""", "Changing",
+                         """A person changing clothes in front of some set pieces, including a contrasting gloomy mountain and a sunny countryside.""",
+                         "Kristoffer Zetterstrand", (4, 2)),
+    "FINDING": Painting("""finding""", "Finding",
+                        """A person looks into a recently-dug hole with Hellenistic ruins in the background. Studio lights are set up next to them.""",
+                        "Kristoffer Zetterstrand", (4, 2)),
+    "LOWMIST": Painting("""lowmist""", "Lowmist", """Free-look perspective of a digital render of mountains.""",
+                        "Kristoffer Zetterstrand", (4, 2)),
+    "SKELETON": Painting("""skeleton""", "Mortal Coil",
+                         """Bruno Martinez from the adventure video game Grim Fandango.""", "Kristoffer Zetterstrand",
+                         (4, 3)),
+    "DONKEY_KONG": Painting("""donkey_kong""", "Kong",
+                            """A paper-looking screenshot of the level 100m from the arcade video game Donkey Kong.""",
+                            "Kristoffer Zetterstrand", (4, 3)),
+    "POINTER": Painting("""pointer""", "Pointer",
+                        """The main character of the video game International Karate + in a fighting stance touching a large hand. It could also be interpreted as a play on Michelangelo’s famous painting The Creation of Adam.""",
+                        "Kristoffer Zetterstrand", (4, 4)),
+    "PIGSCENE": Painting("""pigscene""", "Pigscene",
+                         """A girl pointing to a pig on a canvas. In the original painting, the canvas shows red, green and blue blocks, representing the three colors of the RGB color model that is typically used by computer displays. This painting is based on the painting The Artist’s Studio by Jacob van Oost.""",
+                         "Kristoffer Zetterstrand", (4, 4)),
+    "BURNING_SKULL": Painting("""burning_skull""", "Skull On Fire",
+                              """A skull on fire; in the background, there is a moon in a clear night sky. This painting is based on a Minecraft screenshot,.""",
+                              "Kristoffer Zetterstrand", (4, 4)),
+    "UNPACKED": Painting("""unpacked""", "Unpacked",
+                         """A Minecraft landscape, showing a cliff with a waterfall and a pig floating in water. This painting is based on pack.png.""",
+                         "Sarah Boeving", (4, 4)),
+    "ORB": Painting("""orb""", "Orb",
+                    """An orb of light in the middle of an Italian landscape at night. This painting is based on the painting St. Francis in Ecstasy by Giovanni Bellini.""",
+                    "Kristoffer Zetterstrand", (4, 4)),
+    "EARTH": Painting("""earth""", "Earth", """One of the four classical elements: Earth.""", "Mojang (Unknown Artist)",
+                      (2, 2)),
+    "WIND": Painting("""wind""", "Wind", """One of the four classical elements: Air.""", "Mojang (Unknown Artist)",
+                     (2, 2)),
+    "WATER": Painting("""water""", "Water", """One of the four classical elements: Water.""", "Mojang (Unknown Artist)",
+                      (2, 2)),
+    "FIRE": Painting("""fire""", "Fire", """One of the four classical elements: Fire.""", "Mojang (Unknown Artist)",
+                     (2, 2)),
+}
+
+for __k in tuple(paintings.keys()):
+    v = paintings[__k]
+    paintings[v.name] = v
+    paintings[v.value] = v
+
+
+def as_painting(*values: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(PAINTING_GROUP, __painting_dups, *values)

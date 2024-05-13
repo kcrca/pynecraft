@@ -1111,7 +1111,7 @@ class Facing:
     """This class represents information about facing in a given direction."""
 
     def __init__(self, name: str, delta: Tuple[float, float, float], rotation: Tuple[float, float], number: int,
-                 h_number: int | None):
+                 h_number: int = None, painting_number: int = None):
         """Creates a Facing object.
 
         :param name: The name of the direction, such as ``NORTH`` or ``SW``.
@@ -1119,12 +1119,14 @@ class Facing:
         :param rotation: The values to use as a ``Rotation`` NBT value.
         :param number: The number used by most blocks and entities for this rotation, or NaN if none. 0 is up, etc.
         :param: h_number: The number used by entities that only can be horizontal, that is, paintings. 0 is north, etc.
+        :param: painting_number: The number used by paintings.
         """
         self.delta = delta
         self.name = name
         self.rotation = rotation
         self.number = number
         self.h_number = h_number
+        self.painting_number = painting_number
 
     @property
     def sign_rotation(self):
@@ -1199,9 +1201,14 @@ class Facing:
         return as_facing(rotation_aid[rotation_aid.index(self.name) + rot])
 
 
-_facing = {NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2, 0), EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5, 1),
-           SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3, 2), WEST: Facing(WEST, (-1, 0, 0), (90.0, 0.0), 4, 3),
-           UP: Facing(UP, (0, 1, 0), (0.0, 270.0), 1, None), DOWN: Facing(DOWN, (0, -1, 0), (0.0, 90.0), 0, None)}
+_facing = {
+    NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2, 0, 2),
+    EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5, 1, 3),
+    SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3, 2, 0),
+    WEST: Facing(WEST, (-1, 0, 0), (90.0, 0.0), 4, 3, 1),
+    UP: Facing(UP, (0, 1, 0), (0.0, 270.0), 1, None),
+    DOWN: Facing(DOWN, (0, -1, 0), (0.0, 90.0), 0, None)
+}
 _facing[ROTATION_0] = _facing[SOUTH]
 _facing[ROTATION_90] = _facing[EAST]
 _facing[ROTATION_180] = _facing[NORTH]
