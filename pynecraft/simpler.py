@@ -856,24 +856,6 @@ class Villager(Entity):
         return self
 
 
-@dataclasses.dataclass
-class PaintingInfo:
-    """
-    Class that holds detailed information on each painting, available from a Painting object's ``info`` field, or the
-    Painting.INFO map.
-    """
-    id: str
-    name: str
-    size: Tuple[int, int]
-    added: str
-    desc: str
-    original_artist: str = 'None'
-    based_on: str = None
-    source: str = None
-    artist: str = 'Kristoffer Zetterstrand'
-    used: bool = True
-
-
 def as_color(color: IntOrArg | StrOrArg | None) -> str | None:
     """Checks if the argument is a valid color name, or None.
 

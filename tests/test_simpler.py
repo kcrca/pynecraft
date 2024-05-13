@@ -7,7 +7,7 @@ from pynecraft.commands import *
 from pynecraft.function import text_lines
 from pynecraft.simpler import *
 from pynecraft.simpler import _str_values
-from pynecraft.values import BRICKS
+from pynecraft.values import BRICKS, paintings
 
 
 class TestSimpler(unittest.TestCase):
@@ -492,8 +492,8 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual({'components': {}}, shield.nbt)
 
     def test_painting(self):
-        self.assertEqual({'variant': 'stage'}, Painting('stage').nbt)
-        info = Painting('stage').info
+        self.assertEqual({'variant': 'stage'}, paintings['stage'].nbt)
+        info = paintings['stage'].info
         self.assertEqual('stage', info.id)
         self.assertIn('Stage', info.name)
         self.assertIsInstance(info.size, tuple)
