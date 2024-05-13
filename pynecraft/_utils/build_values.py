@@ -686,7 +686,7 @@ if __name__ == '__main__':
 
                 map_name = camel_to_name(tab.name, '_').lower() + tab.pluralize()
                 print('')
-                print(f'{tab.name} = namedtuple("{tab.name}", {value_fields})')
+                print(f'{tab.name}Info = namedtuple("{tab.name}", {value_fields})')
                 print(f'{map_name} = {{')
                 for key in fields:
                     value, desc, name = fields[key]
@@ -694,7 +694,7 @@ if __name__ == '__main__':
                         desc = f'"""{desc}"""'
                     else:
                         desc = 'None'
-                    print(f'    "{key}": {tab.name}("""{name}""", "{value}", {desc}{tab.added_values(value)}),')
+                    print(f'    "{key}": {tab.name}Info("""{name}""", "{value}", {desc}{tab.added_values(value)}),')
                 print(f'}}')
 
                 print('')
