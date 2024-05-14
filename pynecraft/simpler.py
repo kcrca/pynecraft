@@ -4,7 +4,7 @@ import dataclasses
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
-    _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
+    Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
 from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonDef, JsonList, \
     JsonText, \
     SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
@@ -314,9 +314,6 @@ class Display(Entity):
     A class for the various "display" objects: text_display, item_display, and block_display. The main feature is that
     it makes transformation modifications work on the summon command; see https://bugs.mojang.com/browse/MC-259838.
     """
-    INIT_TRANSFORMATION = Nbt(
-        {'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
-                            'right_rotation': [0.0, 0.0, 0.0, 1.0], 'scale': [1.0, 1.0, 1.0]}})
 
     def __init__(self, id: str, *args, **kwargs):
         super().__init__(id, **kwargs)
@@ -324,10 +321,10 @@ class Display(Entity):
         # Crazily, this is "as intended": https://bugs.mojang.com/browse/MC-259838
         # We have to be careful because the supplied nbt may override part of the transformation.
         if 'transformation' not in self.nbt:
-            self.merge_nbt(Display.INIT_TRANSFORMATION)
+            self.transform(Transform.IDENTITY)
         else:
             tr = self.nbt['transformation']
-            for t, v in Display.INIT_TRANSFORMATION['transformation'].items():
+            for t, v in Transform.IDENTITY.nbt().items():
                 if t not in tr:
                     tr[t] = v
 
@@ -336,11 +333,17 @@ class Display(Entity):
         Sets the scale transformation. If only given one value, it uses that for all three scale values. Otherwise,
         it must be given the three values.
         """
+        if 'transformation' not in self.nbt:
+            self.transform(Transform.IDENTITY)
         if isinstance(value, (int, float)):
             value = [float(value), float(value), float(value)]
         else:
             value = tuple(float(x) for x in value)
         self.merge_nbt({'transformation': {'scale': list(value)}})
+        return self
+
+    def transform(self, transform: Transform)->Display:
+        self.merge_nbt({'transformation': transform.nbt()})
         return self
 
 

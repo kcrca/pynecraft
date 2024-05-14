@@ -20,6 +20,8 @@ from io import StringIO
 from json import JSONEncoder
 from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
+import numpy as np
+
 _jed_resource = r'a-zA-Z0-9_.-'
 _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
                                ([{_jed_resource}]+:)?         # an optional namespace
@@ -596,7 +598,9 @@ class Nbt(UserDict):
         return copy.deepcopy(self)
 
     def __setitem__(self, key, value):
-        if isinstance(value, Mapping) and not isinstance(value, (Nbt, JsonHolder)):
+        if isinstance(value, tuple):
+            value = list(value)
+        elif isinstance(value, Mapping) and not isinstance(value, (Nbt, JsonHolder)):
             value = Nbt.as_nbt(value)
         super().__setitem__(as_nbt_key(key), value)
 
@@ -1311,6 +1315,97 @@ def as_range(spec: Range) -> str:
         raise ValueError('Start is greater than end')
     return f'{results[0]}..{results[1]}'
 
+
+class Transform:
+    # This is overwritten later, but without this Pycharm doesn't know about this class variable
+    IDENTITY = None
+
+    class Matrix:
+        def __init__(self,
+                     value: tuple[
+                                float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float] |
+                            tuple[
+                                tuple[float, float, float, float],
+                                tuple[float, float, float, float],
+                                tuple[float, float, float, float],
+                                tuple[float, float, float, float]]):
+            if isinstance(value[0], Sequence):
+                value = tuple((i for i in row) for row in value)
+            self.value = value
+
+        def nbt(self) -> tuple[
+            float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float]:
+            return self.value
+
+    class Quaternion:
+        @staticmethod
+        def _nbt_quat(quat):
+            if isinstance(quat[1], tuple):
+                return Nbt(angle=quat[0], axis=quat[1])
+            return quat
+
+        def __init__(self,
+                     right: tuple[float, float, float, float] | tuple[float, tuple[float, float, float]] | FacingDef,
+                     scale: float | tuple[float, float, float] = 1,
+                     left: tuple[float, float, float, float] | tuple[
+                         float, tuple[float, float, float]] | FacingDef = None,
+                     translation: tuple[float, float, float] = None):
+            self.right = self._canonicalize(right)
+            self.scale = scale if isinstance(scale, Sequence) else (scale, scale, scale)
+            self.left = self._canonicalize(left)
+            self.translation = translation if translation else (0, 0, 0)
+
+        def nbt(self) -> Nbt:
+            return Nbt({'right_rotation': self._nbt_quat(self.right), 'scale': self.scale,
+                        'left_rotation': self._nbt_quat(self.left), 'translation': self.translation})
+
+        def _canonicalize(self, rot):
+            if rot is None:
+                return (0, 0, 0, 1)
+            if isinstance(rot, tuple):
+                return rot
+            facing = as_facing(rot)
+            # Normally you would think of roll as always zero, because that's how the doc describes it. But that's
+            # based on a starting posture of being upright facing south, where these terms are usually based on looking
+            # down at a plane from above. Given that, these are the correct interpretations of the Rotation attribute.
+            # See https://automaticaddison.com/how-to-convert-euler-angles-to-quaternions-using-python/ for the
+            # calculations.
+            roll = math.radians(facing.rotation[1])
+            pitch = math.radians(-facing.rotation[0])
+            yaw = 0
+            x = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+            y = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+            z = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+            w = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+            return (x, y, z, w)
+
+    def __init__(self, transform: Matrix | Quaternion):
+        super().__init__()
+        self.value = transform
+
+    def nbt(self):
+        return self.value.nbt()
+
+    @staticmethod
+    def matrix(value: tuple[
+                          float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float] |
+                      tuple[
+                          tuple[float, float, float, float],
+                          tuple[float, float, float, float],
+                          tuple[float, float, float, float],
+                          tuple[float, float, float, float]]):
+        return Transform(Transform.Matrix(value))
+
+    @staticmethod
+    def quaternion(right: tuple[float, float, float, float] | tuple[float, tuple[float, float, float]] | FacingDef,
+                   scale: float | tuple[float, float, float] = 1,
+                   left: tuple[float, float, float, float] | tuple[
+                       float, tuple[float, float, float]] | FacingDef = None,
+                   translation: tuple[float, float, float] = None):
+        return Transform(Transform.Quaternion(right, scale, left, translation))
+
+
+Transform.IDENTITY = Transform.quaternion((0, 0, 0, 1), 1, (0, 0, 0, 1))
 
 BoolOrArg = Union[bool, Arg]
 IntOrArg = Union[int, Arg, str]

@@ -3,7 +3,8 @@ import unittest
 from parameterized import parameterized
 
 from pynecraft.base import Arg, COLORS, Coord, EAST, IntRelCoord, NE, NORTH, NW, Nbt, RED, ROTATION_0, ROTATION_180, \
-    ROTATION_270, ROTATION_90, RelCoord, SE, SOUTH, SW, TimeSpec, WEST, _bool, _ensure_size, _float, _in_group, \
+    ROTATION_270, ROTATION_90, RelCoord, SE, SOUTH, SW, TimeSpec, Transform, WEST, _bool, _ensure_size, _float, \
+    _in_group, \
     _int_or_float, _not_ify, _quote, _strip_namespace, _strip_not, _to_list, _to_tuple, as_angle, as_column, \
     as_duration, as_facing, as_name, as_names, as_nbt_key, as_nbt_path, as_pitch, as_range, as_resource, \
     as_resource_path, as_resources, as_yaw, d, days, de_arg, r, rotate_facing, seconds, settings, string, ticks, to_id
@@ -301,7 +302,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual({'key': 1, 'key2': 2}, Nbt(key=1).merge(Nbt(key2=2)))
         self.assertEqual({'key': 2}, Nbt(key=1).merge(Nbt(key=2)))
         self.assertEqual({'key': 1, 'key2': 3}, Nbt(key=1, key2=2).merge(Nbt(key2=3)))
-        self.assertEqual({'key': (2, 4, 6)}, Nbt(key=(1, 3, 5)).merge(Nbt(key=(2, 4, 6))))
+        self.assertEqual({'key': [2, 4, 6]}, Nbt(key=(1, 3, 5)).merge(Nbt(key=(2, 4, 6))))
         self.assertEqual({'key': '➝'}, Nbt(key='➝'), 'Non-ascii unicode should be unchanged')
         simple_nbt = Nbt(One=2)
         self.assertIs(simple_nbt, Nbt.as_nbt(simple_nbt))
@@ -468,3 +469,31 @@ class TestBase(unittest.TestCase):
         self.assertNotEqual(hash(Arg('a')), hash(Arg('b')))
         with self.assertRaises(ValueError):
             Arg('')
+
+    def test_transform(self):
+        self.assertEqual((1.1, 2.2, 3.3, 4.4, 5, 6, 7, 8, 9.9, 10.10, 11.11, 12.12, 13, 14, 15, 16),
+                         Transform.matrix(
+                             (1.1, 2.2, 3.3, 4.4, 5, 6, 7, 8, 9.9, 10.10, 11.11, 12.12, 13, 14, 15, 16)).nbt())
+        self.assertEqual({'right_rotation': [1.1, 2, 3, 4], 'scale': [5.2, 5.2, 5.2], 'left_rotation': [6, 7, 8.8, 9],
+                          'translation': [0, 0, 0]},
+                         Transform.quaternion((1.1, 2, 3, 4), 5.2, (6, 7, 8.8, 9)).nbt())
+        self.assertEqual({'right_rotation': {'angle': 1.1, 'axis': [2, 3, 4]},
+                          'scale': [5.2, 5.2, 5.2],
+                          'left_rotation': {'angle': 6, 'axis': [7, 8.8, 9]},
+                          'translation': [0, 0, 0]},
+                         Transform.quaternion((1.1, (2, 3, 4)), 5.2, (6, (7, 8.8, 9))).nbt())
+        self.assertEqual({'left_rotation': [0, 0, 0, 1],
+                          'right_rotation': [-0.0, -0.0, 0.7071067811865476, -0.7071067811865475],
+                          'scale': [1, 1, 1],
+                          'translation': [0, 0, 0]}, Transform.quaternion(EAST).nbt())
+        self.assertEqual({'left_rotation': [0, 0, 0, 1],
+                          'right_rotation': [0, 0, 0, 1],
+                          'scale': [1, 1, 1],
+                          'translation': [0, 0, 0]}, Transform.IDENTITY.nbt())
+        # Right now I'm relying on the floating point answers being exactly the same each time. A more approximate
+        # comparison seems complex in the midst of comparing two dictionaries, so I'll worry about this if I need to.
+        self.assertEqual(
+            {'right_rotation': [0.0, -0.0, 0.7071067811865476, -0.7071067811865475], 'scale': [5.2, 5.2, 5.2],
+             'left_rotation': [0.0, 0.0, 1.0, 6.123233995736766e-17],
+             'translation': [0, 0, 0]},
+            Transform.quaternion(EAST, 5.2, NORTH).nbt())
