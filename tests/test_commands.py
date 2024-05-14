@@ -856,6 +856,7 @@ class TestCommands(unittest.TestCase):
     def test_give(self):
         self.assertEqual('give @s foo', give(s(), 'foo'))
         self.assertEqual('give @s foo 17', give(s(), 'foo', 17))
+        self.assertEqual('give @s diamond_pickaxe[!tool]', give(s(), 'diamond_pickaxe[!tool]'))
 
     def test_help(self):
         self.assertEqual('help', help())

@@ -7,13 +7,13 @@ import sys
 
 from pynecraft import TimeSpec, r
 from pynecraft.commands import REPLACE, Score, a, comment, execute, return_, s, schedule, tell
-from pynecraft.function import BLOCKS, DataPack, Function
+from pynecraft.function import BLOCK, DataPack, Function
 
 # Create the 'warning' datapack
 pack = DataPack('warning')
 
 #  Set the 'bad_blocks' block tag
-pack.tags(BLOCKS)['bad_blocks'] = ['magma_block', 'tnt']
+pack.tags(BLOCK)['bad_blocks'] = ['magma_block', 'tnt']
 
 self_score = Score(s(), 'warning')  # score that will be used for each player
 halt = Score('halt', 'warning')  # whether to halt the process

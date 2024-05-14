@@ -11,12 +11,12 @@ from typing import Any, MutableMapping
 from .base import _JsonEncoder, _in_group, _to_list, _to_tuple
 from .commands import *
 
-BLOCKS = 'blocks'
-FLUIDS = 'fluids'
-ITEMS = 'items'
-ENTITIES = 'entity_types'
-EVENTS = 'game_events'
-TAG_SETS = [BLOCKS, FLUIDS, ITEMS, ENTITIES, EVENTS]
+BLOCK = 'block'
+FLUID = 'fluid'
+ITEM = 'item'
+ENTITY = 'entity_type'
+EVENT = 'game_event'
+TAG_SETS = [BLOCK, FLUID, ITEM, ENTITY, EVENT]
 
 ADVENTURE = 'adventure'
 END = 'end'
@@ -463,7 +463,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 42
+LATEST_PACK_VERSION = 43
 
 
 class DataPack:

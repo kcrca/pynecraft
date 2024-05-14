@@ -317,7 +317,7 @@ class TestFunctions(unittest.TestCase):
         with open(expected / 'f1.mcfunction') as fp:
             self.assertIn('packer', fp.read())
 
-        blocks = pack.tags(BLOCKS)
+        blocks = pack.tags(BLOCK)
         blocks['air'] = {'values': ['air', 'cave_air']}
         blocks['stoneish'] = ['stone', 'slate']
         pack.save(self.tmp_path)
