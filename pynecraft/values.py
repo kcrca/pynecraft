@@ -758,7 +758,6 @@ GLOWING = "glowing"
 LEVITATION = "levitation"
 LUCK = "luck"
 BAD_LUCK = "unluck"
-FATAL_POISON = "fatal_poison"
 SLOW_FALLING = "slow_falling"
 CONDUIT_POWER = "conduit_power"
 DOLPHINS_GRACE = "dolphins_grace"
@@ -774,9 +773,9 @@ INFESTED = "infested"
 EFFECT_GROUP = [
     SPEED, SLOWNESS, HASTE, MINING_FATIGUE, STRENGTH, INSTANT_HEALTH, INSTANT_DAMAGE, JUMP_BOOST, NAUSEA, REGENERATION,
     RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY, BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON,
-    WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, BAD_LUCK, FATAL_POISON, SLOW_FALLING,
-    CONDUIT_POWER, DOLPHINS_GRACE, BAD_OMEN, "hero_of_the_village", DARKNESS, TRIAL_OMEN, RAID_OMEN, WIND_CHARGED,
-    WEAVING, OOZING, INFESTED
+    WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, BAD_LUCK, SLOW_FALLING, CONDUIT_POWER,
+    DOLPHINS_GRACE, BAD_OMEN, "hero_of_the_village", DARKNESS, TRIAL_OMEN, RAID_OMEN, WIND_CHARGED, WEAVING, OOZING,
+    INFESTED
 ]
 
 EffectInfo = namedtuple("Effect", ['name', 'value', 'desc', 'positive'])
@@ -848,8 +847,6 @@ effects = {
     "BAD_LUCK": EffectInfo("""Bad Luck""", "unluck",
                            """Reduces chances of better and more loot from fishing and chests, higher levels reduces the chances of good loot even more.""",
                            False),
-    "FATAL_POISON": EffectInfo("""Fatal Poison""", "fatal_poison",
-                               """Inflicts damage over time and can potentially kill the player.""", False),
     "SLOW_FALLING": EffectInfo("""Slow Falling""", "slow_falling",
                                """Decreases falling speed and negates fall damage.""", True),
     "CONDUIT_POWER": EffectInfo("""Conduit Power""", "conduit_power",

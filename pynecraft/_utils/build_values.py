@@ -306,10 +306,10 @@ class Effect(PageValuesDesc):
 
     def extract(self, cols):
         desc = cols[self.name_col]
-        if 'BE Only' in desc:
+        name = clean(cols[self.value_col])
+        if re.search(r'BE\s+only', desc.text):
             return None
         type_desc = cols[self.type_col].text
-        name = clean(cols[self.value_col])
         self.types[name] = True if 'Positive' in type_desc else False if 'Negative' in type_desc else None
         return (clean(cols[x].text) for x in (self.name_col, self.value_col, self.desc_col))
 
