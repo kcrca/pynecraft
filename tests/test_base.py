@@ -483,7 +483,7 @@ class TestBase(unittest.TestCase):
                           'translation': [0, 0, 0]},
                          Transform.quaternion((1.1, (2, 3, 4)), 5.2, (6, (7, 8.8, 9))).nbt())
         self.assertEqual({'left_rotation': [0, 0, 0, 1],
-                          'right_rotation': [-0.0, -0.0, 0.7071067811865476, -0.7071067811865475],
+                          'right_rotation': [0.0, -0.7071067811865476, 0.0, -0.7071067811865475],
                           'scale': [1, 1, 1],
                           'translation': [0, 0, 0]}, Transform.quaternion(EAST).nbt())
         self.assertEqual({'left_rotation': [0, 0, 0, 1],
@@ -493,7 +493,7 @@ class TestBase(unittest.TestCase):
         # Right now I'm relying on the floating point answers being exactly the same each time. A more approximate
         # comparison seems complex in the midst of comparing two dictionaries, so I'll worry about this if I need to.
         self.assertEqual(
-            {'right_rotation': [0.0, -0.0, 0.7071067811865476, -0.7071067811865475], 'scale': [5.2, 5.2, 5.2],
-             'left_rotation': [0.0, 0.0, 1.0, 6.123233995736766e-17],
+            {'right_rotation': [0.0, -0.7071067811865476, 0.0, -0.7071067811865475], 'scale': [5.2, 5.2, 5.2],
+             'left_rotation': [0.0, -1.0, 0.0, 6.123233995736766e-17],
              'translation': [0, 0, 0]},
             Transform.quaternion(EAST, 5.2, NORTH).nbt())
