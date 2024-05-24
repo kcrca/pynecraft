@@ -463,7 +463,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 43
+LATEST_PACK_VERSION = 45
 
 
 class DataPack:
@@ -623,45 +623,49 @@ class DataPack:
 
     def tags(self, tag_set: str) -> dict:
         """
-        Returns defined tags. You can add to this dict to add tags to the datapack. As a convenience, if a tag's
-        value is a list (or tuple), it is replaced with {'values': *tag_value*}, so you don't have to remember that.
-        So saying ``tags(BLOCKS)['hard'] = ['stone', 'slate']`` is the same as saying  ``tags(BLOCKS)['hard'] = {
-        'values': ['stone', 'slate']}``. And it's easier.
+        Returns defined tags. You can add to this dict to add to the datapack. As a convenience, if a tag's value is
+        a list (or tuple), it is replaced with {'values': *tag_value*}, so you don't have to remember that. So saying
+        ``tags(BLOCKS)['hard'] = ['stone', 'slate']`` is the same as saying  ``tags(BLOCKS)['hard'] = { 'values': [
+        'stone', 'slate']}``. And it's easier.
         """
         return self._get_json('tags', TAG_SETS, tag_set)
 
-    def advancements(self, advancement_set: str) -> dict[str, dict]:
-        """Returns defined advancements. You can add to this dict to add advancements to the datapack. Keys that end in
-        '/' define directories. Keys underneath them (which do not end in '/') define files, whose contents are the JSON
-        defined by the dict such keys map to."""
-        return self._get_json('advancements', ADVANCEMENT_SETS, advancement_set)
+    def advancement(self, advancement_set: str) -> dict[str, dict]:
+        """Returns defined advancements. You can add to this dict to add to the datapack. Keys that end in '/' define
+        directories. Keys underneath them (which do not end in '/') define files, whose contents are the JSON defined
+        by the dict such keys map to."""
+        return self._get_json('advancement', ADVANCEMENT_SETS, advancement_set)
 
     def dimensions(self, dimension: str) -> dict[str, dict]:
-        """Returns the defined dimensions. You can add to this dict to add advancements to the datapack. """
+        """Returns the defined dimensions. You can add to this dict to add to the datapack. """
         return self._get_json('dimension', None, dimension)
 
     def dimension_types(self, dimension_type: str) -> dict[str, dict]:
-        """Returns defined dimension_types. You can add to this dict to add advancements to the datapack. """
+        """Returns defined dimension_types. You can add to this dict to add to the datapack. """
         return self._get_json('dimension_type', None, dimension_type)
 
-    def loot_tables(self, loot_table: str) -> dict[str, dict]:
-        """Returns defined loot_tables. You can add to this dict to add advancements to the datapack. """
-        return self._get_json('loot_tables', None, loot_table)
+    def item_modifier(self, loot_table: str) -> dict[str, dict]:
+        """Returns defined item_modifiers. You can add to this dict to add to the datapack. """
+        return self._get_json('item_modifier', None, loot_table)
 
-    def predicates(self) -> dict[str, dict]:
-        """Returns defined predicates. You can add to this dict to add advancements to the datapack. """
-        return self.json_directory('predicates')
+    def loot_table(self, loot_table: str) -> dict[str, dict]:
+        """Returns defined loot_tables. You can add to this dict to add to the datapack. """
+        return self._get_json('loot_table', None, loot_table)
 
-    def recipes(self) -> dict[str, dict]:
-        """Returns defined recipes. You can add to this dict to add advancements to the datapack. """
-        return self.json_directory('recipes')
+    def predicate(self) -> dict[str, dict]:
+        """Returns defined predicates. You can add to this dict to add to the datapack. """
+        return self.json_directory('predicate')
 
-    def structures(self, structure: str) -> dict[str, dict]:
-        """Returns defined structures. You can add to this dict to add advancements to the datapack. """
-        return self._get_json('structures', None, structure)
+    def recipe(self) -> dict[str, dict]:
+        """Returns defined recipes. You can add to this dict to add to the datapack. """
+        return self.json_directory('recipe')
+
+    def structure(self, structure: str) -> dict[str, dict]:
+        """Returns defined structures. You can add to this dict to add to the datapack. """
+        return self._get_json('structure', None, structure)
 
     def worldgen(self, worldgen_set: str) -> dict[str, dict]:
-        """Returns defined worldgen settings. You can add to this dict to add worldgen settings to the datapack. """
+        """Returns defined worldgen settings. You can add to this dict to add to the datapack. """
         return self._get_json('worldgen', WORLDGEN_SETS, worldgen_set)
 
     def json_directory(self, name: str) -> dict[str, dict]:

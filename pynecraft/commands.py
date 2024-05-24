@@ -836,6 +836,10 @@ def s():
     return Selector(Selector._create_key, '@s')
 
 
+def n():
+    return Selector(Selector._create_key, '@n')
+
+
 self = s
 """Equivalent to s()."""
 
