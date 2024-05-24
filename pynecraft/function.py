@@ -475,7 +475,7 @@ class DataPack:
     def __init__(self, name: str, format_version: int = LATEST_PACK_VERSION, /,
                  mcmeta: Mapping = None):
         self._name = name
-        self.function_set = FunctionSet('functions', self)
+        self.function_set = FunctionSet('function', self)
         self._json = {}
         self._mcmeta = {'pack': {'pack_format': format_version, 'description': JsonText.text(name)}}
         self._description = None
@@ -505,7 +505,7 @@ class DataPack:
         if not path.exists():
             raise ValueError(f'{path}: No such directory')
         pack = DataPack(name)
-        pack.function_set = FunctionSet.load(path / pack._data_dir(), pack, 'functions')
+        pack.function_set = FunctionSet.load(path / pack._data_dir(), pack, 'function')
         pack._json = pack._load_dict(pack._data_dir())
         with open(path / 'pack.mcmeta') as fp:
             pack._mcmeta = json.load(fp)
@@ -522,7 +522,7 @@ class DataPack:
                 with open(path) as fp:
                     contents[path.stem] = json.load(fp)
             else:
-                if entry.stem == 'functions' and path.stem == self.name:
+                if entry.stem == 'function' and path.stem == self.name:
                     continue
                 contents[path.stem + '/'] = self._load_dict(path)
         return contents

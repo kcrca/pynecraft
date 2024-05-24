@@ -308,7 +308,7 @@ class TestFunctions(unittest.TestCase):
         fs.add(Function('f1').add('say packer'))
         fs.add(Function('f2').add('say there'))
         (self.tmp_path / 'datapacks').mkdir()
-        expected = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'functions' / 'sub'
+        expected = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'function' / 'sub'
         self.assertFalse(expected.exists())
         pack.save(self.tmp_path)
         self.assertTrue(expected.is_dir())
