@@ -530,12 +530,11 @@ class Pattern(PageValuesDesc):
 
 
 class Disc(PageValuesDesc):
-    """Generates the Painting values."""
+    """Generates the Disc values."""
 
     def __init__(self):
         super().__init__('Disc', WIKI + 'Music_Disc#Discs', 'Disc listing')
         self.name_col = None
-        self.desc_col = None
         self.composer_col = None
         self.composers = {}
         self.names = {13: "thirteen", 11: "eleven", 5: "five"}
@@ -548,21 +547,18 @@ class Disc(PageValuesDesc):
             self.name_col = col
         elif text.startswith('Composer'):
             self.composer_col = col
-        elif 'Desc' in text:
-            self.desc_col = col
 
     def extract(self, cols) -> tuple[str, str, str]:
-        name = re.sub('[()]', '', clean(cols[self.name_col]))
+        name = re.sub('[()]', '', clean(cols[self.name_col])).replace('"', '')
         value = f'music_disc_{to_id(name)}'
         try:
             num = int(name)
             name = self.names[num]
         except ValueError:
             pass
-        desc = clean(cols[self.desc_col]) if self.desc_col else None
         composer = clean(cols[self.composer_col])
         self.composers[value] = composer
-        return name, value, desc
+        return name, value, ""
 
     def added_fields(self):
         return ['composer']
@@ -582,6 +578,7 @@ class Painting(PageValuesDesc):
         self.value_col = None
         self.artists = {}
         self.aztec = 0
+        self.size = ()
 
     def find_tables(self, soup):
         return soup.find_all('table', attrs={'data-description': self.data_desc})
@@ -614,14 +611,6 @@ class Painting(PageValuesDesc):
     def added_values(self, value):
         added = self.artists[value]
         return f', "{added[0]}", {added[1]}'
-
-    class Painting(PageValuesDesc):
-        """Generates the Painting values."""
-
-        def __init__(self):
-            super().__init__('Painting', WIKI + 'Painting#Canvases', 'Paintings')
-            self.name_col = None
-            self.desc_col = None
 
 
 if __name__ == '__main__':

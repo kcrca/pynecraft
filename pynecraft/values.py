@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2024-05-11T17:48:24-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2024-06-03T12:50:44-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -78,7 +78,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-05-11T17:48:24-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-06-03T12:50:44-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -191,7 +191,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-05-11T17:48:25-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-06-03T12:50:44-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -491,7 +491,7 @@ advancements = {
     "LIGHTEN_UP": AdvancementInfo("""Lighten Up""", "adventure/lighten_up",
                                   """Scrape a Copper Bulb with an Axe to make it brighter."""),
     "WHO_NEEDS_ROCKETS": AdvancementInfo("""Who Needs Rockets?""", "adventure/who_needs_rockets",
-                                         """Use a Wind Charge to launch yourself upwards 7 blocks."""),
+                                         """Use a Wind Charge to launch yourself upwards 8 blocks."""),
     "UNDER_LOCK_AND_KEY": AdvancementInfo("""Under Lock and Key""", "adventure/under_lock_and_key",
                                           """Use a Trial Key on a Vault."""),
     "REVAULTING": AdvancementInfo("""Revaulting""", "adventure/revaulting",
@@ -568,7 +568,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-05-11T17:48:25-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-06-03T12:50:45-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -729,7 +729,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-05-11T17:48:25-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-06-03T12:50:46-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -819,7 +819,8 @@ effects = {
                                """Grants invisibility, making the affected entity invisible (but not the item they hold or the armor they wear), and reduces other mobs' detection range for the affected entity, higher levels reduce other mobs' detection range more.""",
                                True),
     "BLINDNESS": EffectInfo("""Blindness""", "blindness",
-                            """Impairs vision and disables the ability to sprint and critical hit.""", False),
+                            """Impairs vision by adding close black fog and disables the ability to sprint and critical hit.""",
+                            False),
     "NIGHT_VISION": EffectInfo("""Night Vision""", "night_vision",
                                """Lets the player see well in darkness and underwater.""", True),
     "HUNGER": EffectInfo("""Hunger""", "hunger",
@@ -858,7 +859,9 @@ effects = {
     "HERO_OF_THE_VILLAGE": EffectInfo("""Hero of the Village""", "hero_of_the_village",
                                       """Gives discounts on trades with villagers, and makes villagers throw items at the player depending on their profession.""",
                                       True),
-    "DARKNESS": EffectInfo("""Darkness""", "darkness", """Darkens the player's screen.""", False),
+    "DARKNESS": EffectInfo("""Darkness""", "darkness",
+                           """Adds a pulsating darkening affect to the players screen and pulsating black fog.""",
+                           False),
     "TRIAL_OMEN": EffectInfo("""Trial Omen""", "trial_omen",
                              """Transforms nearby trial spawners into ominous trial spawners.""", None),
     "RAID_OMEN": EffectInfo("""Raid Omen""", "raid_omen",
@@ -883,7 +886,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-05-11T21:23:06-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-06-03T12:50:46-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -1018,7 +1021,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-05-11T21:23:06-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-06-03T12:50:47-07:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -1234,7 +1237,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-05-11T21:23:06-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-06-03T12:50:47-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1287,7 +1290,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-05-11T21:23:07-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-06-03T12:50:47-07:00
 __particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
@@ -1610,7 +1613,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-05-11T21:23:07-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-06-03T12:50:47-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1674,7 +1677,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-05-11T21:23:07-07:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-06-03T12:50:47-07:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1734,7 +1737,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2024-05-11T22:35:10-07:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2024-06-03T12:50:48-07:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"
@@ -1760,21 +1763,21 @@ SKULL_AND_ROSES = "Skull and Roses"
 __painting_dups["wither"] = "Wither"
 BAROQUE = "Baroque"
 HUMBLE = "Humble"
-ENDBOSS = "Endboss"
-TIDES = "Tides"
-FERN = "Fern"
-SUNFLOWERS = "Sunflowers"
-COTAN = "Cotán"
-OWLEMONS = "Owlemons"
-CAVEBIRD = "Cavebird"
 BOUQUET = "Bouquet"
+CAVEBIRD = "Cavebird"
+COTAN = "Cotán"
+ENDBOSS = "Endboss"
+FERN = "Fern"
+OWLEMONS = "Owlemons"
+SUNFLOWERS = "Sunflowers"
+TIDES = "Tides"
 BACKYARD = "Backyard"
 POND = "Pond"
 FIGHTERS = "Fighters"
-PASSAGE = "Passage"
 CHANGING = "Changing"
 FINDING = "Finding"
 LOWMIST = "Lowmist"
+PASSAGE = "Passage"
 SKELETON = "Mortal Coil"
 DONKEY_KONG = "Kong"
 POINTER = "Pointer"
@@ -1784,13 +1787,13 @@ UNPACKED = "Unpacked"
 ORB = "Orb"
 EARTH = "Earth"
 WIND = "Wind"
-WATER = "Water"
 FIRE = "Fire"
+WATER = "Water"
 PAINTING_GROUP = [
     KEBAB, AZTEC, ALBAN, AZTEC2, BOMB, PLANT, WASTELAND, MEDITATIVE, WANDERER, GRAHAM, PRAIRIE_RIDE, POOL, COURBET,
-    "sunset_dense", SEA, CREEBET, MATCH, BUST, STAGE, VOID, SKULL_AND_ROSES, "Wither", BAROQUE, HUMBLE, ENDBOSS, TIDES,
-    FERN, SUNFLOWERS, COTAN, OWLEMONS, CAVEBIRD, BOUQUET, BACKYARD, POND, FIGHTERS, PASSAGE, CHANGING, FINDING, LOWMIST,
-    SKELETON, DONKEY_KONG, POINTER, PIGSCENE, BURNING_SKULL, UNPACKED, ORB, EARTH, WIND, WATER, FIRE
+    "sunset_dense", SEA, CREEBET, MATCH, BUST, STAGE, VOID, SKULL_AND_ROSES, "Wither", BAROQUE, HUMBLE, BOUQUET,
+    CAVEBIRD, COTAN, ENDBOSS, FERN, OWLEMONS, SUNFLOWERS, TIDES, BACKYARD, POND, FIGHTERS, CHANGING, FINDING, LOWMIST,
+    PASSAGE, SKELETON, DONKEY_KONG, POINTER, PIGSCENE, BURNING_SKULL, UNPACKED, ORB, EARTH, WIND, FIRE, WATER
 ]
 
 PaintingInfo = namedtuple("Painting", ['name', 'value', 'desc', 'artist', 'size'])
@@ -1816,7 +1819,7 @@ paintings = {
                               """A view of some wasteland; a small animal, presumably a rabbit, is sitting on the windowsill.""",
                               "Kristoffer Zetterstrand", (1, 1)),
     "MEDITATIVE": PaintingInfo("""meditative""", "Meditative",
-                               """A version of Salvador Dali’s Meditative Rose, although with an added stem to reference Minecraft’s removed rose.""",
+                               """A version of Salvador Dali’s Meditative Rose. Its added stem references Minecraft’s removed rose.""",
                                "Sarah Boeving", (1, 1)),
     "WANDERER": PaintingInfo("""wanderer""", "Wanderer",
                              """A version of Caspar David Friedrich’s famous painting Wanderer above the Sea of Fog.""",
@@ -1863,27 +1866,27 @@ paintings = {
     "HUMBLE": PaintingInfo("""humble""", "Humble",
                            """A version of Grant Wood’s American Gothic, where two villagers are in front of a village house.""",
                            "Sarah Boeving", (2, 2)),
-    "ENDBOSS": PaintingInfo("""endboss""", "Endboss",
-                            """A skeleton in a brick archway. It features a white silhouette of the character Graham from the video game series King’s Quest.""",
-                            "Kristoffer Zetterstrand", (3, 3)),
-    "TIDES": PaintingInfo("""tides""", "Tides", """A naked person sitting in a fetal position by a shoreline.""",
-                          "Kristoffer Zetterstrand", (3, 3)),
-    "FERN": PaintingInfo("""fern""", "Fern", """A potted fern on a desk with a small fire.""",
-                         "Kristoffer Zetterstrand", (3, 3)),
-    "SUNFLOWERS": PaintingInfo("""sunflowers""", "Sunflowers",
-                               """Some potted plants on a table with a two-dimensional sunflower.""",
-                               "Kristoffer Zetterstrand", (3, 3)),
-    "COTAN": PaintingInfo("""cotan""", "Cotán",
-                          """A golden apple and an inverted glistering melon slice in a windowsill. The golden apple is tied by a string in the air and the glistering melon slice is sitting on the windowsill. Like Graham, this painting is based on Still Life with Quince, Cabbage, Melon, and Cucumber by Juan Sánchez Cotán.""",
-                          "Kristoffer Zetterstrand", (3, 3)),
-    "OWLEMONS": PaintingInfo("""owlemons""", "Owlemons",
-                             """A two-dimensional owl inside a box, next to some lemons. The background is based on Domenico Ghirlandaio's An Old Man and his Grandson.""",
-                             "Kristoffer Zetterstrand", (3, 3)),
-    "CAVEBIRD": PaintingInfo("""cavebird""", "Cavebird", """A cave in a cliff with a bird flying overhead.""",
-                             "Kristoffer Zetterstrand", (3, 3)),
     "BOUQUET": PaintingInfo("""bouquet""", "Bouquet",
                             """A bouquet of flowers next to a stairway with a person sitting beside it.""",
                             "Kristoffer Zetterstrand", (3, 3)),
+    "CAVEBIRD": PaintingInfo("""cavebird""", "Cavebird", """A cave in a cliff with a bird flying overhead.""",
+                             "Kristoffer Zetterstrand", (3, 3)),
+    "COTAN": PaintingInfo("""cotan""", "Cotán",
+                          """A golden apple and an inverted glistering melon slice in a windowsill. The golden apple is tied by a string in the air and the glistering melon slice is sitting on the windowsill. Like Graham, this painting is based on Still Life with Quince, Cabbage, Melon, and Cucumber by Juan Sánchez Cotán.""",
+                          "Kristoffer Zetterstrand", (3, 3)),
+    "ENDBOSS": PaintingInfo("""endboss""", "Endboss",
+                            """A skeleton in a brick archway. It features a white silhouette of the character Graham from the video game series King’s Quest.""",
+                            "Kristoffer Zetterstrand", (3, 3)),
+    "FERN": PaintingInfo("""fern""", "Fern", """A potted fern on a desk with a small fire.""",
+                         "Kristoffer Zetterstrand", (3, 3)),
+    "OWLEMONS": PaintingInfo("""owlemons""", "Owlemons",
+                             """A two-dimensional owl inside a box, next to some lemons. The background is based on Domenico Ghirlandaio's An Old Man and his Grandson.""",
+                             "Kristoffer Zetterstrand", (3, 3)),
+    "SUNFLOWERS": PaintingInfo("""sunflowers""", "Sunflowers",
+                               """Some potted plants on a table with a two-dimensional sunflower.""",
+                               "Kristoffer Zetterstrand", (3, 3)),
+    "TIDES": PaintingInfo("""tides""", "Tides", """A naked person sitting in a fetal position by a shoreline.""",
+                          "Kristoffer Zetterstrand", (3, 3)),
     "BACKYARD": PaintingInfo("""backyard""", "Backyard",
                              """A brick archway with two women sitting in the yard. The scenery is based on the painting The Courtyard of a House in Delft by Pieter de Hooch.""",
                              "Kristoffer Zetterstrand", (3, 4)),
@@ -1893,9 +1896,6 @@ paintings = {
     "FIGHTERS": PaintingInfo("""fighters""", "Fighters",
                              """Two men poised to fight. Paper versions of fighters from the video game International Karate +.""",
                              "Kristoffer Zetterstrand", (4, 2)),
-    "PASSAGE": PaintingInfo("""passage""", "Passage",
-                            """A surreal, mineshaft-like hallway in front of a scene of a beach, with posed skeletons of a person and an extinct giant ground sloth.""",
-                            "Kristoffer Zetterstrand", (4, 2)),
     "CHANGING": PaintingInfo("""changing""", "Changing",
                              """A person changing clothes in front of some set pieces, including a contrasting gloomy mountain and a sunny countryside.""",
                              "Kristoffer Zetterstrand", (4, 2)),
@@ -1903,6 +1903,9 @@ paintings = {
                             """A person looks into a recently-dug hole with Hellenistic ruins in the background. Studio lights are set up next to them.""",
                             "Kristoffer Zetterstrand", (4, 2)),
     "LOWMIST": PaintingInfo("""lowmist""", "Lowmist", """Free-look perspective of a digital render of mountains.""",
+                            "Kristoffer Zetterstrand", (4, 2)),
+    "PASSAGE": PaintingInfo("""passage""", "Passage",
+                            """A surreal, mineshaft-like hallway in front of a scene of a beach, with posed skeletons of a person and an extinct giant ground sloth.""",
                             "Kristoffer Zetterstrand", (4, 2)),
     "SKELETON": PaintingInfo("""skeleton""", "Mortal Coil",
                              """Bruno Martinez from the adventure video game Grim Fandango.""",
@@ -1929,10 +1932,10 @@ paintings = {
                           "Mojang (Unknown Artist)", (2, 2)),
     "WIND": PaintingInfo("""wind""", "Wind", """One of the four classical elements: Air.""", "Mojang (Unknown Artist)",
                          (2, 2)),
-    "WATER": PaintingInfo("""water""", "Water", """One of the four classical elements: Water.""",
-                          "Mojang (Unknown Artist)", (2, 2)),
     "FIRE": PaintingInfo("""fire""", "Fire", """One of the four classical elements: Fire.""", "Mojang (Unknown Artist)",
                          (2, 2)),
+    "WATER": PaintingInfo("""water""", "Water", """One of the four classical elements: Water.""",
+                          "Mojang (Unknown Artist)", (2, 2)),
 }
 
 for __k in tuple(paintings.keys()):
