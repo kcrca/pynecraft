@@ -861,7 +861,7 @@ class Selector(TargetSpec):
         super().__init__()
         assert (create_key == Selector._create_key), 'Private __init__, use creation methods'
         self._selector = selector
-        self._single = selector in ('@s', '@p', '@r')
+        self._single = selector in ('@s', '@p', '@r', '@n')
         self._args = {}
 
     def is_single(self):
