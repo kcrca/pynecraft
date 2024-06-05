@@ -52,7 +52,7 @@ class Fetcher(ABC):
             if self.is_end(elem):
                 break
             for li in elem.find_all(self.desc_elem()):
-                raw_text = li.text.replace(u'\u200c', '')  # Discard the zero-width non-joiners
+                raw_text = strip_spaces(li.text)  # Discard the zero-width non-joiners
                 m = re.search(r'\[(.*) only]', raw_text, re.IGNORECASE)
                 if m and not ('Java' in m.group(1) or 'JE' in m.group(1)):
                     continue
@@ -92,7 +92,7 @@ class BlockFetcher(Fetcher):
         if ' (block)' in raw_id:
             raw_id = re.sub(' \(block\)', '', raw_id)
         id = raw_id
-        desc = re.sub(u'[\u200c\u200b]', '', raw_desc).strip()  # Discard the zero-width non-joiners
+        desc = strip_spaces(raw_desc)  # Discard the zero-width non-joiners
         if 'upcoming' in id:
             if not re.search(r'\bJ\.*E\.*', id):
                 return None, None
@@ -119,6 +119,10 @@ class BlockFetcher(Fetcher):
     def added(self, _):
         # These should be there, but aren't
         return ['Air', 'Cave Air']
+
+
+def strip_spaces(raw):
+    return re.sub(u'[\u200c\u200b]', '', raw).strip()
 
 
 class ItemFetcher(Fetcher):
@@ -157,7 +161,7 @@ class ItemFetcher(Fetcher):
             return None, None
 
         id = raw_id
-        desc = re.sub(u'[\u200c\u200b]', '', raw_desc).strip()
+        desc = strip_spaces(raw_desc)
 
         if 'Music Disc' in raw_desc:
             id = desc = raw_desc.replace('(', '').replace(')', '').title()
