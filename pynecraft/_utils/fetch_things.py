@@ -14,6 +14,7 @@ import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+import regex
 import requests
 from bs4 import BeautifulSoup
 
@@ -122,7 +123,7 @@ class BlockFetcher(Fetcher):
 
 
 def strip_spaces(raw):
-    return re.sub(u'[\u200c\u200b]', '', raw).strip()
+    return regex.sub(r'\p{Default_Ignorable_Code_Point}', '', raw).strip()
 
 
 class ItemFetcher(Fetcher):
