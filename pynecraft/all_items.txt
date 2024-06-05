@@ -5,6 +5,8 @@ Amethyst Shard
 Angler Pottery Sherd
 Apple
 Archer Pottery Sherd
+Armadillo Scute
+Armadillo Spawn Egg
 Armor Stand
 Arms Up Pottery Sherd
 Arrow
@@ -25,6 +27,8 @@ Blaze Powder
 Blaze Rod
 Blaze Spawn Egg
 Blue Dye
+Bogged Spawn Egg
+Bolt Armor Trim / Bolt Armor Trim Smithing Template
 Bone
 Bone Meal
 Book
@@ -33,6 +37,8 @@ Bottle o' Enchanting / Experience Bottle
 Bow
 Bowl
 Bread
+Breeze Rod
+Breeze Spawn Egg
 Brewer Pottery Sherd
 Brick
 Brown Dye
@@ -127,6 +133,9 @@ Firework Star
 Fishing Rod
 Flint
 Flint and Steel
+Flow / Flow Banner Pattern
+Flow Armor Trim / Flow Armor Trim Smithing Template
+Flow Pottery Sherd
 Flower / Flower Banner Pattern
 Fox Spawn Egg
 Friend Pottery Sherd
@@ -161,6 +170,8 @@ Gray Dye
 Green Dye
 Guardian Spawn Egg
 Gunpowder
+Guster / Guster Banner Pattern
+Guster Pottery Sherd
 Heart Pottery Sherd
 Heart of the Sea
 Heartbreak Pottery Sherd
@@ -206,6 +217,7 @@ Light Gray Dye
 Lime Dye
 Lingering Potion
 Llama Spawn Egg
+Mace
 Magenta Dye
 Magma Cream
 Magma Cube Spawn Egg
@@ -231,11 +243,14 @@ Music Disc 5
 Music Disc Blocks
 Music Disc Cat
 Music Disc Chirp
+Music Disc Creator
+Music Disc Creator Music Box
 Music Disc Far
 Music Disc Mall
 Music Disc Mellohi
 Music Disc Otherside
 Music Disc Pigstep
+Music Disc Precipice
 Music Disc Relic
 Music Disc Stal
 Music Disc Strad
@@ -262,6 +277,8 @@ Netherite Upgrade / Netherite Upgrade Smithing Template
 Oak Boat
 Oak Boat with Chest / Oak Chest Boat
 Ocelot Spawn Egg
+Ominous Bottle
+Ominous Trial Key
 Orange Dye
 Painting
 Panda Spawn Egg
@@ -312,6 +329,7 @@ Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
 Salmon Spawn Egg
+Scrape Pottery Sherd
 Scute / Turtle Scute
 Sentry Armor Trim / Sentry Armor Trim Smithing Template
 Shaper Armor Trim / Shaper Armor Trim Smithing Template
@@ -364,6 +382,7 @@ Tipped Arrow
 Torchflower Seeds
 Totem of Undying
 Trader Llama Spawn Egg
+Trial Key
 Trident
 Tropical Fish
 Tropical Fish Spawn Egg
@@ -383,9 +402,11 @@ Wheat
 Wheat Seeds
 White Dye
 Wild Armor Trim / Wild Armor Trim Smithing Template
+Wind Charge
 Witch Spawn Egg
 Wither Skeleton Spawn Egg
 Wither Spawn Egg
+Wolf Armor
 Wolf Spawn Egg
 Wooden Axe
 Wooden Hoe

@@ -174,6 +174,7 @@ Cherry Wood
 Chest
 Chipped Anvil
 Chiseled Bookshelf
+Chiseled Copper / Chiseled Copper ​
 Chiseled Deepslate
 Chiseled Nether Bricks
 Chiseled Polished Blackstone
@@ -181,6 +182,7 @@ Chiseled Quartz Block
 Chiseled Red Sandstone
 Chiseled Sandstone
 Chiseled Stone Bricks
+Chiseled Tuff / Chiseled Tuff ​
 Chorus Flower
 Chorus Plant (block) / Chorus Plant
 Clay
@@ -199,14 +201,18 @@ Cocoa
 Command Block
 Composter
 Conduit
+Copper Bulb / Copper Bulb ​
+Copper Door / Copper Door ​
+Copper Grate / Copper Grate ​
 Copper Ore
+Copper Trapdoor / Copper Trapdoor ​
 Cornflower
 Cracked Deepslate Bricks
 Cracked Deepslate Tiles
 Cracked Nether Bricks
 Cracked Polished Blackstone Bricks
 Cracked Stone Bricks
-Crafter [x] / Crafter
+Crafter / Crafter ​
 Crafting Table
 Creeper Head
 Crimson Button
@@ -324,7 +330,12 @@ End Stone Brick Stairs
 End Stone Brick Wall
 End Stone Bricks
 Ender Chest
+Exposed Chiseled Copper / Exposed Chiseled Copper ​
 Exposed Copper
+Exposed Copper Bulb / Exposed Copper Bulb ​
+Exposed Copper Door / Exposed Copper Door ​
+Exposed Copper Grate / Exposed Copper Grate ​
+Exposed Copper Trapdoor / Exposed Copper Trapdoor ​
 Exposed Cut Copper
 Exposed Cut Copper Slab
 Exposed Cut Copper Stairs
@@ -379,6 +390,7 @@ Green Wool
 Grindstone
 Hanging Roots
 Hay Bale / Hay Block
+Heavy Core / Heavy Core ​
 Heavy Weighted Pressure Plate
 Honey Block
 Honeycomb Block
@@ -794,6 +806,7 @@ Tinted Glass
 Torch
 Torchflower
 Trapped Chest
+Trial Spawner / Trial Spawner ​
 Tripwire
 Tripwire Hook
 Tube Coral
@@ -802,6 +815,7 @@ Tube Coral Fan
 Tuff
 Turtle Egg
 Twisting Vines
+Vault / Vault ​
 Verdant Froglight
 Vines / Vine
 Warped Button

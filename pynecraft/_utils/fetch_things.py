@@ -92,12 +92,13 @@ class BlockFetcher(Fetcher):
         if ' (block)' in raw_id:
             raw_id = re.sub(' \(block\)', '', raw_id)
         id = raw_id
-        desc = raw_desc
+        desc = re.sub(u'[\u200c\u200b]', '', raw_desc).strip()  # Discard the zero-width non-joiners
         if 'upcoming' in id:
             if not re.search(r'\bJ\.*E\.*', id):
                 return None, None
             id = re.sub(r'\s*\[*upcoming.*', '', id)
-            desc = re.sub(r'\s*\[*upcoming.*', ' [x]', desc)
+            desc = re.sub(r'\s*\[*upcoming.*', '', desc)
+            # desc = re.sub(r'\s*\[*upcoming.*', ' [x]', desc)
         if 'Lapis' in id and id != 'Lapis Lazuli':
             id = id.replace('Lapis Lazuli', 'Lapis')
         elif 'Bale' in id:
@@ -156,10 +157,10 @@ class ItemFetcher(Fetcher):
             return None, None
 
         id = raw_id
-        desc = raw_desc
+        desc = re.sub(u'[\u200c\u200b]', '', raw_desc).strip()
 
         if 'Music Disc' in raw_desc:
-            id = desc = raw_desc.replace('(', '').replace(')', '')
+            id = desc = raw_desc.replace('(', '').replace(')', '').title()
         elif 'Banner Pattern ' in raw_desc:
             m = re.fullmatch(r'Banner Pattern \(([^ ]+)( .*)?.*\)', desc)
             id = f'{m.group(1)} Banner Pattern'.replace('Snout', 'Piglin').replace('Thing', 'Mojang')
