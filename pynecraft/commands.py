@@ -1114,7 +1114,7 @@ class _IfClause(Command):
     @_fluent
     def items(self, item_target: ItemTarget, slot: StrOrArg, item: StrOrArg) -> _ExecuteMod:
         # data target is a superset of item target
-        self._add('item', as_data_target(item_target), as_slot(slot), de_arg(item))
+        self._add('items', as_data_target(item_target), as_slot(slot), de_arg(item))
         return self._start(_ExecuteMod())
 
     @_fluent

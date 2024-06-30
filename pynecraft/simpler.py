@@ -417,7 +417,7 @@ class Item(Entity):
             self.merge_nbt(nbt)
 
     @classmethod
-    def nbt_for(cls, item: BlockDef, nbt=None) -> Nbt:
+    def nbt_for(cls, item: BlockDef, nbt=None, count=1) -> Nbt:
         """The nbt for this item."""
         item = as_block(item)
         item_id = item.id
@@ -425,6 +425,8 @@ class Item(Entity):
         if item_id and item_id.find(':') < 0:
             item_id = 'minecraft:' + item_id
         retval = Nbt({'id': item_id})
+        if count != 1:
+            retval = retval.merge({'Count': count})
         # Filled maps are stored directly, not shunted an inner tag
         if item_id:
             if item_id == 'minecraft:filled_map':
