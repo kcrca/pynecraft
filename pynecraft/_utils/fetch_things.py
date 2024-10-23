@@ -154,7 +154,7 @@ class ItemFetcher(Fetcher):
         return page.find('h2', string='List of items')
 
     def is_end(self, elem):
-        return elem.name == 'h2' or 'Education Edition' in elem.text
+        return elem.name == 'h2' or 'Education' in elem.text
 
     def get_id(self, raw_id, raw_desc):
         #  This is in the list as a way to say "any potion", it's not an item.
