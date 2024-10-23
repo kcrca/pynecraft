@@ -244,7 +244,7 @@ other_horses = (
     Entity('Zombie Horse'),
 )
 """The non-horse horses."""
-woods = ('Acacia', 'Bamboo', 'Birch', 'Cherry', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Spruce')
+woods = ('Acacia', 'Bamboo', 'Birch', 'Cherry', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Pale Oak', 'Spruce')
 """The kinds of wood."""
 stems = ('Warped', 'Crimson')
 """The kinds of stems."""

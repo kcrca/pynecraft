@@ -17,6 +17,7 @@ from abc import ABC, abstractmethod
 from contextlib import redirect_stdout
 from pathlib import Path
 
+import bs4
 import requests
 from bs4 import BeautifulSoup
 
@@ -261,6 +262,19 @@ class Advancement(PageValuesDesc):
         self.desc_col = None
         self.name_col = None
 
+    def find_tables(self, soup):
+        in_adv = False
+        tags = soup.select('h2 , table')
+        s = bs4.ResultSet(soup)
+        for t in tags:
+            if in_adv and t.name == 'table':
+                s.append(t)
+            elif t.name == 'h2':
+                if in_adv:
+                    return s
+                in_adv = len(t.select('#List_of_advancements'))
+        # return soup.find_all('table', attrs={'data-description': self.data_desc})
+
     def header(self, col: int, text: str):
         if text == 'Advancement':
             self.name_col = col
@@ -292,9 +306,9 @@ class Effect(PageValuesDesc):
         self.types = {}
 
     def header(self, col: int, text: str):
-        if text.find('In-game name') >= 0:
+        if text.find('Name') >= 0:
             self.name_col = col
-        elif text.find('Technical') >= 0:
+        elif text.find('Identifier') >= 0:
             self.value_col = col
         elif text.find('Effect') >= 0:
             self.desc_col = col

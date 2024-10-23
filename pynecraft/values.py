@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2024-06-03T12:50:44-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2024-10-23T13:07:34-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -41,30 +41,30 @@ TEAM_OPTION_GROUP = [
 
 TeamOptionInfo = namedtuple("TeamOption", ['name', 'value', 'desc', 'type'])
 team_options = {
-    "DISPLAY_NAME": TeamOptionInfo("""display Name""", "displayName", """Set the display name of the team.""",
+    "DISPLAY_NAME": TeamOptionInfo("""display Name""", "displayName", """Sets the display name of the team.""",
                                    "JsonDef"),
     "COLOR": TeamOptionInfo("""color""", "color",
-                            """Decide the color of the team and players in chat, above their head, on the Tab menu, and on the sidebar. Also changes the color of the outline of the entities caused by the Glowing effect.""",
+                            """Decides the color of the team and players in chat, above their head, on the Tab menu, and on the sidebar. Also changes the color of the outline of the entities caused by the Glowing effect.""",
                             "JsonDef"),
     "FRIENDLY_FIRE": TeamOptionInfo("""friendly Fire""", "friendlyFire",
-                                    """Enable/Disable players inflicting damage on each other when on the same team. (Note: players can still inflict status effects on each other.) Does not affect some non-player entities in a team.""",
+                                    """Enables/Disables players inflicting damage on each other when on the same team. (Note: players can still inflict status effects on each other.) Does not affect some non-player entities in a team.""",
                                     bool),
     "SEE_FRIENDLY_INVISIBLES": TeamOptionInfo("""see Friendly Invisibles""", "seeFriendlyInvisibles",
-                                              """Decide players can see invisible players on their team as whether semi-transparent or completely invisible.""",
+                                              """Decides whether invisible players is semi-transparent or completely invisible for other players on their team.""",
                                               bool),
     "NAMETAG_VISIBILITY": TeamOptionInfo("""nametag Visibility""", "nametagVisibility",
-                                         """Decide whose name tags above their heads can be seen.""",
+                                         """Decides whose name tags above their heads can be seen.""",
                                          ['never', 'hideForOtherTeams', 'hideForOwnTeam', 'always']),
     "DEATH_MESSAGE_VISIBILITY": TeamOptionInfo("""death Message Visibility""", "deathMessageVisibility",
-                                               """Control the visibility of death messages for players.""",
+                                               """Controls the visibility of death messages for players.""",
                                                ['never', 'hideForOtherTeams', 'hideForOwnTeam', 'always']),
     "COLLISION_RULE": TeamOptionInfo("""collision Rule""", "collisionRule",
-                                     """Controls the way the entities on the team collide with other entities.""",
+                                     """Controls the way entities on the team collide with other entities.""",
                                      ['always', 'never', 'pushOtherTeams', 'pushOwnTeam']),
-    "PREFIX": TeamOptionInfo("""prefix""", "prefix", """Modifies the prefix that displays before players' names.""",
-                             "JsonDef"),
-    "SUFFIX": TeamOptionInfo("""suffix""", "suffix", """Modifies the suffix that displays after players' names.""",
-                             "JsonDef"),
+    "PREFIX": TeamOptionInfo("""prefix""", "prefix",
+                             """Modifies the prefix that displays at the beginning of players' names.""", "JsonDef"),
+    "SUFFIX": TeamOptionInfo("""suffix""", "suffix",
+                             """Modifies the suffix that displays at the end of players' names.""", "JsonDef"),
 }
 
 for __k in tuple(team_options.keys()):
@@ -78,7 +78,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-06-03T12:50:44-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-10-23T13:07:34-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -191,7 +191,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-06-03T12:50:44-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-10-23T13:07:34-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -568,7 +568,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-06-03T12:50:45-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-10-23T14:56:46-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -582,6 +582,7 @@ FOREST = "forest"
 FLOWER_FOREST = "flower_forest"
 BIRCH_FOREST = "birch_forest"
 DARK_FOREST = "dark_forest"
+PALE_GARDEN = "pale_garden"
 OLD_GROWTH_BIRCH_FOREST = "old_growth_birch_forest"
 OLD_GROWTH_PINE_TAIGA = "old_growth_pine_taiga"
 OLD_GROWTH_SPRUCE_TAIGA = "old_growth_spruce_taiga"
@@ -636,14 +637,14 @@ SMALL_END_ISLANDS = "small_end_islands"
 END_BARRENS = "end_barrens"
 BIOME_GROUP = [
     THE_VOID, "plains", SUNFLOWER_PLAINS, SNOWY_PLAINS, ICE_SPIKES, "desert", "swamp", MANGROVE_SWAMP, FOREST,
-    FLOWER_FOREST, BIRCH_FOREST, DARK_FOREST, OLD_GROWTH_BIRCH_FOREST, OLD_GROWTH_PINE_TAIGA, OLD_GROWTH_SPRUCE_TAIGA,
-    "taiga", SNOWY_TAIGA, "savanna", SAVANNA_PLATEAU, WINDSWEPT_HILLS, WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_FOREST,
-    WINDSWEPT_SAVANNA, "jungle", SPARSE_JUNGLE, BAMBOO_JUNGLE, BADLANDS, ERODED_BADLANDS, WOODED_BADLANDS, MEADOW,
-    CHERRY_GROVE, GROVE, SNOWY_SLOPES, FROZEN_PEAKS, JAGGED_PEAKS, STONY_PEAKS, RIVER, FROZEN_RIVER, BEACH, SNOWY_BEACH,
-    STONY_SHORE, WARM_OCEAN, LUKEWARM_OCEAN, DEEP_LUKEWARM_OCEAN, OCEAN, DEEP_OCEAN, COLD_OCEAN, DEEP_COLD_OCEAN,
-    FROZEN_OCEAN, DEEP_FROZEN_OCEAN, MUSHROOM_FIELDS, DRIPSTONE_CAVES, LUSH_CAVES, DEEP_DARK, NETHER_WASTES,
-    WARPED_FOREST, CRIMSON_FOREST, SOUL_SAND_VALLEY, BASALT_DELTAS, "the_end", END_HIGHLANDS, END_MIDLANDS,
-    SMALL_END_ISLANDS, END_BARRENS
+    FLOWER_FOREST, BIRCH_FOREST, DARK_FOREST, PALE_GARDEN, OLD_GROWTH_BIRCH_FOREST, OLD_GROWTH_PINE_TAIGA,
+    OLD_GROWTH_SPRUCE_TAIGA, "taiga", SNOWY_TAIGA, "savanna", SAVANNA_PLATEAU, WINDSWEPT_HILLS,
+    WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_FOREST, WINDSWEPT_SAVANNA, "jungle", SPARSE_JUNGLE, BAMBOO_JUNGLE, BADLANDS,
+    ERODED_BADLANDS, WOODED_BADLANDS, MEADOW, CHERRY_GROVE, GROVE, SNOWY_SLOPES, FROZEN_PEAKS, JAGGED_PEAKS,
+    STONY_PEAKS, RIVER, FROZEN_RIVER, BEACH, SNOWY_BEACH, STONY_SHORE, WARM_OCEAN, LUKEWARM_OCEAN, DEEP_LUKEWARM_OCEAN,
+    OCEAN, DEEP_OCEAN, COLD_OCEAN, DEEP_COLD_OCEAN, FROZEN_OCEAN, DEEP_FROZEN_OCEAN, MUSHROOM_FIELDS, DRIPSTONE_CAVES,
+    LUSH_CAVES, DEEP_DARK, NETHER_WASTES, WARPED_FOREST, CRIMSON_FOREST, SOUL_SAND_VALLEY, BASALT_DELTAS, "the_end",
+    END_HIGHLANDS, END_MIDLANDS, SMALL_END_ISLANDS, END_BARRENS
 ]
 
 BiomeInfo = namedtuple("Biome", ['name', 'value', 'desc'])
@@ -660,6 +661,7 @@ biomes = {
     "FLOWER_FOREST": BiomeInfo("""Flower Forest""", "flower_forest", """Flower Forest."""),
     "BIRCH_FOREST": BiomeInfo("""Birch Forest""", "birch_forest", """Birch Forest."""),
     "DARK_FOREST": BiomeInfo("""Dark Forest""", "dark_forest", """Dark Forest."""),
+    "PALE_GARDEN": BiomeInfo("""Pale Garden""", "pale_garden", """Pale Garden."""),
     "OLD_GROWTH_BIRCH_FOREST": BiomeInfo("""Old Growth Birch Forest""", "old_growth_birch_forest",
                                          """Old Growth Birch Forest."""),
     "OLD_GROWTH_PINE_TAIGA": BiomeInfo("""Old Growth Pine Taiga""", "old_growth_pine_taiga",
@@ -729,7 +731,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-06-03T12:50:46-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-10-23T14:56:47-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -816,7 +818,7 @@ effects = {
     "WATER_BREATHING": EffectInfo("""Water Breathing""", "water_breathing",
                                   """Prevents drowning and lets the affected entity breathe underwater.""", True),
     "INVISIBILITY": EffectInfo("""Invisibility""", "invisibility",
-                               """Grants invisibility, making the affected entity invisible (but not the item they hold or the armor they wear), and reduces other mobs' detection range for the affected entity, higher levels reduce other mobs' detection range more.""",
+                               """Grants Invisibility, making the affected entity invisible (but not the item they hold or the armor they wear), and reduces other mobs' detection range for the affected entity, higher levels reduce other mobs' detection range more.""",
                                True),
     "BLINDNESS": EffectInfo("""Blindness""", "blindness",
                             """Impairs vision by adding close black fog and disables the ability to sprint and critical hit.""",
@@ -841,7 +843,9 @@ effects = {
     "SATURATION": EffectInfo("""Saturation""", "saturation", """Restores hunger and saturation.""", True),
     "GLOWING": EffectInfo("""Glowing""", "glowing",
                           """Outlines the affected entity (the outline can be seen through blocks).""", None),
-    "LEVITATION": EffectInfo("""Levitation""", "levitation", """Floats the affected entity upward.""", False),
+    "LEVITATION": EffectInfo("""Levitation""", "levitation",
+                             """Floats the affected entity upward, higher levels make the affected entity float up faster.""",
+                             False),
     "LUCK": EffectInfo("""Luck""", "luck",
                        """Increases chances of better and more loot, higher levels increase the chances of better and more loot.""",
                        True),
@@ -886,14 +890,13 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-06-03T12:50:46-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-10-23T15:31:39-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
 BLAST_PROTECTION = "blast_protection"
 BREACH = "breach"
 CHANNELING = "channeling"
-CLEAVING = "cleaving"
 CURSE_OF_BINDING = "curse_of_binding"
 CURSE_OF_VANISHING = "curse_of_vanishing"
 DENSITY = "density"
@@ -931,12 +934,13 @@ SWIFT_SNEAK = "swift_sneak"
 THORNS = "thorns"
 UNBREAKING = "unbreaking"
 WIND_BURST = "wind_burst"
+CLEAVING = "cleaving"
 ENCHANTMENT_GROUP = [
-    AQUA_AFFINITY, BANE_OF_ARTHROPODS, BLAST_PROTECTION, BREACH, CHANNELING, CLEAVING, CURSE_OF_BINDING,
-    CURSE_OF_VANISHING, DENSITY, DEPTH_STRIDER, EFFICIENCY, FEATHER_FALLING, FIRE_ASPECT, FIRE_PROTECTION, FLAME,
-    FORTUNE, FROST_WALKER, IMPALING, INFINITY, KNOCKBACK, LOOTING, LOYALTY, LUCK_OF_THE_SEA, LURE, MENDING, MULTISHOT,
-    PIERCING, POWER, PROJECTILE_PROTECTION, PROTECTION, PUNCH, QUICK_CHARGE, RESPIRATION, RIPTIDE, SHARPNESS,
-    SILK_TOUCH, SMITE, SOUL_SPEED, SWEEPING_EDGE, SWIFT_SNEAK, THORNS, UNBREAKING, WIND_BURST
+    AQUA_AFFINITY, BANE_OF_ARTHROPODS, BLAST_PROTECTION, BREACH, CHANNELING, CURSE_OF_BINDING, CURSE_OF_VANISHING,
+    DENSITY, DEPTH_STRIDER, EFFICIENCY, FEATHER_FALLING, FIRE_ASPECT, FIRE_PROTECTION, FLAME, FORTUNE, FROST_WALKER,
+    IMPALING, INFINITY, KNOCKBACK, LOOTING, LOYALTY, LUCK_OF_THE_SEA, LURE, MENDING, MULTISHOT, PIERCING, POWER,
+    PROJECTILE_PROTECTION, PROTECTION, PUNCH, QUICK_CHARGE, RESPIRATION, RIPTIDE, SHARPNESS, SILK_TOUCH, SMITE,
+    SOUL_SPEED, SWEEPING_EDGE, SWIFT_SNEAK, THORNS, UNBREAKING, WIND_BURST, CLEAVING
 ]
 
 EnchantmentInfo = namedtuple("Enchantment", ['name', 'value', 'desc', 'max_level'])
@@ -953,7 +957,6 @@ enchantments = {
     "CHANNELING": EnchantmentInfo("""Channeling""", "channeling",
                                   """During thunderstorms, a thrown trident summons a lightning bolt on the target when hitting it.""",
                                   1),
-    "CLEAVING": EnchantmentInfo("""Cleaving""", "cleaving", """Increases damage and shield stun time.""", 3),
     "CURSE_OF_BINDING": EnchantmentInfo("""Curse of Binding""", "curse_of_binding",
                                         """Items cannot be removed from armor slots.""", 1),
     "CURSE_OF_VANISHING": EnchantmentInfo("""Curse of Vanishing""", "curse_of_vanishing",
@@ -1008,6 +1011,7 @@ enchantments = {
     "WIND_BURST": EnchantmentInfo("""Wind Burst""", "wind_burst",
                                   """Emits a burst of wind (like that of a wind charge) upon executing a mace smash attack on an entity, launching the attacker upward. It can be used to chain smash attacks together, and the strength of the launch increases per level.""",
                                   3),
+    "CLEAVING": EnchantmentInfo("""Cleaving""", "cleaving", """Increases damage and shield stun time.""", 3),
 }
 
 for __k in tuple(enchantments.keys()):
@@ -1021,13 +1025,14 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-06-03T12:50:47-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-10-23T15:31:39-07:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
 COMMAND_BLOCK_OUTPUT = "commandBlockOutput"
 COMMAND_MODIFICATION_BLOCK_LIMIT = "commandModificationBlockLimit"
 DISABLE_ELYTRA_MOVEMENT_CHECK = "disableElytraMovementCheck"
+DISABLE_PLAYER_MOVEMENT_CHECK = "disablePlayerMovementCheck"
 DISABLE_RAIDS = "disableRaids"
 DO_DAYLIGHT_CYCLE = "doDaylightCycle"
 DO_ENTITY_DROPS = "doEntityDrops"
@@ -1056,6 +1061,7 @@ LOG_ADMIN_COMMANDS = "logAdminCommands"
 MAX_COMMAND_CHAIN_LENGTH = "maxCommandChainLength"
 MAX_COMMAND_FORK_COUNT = "maxCommandForkCount"
 MAX_ENTITY_CRAMMING = "maxEntityCramming"
+MINECART_MAX_SPEED = "minecartMaxSpeed"
 MOB_EXPLOSION_DROP_DECAY = "mobExplosionDropDecay"
 MOB_GRIEFING = "mobGriefing"
 NATURAL_REGENERATION = "naturalRegeneration"
@@ -1076,16 +1082,16 @@ UNIVERSAL_ANGER = "universalAnger"
 WATER_SOURCE_CONVERSION = "waterSourceConversion"
 GAME_RULE_GROUP = [
     ANNOUNCE_ADVANCEMENTS, BLOCK_EXPLOSION_DROP_DECAY, COMMAND_BLOCK_OUTPUT, COMMAND_MODIFICATION_BLOCK_LIMIT,
-    DISABLE_ELYTRA_MOVEMENT_CHECK, DISABLE_RAIDS, DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS, DO_FIRE_TICK, DO_INSOMNIA,
-    DO_IMMEDIATE_RESPAWN, DO_LIMITED_CRAFTING, DO_MOB_LOOT, DO_MOB_SPAWNING, DO_PATROL_SPAWNING, DO_TILE_DROPS,
-    DO_TRADER_SPAWNING, DO_VINES_SPREAD, DO_WEATHER_CYCLE, DO_WARDEN_SPAWNING, DROWNING_DAMAGE,
-    ENDER_PEARLS_VANISH_ON_DEATH, FALL_DAMAGE, FIRE_DAMAGE, FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE, GLOBAL_SOUND_EVENTS,
-    KEEP_INVENTORY, LAVA_SOURCE_CONVERSION, LOG_ADMIN_COMMANDS, MAX_COMMAND_CHAIN_LENGTH, MAX_COMMAND_FORK_COUNT,
-    MAX_ENTITY_CRAMMING, MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING, NATURAL_REGENERATION,
-    PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, PLAYERS_SLEEPING_PERCENTAGE,
-    PROJECTILES_CAN_BREAK_BLOCKS, RANDOM_TICK_SPEED, REDUCED_DEBUG_INFO, SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES,
-    SNOW_ACCUMULATION_HEIGHT, SPAWN_CHUNK_RADIUS, SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLOSION_DROP_DECAY,
-    UNIVERSAL_ANGER, WATER_SOURCE_CONVERSION
+    DISABLE_ELYTRA_MOVEMENT_CHECK, DISABLE_PLAYER_MOVEMENT_CHECK, DISABLE_RAIDS, DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS,
+    DO_FIRE_TICK, DO_INSOMNIA, DO_IMMEDIATE_RESPAWN, DO_LIMITED_CRAFTING, DO_MOB_LOOT, DO_MOB_SPAWNING,
+    DO_PATROL_SPAWNING, DO_TILE_DROPS, DO_TRADER_SPAWNING, DO_VINES_SPREAD, DO_WEATHER_CYCLE, DO_WARDEN_SPAWNING,
+    DROWNING_DAMAGE, ENDER_PEARLS_VANISH_ON_DEATH, FALL_DAMAGE, FIRE_DAMAGE, FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE,
+    GLOBAL_SOUND_EVENTS, KEEP_INVENTORY, LAVA_SOURCE_CONVERSION, LOG_ADMIN_COMMANDS, MAX_COMMAND_CHAIN_LENGTH,
+    MAX_COMMAND_FORK_COUNT, MAX_ENTITY_CRAMMING, MINECART_MAX_SPEED, MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING,
+    NATURAL_REGENERATION, PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, PLAYERS_NETHER_PORTAL_DEFAULT_DELAY,
+    PLAYERS_SLEEPING_PERCENTAGE, PROJECTILES_CAN_BREAK_BLOCKS, RANDOM_TICK_SPEED, REDUCED_DEBUG_INFO,
+    SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES, SNOW_ACCUMULATION_HEIGHT, SPAWN_CHUNK_RADIUS, SPAWN_RADIUS,
+    SPECTATORS_GENERATE_CHUNKS, TNT_EXPLOSION_DROP_DECAY, UNIVERSAL_ANGER, WATER_SOURCE_CONVERSION
 ]
 
 GameRuleInfo = namedtuple("GameRule", ['name', 'value', 'desc', 'rule_type'])
@@ -1105,6 +1111,8 @@ game_rules = {
     "DISABLE_ELYTRA_MOVEMENT_CHECK": GameRuleInfo("""disable Elytra Movement Check""", "disableElytraMovementCheck",
                                                   """Whether the server should skip checking player speed when the player is wearing elytra. Often helps with jittering due to lag in multiplayer.""",
                                                   bool),
+    "DISABLE_PLAYER_MOVEMENT_CHECK": GameRuleInfo("""disable Player Movement Check""", "disablePlayerMovementCheck",
+                                                  """Whether the server should skip checking player speed.""", bool),
     "DISABLE_RAIDS": GameRuleInfo("""disable Raids""", "disableRaids", """Whether raids are disabled.""", bool),
     "DO_DAYLIGHT_CYCLE": GameRuleInfo("""do Daylight Cycle""", "doDaylightCycle",
                                       """Whether the daylight cycle and moon phases progress.""", bool),
@@ -1171,6 +1179,8 @@ game_rules = {
     "MAX_ENTITY_CRAMMING": GameRuleInfo("""max Entity Cramming""", "maxEntityCramming",
                                         """The maximum number of pushable entities a mob or player can push, before taking 6 entity cramming damage per half-second. Setting to 0 or lower disables the rule. Damage affects Survival-mode or Adventure-mode players, and all mobs but bats. Pushable entities include non-Spectator-mode players, any mob except bats, as well as boats and minecarts.""",
                                         int),
+    "MINECART_MAX_SPEED": GameRuleInfo("""minecart Max Speed""", "minecartMaxSpeed",
+                                       """The maximum speed a minecart may reach.""", bool),
     "MOB_EXPLOSION_DROP_DECAY": GameRuleInfo("""mob Explosion Drop Decay""", "mobExplosionDropDecay",
                                              """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a mob explosion (e.g. Creeper explosion).""",
                                              bool),
@@ -1237,7 +1247,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-06-03T12:50:47-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-10-23T15:31:40-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1257,26 +1267,26 @@ SCORE_CRITERIA_GROUP = [
 ScoreCriteriaInfo = namedtuple("ScoreCriteria", ['name', 'value', 'desc'])
 score_criteria = {
     "DUMMY": ScoreCriteriaInfo("""dummy""", "dummy",
-                               """Score that can be changed only by commands, and not automatically by the game. This can be used for storing integer states and variables, which then can be used with the scoreboard's operations to do arithmetic calculation."""),
+                               """A score that can be changed only by commands and not automatically by the game. This can be used for storing integer states and variables, which can then be used with the scoreboard's operations to perform arithmetic calculations."""),
     "TRIGGER": ScoreCriteriaInfo("""trigger""", "trigger",
-                                 """Score that can be changed by commands, and not automatically by the game. The /trigger command can be used by players to set or increment and decrement their own score. The command fails if the objective has not been "enabled" for the player using it. If the player uses it, the objective is automatically disabled for them afterward. By default, all trigger objectives are disabled for any players. Ordinary players can use the /trigger command, even if cheats are disabled or if they are not server operators, in which case this is useful for safely taking non-operator player input."""),
+                                 """A score that can be changed by commands and not automatically by the game. The /trigger command allows players to set, increment, or decrement their own score. The command fails if the objective has not been "enabled" for the player using it. After a player uses it, the objective is automatically disabled for them. By default, all trigger objectives are disabled for players. Ordinary players can use the /trigger command, even if cheats are disabled or they are not server operators, making it useful for safely taking input from non-operator players."""),
     "DEATH_COUNT": ScoreCriteriaInfo("""death Count""", "deathCount",
-                                     """Score increments automatically for a player when they die."""),
+                                     """The score increments automatically when a player dies."""),
     "PLAYER_KILL_COUNT": ScoreCriteriaInfo("""player Kill Count""", "playerKillCount",
-                                           """Score increments automatically for a player when they kill another player."""),
+                                           """The score increments automatically when a player kills another player."""),
     "TOTAL_KILL_COUNT": ScoreCriteriaInfo("""total Kill Count""", "totalKillCount",
-                                          """Score increments automatically for a player when they kill another player or a mob."""),
+                                          """The score increments automatically when a player kills another player or a mob."""),
     "HEALTH": ScoreCriteriaInfo("""health""", "health",
-                                """Ranges from 0 to 20 on a normal player; represents the amount of half-hearts the player has. May appear as 0 for players before their health has changed for the first time. Extra hearts and absorption hearts also count to the health score, meaning that with Attributes/Modifiers or the Health Boost or Absorption status effects, health can far surpass 20."""),
+                                """Ranges from 0 to 20 (and greater) for a normal player; represents the amount of half-hearts a player has. It may appear as 0 for players before their health has changed for the first time. The health score can surpass 20 points with extra hearts from attributes, Health Boost or Absorption effects."""),
     "XP": ScoreCriteriaInfo("""xp""", "xp",
-                            """Matches the total amount of experience the player has collected since their last death (or in other words, their score)."""),
+                            """Matches the total amount of experience the player has collected since their last death."""),
     "LEVEL": ScoreCriteriaInfo("""level""", "level", """Matches the current experience level of the player."""),
     "FOOD": ScoreCriteriaInfo("""food""", "food",
-                              """Ranges from 0 to 20; represents the amount of hunger points the player has. May appear as 0 for players before their foodLevel has changed for the first time."""),
+                              """Ranges from 0 to 20; represents the amount of hunger points a player has. It may appear as 0 for players before their food level has changed for the first time."""),
     "AIR": ScoreCriteriaInfo("""air""", "air",
-                             """Ranges from 0 to 300; represents the amount of air the player has left from swimming under water, matches the air nbt tag of the player."""),
+                             """Ranges from 0 to 300; represents the amount of air a player has left while swimming underwater. It matches the air NBT tag of the player."""),
     "ARMOR": ScoreCriteriaInfo("""armor""", "armor",
-                               """Ranges from 0 to 20; represents the amount of armor points the player has. May appear as 0 for players before their armor has changed for the first time."""),
+                               """Ranges from 0 to 20; represents the amount of armor points a player has. It may appear as 0 for players before their armor level has changed for the first time."""),
 }
 
 for __k in tuple(score_criteria.keys()):
@@ -1290,7 +1300,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-06-03T12:50:47-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-10-23T15:31:40-07:00
 __particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
@@ -1348,7 +1358,6 @@ GLOW = "glow"
 GLOW_SQUID_INK = "glow_squid_ink"
 GUST = "gust"
 GUST_EMITTER = "gust_emitter"
-GUST_DUST = "gust_dust"
 HAPPY_VILLAGER = "happy_villager"
 HEART = "heart"
 __particle_dups["infested"] = "infested"
@@ -1410,9 +1419,9 @@ PARTICLE_GROUP = [
     EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION,
     EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, FALLING_DUST, FALLING_HONEY, FALLING_LAVA,
     FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, "flame", FLASH,
-    GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, GUST_DUST, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item",
-    ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA,
-    MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE, SCULK_CHARGE,
+    GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB,
+    ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM,
+    NAUTILUS, NOTE, OMINOUS_SPAWNING, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE, SCULK_CHARGE,
     SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL,
     SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING, "trial_omen",
     TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE,
@@ -1427,13 +1436,13 @@ particles = {
                                    """Produced when hitting villagers or when villagers fail to breed."""),
     "ASH": ParticleInfo("""Ash""", "ash", """Floats throughout the atmosphere in the soul sand valley biome."""),
     "BLOCK": ParticleInfo("""Block""", "block",
-                          """Produced when blocks are broken, flakes off blocks being brushed, produced when iron golems walk, produced when entities fall a long distance, produced when players sprint, displayed when armor stands are broken, appears when sheep eat grass."""),
+                          """Produced when blocks are broken, flakes off blocks being brushed, produced when iron golems walk, produced when entities fall a long distance, produced when players and cats sprint, displayed when armor stands are broken, appears when sheep eat grass."""),
     "BLOCK_MARKER": ParticleInfo("""Block Marker""", "block_marker",
-                                 """Marks the position of barriers and light blocks when they are held in the main hand."""),
+                                 """Marks the position of barriers, structure voids and light blocks when they are held in the main hand."""),
     "BUBBLE": ParticleInfo("""Bubble""", "bubble",
                            """Appears around entities splashing in water, emitted by guardian lasers, produced by guardians moving, appears by the fishing bobber and along the path of a fish, trails behind projectiles and eyes of ender underwater."""),
     "BUBBLE_COLUMN_UP": ParticleInfo("""Bubble Column Up""", "bubble_column_up",
-                                     """Represents upwards bubble columns."""),
+                                     """Represents upward bubble columns."""),
     "BUBBLE_POP": ParticleInfo("""Bubble Pop""", "bubble_pop", """Unused."""),
     "CAMPFIRE_COSY_SMOKE": ParticleInfo("""Campfire Cosy Smoke""", "campfire_cosy_smoke",
                                         """Floats off the top of campfires and soul campfires."""),
@@ -1447,7 +1456,7 @@ particles = {
                                   """Floats throughout the atmosphere in the crimson forest biome."""),
     "CRIT": ParticleInfo("""Crit""", "crit",
                          """Trails behind crossbow shots and fully charged bow shots, produced by evoker fangs, appears when landing a critical hit on an entity."""),
-    "CURRENT_DOWN": ParticleInfo("""Current Down""", "current_down", """Represents downwards bubble columns."""),
+    "CURRENT_DOWN": ParticleInfo("""Current Down""", "current_down", """Represents downward bubble columns."""),
     "DAMAGE_INDICATOR": ParticleInfo("""Damage Indicator""", "damage_indicator",
                                      """Appears when a melee attack damages an entity."""),
     "DOLPHIN": ParticleInfo("""Dolphin""", "dolphin", """Trails behind dolphins."""),
@@ -1516,7 +1525,6 @@ particles = {
     "GUST": ParticleInfo("""Gust""", "gust", """Created when a wind charge hits a block."""),
     "GUST_EMITTER": ParticleInfo("""Gust Emitter""", "gust_emitter",
                                  """Created when a wind charge hits a block. Spawns a number of gust particles."""),
-    "GUST_DUST": ParticleInfo("""Gust Dust""", "gust_dust", """Unknown."""),
     "HAPPY_VILLAGER": ParticleInfo("""Happy Villager""", "happy_villager",
                                    """Shown when using bonemeal on plants, appears when trading with villagers, appears when feeding baby animals or dolphins, emitted by villagers upon claiming a job site block or a bed, shown when bees pollinate crops, appears when turtle eggs are placed on sand, appears when turtle eggs hatch."""),
     "HEART": ParticleInfo("""Heart""", "heart",
@@ -1526,8 +1534,9 @@ particles = {
                                    """Produced when splash potions or lingering potions of Instant Health or Instant Damage break."""),
     "ITEM": ParticleInfo("""Item""", "item",
                          """Produced when tools break, produced when eating food, produced when splash potions or lingering potions break, shown when eyes of ender break."""),
-    "ITEM_COBWEB": ParticleInfo("""Item Cobweb""", "item_cobweb", """Produced by entities with the weaving effect."""),
-    "ITEM_SLIME": ParticleInfo("""Item Slime""", "item_slime", """Shown when slimes jump."""),
+    "ITEM_COBWEB": ParticleInfo("""Item Cobweb""", "item_cobweb", """Produced by entities with the Weaving effect."""),
+    "ITEM_SLIME": ParticleInfo("""Item Slime""", "item_slime",
+                               """Shown when slimes jump and produced by entities with the Oozing effect."""),
     "ITEM_SNOWBALL": ParticleInfo("""Item Snowball""", "item_snowball", """Produced when thrown snowballs break."""),
     "LANDING_HONEY": ParticleInfo("""Landing Honey""", "landing_honey",
                                   """Created when falling_honey particles hit the ground."""),
@@ -1541,7 +1550,7 @@ particles = {
     "MYCELIUM": ParticleInfo("""Mycelium""", "mycelium",
                              """Appears above mycelium, trails behind the wings of phantoms."""),
     "NAUTILUS": ParticleInfo("""Nautilus""", "nautilus",
-                             """Appears and floats toward conduits, appears and floats towards mobs being attacked by a conduit."""),
+                             """Appears and floats toward conduits, appears and floats toward mobs being attacked by a conduit."""),
     "NOTE": ParticleInfo("""Note""", "note", """Produced by jukeboxes, produced by note blocks."""),
     "OMINOUS_SPAWNING": ParticleInfo("""Ominous Spawning""", "ominous_spawning", None),
     "POOF": ParticleInfo("""Poof""", "poof",
@@ -1562,7 +1571,7 @@ particles = {
     "SMALL_FLAME": ParticleInfo("""Small Flame""", "small_flame", """Represents the flame of candles."""),
     "SMALL_GUST": ParticleInfo("""Small Gust""", "small_gust", """Produced by mobs with the Wind Charged effect."""),
     "SMOKE": ParticleInfo("""Smoke""", "smoke",
-                          """Floats off the top of monster spawners, represents the smoke from candles, appears when tnt is primed, floats off the top of wither roses, floats off the top of brewing stands, represents the smoke of torches and soul torches, trails behind ghast fireballs, emitted by withers, trails behind wither skulls, produced when dispensers or droppers fire, trails behind blaze fireballs, emitted by lava and campfires during rain, emitted by furnaces, emitted by blast furnaces, emitted by smokers, produced when placing eyes of ender in an end portal frame, emitted by end portals, produced when redstone torches burn out, floats off the top of food placed on a campfire, shown when campfires and soul campfires are extinguished, shown when failing to tame a mob, trails behind lava particles."""),
+                          """Floats off the top of monster spawners, represents the smoke from candles, appears when TNT is primed, floats off the top of wither roses, floats off the top of brewing stands, represents the smoke of torches and soul torches, trails behind ghast fireballs, emitted by withers, trails behind wither skulls, produced when dispensers or droppers fire, trails behind blaze fireballs, emitted by lava and campfires during rain, emitted by furnaces, emitted by blast furnaces, emitted by smokers, produced when placing eyes of ender in an end portal frame, emitted by end portals, produced when redstone torches burn out, floats off the top of food placed on a campfire, shown when campfires and soul campfires are extinguished, shown when failing to tame a mob, trails behind lava particles."""),
     "SNEEZE": ParticleInfo("""Sneeze""", "sneeze", """Sneezed out by pandas."""),
     "SNOWFLAKE": ParticleInfo("""Snowflake""", "snowflake", """Created by entities in powder snow."""),
     "SONIC_BOOM": ParticleInfo("""Sonic Boom""", "sonic_boom",
@@ -1613,7 +1622,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-06-03T12:50:47-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-10-23T15:31:40-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1677,7 +1686,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-06-03T12:50:47-07:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-10-23T15:31:41-07:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1737,7 +1746,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2024-06-03T12:50:48-07:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2024-10-23T15:31:42-07:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"
@@ -1783,8 +1792,8 @@ DONKEY_KONG = "Kong"
 POINTER = "Pointer"
 PIGSCENE = "Pigscene"
 BURNING_SKULL = "Skull On Fire"
-UNPACKED = "Unpacked"
 ORB = "Orb"
+UNPACKED = "Unpacked"
 EARTH = "Earth"
 WIND = "Wind"
 FIRE = "Fire"
@@ -1793,7 +1802,7 @@ PAINTING_GROUP = [
     KEBAB, AZTEC, ALBAN, AZTEC2, BOMB, PLANT, WASTELAND, MEDITATIVE, WANDERER, GRAHAM, PRAIRIE_RIDE, POOL, COURBET,
     "sunset_dense", SEA, CREEBET, MATCH, BUST, STAGE, VOID, SKULL_AND_ROSES, "Wither", BAROQUE, HUMBLE, BOUQUET,
     CAVEBIRD, COTAN, ENDBOSS, FERN, OWLEMONS, SUNFLOWERS, TIDES, BACKYARD, POND, FIGHTERS, CHANGING, FINDING, LOWMIST,
-    PASSAGE, SKELETON, DONKEY_KONG, POINTER, PIGSCENE, BURNING_SKULL, UNPACKED, ORB, EARTH, WIND, FIRE, WATER
+    PASSAGE, SKELETON, DONKEY_KONG, POINTER, PIGSCENE, BURNING_SKULL, ORB, UNPACKED, EARTH, WIND, FIRE, WATER
 ]
 
 PaintingInfo = namedtuple("Painting", ['name', 'value', 'desc', 'artist', 'size'])
@@ -1801,19 +1810,19 @@ paintings = {
     "KEBAB": PaintingInfo("""kebab""", "Kebab med tre pepperoni", """A kebab with three green chili peppers.""",
                           "Kristoffer Zetterstrand", (1, 1)),
     "AZTEC": PaintingInfo("""aztec""", "de_aztec",
-                          """Free-look perspective of the map de_aztec from the video game series Counter-Strike.""",
+                          """Free-look perspective of the map Aztec from the video game series Counter-Strike.""",
                           "Kristoffer Zetterstrand", (1, 1)),
     "ALBAN": PaintingInfo("""alban""", "Albanian",
                           """A man wearing a fez next to a house and a bush. As the name of the painting suggests, it may be a landscape in Albania.""",
                           "Kristoffer Zetterstrand", (1, 1)),
     "AZTEC2": PaintingInfo("""aztec2""", "de_aztec 2",
-                           """Free-look perspective of the map de_aztec from the video game series Counter-Strike.""",
+                           """Free-look perspective of the map Aztec from the video game series Counter-Strike.""",
                            "Kristoffer Zetterstrand", (1, 1)),
     "BOMB": PaintingInfo("""bomb""", "Target Successfully Bombed",
-                         """The map de_dust2 from the video game series Counter-Strike, named “target successfully bombed” in reference to the video game.""",
+                         """The map Dust II from the video game series Counter-Strike, named “target successfully bombed” in reference to the video game.""",
                          "Kristoffer Zetterstrand", (1, 1)),
     "PLANT": PaintingInfo("""plant""", "Paradisträd",
-                          """Still life of two plants in pots. “Paradisträd” is Swedish for “money tree”, which is a common name for the depicted species in Scandinavia.""",
+                          """Still life of two plants in pots. “Paradisträd” is Swedish for “jade plant”, which is a common name for the depicted species in Scandinavia.""",
                           "Kristoffer Zetterstrand", (1, 1)),
     "WASTELAND": PaintingInfo("""wasteland""", "Wasteland",
                               """A view of some wasteland; a small animal, presumably a rabbit, is sitting on the windowsill.""",
@@ -1859,7 +1868,7 @@ paintings = {
                                     "Kristoffer Zetterstrand", (2, 2)),
     "WITHER": PaintingInfo("""wither""", "Wither",
                            """The creation of the wither. This is the first painting in Minecraft that is not based of a real painting. (See the trivia section for more info.).""",
-                           "Mojang (Jens Bergensten)", (2, 2)),
+                           "Mojang(Jens Bergensten)", (2, 2)),
     "BAROQUE": PaintingInfo("""baroque""", "Baroque",
                             """A decorated pot, a cake, and a sunflower on a dark background, resembling Baroque painting.""",
                             "Sarah Boeving", (2, 2)),
@@ -1880,12 +1889,13 @@ paintings = {
     "FERN": PaintingInfo("""fern""", "Fern", """A potted fern on a desk with a small fire.""",
                          "Kristoffer Zetterstrand", (3, 3)),
     "OWLEMONS": PaintingInfo("""owlemons""", "Owlemons",
-                             """A two-dimensional owl inside a box, next to some lemons. The background is based on Domenico Ghirlandaio's An Old Man and his Grandson.""",
+                             """A two-dimensional owl inside a box, next to some lemons. The background is based on the painting An Old Man and his Grandson by Domenico Ghirlandaio.""",
                              "Kristoffer Zetterstrand", (3, 3)),
     "SUNFLOWERS": PaintingInfo("""sunflowers""", "Sunflowers",
                                """Some potted plants on a table with a two-dimensional sunflower.""",
                                "Kristoffer Zetterstrand", (3, 3)),
-    "TIDES": PaintingInfo("""tides""", "Tides", """A naked person sitting in a fetal position by a shoreline.""",
+    "TIDES": PaintingInfo("""tides""", "Tides",
+                          """A person sitting in a fetal position by a shoreline. The naked person from the original painting has been given clothes.""",
                           "Kristoffer Zetterstrand", (3, 3)),
     "BACKYARD": PaintingInfo("""backyard""", "Backyard",
                              """A brick archway with two women sitting in the yard. The scenery is based on the painting The Courtyard of a House in Delft by Pieter de Hooch.""",
@@ -1894,7 +1904,7 @@ paintings = {
                          """A maiden sitting in a pond, next to a half-submerged skeleton. Death and the Maiden was a common motif in Renaissance art, ultimately derived from the Medieval genre Dance of Death.""",
                          "Kristoffer Zetterstrand", (3, 4)),
     "FIGHTERS": PaintingInfo("""fighters""", "Fighters",
-                             """Two men poised to fight. Paper versions of fighters from the video game International Karate +.""",
+                             """Two men poised to fight. The fighters are from the video game The Way of the Exploding Fist.""",
                              "Kristoffer Zetterstrand", (4, 2)),
     "CHANGING": PaintingInfo("""changing""", "Changing",
                              """A person changing clothes in front of some set pieces, including a contrasting gloomy mountain and a sunny countryside.""",
@@ -1914,7 +1924,7 @@ paintings = {
                                 """A paper-looking screenshot of the level 100m from the arcade video game Donkey Kong.""",
                                 "Kristoffer Zetterstrand", (4, 3)),
     "POINTER": PaintingInfo("""pointer""", "Pointer",
-                            """The main character of the video game International Karate + in a fighting stance touching a large hand. It could also be interpreted as a play on Michelangelo’s famous painting The Creation of Adam.""",
+                            """The main character of the video game International Karate + in a fighting stance touching a large hand. It could also be interpreted as a play on Michelangelo’s famous painting The Creation of Adam. The hand is the artist’s own. The scenery is based on the painting Winter Landscape with Church by Caspar David Friedrich.""",
                             "Kristoffer Zetterstrand", (4, 4)),
     "PIGSCENE": PaintingInfo("""pigscene""", "Pigscene",
                              """A girl pointing to a pig on a canvas. In the original painting, the canvas shows red, green and blue blocks, representing the three colors of the RGB color model that is typically used by computer displays. This painting is based on the painting The Artist’s Studio by Jacob van Oost.""",
@@ -1922,20 +1932,20 @@ paintings = {
     "BURNING_SKULL": PaintingInfo("""burning_skull""", "Skull On Fire",
                                   """A skull on fire; in the background, there is a moon in a clear night sky. This painting is based on a Minecraft screenshot,.""",
                                   "Kristoffer Zetterstrand", (4, 4)),
-    "UNPACKED": PaintingInfo("""unpacked""", "Unpacked",
-                             """A Minecraft landscape, showing a cliff with a waterfall and a pig floating in water. This painting is based on pack.png.""",
-                             "Sarah Boeving", (4, 4)),
     "ORB": PaintingInfo("""orb""", "Orb",
                         """An orb of light in the middle of an Italian landscape at night. This painting is based on the painting St. Francis in Ecstasy by Giovanni Bellini.""",
                         "Kristoffer Zetterstrand", (4, 4)),
+    "UNPACKED": PaintingInfo("""unpacked""", "Unpacked",
+                             """A Minecraft landscape, showing a cliff with a waterfall and a pig floating in water. This painting is based on pack.png.""",
+                             "Sarah Boeving", (4, 4)),
     "EARTH": PaintingInfo("""earth""", "Earth", """One of the four classical elements: Earth.""",
-                          "Mojang (Unknown Artist)", (2, 2)),
-    "WIND": PaintingInfo("""wind""", "Wind", """One of the four classical elements: Air.""", "Mojang (Unknown Artist)",
+                          "Mojang(Unknown Artist)", (2, 2)),
+    "WIND": PaintingInfo("""wind""", "Wind", """One of the four classical elements: Air.""", "Mojang(Unknown Artist)",
                          (2, 2)),
-    "FIRE": PaintingInfo("""fire""", "Fire", """One of the four classical elements: Fire.""", "Mojang (Unknown Artist)",
+    "FIRE": PaintingInfo("""fire""", "Fire", """One of the four classical elements: Fire.""", "Mojang(Unknown Artist)",
                          (2, 2)),
     "WATER": PaintingInfo("""water""", "Water", """One of the four classical elements: Water.""",
-                          "Mojang (Unknown Artist)", (2, 2)),
+                          "Mojang(Unknown Artist)", (2, 2)),
 }
 
 for __k in tuple(paintings.keys()):

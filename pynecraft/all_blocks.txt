@@ -138,6 +138,7 @@ Brown Stained Glass
 Brown Stained Glass Pane
 Brown Terracotta
 Brown Wool
+Bubble Column
 Bubble Coral
 Bubble Coral Block
 Bubble Coral Fan
@@ -183,6 +184,7 @@ Chiseled Red Sandstone
 Chiseled Sandstone
 Chiseled Stone Bricks
 Chiseled Tuff
+Chiseled Tuff Bricks
 Chorus Flower
 Chorus Plant (block) / Chorus Plant
 Clay
@@ -322,6 +324,8 @@ Dripstone Block
 Dropper
 Emerald Ore
 Enchanting Table
+End Gateway
+End Portal
 End Portal Frame
 End Rod
 End Stone
@@ -350,6 +354,7 @@ Flower Pot
 Flowering Azalea
 Flowering Azalea Leaves
 Frogspawn
+Frosted Ice
 Furnace
 Gilded Blackstone
 Glass
@@ -538,6 +543,7 @@ Nether Brick Stairs
 Nether Brick Wall
 Nether Bricks
 Nether Gold Ore
+Nether Portal
 Nether Quartz Ore
 Nether Sprouts
 Nether Wart
@@ -576,7 +582,12 @@ Orange Terracotta
 Orange Tulip
 Orange Wool
 Oxeye Daisy
+Oxidized Chiseled Copper
 Oxidized Copper
+Oxidized Copper Bulb
+Oxidized Copper Door
+Oxidized Copper Grate
+Oxidized Copper Trapdoor
 Oxidized Cut Copper
 Oxidized Cut Copper Slab
 Oxidized Cut Copper Stairs
@@ -629,6 +640,10 @@ Polished Diorite Stairs
 Polished Granite
 Polished Granite Slab
 Polished Granite Stairs
+Polished Tuff
+Polished Tuff Slab
+Polished Tuff Stairs
+Polished Tuff Wall
 Poppy
 Potatoes
 Powder Snow
@@ -813,6 +828,13 @@ Tube Coral
 Tube Coral Block
 Tube Coral Fan
 Tuff
+Tuff Brick Slab
+Tuff Brick Stairs
+Tuff Brick Wall
+Tuff Bricks
+Tuff Slab
+Tuff Stairs
+Tuff Wall
 Turtle Egg
 Twisting Vines
 Vault
@@ -837,22 +859,47 @@ Warped Trapdoor
 Warped Wart Block
 Water
 Waxed Block of Copper / Waxed Copper Block
+Waxed Chiseled Copper
+Waxed Copper Bulb
+Waxed Copper Door
+Waxed Copper Grate
+Waxed Copper Trapdoor
 Waxed Cut Copper
 Waxed Cut Copper Slab
 Waxed Cut Copper Stairs
+Waxed Exposed Chiseled Copper
 Waxed Exposed Copper
+Waxed Exposed Copper Bulb
+Waxed Exposed Copper Door
+Waxed Exposed Copper Grate
+Waxed Exposed Copper Trapdoor
 Waxed Exposed Cut Copper
 Waxed Exposed Cut Copper Slab
 Waxed Exposed Cut Copper Stairs
+Waxed Oxidized Chiseled Copper
 Waxed Oxidized Copper
+Waxed Oxidized Copper Bulb
+Waxed Oxidized Copper Door
+Waxed Oxidized Copper Grate
+Waxed Oxidized Copper Trapdoor
 Waxed Oxidized Cut Copper
 Waxed Oxidized Cut Copper Slab
 Waxed Oxidized Cut Copper Stairs
+Waxed Weathered Chiseled Copper
 Waxed Weathered Copper
+Waxed Weathered Copper Bulb
+Waxed Weathered Copper Door
+Waxed Weathered Copper Grate
+Waxed Weathered Copper Trapdoor
 Waxed Weathered Cut Copper
 Waxed Weathered Cut Copper Slab
 Waxed Weathered Cut Copper Stairs
+Weathered Chiseled Copper
 Weathered Copper
+Weathered Copper Bulb
+Weathered Copper Door
+Weathered Copper Grate
+Weathered Copper Trapdoor
 Weathered Cut Copper
 Weathered Cut Copper Slab
 Weathered Cut Copper Stairs

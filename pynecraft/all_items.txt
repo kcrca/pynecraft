@@ -1,8 +1,10 @@
 Acacia Boat
 Acacia Boat with Chest / Acacia Chest Boat
+Agent Spawn Egg
 Allay Spawn Egg
 Amethyst Shard
 Angler Pottery Sherd
+Antidote
 Apple
 Archer Pottery Sherd
 Armadillo Scute
@@ -21,18 +23,25 @@ Beetroot Seeds
 Beetroot Soup
 Birch Boat
 Birch Boat with Chest / Birch Chest Boat
+Black Balloon
 Black Dye
 Blade Pottery Sherd
 Blaze Powder
 Blaze Rod
 Blaze Spawn Egg
+Bleach
+Blue Balloon
 Blue Dye
+Blue Glow Stick
+Blue Sparkler
+Board
 Bogged Spawn Egg
 Bolt Armor Trim / Bolt Armor Trim Smithing Template
 Bone
 Bone Meal
 Book
 Book and Quill / Writable Book
+Bordure Indented Banner Pattern
 Bottle o' Enchanting / Experience Bottle
 Bow
 Bowl
@@ -41,7 +50,9 @@ Breeze Rod
 Breeze Spawn Egg
 Brewer Pottery Sherd
 Brick
+Brown Balloon
 Brown Dye
+Brown Glow Stick
 Brush
 Bucket
 Bucket of Axolotl / Axolotl Bucket
@@ -53,6 +64,7 @@ Bucket of Tropical Fish / Tropical Fish Bucket
 Bundle
 Burn Pottery Sherd
 Camel Spawn Egg
+Camera
 Carrot
 Carrot on a Stick
 Cat Spawn Egg
@@ -62,6 +74,7 @@ Chainmail Chestplate
 Chainmail Helmet
 Chainmail Leggings
 Charcoal
+Charcoal
 Cherry Boat
 Cherry Boat with Chest / Cherry Chest Boat
 Chicken Spawn Egg
@@ -69,10 +82,12 @@ Chorus Fruit
 Clay Ball
 Clock
 Coal
+Coal
 Coast Armor Trim / Coast Armor Trim Smithing Template
 Cocoa Beans
 Cod Spawn Egg
 Compass
+Compounds
 Cooked Chicken
 Cooked Cod
 Cooked Mutton
@@ -82,10 +97,12 @@ Cooked Salmon
 Cookie
 Copper Ingot
 Cow Spawn Egg
-Creeper / Creeper Banner Pattern
+Creeper Charge Banner Pattern
 Creeper Spawn Egg
 Crossbow
+Cyan Balloon
 Cyan Dye
+Cyan Glow Stick
 Danger Pottery Sherd
 Dark Oak Boat
 Dark Oak Boat with Chest / Dark Oak Chest Boat
@@ -111,6 +128,7 @@ Dune Armor Trim / Dune Armor Trim Smithing Template
 Echo Shard
 Egg
 Elder Guardian Spawn Egg
+Elixir
 Elytra
 Emerald
 Empty Map / Map
@@ -124,19 +142,21 @@ Endermite Spawn Egg
 Evoker Spawn Egg
 Explorer Pottery Sherd
 Eye Armor Trim / Eye Armor Trim Smithing Template
+Eye Drops
 Eye of Ender / Ender Eye
 Feather
 Fermented Spider Eye
+Field Masoned Banner Pattern
 Fire Charge
 Firework Rocket
 Firework Star
 Fishing Rod
 Flint
 Flint and Steel
-Flow / Flow Banner Pattern
 Flow Armor Trim / Flow Armor Trim Smithing Template
+Flow Banner Pattern
 Flow Pottery Sherd
-Flower / Flower Banner Pattern
+Flower Charge Banner Pattern
 Fox Spawn Egg
 Friend Pottery Sherd
 Frog Spawn Egg
@@ -144,7 +164,7 @@ Ghast Spawn Egg
 Ghast Tear
 Glass Bottle
 Glistering Melon Slice
-Globe / Globe Banner Pattern
+Globe Banner Pattern
 Glow Berries
 Glow Ink Sac
 Glow Item Frame
@@ -166,11 +186,16 @@ Golden Leggings
 Golden Pickaxe
 Golden Shovel
 Golden Sword
+Gray Balloon
 Gray Dye
+Gray Glow Stick
+Green Balloon
 Green Dye
+Green Glow Stick
+Green Sparkler
 Guardian Spawn Egg
 Gunpowder
-Guster / Guster Banner Pattern
+Guster Banner Pattern
 Guster Pottery Sherd
 Heart Pottery Sherd
 Heart of the Sea
@@ -182,7 +207,7 @@ Horse Spawn Egg
 Host Armor Trim / Host Armor Trim Smithing Template
 Howl Pottery Sherd
 Husk Spawn Egg
-Ink Sac
+Ice Bomb
 Ink Sac
 Iron Axe
 Iron Boots
@@ -191,7 +216,6 @@ Iron Golem Spawn Egg
 Iron Helmet
 Iron Hoe
 Iron Horse Armor
-Iron Ingot
 Iron Ingot
 Iron Leggings
 Iron Nugget
@@ -212,13 +236,19 @@ Leather Cap / Leather Helmet
 Leather Horse Armor
 Leather Pants / Leather Leggings
 Leather Tunic / Leather Chestplate
+Light Blue Balloon
 Light Blue Dye
+Light Blue Glow Stick
 Light Gray Dye
+Lime Balloon
 Lime Dye
+Lime Glow Stick
 Lingering Potion
 Llama Spawn Egg
 Mace
+Magenta Balloon
 Magenta Dye
+Magenta Glow Stick
 Magma Cream
 Magma Cube Spawn Egg
 Mangrove Boat
@@ -279,23 +309,31 @@ Oak Boat with Chest / Oak Chest Boat
 Ocelot Spawn Egg
 Ominous Bottle
 Ominous Trial Key
+Orange Balloon
 Orange Dye
+Orange Glow Stick
+Orange Sparkler
 Painting
 Panda Spawn Egg
 Paper
 Parrot Spawn Egg
 Phantom Membrane
 Phantom Spawn Egg
+Photo
 Pig Spawn Egg
 Piglin Brute Spawn Egg
 Piglin Spawn Egg
 Pillager Spawn Egg
+Pink Balloon
 Pink Dye
+Pink Glow Stick
 Pitcher Pod
 Plenty Pottery Sherd
 Poisonous Potato
 Polar Bear Spawn Egg
 Popped Chorus Fruit
+Portfolio
+Poster
 Potato
 Powder Snow Bucket
 Prismarine Crystals
@@ -305,7 +343,10 @@ Pufferfish
 Pufferfish Spawn Egg
 Pumpkin Pie
 Pumpkin Seeds
+Purple Balloon
 Purple Dye
+Purple Glow Stick
+Purple Sparkler
 Rabbit Hide
 Rabbit Spawn Egg
 Rabbit Stew
@@ -323,14 +364,16 @@ Raw Porkchop / Porkchop
 Raw Rabbit / Rabbit
 Raw Salmon / Salmon
 Recovery Compass
+Red Balloon
 Red Dye
+Red Glow Stick
+Red Sparkler
 Redstone Dust / Redstone
 Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
 Salmon Spawn Egg
 Scrape Pottery Sherd
-Scute / Turtle Scute
 Sentry Armor Trim / Sentry Armor Trim Smithing Template
 Shaper Armor Trim / Shaper Armor Trim Smithing Template
 Sheaf Pottery Sherd
@@ -341,18 +384,22 @@ Shield
 Shulker Shell
 Shulker Spawn Egg
 Silence Armor Trim / Silence Armor Trim Smithing Template
+Silver Balloon
 Silverfish Spawn Egg
 Skeleton Horse Spawn Egg
 Skeleton Spawn Egg
-Skull / Skull Banner Pattern
+Skull Charge Banner Pattern
 Skull Pottery Sherd
+Slate
 Slime Spawn Egg
 Slimeball / Slime Ball
 Sniffer Spawn Egg
 Snort Pottery Sherd
-Snout / Piglin Banner Pattern
+Snout Armor Trim / Snout Armor Trim Smithing Template
+Snout Banner Pattern
 Snow Golem Spawn Egg
 Snowball
+Spawn NPC
 Spectral Arrow
 Spider Eye
 Spider Spawn Egg
@@ -373,12 +420,14 @@ Stray Spawn Egg
 Strider Spawn Egg
 String
 Sugar
+Super Fertilizer
 Suspicious Stew
 Sweet Berries
 Tadpole Spawn Egg
-Thing / Mojang Banner Pattern
+Thing Banner Pattern
 Tide Armor Trim / Tide Armor Trim Smithing Template
 Tipped Arrow
+Tonic
 Torchflower Seeds
 Totem of Undying
 Trader Llama Spawn Egg
@@ -386,6 +435,7 @@ Trial Key
 Trident
 Tropical Fish
 Tropical Fish Spawn Egg
+Turtle Scute
 Turtle Shell / Turtle Helmet
 Turtle Spawn Egg
 Vex Armor Trim / Vex Armor Trim Smithing Template
@@ -400,7 +450,9 @@ Water Bucket
 Wayfinder Armor Trim / Wayfinder Armor Trim Smithing Template
 Wheat
 Wheat Seeds
+White Balloon
 White Dye
+White Glow Stick
 Wild Armor Trim / Wild Armor Trim Smithing Template
 Wind Charge
 Witch Spawn Egg
@@ -414,7 +466,9 @@ Wooden Pickaxe
 Wooden Shovel
 Wooden Sword
 Written Book
+Yellow Balloon
 Yellow Dye
+Yellow Glow Stick
 Zoglin Spawn Egg
 Zombie Horse Spawn Egg
 Zombie Spawn Egg

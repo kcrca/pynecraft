@@ -4,6 +4,7 @@ Axolotl
 Bat
 Bee
 Blaze
+Bogged
 Breeze
 Camel
 Cat
