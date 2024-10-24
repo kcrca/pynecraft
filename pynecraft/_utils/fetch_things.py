@@ -85,7 +85,7 @@ class BlockFetcher(Fetcher):
         return elem.name == 'h2' or 'Technical blocks' in elem.text
 
     def get_id(self, raw_id, raw_desc):
-        if 'Ominous' in raw_id or 'Torchflower Crop' in raw_id or 'Pitcher Crop' in raw_id:
+        if raw_id.find('Ominous|Torchflower Crop|Pitcher Crop|Bubble Column|Gateway'):
             # This is not really a block at all.
             return None, None
 
@@ -170,6 +170,10 @@ class ItemFetcher(Fetcher):
             m = re.fullmatch(r'Banner Pattern \(([^ ]+)( .*)?.*\)', desc)
             id = f'{m.group(1)} Banner Pattern'.replace('Snout', 'Piglin').replace('Thing', 'Mojang')
             desc = m.group(1)
+        elif 'Charge Banner Pattern' in id:
+            id = id.replace(' Charge', '')
+        elif 'Banner Pattern' in id:
+            id = id.replace('Snout', 'Piglin').replace('Thing', 'Mojang')
         elif ' Trim' in id:
             id = id.replace(' Trim', ' Trim Smithing Template')
         elif 'Netherite Upgrade' in id:

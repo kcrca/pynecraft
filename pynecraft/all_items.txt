@@ -85,7 +85,7 @@ Cooked Salmon
 Cookie
 Copper Ingot
 Cow Spawn Egg
-Creeper Charge Banner Pattern
+Creeper Charge Banner Pattern / Creeper Banner Pattern
 Creeper Spawn Egg
 Crossbow
 Cyan Dye
@@ -140,7 +140,7 @@ Flint and Steel
 Flow Armor Trim / Flow Armor Trim Smithing Template
 Flow Banner Pattern
 Flow Pottery Sherd
-Flower Charge Banner Pattern
+Flower Charge Banner Pattern / Flower Banner Pattern
 Fox Spawn Egg
 Friend Pottery Sherd
 Frog Spawn Egg
@@ -345,14 +345,14 @@ Silence Armor Trim / Silence Armor Trim Smithing Template
 Silverfish Spawn Egg
 Skeleton Horse Spawn Egg
 Skeleton Spawn Egg
-Skull Charge Banner Pattern
+Skull Charge Banner Pattern / Skull Banner Pattern
 Skull Pottery Sherd
 Slime Spawn Egg
 Slimeball / Slime Ball
 Sniffer Spawn Egg
 Snort Pottery Sherd
 Snout Armor Trim / Snout Armor Trim Smithing Template
-Snout Banner Pattern
+Snout Banner Pattern / Piglin Banner Pattern
 Snow Golem Spawn Egg
 Snowball
 Spectral Arrow
@@ -378,7 +378,7 @@ Sugar
 Suspicious Stew
 Sweet Berries
 Tadpole Spawn Egg
-Thing Banner Pattern
+Thing Banner Pattern / Mojang Banner Pattern
 Tide Armor Trim / Tide Armor Trim Smithing Template
 Tipped Arrow
 Torchflower Seeds
