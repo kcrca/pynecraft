@@ -59,15 +59,17 @@ VILLAGER_BIOMES = (DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, TAIGA)
 
 class Sign(Block):
     """A class that represents a sign. This class is a standing sign, the WallSign subclass is for wall signs."""
-
+    default_wood = 'oak'
+    """If not specified in the constructor, this is the default wood for the sign."""
     waxed = False
     """Whether signs are waxed by default."""
 
-    def __init__(self, text: SignMessages = (), /, commands: SignCommands = (), wood='oak', state: Mapping = None,
+    def __init__(self, text: SignMessages = (), /, commands: SignCommands = (), wood=None, state: Mapping = None,
                  nbt: NbtDef = None, hanging=False, front=None):
         """
         Creates a sign object. The text, commands, and front are passed to messages().
         """
+        wood = wood if wood else Sign.default_wood
         self.hanging = hanging
         wood = to_id(wood)
         super().__init__(self._kind_name(wood), state=state, nbt=nbt)
@@ -342,7 +344,7 @@ class Display(Entity):
         self.merge_nbt({'transformation': {'scale': list(value)}})
         return self
 
-    def transform(self, transform: Transform)->Display:
+    def transform(self, transform: Transform) -> Display:
         self.merge_nbt({'transformation': transform.nbt()})
         return self
 
