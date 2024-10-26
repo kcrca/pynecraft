@@ -2223,6 +2223,24 @@ class _TeleportMod(Command):
         return str(self)
 
 
+class _RotateMod(Command):
+    @_fluent
+    def facing(self, location: Position = None) -> str | _RotateToMod:
+        self._add('facing')
+        if location is not None:
+            self._add( *as_position(location))
+            return str(self)
+        return self._start(_RotateToMod())
+
+
+class _RotateToMod(Command):
+    @_fluent
+    def entity(self, target: Target, anchor: StrOrArg = None) -> str:
+        self._add('entity', as_target(target))
+        self._add_opt(_in_group(ENTITY_ANCHOR, anchor))
+        return str(self)
+
+
 class _TimeMod(Command):
     @_fluent
     def add(self, amount: DurationDef) -> str:
@@ -2859,6 +2877,15 @@ def ride(target: Target) -> _RideMod:
     cmd = Command()
     cmd._add('$ride', as_single(target))
     return cmd._start(_RideMod())
+
+
+def rotate(target: Target, rotation: tuple[FloatOrArg | RelCoord, FloatOrArg | RelCoord] = None) -> str | _RotateMod:
+    cmd = Command()
+    cmd._add('$rotate', as_single(target))
+    if rotation is not None:
+        cmd._add(*rotation)
+        return str(cmd)
+    return cmd._start(_RotateMod())
 
 
 def say(msg: StrOrArg, *msgs: StrOrArg) -> str:

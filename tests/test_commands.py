@@ -1457,6 +1457,14 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$random reset $(s) $(v) $(w) $(i)', random().reset(Arg('s'), Arg('v'), Arg('w'), Arg('i')))
         self.assertEqual('$random reset s$(k) $(v) $(w) $(i)', random().reset('s$(k)', Arg('v'), Arg('w'), Arg('i')))
 
+    def test_rotate(self):
+        self.assertEqual('rotate @s 15 17', rotate(s(), (15, 17)))
+        self.assertEqual('rotate @s 15 ~17', rotate(s(), (15, r(17))))
+        self.assertEqual('rotate @s ~15 ~17', rotate(s(), (r(15, 17))))
+        self.assertEqual('rotate @s facing 1 ~2 ^3', rotate(s()).facing((1, r(2), d(3))))
+        self.assertEqual('rotate @s facing entity @e[tag=foo]', rotate(s()).facing().entity(e().tag('foo')))
+        self.assertEqual('rotate @s facing entity @e[tag=foo] eyes', rotate(s()).facing().entity(e().tag('foo'), EYES))
+
     def test_selector_macros(self):
         self.assertEqual('@a[advancements={$(c)=$(b)}]', str(a().advancements(
             AdvancementCriteria(Arg('c'), Arg('b')))))
