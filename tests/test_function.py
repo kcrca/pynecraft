@@ -321,7 +321,7 @@ class TestFunctions(unittest.TestCase):
         blocks['air'] = {'values': ['air', 'cave_air']}
         blocks['stoneish'] = ['stone', 'slate']
         pack.save(self.tmp_path)
-        tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'tags' / 'blocks'
+        tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'tags' / 'block'
         self.assertTrue(tags_dir.exists())
         with open(tags_dir / 'air.json') as fp:
             written_air= json.load(fp)
