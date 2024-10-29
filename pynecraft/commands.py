@@ -2868,7 +2868,8 @@ def return_(value: int = None) -> _ReturnMod | str:
     cmd._add('$return')
     if value is None:
         return cmd._start(_ReturnMod())
-    cmd._add(value)
+    # False is an int, apparently, so we force it to be an actual int
+    cmd._add(int(value))
     return str(cmd)
 
 
