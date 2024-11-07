@@ -215,6 +215,7 @@ Cracked Polished Blackstone Bricks
 Cracked Stone Bricks
 Crafter
 Crafting Table
+Creaking Heart
 Creeper Head
 Crimson Button
 Crimson Door
@@ -588,6 +589,20 @@ Oxidized Cut Copper Slab
 Oxidized Cut Copper Stairs
 Packed Ice
 Packed Mud
+Pale Hanging Moss
+Pale Moss Block
+Pale Moss Carpet
+Pale Oak Button
+Pale Oak Door
+Pale Oak Fence
+Pale Oak Fence Gate
+Pale Oak Hanging Sign
+Pale Oak Leaves
+Pale Oak Log
+Pale Oak Planks
+Pale Oak Sign
+Pale Oak Stairs
+Pale Oak Trapdoor
 Pearlescent Froglight
 Peony
 Petrified Oak Slab

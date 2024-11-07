@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2024-10-23T13:07:34-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2024-11-07T13:09:53-08:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -78,7 +78,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2024-10-23T13:07:34-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2024-11-07T13:09:53-08:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -191,7 +191,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-10-23T13:07:34-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2024-11-07T13:09:53-08:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -568,7 +568,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2024-10-23T14:56:46-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2024-11-07T13:09:53-08:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -731,7 +731,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-10-23T14:56:47-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2024-11-07T13:09:54-08:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -890,7 +890,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-10-23T15:31:39-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2024-11-07T13:09:54-08:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -1006,7 +1006,9 @@ enchantments = {
                                   """Increases movement speed on soul sand and soul soil.""", 3),
     "SWEEPING_EDGE": EnchantmentInfo("""Sweeping Edge""", "sweeping_edge", """Increases sweeping attack damage.""", 3),
     "SWIFT_SNEAK": EnchantmentInfo("""Swift Sneak""", "swift_sneak", """Increases sneaking speed.""", 3),
-    "THORNS": EnchantmentInfo("""Thorns""", "thorns", """Taking damage causes the attacker to also take damage.""", 3),
+    "THORNS": EnchantmentInfo("""Thorns""", "thorns",
+                              """If a mob wearing armor with that enchantment takes damage, the attacker will also take damage.""",
+                              3),
     "UNBREAKING": EnchantmentInfo("""Unbreaking""", "unbreaking", """Reduces durability damage.""", 3),
     "WIND_BURST": EnchantmentInfo("""Wind Burst""", "wind_burst",
                                   """Emits a burst of wind (like that of a wind charge) upon executing a mace smash attack on an entity, launching the attacker upward. It can be used to chain smash attacks together, and the strength of the launch increases per level.""",
@@ -1025,7 +1027,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-10-23T15:31:39-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2024-11-07T13:09:54-08:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -1247,7 +1249,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-10-23T15:31:40-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2024-11-07T13:09:55-08:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1300,7 +1302,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-10-23T15:31:40-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2024-11-07T13:09:55-08:00
 __particle_dups = {}
 AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
@@ -1375,6 +1377,7 @@ MYCELIUM = "mycelium"
 NAUTILUS = "nautilus"
 NOTE = "note"
 OMINOUS_SPAWNING = "ominous_spawning"
+PALE_OAK_LEAVES = "pale_oak_leaves"
 POOF = "poof"
 PORTAL = "portal"
 __particle_dups["raid_omen"] = "raid_omen"
@@ -1421,9 +1424,9 @@ PARTICLE_GROUP = [
     FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, "flame", FLASH,
     GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB,
     ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM,
-    NAUTILUS, NOTE, OMINOUS_SPAWNING, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE, SCULK_CHARGE,
-    SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL,
-    SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING, "trial_omen",
+    NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE,
+    SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM,
+    SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING, "trial_omen",
     TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE,
     "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
 ]
@@ -1553,6 +1556,8 @@ particles = {
                              """Appears and floats toward conduits, appears and floats toward mobs being attacked by a conduit."""),
     "NOTE": ParticleInfo("""Note""", "note", """Produced by jukeboxes, produced by note blocks."""),
     "OMINOUS_SPAWNING": ParticleInfo("""Ominous Spawning""", "ominous_spawning", None),
+    "PALE_OAK_LEAVES": ParticleInfo("""Pale Oak Leaves""", "pale_oak_leaves",
+                                    """Dropped from pale oak leaves in pale garden biomes."""),
     "POOF": ParticleInfo("""Poof""", "poof",
                          """Appears when mobs die, shown when ravagers roar after being stunned, produced when silverfish enter stone, appear around mobs spawned by spawners, shown when zombies trample turtle eggs, created when fireworks crafted without stars expire."""),
     "PORTAL": ParticleInfo("""Portal""", "portal",
@@ -1622,33 +1627,33 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-10-23T15:31:40-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2024-11-07T13:09:55-08:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
 FLOW_POTTERY_SHERD = "flow_pottery_sherd"
-BLADE_POTTERY_SHERD = "blade_pottery_sherd"
+SKULL_POTTERY_SHERD = "skull_pottery_sherd"
+ARMS_UP_POTTERY_SHERD = "arms_up_pottery_sherd"
 BREWER_POTTERY_SHERD = "brewer_pottery_sherd"
+ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
+SHELTER_POTTERY_SHERD = "shelter_pottery_sherd"
+SNORT_POTTERY_SHERD = "snort_pottery_sherd"
+BLADE_POTTERY_SHERD = "blade_pottery_sherd"
+EXPLORER_POTTERY_SHERD = "explorer_pottery_sherd"
+MOURNER_POTTERY_SHERD = "mourner_pottery_sherd"
+PLENTY_POTTERY_SHERD = "plenty_pottery_sherd"
 BURN_POTTERY_SHERD = "burn_pottery_sherd"
 DANGER_POTTERY_SHERD = "danger_pottery_sherd"
-EXPLORER_POTTERY_SHERD = "explorer_pottery_sherd"
 FRIEND_POTTERY_SHERD = "friend_pottery_sherd"
 HEART_POTTERY_SHERD = "heart_pottery_sherd"
 HEARTBREAK_POTTERY_SHERD = "heartbreak_pottery_sherd"
 HOWL_POTTERY_SHERD = "howl_pottery_sherd"
-MINER_POTTERY_SHERD = "miner_pottery_sherd"
-MOURNER_POTTERY_SHERD = "mourner_pottery_sherd"
-PLENTY_POTTERY_SHERD = "plenty_pottery_sherd"
-PRIZE_POTTERY_SHERD = "prize_pottery_sherd"
 SHEAF_POTTERY_SHERD = "sheaf_pottery_sherd"
-SHELTER_POTTERY_SHERD = "shelter_pottery_sherd"
-SKULL_POTTERY_SHERD = "skull_pottery_sherd"
-SNORT_POTTERY_SHERD = "snort_pottery_sherd"
 POTTERY_SHERD_GROUP = [
-    SCRAPE_POTTERY_SHERD, GUSTER_POTTERY_SHERD, FLOW_POTTERY_SHERD, BLADE_POTTERY_SHERD, BREWER_POTTERY_SHERD,
-    BURN_POTTERY_SHERD, DANGER_POTTERY_SHERD, EXPLORER_POTTERY_SHERD, FRIEND_POTTERY_SHERD, HEART_POTTERY_SHERD,
-    HEARTBREAK_POTTERY_SHERD, HOWL_POTTERY_SHERD, MINER_POTTERY_SHERD, MOURNER_POTTERY_SHERD, PLENTY_POTTERY_SHERD,
-    PRIZE_POTTERY_SHERD, SHEAF_POTTERY_SHERD, SHELTER_POTTERY_SHERD, SKULL_POTTERY_SHERD, SNORT_POTTERY_SHERD
+    SCRAPE_POTTERY_SHERD, GUSTER_POTTERY_SHERD, FLOW_POTTERY_SHERD, SKULL_POTTERY_SHERD, ARMS_UP_POTTERY_SHERD,
+    BREWER_POTTERY_SHERD, ANGLER_POTTERY_SHERD, SHELTER_POTTERY_SHERD, SNORT_POTTERY_SHERD, BLADE_POTTERY_SHERD,
+    EXPLORER_POTTERY_SHERD, MOURNER_POTTERY_SHERD, PLENTY_POTTERY_SHERD, BURN_POTTERY_SHERD, DANGER_POTTERY_SHERD,
+    FRIEND_POTTERY_SHERD, HEART_POTTERY_SHERD, HEARTBREAK_POTTERY_SHERD, HOWL_POTTERY_SHERD, SHEAF_POTTERY_SHERD
 ]
 
 PotterySherdInfo = namedtuple("PotterySherd", ['name', 'value', 'desc'])
@@ -1656,23 +1661,23 @@ pottery_sherds = {
     "SCRAPE_POTTERY_SHERD": PotterySherdInfo("""Scrape Pottery Sherd""", "scrape_pottery_sherd", None),
     "GUSTER_POTTERY_SHERD": PotterySherdInfo("""Guster Pottery Sherd""", "guster_pottery_sherd", None),
     "FLOW_POTTERY_SHERD": PotterySherdInfo("""Flow Pottery Sherd""", "flow_pottery_sherd", None),
-    "BLADE_POTTERY_SHERD": PotterySherdInfo("""Blade Pottery Sherd""", "blade_pottery_sherd", None),
+    "SKULL_POTTERY_SHERD": PotterySherdInfo("""Skull Pottery Sherd""", "skull_pottery_sherd", None),
+    "ARMS_UP_POTTERY_SHERD": PotterySherdInfo("""Arms Up Pottery Sherd""", "arms_up_pottery_sherd", None),
     "BREWER_POTTERY_SHERD": PotterySherdInfo("""Brewer Pottery Sherd""", "brewer_pottery_sherd", None),
+    "ANGLER_POTTERY_SHERD": PotterySherdInfo("""Angler Pottery Sherd""", "angler_pottery_sherd", None),
+    "SHELTER_POTTERY_SHERD": PotterySherdInfo("""Shelter Pottery Sherd""", "shelter_pottery_sherd", None),
+    "SNORT_POTTERY_SHERD": PotterySherdInfo("""Snort Pottery Sherd""", "snort_pottery_sherd", None),
+    "BLADE_POTTERY_SHERD": PotterySherdInfo("""Blade Pottery Sherd""", "blade_pottery_sherd", None),
+    "EXPLORER_POTTERY_SHERD": PotterySherdInfo("""Explorer Pottery Sherd""", "explorer_pottery_sherd", None),
+    "MOURNER_POTTERY_SHERD": PotterySherdInfo("""Mourner Pottery Sherd""", "mourner_pottery_sherd", None),
+    "PLENTY_POTTERY_SHERD": PotterySherdInfo("""Plenty Pottery Sherd""", "plenty_pottery_sherd", None),
     "BURN_POTTERY_SHERD": PotterySherdInfo("""Burn Pottery Sherd""", "burn_pottery_sherd", None),
     "DANGER_POTTERY_SHERD": PotterySherdInfo("""Danger Pottery Sherd""", "danger_pottery_sherd", None),
-    "EXPLORER_POTTERY_SHERD": PotterySherdInfo("""Explorer Pottery Sherd""", "explorer_pottery_sherd", None),
     "FRIEND_POTTERY_SHERD": PotterySherdInfo("""Friend Pottery Sherd""", "friend_pottery_sherd", None),
     "HEART_POTTERY_SHERD": PotterySherdInfo("""Heart Pottery Sherd""", "heart_pottery_sherd", None),
     "HEARTBREAK_POTTERY_SHERD": PotterySherdInfo("""Heartbreak Pottery Sherd""", "heartbreak_pottery_sherd", None),
     "HOWL_POTTERY_SHERD": PotterySherdInfo("""Howl Pottery Sherd""", "howl_pottery_sherd", None),
-    "MINER_POTTERY_SHERD": PotterySherdInfo("""Miner Pottery Sherd""", "miner_pottery_sherd", None),
-    "MOURNER_POTTERY_SHERD": PotterySherdInfo("""Mourner Pottery Sherd""", "mourner_pottery_sherd", None),
-    "PLENTY_POTTERY_SHERD": PotterySherdInfo("""Plenty Pottery Sherd""", "plenty_pottery_sherd", None),
-    "PRIZE_POTTERY_SHERD": PotterySherdInfo("""Prize Pottery Sherd""", "prize_pottery_sherd", None),
     "SHEAF_POTTERY_SHERD": PotterySherdInfo("""Sheaf Pottery Sherd""", "sheaf_pottery_sherd", None),
-    "SHELTER_POTTERY_SHERD": PotterySherdInfo("""Shelter Pottery Sherd""", "shelter_pottery_sherd", None),
-    "SKULL_POTTERY_SHERD": PotterySherdInfo("""Skull Pottery Sherd""", "skull_pottery_sherd", None),
-    "SNORT_POTTERY_SHERD": PotterySherdInfo("""Snort Pottery Sherd""", "snort_pottery_sherd", None),
 }
 
 for __k in tuple(pottery_sherds.keys()):
@@ -1686,7 +1691,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-10-23T15:31:41-07:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2024-11-07T13:09:55-08:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1746,7 +1751,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2024-10-23T15:31:42-07:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2024-11-07T13:09:56-08:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"

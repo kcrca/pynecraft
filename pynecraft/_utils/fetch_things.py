@@ -94,12 +94,10 @@ class BlockFetcher(Fetcher):
 
         # this appears once randomly, and it shouldn't
         if ' (block)' in raw_id:
-            raw_id = re.sub(' \(block\)', '', raw_id)
+            raw_id = re.sub(r' \(block\)', '', raw_id)
         id = raw_id
         desc = strip_spaces(raw_desc)  # Discard the zero-width non-joiners
         if 'upcoming' in id:
-            if not re.search(r'\bJ\.*E\.*', id):
-                return None, None
             id = re.sub(r'\s*\[*upcoming.*', '', id)
             desc = re.sub(r'\s*\[*upcoming.*', '', desc)
             # desc = re.sub(r'\s*\[*upcoming.*', ' [x]', desc)
