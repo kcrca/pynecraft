@@ -201,8 +201,7 @@ def is_float_arg(v: any) -> bool:
 
 
 def de_float_arg(v: any) -> any:
-    """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
-    that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
+    """If the value is an Arg, return the str of that arg, otherwise return the arg (which is presumably a number)."""
     if is_float_arg(v) and not isinstance(v, float):
         return str(v)
     return v
@@ -216,6 +215,30 @@ def check_float_arg(v: any) -> None:
     else:
         if not is_float_arg(v):
             raise ValueError(f'{v}: Not a float or valid macro argument')
+    return v
+
+
+def is_nbt_arg(v: any) -> bool:
+    """Returns True if the value can be used where an NBT is needed; that is, either a dict, NBT, an Arg object, or a string
+    that contains a macro expansion that can be used as an NBT."""
+    return isinstance(v, dict) or isinstance(v, Arg)
+
+
+def de_nbt_arg(v: any) -> any:
+    """If the value is an Arg, return the str of that arg, otherwise return the arg (which is presumably an NBT)."""
+    if is_nbt_arg(v) and not isinstance(v, dict):
+        return str(v)
+    return v
+
+
+def check_nbt_arg(v: any) -> None:
+    """Validates that ``is_nbt_arg(v)`` returns True, or if v is a sequence, applies this test recursively."""
+    if not isinstance(v, str) and isinstance(v, Sequence):
+        for x in v:
+            check_nbt_arg(x)
+    else:
+        if not is_nbt_arg(v):
+            raise ValueError(f'{v}: Not a Nbt or valid macro argument')
     return v
 
 
@@ -1373,10 +1396,14 @@ class Transform:
             roll = math.radians(facing.rotation[1])
             pitch = math.radians(-facing.rotation[0])
             yaw = 0
-            x = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-            y = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
-            z = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
-            w = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+            x = np.sin(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) - np.cos(roll / 2) * np.sin(pitch / 2) * np.sin(
+                yaw / 2)
+            y = np.cos(roll / 2) * np.sin(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.cos(pitch / 2) * np.sin(
+                yaw / 2)
+            z = np.cos(roll / 2) * np.cos(pitch / 2) * np.sin(yaw / 2) - np.sin(roll / 2) * np.sin(pitch / 2) * np.cos(
+                yaw / 2)
+            w = np.cos(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.sin(pitch / 2) * np.sin(
+                yaw / 2)
             return (x, y, z, w)
 
     def __init__(self, transform: Matrix | Quaternion):
@@ -1412,7 +1439,7 @@ IntOrArg = Union[int, Arg, str]
 FloatOrArg = Union[int, float, Arg, str]
 StrOrArg = Union[str, Arg]
 
-NbtDef = Union[Nbt, Mapping]
+NbtDef = Union[Nbt, Mapping | StrOrArg]
 FacingDef = Union[int, str, Facing]
 DurationDef = Union[StrOrArg, FloatOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
