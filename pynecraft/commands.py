@@ -33,8 +33,7 @@ from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN
     Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
     _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
     as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
-    as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, de_nbt_arg, is_arg, is_int_arg, to_id, \
-    to_name, \
+    as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, is_arg, is_int_arg, to_id, to_name, \
     FacingDef, Facing, \
     Arg, \
     StrOrArg, IntOrArg, \
@@ -119,8 +118,6 @@ def as_data_single(target: DataTarget | None) -> DataTargetBase | None:
 def _as_data_target(target: DataTarget | None, validater: Callable) -> DataTargetBase | None:
     if target is None:
         return None
-    if is_arg(target):
-        return target
     if isinstance(target, DataTargetBase):
         return target
     if isinstance(target, (tuple, list)):
@@ -1529,10 +1526,8 @@ class _End(Command):
 
 class _DataSource(Command):
     @_fluent
-    def from_(self, data_target: DataTarget, nbt_path: StrOrArg = None) -> str:
-        self._add('from', data_single_str(data_target))
-        if nbt_path:
-            as_nbt_path(nbt_path)
+    def from_(self, data_target: DataTarget, nbt_path: StrOrArg) -> str:
+        self._add('from', data_single_str(data_target), as_nbt_path(nbt_path))
         return str(self)
 
     @_fluent
@@ -1605,26 +1600,14 @@ class _DataMod(Command):
         return str(self)
 
     @_fluent
-    def modify(self, data_target: DataTarget, nbt_path: StrOrArg = None) -> _DataModifyClause:
-        self._add('modify')
-        self._add_data_target(data_target, nbt_path)
+    def modify(self, data_target: DataTarget, nbt_path: StrOrArg) -> _DataModifyClause:
+        self._add('modify', data_single_str(data_target), as_nbt_path(nbt_path))
         return self._start(_DataModifyClause())
 
     @_fluent
-    def remove(self, data_target: DataTarget, nbt_path: StrOrArg = None) -> str:
-        self._add('remove')
-        self._add_data_target(data_target, nbt_path)
+    def remove(self, data_target: DataTarget, nbt_path: StrOrArg) -> str:
+        self._add('remove', data_single_str(data_target), as_nbt_path(nbt_path))
         return str(self)
-
-    def _add_data_target(self, data_target: DataTarget, nbt_path: StrOrArg | None) -> None:
-        if isinstance(data_target, str):
-            path = data_target
-            if nbt_path:
-                path += '.' + path
-            as_nbt_path(path)  # used to check validity of overall path
-            self._add('storage', data_target, nbt_path if nbt_path else "''")
-        else:
-            self._add(data_single_str(data_target), as_nbt_path(nbt_path))
 
 
 class _RandomMod(Command):
@@ -2245,7 +2228,7 @@ class _RotateMod(Command):
     def facing(self, location: Position = None) -> str | _RotateToMod:
         self._add('facing')
         if location is not None:
-            self._add(*as_position(location))
+            self._add( *as_position(location))
             return str(self)
         return self._start(_RotateToMod())
 
@@ -2880,8 +2863,7 @@ def reload() -> str:
 
 
 def return_(value: int = None) -> _ReturnMod | str:
-    """Returns from a function (stop executing it) with a given result. If nont provided, 0 is returned unless you
-    use the return value's follow-on functions."""
+    """Returns from a function (stop executing it) with a given result. If non provided, 0 is returned."""
     cmd = Command()
     cmd._add('$return')
     if value is None:
@@ -3006,22 +2988,16 @@ def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) ->
     """Summons an entity."""
     to_summon = as_entity(to_summon)
     cmd = Command()
-    cmd._add('$summon')
-    if isinstance(to_summon, (str, Arg)):
-        cmd._add(de_arg(to_summon))
-    else:
-        cmd._add(to_summon.id)
+    cmd._add('$summon', to_summon.id)
     cmd._add_opt_pos(pos)
-    if nbt is not None:
-        e_nbt = de_nbt_arg(nbt)
-        if isinstance(e_nbt, Nbt):
-            tags = e_nbt['Tags'] if 'Tags' in e_nbt else ()
-            e_nbt = e_nbt.merge(nbt)
-            # Merge tags
-            if 'Tags' in e_nbt:
-                e_nbt['Tags'] = list(set(e_nbt['Tags']) | set(tags))
-        if len(e_nbt) > 0:
-            cmd._add_opt(e_nbt)
+    e_nbt = Nbt(to_summon.nbt) if to_summon.nbt else Nbt()
+    tags = e_nbt['Tags'] if 'Tags' in e_nbt else ()
+    e_nbt = e_nbt.merge(nbt)
+    # Merge tags
+    if 'Tags' in e_nbt:
+        e_nbt['Tags'] = list(set(e_nbt['Tags']) | set(tags))
+    if len(e_nbt) > 0:
+        cmd._add_opt(e_nbt)
     return str(cmd)
 
 
