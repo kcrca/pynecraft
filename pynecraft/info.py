@@ -407,7 +407,7 @@ tropical_fish = {
 """The data for the predefined naturally-occurring tropical fish."""
 
 trim_materials = sorted((
-    'emerald', 'redstone', 'lapis', 'amethyst', 'quartz', 'netherite', 'diamond', 'gold', 'iron', 'copper'))
+    'emerald', 'redstone', 'lapis', 'amethyst', 'quartz', 'netherite', 'diamond', 'gold', 'iron', 'copper', 'resin'))
 
 trim_patterns = sorted((
     'bolt', 'coast', 'dune', 'eye', 'flow', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire',
