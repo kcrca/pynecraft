@@ -1254,7 +1254,7 @@ def _in_group(group: list | tuple, name: StrOrArg | int | None, allow_none=True)
 def rotate_facing(facing: FacingDef, rotated_by: int) -> Facing:
     """Returns the value of turn(rotated_by) invoked on facing, or on as_facing(facing).
 
-    For example ``rotated_Facing(NORTH, ROTATION_90)`` is ``EAST``. This allows your code to use relative operations,
+    For example ``rotated_facing(NORTH, ROTATION_90)`` is ``EAST``. This allows your code to use relative operations,
     such as placing a sign to the right of an entity, no matter which way it is facing."""
     return as_facing(facing).turn(rotated_by)
 
