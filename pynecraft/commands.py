@@ -1324,6 +1324,11 @@ class _AttributeBaseAct(Command):
         self._add('set', value)
         return str(self)
 
+    @_fluent
+    def reset(self) -> str:
+        self._add('reset')
+        return str(self)
+
 
 class _AttributeModifierAct(Command):
     @_fluent
@@ -2228,7 +2233,7 @@ class _RotateMod(Command):
     def facing(self, location: Position = None) -> str | _RotateToMod:
         self._add('facing')
         if location is not None:
-            self._add( *as_position(location))
+            self._add(*as_position(location))
             return str(self)
         return self._start(_RotateToMod())
 
