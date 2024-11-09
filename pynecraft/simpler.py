@@ -162,9 +162,12 @@ class Sign(Block):
 
     @classmethod
     def change(cls, pos: Position, messages: SignMessages = None, commands: SignCommands = None,
-               front=None, start=0) -> Commands:
+               front=None, start=0, min_len: int = None) -> Commands:
         messages = messages if messages else (None, None, None, None)
         commands = commands if commands else (None, None, None, None)
+        if min_len is not None:
+            messages += (min_len - len(messages)) * ('',)
+            commands += (min_len - len(commands)) * (None,)
         cmds = []
         for f in ('front', 'back'):
             if f == 'front' and front is False:

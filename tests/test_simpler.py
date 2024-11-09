@@ -115,6 +115,18 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual([
             """data merge block ~0 ~0 ~0 {back_text: {messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}, front_text: {messages: ['{"text": "one"}', '{"text": "two"}', '{"text": "three"}', '{"text": "four"}']}}"""],
             Sign.change(r(0, 0, 0), ("one", "two", "three", "four"), front=None))
+        self.assertEqual([
+            """data modify block 0 0 0 front_text.messages[2] set value '{"text": "three"}'""",
+            """data modify block 0 0 0 front_text.messages[3] set value '{"text": "four"}'""",
+            """data modify block 0 0 0 back_text.messages[2] set value '{"text": "three"}'""",
+            """data modify block 0 0 0 back_text.messages[3] set value '{"text": "four"}'"""],
+            Sign.change((0, 0, 0), ("three", "four"), start=2))
+        self.assertEqual([
+            """data modify block 0 0 0 front_text.messages[2] set value '{"text": "three"}'""",
+            """data modify block 0 0 0 front_text.messages[3] set value '{"text": ""}'""",
+            """data modify block 0 0 0 back_text.messages[2] set value '{"text": "three"}'""",
+            """data modify block 0 0 0 back_text.messages[3] set value '{"text": ""}'"""],
+            Sign.change((0, 0, 0), ("three", ), start=2, min_len=2))
 
     def test_sign(self):
         self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'hi'}, {'text': ''}, {'text': ''}]},
