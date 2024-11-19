@@ -627,33 +627,35 @@ class DataPack:
         a list (or tuple), it is replaced with {'values': *tag_value*}, so you don't have to remember that. So saying
         ``tags(BLOCKS)['hard'] = ['stone', 'slate']`` is the same as saying  ``tags(BLOCKS)['hard'] = { 'values': [
         'stone', 'slate']}``. And it's easier.
+
+        The tag_set cannot be None because all tags are in a tag set.
         """
         return self._get_json('tags', TAG_SETS, tag_set)
 
-    def advancement(self, advancement_set: str) -> dict[str, dict]:
-        """Returns defined advancements. You can add to this dict to add to the datapack. Keys that end in '/' define
-        directories. Keys underneath them (which do not end in '/') define files, whose contents are the JSON defined
-        by the dict such keys map to."""
-        return self._get_json('advancement', ADVANCEMENT_SETS, advancement_set)
+    def advancement(self, subdir: str = None) -> dict[str, dict]:
+        """Returns the defined advancements. You can add to this dict to add to the datapack. Keys that end in '/'
+        define directories. Keys underneath them (which do not end in '/') define files, whose contents are the JSON
+        defined by the dict such keys map to."""
+        return self._get_json('advancement', ADVANCEMENT_SETS, subdir)
 
-    def dimensions(self, dimension: str) -> dict[str, dict]:
-        """Returns the defined dimensions. You can add to this dict to add to the datapack. """
-        return self._get_json('dimension', None, dimension)
+    def dimensions(self, subdir: str = None) -> dict[str, dict]:
+        """Returns the defined dimensions. You can add to this dict to add to the datapack. Analogous to advancement()."""
+        return self._get_json('dimension', None, subdir)
 
-    def dimension_types(self, dimension_type: str) -> dict[str, dict]:
-        """Returns defined dimension_types. You can add to this dict to add to the datapack. """
-        return self._get_json('dimension_type', None, dimension_type)
+    def dimension_types(self, subdir: str = None) -> dict[str, dict]:
+        """Returns defined dimension_types. You can add to this dict to add to the datapack. Analogous to advancement()."""
+        return self._get_json('dimension_type', None, subdir)
 
-    def item_modifier(self, loot_table: str) -> dict[str, dict]:
-        """Returns defined item_modifiers. You can add to this dict to add to the datapack. """
-        return self._get_json('item_modifier', None, loot_table)
+    def item_modifier(self, subdir: str = None) -> dict[str, dict]:
+        """Returns defined item_modifiers. You can add to this dict to add to the datapack. Analogous to advancement()."""
+        return self._get_json('item_modifier', None, subdir)
 
-    def loot_table(self, loot_table: str) -> dict[str, dict]:
-        """Returns defined loot_tables. You can add to this dict to add to the datapack. """
-        return self._get_json('loot_table', None, loot_table)
+    def loot_table(self, subdir: str = None) -> dict[str, dict]:
+        """Returns defined loot_tables. You can add to this dict to add to the datapack. Analogous to advancement()."""
+        return self._get_json('loot_table', None, subdir)
 
     def predicate(self) -> dict[str, dict]:
-        """Returns defined predicates. You can add to this dict to add to the datapack. """
+        """Returns defined predicates. You can add to this dict to add to the datapack."""
         return self.json_directory('predicate')
 
     def recipe(self) -> dict[str, dict]:
@@ -672,18 +674,18 @@ class DataPack:
         """Returns an arbitrary directory at the top level of the data pack's JSON directory."""
         return self._get_json(name)
 
-    def _get_json(self, directory, valid=None, which=None) -> dict:
+    def _get_json(self, directory, valid=None, subdir=None) -> dict:
         if valid:
-            _in_group(valid, which)
+            _in_group(valid, subdir)
         if not directory.endswith('/'):
             directory += '/'
-        if not which.endswith('/'):
-            which += '/'
+        if subdir and not subdir.endswith('/'):
+            subdir += '/'
         if directory not in self._json:
             self._json[directory] = {}
-        if valid is None:
+        if subdir is None:
             return self._json[directory]
-        return self._json[directory].setdefault(which, {})
+        return self._json[directory].setdefault(subdir, {})
 
 
 class FunctionSet:
