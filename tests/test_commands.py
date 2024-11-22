@@ -232,12 +232,14 @@ class TestCommands(unittest.TestCase):
             self.assertEqual([{'text': 'hi', 'bold': 'true', 'italic': 'true'}, {'text': ' there', 'bold': 'true'},
                               {'text': ' friend'}], JsonText.html_text('<b><i>hi</i> there</b> friend'))
             self.assertEqual({"translate": "m.id", "with": ["t1", "t2"]}, JsonText.translate('m.id', 't1', 't2'))
+            self.assertEqual({"translate": "m.id", "with": ["t1"], "fallback": "t2"},
+                             JsonText.translate('m.id', 't1', fallback='t2'))
             self.assertEqual({"score": {"name": "sc", "objective": "obj"}}, JsonText.score(Score('sc', 'obj')))
-            self.assertEqual({"score": {"name": "sc", "objective": "obj", "value": 17}},
-                             JsonText.score(('sc', 'obj'), 17))
-            self.assertEqual({"selector": "@a"}, JsonText.entity(a()))
+            self.assertEqual({"score": {"name": "sc", "objective": "obj"}},
+                             JsonText.score(('sc', 'obj')))
+            self.assertEqual({"selector": "@a"}, JsonText.selector(a()))
             self.assertEqual({"selector": "@a", "separator": {"color": "red", "text": "_"}},
-                             JsonText.entity(a(), RED, '_'))
+                             JsonText.selector(a(), RED, '_'))
             self.assertEqual({"keybind": "b.id"}, JsonText.keybind('b.id'))
             self.assertEqual({"nbt": "m:a/b", "entity": "@a", "source": "entity"}, JsonText.nbt(a(), 'm:a/b'))
             self.assertEqual(
@@ -302,10 +304,9 @@ class TestCommands(unittest.TestCase):
             self.assertEqual({"translate": "$(t)", "with": ["$(s)"]}, JsonText.translate(Arg('t'), Arg('s')))
             self.assertEqual({"translate": "$(t)", "with": ["$(s)", "$(v)"]},
                              JsonText.translate(Arg('t'), Arg('s'), Arg('v')))
-            self.assertEqual({"score": {"name": "$(p)", "objective": "$(o)", "value": "$(v)"}},
-                             JsonText.score((Arg('p'), Arg('o')), Arg('v')))
+            self.assertEqual({"score": {"name": "$(p)", "objective": "$(o)"}}, JsonText.score((Arg('p'), Arg('o'))))
             self.assertEqual({"selector": "$(s)", "separator": {"color": "$(c)", "text": "$(t)"}},
-                             JsonText.entity(Arg('s'), Arg('c'), Arg('t')))
+                             JsonText.selector(Arg('s'), Arg('c'), Arg('t')))
             self.assertEqual({"keybind": "$(s)"}, JsonText.keybind(Arg('s')))
             self.assertEqual({"nbt": "$(p)", "entity": "@p", "source": "entity"}, JsonText.nbt(p(), Arg('p')))
             self.assertEqual(

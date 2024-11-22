@@ -3672,28 +3672,28 @@ class JsonText(UserDict, JsonHolder):
         return parser.json()
 
     @classmethod
-    def translate(cls, translation_id: StrOrArg, *texts: StrOrArg) -> JsonText:
+    def translate(cls, translation_id: StrOrArg, *texts: StrOrArg, fallback: StrOrArg = None) -> JsonText:
         """Returns a JSON text translation node."""
         if not isinstance(texts, list):
             texts = list(texts)
         else:
             texts = texts[:]
-        return cls({'translate': de_arg(translation_id), 'with': de_arg(texts)})
+        elem = {'translate': de_arg(translation_id), 'with': de_arg(texts)}
+        if fallback:
+            elem['fallback'] = de_arg(fallback)
+        return cls(elem)
 
     @classmethod
-    def score(cls, score: ScoreName, value=None) -> JsonText:
+    def score(cls, score: ScoreName) -> JsonText:
         """Returns a JSON text score node. Cannot use macro for the entire score, though you can for the components."""
         score = as_score(score)
-        jt = cls({'score': {'name': str(score.target), 'objective': de_arg(score.objective)}})
-        if value:
-            jt['score']['value'] = de_arg(value)
-        return jt
+        return cls({'score': {'name': str(score.target), 'objective': de_arg(score.objective)}})
 
     @classmethod
-    def entity(cls, selector: Selector | StrOrArg, sep_color: StrOrArg = None, sep_text: StrOrArg = None) -> JsonText:
-        """Returns a JSON text entity node."""
+    def selector(cls, target: Target | StrOrArg, sep_color: StrOrArg = None, sep_text: StrOrArg = None) -> JsonText:
+        """Returns a JSON text selector node."""
         jt = cls()
-        jt['selector'] = str(selector)
+        jt['selector'] = str(as_target(target))
         if sep_color:
             jt.setdefault('separator', {}).update({'color': _in_group(COLORS, de_arg(sep_color))})
         if sep_text is not None:
