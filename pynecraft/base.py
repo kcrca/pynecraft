@@ -880,6 +880,9 @@ class RelCoord:
         else:
             return RelCoord(self.prefix, v)
 
+    def __round__(self, n=None):
+        return round(self.value, n)
+
     def __str__(self):
         return self._rep
 
