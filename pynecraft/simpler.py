@@ -162,12 +162,21 @@ class Sign(Block):
 
     @classmethod
     def change(cls, pos: Position, messages: SignMessages = None, commands: SignCommands = None,
-               front=None, start=0, min_len: int = None) -> Commands:
-        messages = messages if messages else (None, None, None, None)
-        commands = commands if commands else (None, None, None, None)
+               front=None, start=0, blanks=False, min_len: int = None) -> Commands:
+        empty_msg = ('',) if blanks else (None,)
+        if not messages:
+            messages = empty_msg * (4 - start)
+        commands = commands if commands else (None,) * (4 - start)
         if min_len is not None:
             messages += (min_len - len(messages)) * ('',)
             commands += (min_len - len(commands)) * (None,)
+        if start > 0 and blanks:
+            messages = start * empty_msg + messages
+            commands = start * (None,) + commands
+        if len(messages) > 4:
+            raise ValueError(f'More than 4 messages: {messages}')
+        if len(commands) > 4:
+            raise ValueError(f'More than 4 commands: {commands}')
         cmds = []
         for f in ('front', 'back'):
             if f == 'front' and front is False:
@@ -183,7 +192,7 @@ class Sign(Block):
                 cmds.append(
                     data().modify(pos, f'{face}.messages[{i + start}]').set().value(str(cls.line_nbt(msg, cmd))))
                 added += 1
-            if added == 4 and start == 0:
+            if added == 4:
                 # If everything is being changed, this is much more efficient
                 change_all = (cls.lines_nbt(messages, commands))
                 to_merge = Nbt()

@@ -126,7 +126,18 @@ class TestSimpler(unittest.TestCase):
             """data modify block 0 0 0 front_text.messages[3] set value '{"text": ""}'""",
             """data modify block 0 0 0 back_text.messages[2] set value '{"text": "three"}'""",
             """data modify block 0 0 0 back_text.messages[3] set value '{"text": ""}'"""],
-            Sign.change((0, 0, 0), ("three", ), start=2, min_len=2))
+            Sign.change((0, 0, 0), ("three",), start=2, min_len=2))
+        self.assertEqual([
+            """data modify block 0 0 0 front_text.messages[2] set value '{"text": ""}'""",
+            """data modify block 0 0 0 front_text.messages[3] set value '{"text": ""}'""",
+            """data modify block 0 0 0 front_text.messages[4] set value '{"text": "one"}'""",
+            """data modify block 0 0 0 back_text.messages[2] set value '{"text": ""}'""",
+            """data modify block 0 0 0 back_text.messages[3] set value '{"text": ""}'""",
+            """data modify block 0 0 0 back_text.messages[4] set value '{"text": "one"}'"""],
+            Sign.change((0, 0, 0), ('one',), start=2, blanks=True))
+        self.assertEqual([
+            """data merge block 0 0 0 {back_text: {messages: ['{"text": ""}', '{"text": ""}', '{"text": "one"}', '{"text": "two"}']}, front_text: {messages: ['{"text": ""}', '{"text": ""}', '{"text": "one"}', '{"text": "two"}']}}"""],
+            Sign.change((0, 0, 0), ('one', 'two'), start=2, blanks=True))
 
     def test_sign(self):
         self.assertEqual({'front_text': {'messages': [{'text': ''}, {'text': 'hi'}, {'text': ''}, {'text': ''}]},
@@ -475,7 +486,7 @@ class TestSimpler(unittest.TestCase):
                                              'scale': [1.0, 1.0, 1.0], 'translation': [0.0, 0.0, 0.0]}},
                          TextDisplay(JsonText.html_text('<i>foo</i>')).nbt)
         self.assertEqual(
-            'text_display{text: "$(f)", transformation: {left_rotation: [0, 0, 0, 1], right_rotation: [0, 0, 0, 1], scale: [1, 1, 1], translation: [0, 0, 0]}}',
+            'text_display{text: $(f), transformation: {left_rotation: [0, 0, 0, 1], right_rotation: [0, 0, 0, 1], scale: [1, 1, 1], translation: [0, 0, 0]}}',
             str(TextDisplay(Arg('f'))))
 
     def test_item(self):

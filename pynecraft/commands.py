@@ -10,7 +10,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, \
-    as_teamoption, enchantments, game_rules, team_options
+    as_teamoption, \
+    enchantments, game_rules, team_options
 
 if TYPE_CHECKING:
     pass
@@ -504,6 +505,14 @@ ADD_VALUE = 'add_value'
 ADD_MULTIPLIED_BASE = 'add_multiplied_base'
 ADD_MULTIPLIED_TOTAL = 'add_multiplied_total'
 ATTRIBUTE_MODIFIER_ACTION_GROUP = [ADD_VALUE, ADD_MULTIPLIED_BASE, ADD_MULTIPLIED_TOTAL]
+
+INFINITE = 'infinite'
+
+BLOCK = 'block'
+BLOCK_MARKER = 'block_marker'
+DUST_PILLAR = 'dust_pillar'
+FALLING_DUST = 'falling_dust'
+BLOCK_PARTICE_TYPES = [BLOCK, BLOCK_MARKER, DUST_PILLAR, FALLING_DUST]
 
 GIVE = 'give'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -1694,22 +1703,22 @@ class _DebugMod(Command):
 
 class _EffectAction(Command):
     @_fluent
-    def give(self, target: Target, effect: StrOrArg, duration: IntOrArg = None,
+    def give(self, target: Target, effect: StrOrArg, seconds: IntOrArg = None,
              amplifier: IntOrArg = None, hide_particles: BoolOrArg = None, /) -> str:
-        if amplifier is not None and duration is None:
+        if amplifier is not None and seconds is None:
             raise ValueError('must give seconds to use amplifier')
         if hide_particles is not None and amplifier is None:
             raise ValueError('must give amplifier to use hide_particles')
-        if isinstance(duration, str) and not is_int_arg(duration):
-            if duration != INFINITE:
-                raise ValueError(f'{duration}: Invalid duration')
-        elif isinstance(duration, int):
+        if isinstance(seconds, str) and not is_int_arg(seconds):
+            if seconds != INFINITE:
+                raise ValueError(f'{seconds}: Invalid duration')
+        elif isinstance(seconds, int):
             seconds_range = range(MAX_EFFECT_SECONDS + 1)
-            if duration not in seconds_range:
-                raise ValueError(f'{duration}: Not in range {seconds_range}')
+            if seconds not in seconds_range:
+                raise ValueError(f'{seconds}: Not in range {seconds_range}')
         effect = as_resource(effect)
         self._add('give', as_target(target), effect)
-        self._add_opt(de_int_arg(duration), de_int_arg(amplifier), _bool(hide_particles))
+        self._add_opt(de_int_arg(seconds), de_int_arg(amplifier), _bool(hide_particles))
         return str(self)
 
     @_fluent
@@ -2789,17 +2798,21 @@ def op(target: Target) -> str:
     cmd._add('$op', as_target(target))
     return str(cmd)
 
-
 def particle(
-        particle: StrOrArg | EntityDef, pos: Position = None, delta: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] = None,
+        particle: ParticleDef, pos: Position = None, delta: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] = None,
         speed: FloatOrArg = None, count: IntOrArg = None, mode: StrOrArg = None, *viewers: EntityDef) -> str:
     """Creates particles."""
     cmd = Command()
     cmd._add('$particle')
-    if isinstance(particle, str) or is_arg(particle):
-        particle = as_particle(particle)
+    if is_arg(particle):
+        particle = de_arg(particle)
+    elif isinstance(particle, str):
+        particle = Particle(particle)
+    elif isinstance(particle, Iterable):
+        particle = Particle(*particle)
     else:
-        particle = as_entity(particle)
+        if not isinstance(particle, Particle):
+            raise TypeError(f'Unexpected particle def: {particle}')
     cmd._add(particle)
     cmd._add_opt_pos(pos)
     cmd._add_opt_pos(delta)
@@ -3374,6 +3387,108 @@ class Entity(Block):
         return 'minecraft:' + self.id
 
 
+class Particle(Command):
+    def __init__(self, id: StrOrArg, state: NbtDef = None):
+        super().__init__()
+        self.id = de_arg(id)
+        if isinstance(self.id, str):
+            self.id = as_particle(id)
+        self.state = Nbt.as_nbt(state) if state else Nbt()
+        self._add(self.id)
+
+    def __str__(self):
+        s = super().__str__()
+        if self.state:
+            s += str(self.state)
+        return s
+
+    @classmethod
+    def _3_color(cls, color):
+        if is_arg(color):
+            return de_arg(color)
+        else:
+            return (de_float_arg(color[0]), de_float_arg(color[1]), de_float_arg(color[2]))
+
+    @classmethod
+    def _4_color(cls, color):
+        if is_int_arg(color):
+            return de_int_arg(color)
+        else:
+            return (de_float_arg(color[0]), de_float_arg(color[1]), de_float_arg(color[2]), de_float_arg(color[3]))
+
+    @classmethod
+    def block(cls, block: BlockDef, type: StrOrArg = BLOCK, state: Arg | NbtDef = None) -> Particle:
+        p = Particle(_in_group(BLOCK_PARTICE_TYPES, type))
+        if (is_arg(block) or isinstance(block, str)) and state is None:
+            p.state['block_state'] = de_arg(block)
+        else:
+            block = as_block(block)
+            block_state = Nbt(block.state)
+            if state:
+                if is_arg(state):
+                    if block_state:
+                        raise ValueError('Block state exists, but provided state is Arg()')
+                    block_state = de_arg(state)
+                else:
+                    block_state.update(state)
+            p.state['block_state'] = {'Name': block.id, 'Properties': block_state}
+        return p
+
+    @classmethod
+    def dust(cls, color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg) -> Particle:
+        p = Particle('dust')
+        p.state['color'] = cls._3_color(color)
+        p.state['scale'] = de_int_arg(scale)
+        return p
+
+    @classmethod
+    def dust_color_transition(cls, from_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg,
+                              to_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg) -> Particle:
+        p = Particle('dust_color_transition')
+        p.state['from_color'] = cls._3_color(from_color)
+        p.state['to_color'] = cls._3_color(to_color)
+        p.state['scale'] = de_int_arg(scale)
+        return p
+
+    @classmethod
+    def entity_effect(cls, color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg, FloatOrArg] | IntOrArg) -> Particle:
+        p = Particle('entity_effect')
+        p.state['color'] = cls._4_color(color)
+        return p
+
+    @classmethod
+    def item(cls, item: EntityDef) -> Particle:
+        p = Particle('item')
+        if is_arg(item) or isinstance(item, str):
+            p.state['item'] = de_arg(item)
+        else:
+            item = as_entity(item)
+            p.state['item'] = {'id': item.id, 'components': item.components}
+        return p
+
+    @classmethod
+    def sculk_charge(cls, roll: FloatOrArg) -> Particle:
+        p = Particle('sculk_charge')
+        p.state['roll'] = de_float_arg(roll)
+        return p
+
+    @classmethod
+    def shriek(cls, delay: IntOrArg) -> Particle:
+        p = Particle('shriek')
+        p.state['delay'] = de_int_arg(delay)
+        return p
+
+    @classmethod
+    def vibration(cls, destination: Arg | NbtDef, arrival_in_ticks: IntOrArg) -> Particle:
+        p = Particle('vibration')
+        if is_arg(destination):
+            p.state['destination'] = de_arg(destination)
+        else:
+            p.state['destination'] = Nbt.as_nbt(destination)
+        p.state['arrival_in_ticks'] = de_int_arg(arrival_in_ticks)
+        return p
+
+
 class _Evaluate:
     """Internal class used to turn expressions involving scores into a series of commands."""
     _scratch_objective = '__scratch'
@@ -3808,6 +3923,7 @@ Target = Union[StrOrArg, TargetSpec]
 ScoreName = Union[Score, Tuple[Target, StrOrArg]]
 BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, MappingOrArg], Tuple[StrOrArg, MappingOrArg, MappingOrArg]]
 EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, MappingOrArg]]
+ParticleDef = Union[StrOrArg, Particle, Tuple[StrOrArg, MappingOrArg]]
 JsonDef = Union[JsonText, dict, StrOrArg]
 SignMessage = Union[StrOrArg, NbtDef, None]
 SignMessages = Iterable[SignMessage]

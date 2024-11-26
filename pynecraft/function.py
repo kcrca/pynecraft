@@ -11,7 +11,6 @@ from typing import Any, MutableMapping
 from .base import _JsonEncoder, _in_group, _to_list, _to_tuple
 from .commands import *
 
-BLOCK = 'block'
 FLUID = 'fluid'
 ITEM = 'item'
 ENTITY = 'entity_type'

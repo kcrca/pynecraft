@@ -921,6 +921,37 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('loot replace entity @a 12 3 kill @p',
                          loot().replace().entity(a(), 12, 3).kill(p()))
 
+    def test_particle(self):
+        self.assertEqual('foo', str(Particle('foo')))
+        self.assertEqual('$(foo)', str(Particle(Arg('foo'))))
+        self.assertEqual('block{block_state: stone}', str(Particle.block('stone')))
+        self.assertEqual('block_marker{block_state: stone}', str(Particle.block('stone', 'block_marker')))
+        self.assertEqual('block{block_state: {Name: wheat, Properties: {age: 2}}}',
+                         str(Particle.block('wheat', state={'age': 2})))
+        self.assertEqual('block{block_state: {Name: wheat, Properties: $(props)}}',
+                         str(Particle.block('wheat', state=Arg('props'))))
+        self.assertEqual('dust{color: [1.1f, 2.2f, 3.3f], scale: 4.4f}', str(Particle.dust((1.1, 2.2, 3.3), 4.4)))
+        self.assertEqual('dust{color: $(c), scale: $(s)}', str(Particle.dust(Arg('c'), Arg('s'))))
+        self.assertEqual('dust{color: [1.1f, $(c), 3.3f], scale: 4.4f}', str(Particle.dust((1.1, Arg('c'), 3.3), 4.4)))
+        self.assertEqual(
+            'dust_color_transition{from_color: [1.1f, 2.2f, 3.3f], scale: 7.7f, to_color: [4.4f, 5.5f, 6.6f]}',
+            str(Particle.dust_color_transition((1.1, 2.2, 3.3), (4.4, 5.5, 6.6), 7.7)))
+        self.assertEqual('entity_effect{color: [1.1f, 2.2f, 3.3f, 4.4f]}',
+                         str(Particle.entity_effect((1.1, 2.2, 3.3, 4.4))))
+        self.assertEqual('entity_effect{color: 128}', str(Particle.entity_effect(128)))
+        self.assertEqual('item{item: elytra}', str(Particle.item('elytra')))
+        self.assertEqual('item{item: $(e)}', str(Particle.item(Arg('e'))))
+        self.assertEqual('item{item: {components: {a: b}, id: elytra}}',
+                         str(Particle.item(Entity('elytra', components={'a': 'b'}))))
+        self.assertEqual('sculk_charge{roll: 1.1f}', str(Particle.sculk_charge(1.1)))
+        self.assertEqual('sculk_charge{roll: $(r)}', str(Particle.sculk_charge(Arg('r'))))
+        self.assertEqual('shriek{delay: 1.1f}', str(Particle.shriek(1.1)))
+        self.assertEqual('shriek{delay: $(r)}', str(Particle.shriek(Arg('r'))))
+        self.assertEqual('vibration{arrival_in_ticks: 12, destination: {pos: [1, 2, 3], type: block}}',
+                         str(Particle.vibration({'type': 'block', 'pos': (1, 2, 3)}, 12)))
+        self.assertEqual('vibration{arrival_in_ticks: $(a), destination: $(r)}',
+                         str(Particle.vibration(Arg('r'), Arg('a'))))
+
     def test_particle_command(self):
         self.assertEqual('particle ash', particle(ASH))
         self.assertEqual('particle ash 1 ~2 ^3', particle(ASH, (1, r(2), d(3))))
@@ -932,8 +963,6 @@ class TestCommands(unittest.TestCase):
                          particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE, a(), e().tag('foo')))
         self.assertEqual('particle falling_dust{block_state: sand} 1 ~2 ^3',
                          particle((FALLING_DUST, {'block_state': 'sand'}), (1, r(2), d(3))))
-        self.assertEqual('particle falling_dust{block_state: sand} 1 ~2 ^3',
-                         particle(Entity(FALLING_DUST, {'block_state': 'sand'}), (1, r(2), d(3))))
 
     def test_place(self):
         self.assertEqual('place feature m:b', place().feature('m:b'))
