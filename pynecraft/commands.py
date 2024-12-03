@@ -1146,6 +1146,7 @@ class _IfClause(Command):
         self._add('score', as_score(score))
         return self._start(_ScoreClause())
 
+    @_fluent
     def loaded(self, pos: Position) -> _ExecuteMod:
         self._add('loaded', *pos)
         return self._start(_ExecuteMod())
@@ -1185,6 +1186,7 @@ class _ReturnMod(Command):
         super().__init__()
         self._used = False
 
+    @_fluent
     def run(self, cmd: StrOrArg | Command) -> str:
         if not isinstance(cmd, str):
             cmd = str(cmd)
@@ -1192,6 +1194,7 @@ class _ReturnMod(Command):
         self._used = True
         return str(self)
 
+    @_fluent
     def fail(self) -> str:
         self._add('fail')
         return str(self)
@@ -1255,6 +1258,7 @@ class _ExecuteMod(Command):
         self._add('positioned as', as_target(target))
         return self
 
+    @_fluent
     def positioned_over(self, heightmap: StrOrArg) -> _ExecuteMod:
         self._add('positioned over', _in_group(HEIGHTMAP, heightmap))
         return self
@@ -1284,14 +1288,17 @@ class _ExecuteMod(Command):
         self._add('store', _in_group(STORE_WHAT, what))
         return self._start(_StoreClause())
 
+    @_fluent
     def dimension(self, dimension: StrOrArg) -> _ExecuteMod:
         self._add('dimension', dimension)
         return self
 
+    @_fluent
     def on(self, relationship: StrOrArg) -> _ExecuteMod:
         self._add('on', _in_group(RELATIONSHIPS, relationship))
         return self
 
+    @_fluent
     def summon(self, entity: EntityDef) -> _ExecuteMod:
         self._add('summon', as_entity(entity))
         return self
@@ -1515,6 +1522,7 @@ class _CloneClause(Command):
 
 # noinspection PyAttributeOutsideInit
 class _CloneFromDimMod(Command):
+    @_fluent
     def from_(self, dimension: StrOrArg, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
         self.dimension = dimension
         self.start_pos = start_pos
@@ -1527,6 +1535,7 @@ class _CloneToDimMod(Command):
         super().__init__()
         self._from_ = from_
 
+    @_fluent
     def to(self, dimension: StrOrArg, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
         f = self._from_
         dest_pos = _clone_dest(f.start_pos, f.end_pos, dest_pos, dest_type)
@@ -1549,6 +1558,7 @@ class _DataSource(Command):
         self._add('value', Nbt.to_str(v))
         return str(self)
 
+    @_fluent
     def string(self, data_target: DataTarget, nbt_path: StrOrArg = None, start: IntOrArg = None,
                end: IntOrArg = None) -> str:
         self._add('string', data_single_str(data_target))
@@ -1557,16 +1567,19 @@ class _DataSource(Command):
 
 
 class _DamageByMod(Command):
+    @_fluent
     def from_(self, target: Target) -> str:
         self._add('from', as_target(target))
         return str(self)
 
 
 class _DamageMod(Command):
+    @_fluent
     def at(self, pos: Position) -> str:
         self._add('at', *pos)
         return str(self)
 
+    @_fluent
     def by(self, target: Target) -> _DamageByMod:
         self._add('by', as_target(target))
         return self._start(_DamageByMod())
@@ -1625,6 +1638,7 @@ class _DataMod(Command):
 
 
 class _RandomMod(Command):
+    @_fluent
     def roll(self, range: tuple[IntOrArg, IntOrArg] | StrOrArg, sequence: StrOrArg = None, /,
              in_chat: bool = True) -> str:
         self._add('roll' if in_chat else 'value')
@@ -1635,9 +1649,11 @@ class _RandomMod(Command):
         self._add_opt(as_name(sequence))
         return str(self)
 
+    @_fluent
     def value(self, range: (IntOrArg, IntOrArg), sequence: StrOrArg = None, /, in_chat: bool = False) -> str:
         return self.roll(range, sequence, in_chat)
 
+    @_fluent
     def reset(self, sequence: StrOrArg, seed: IntOrArg = None, include_world_seed: BoolOrArg = None,
               include_sequence_id: BoolOrArg = None, /) -> str:
         self._add('reset')
@@ -1649,18 +1665,22 @@ class _RandomMod(Command):
 
 
 class _DatapackOrder(Command):
+    @_fluent
     def first(self) -> str:
         self._add('first')
         return str(self)
 
+    @_fluent
     def last(self) -> str:
         self._add('last')
         return str(self)
 
+    @_fluent
     def before(self, other_datapack: StrOrArg) -> str:
         self._add('before', other_datapack)
         return str(self)
 
+    @_fluent
     def after(self, other_datapack: StrOrArg) -> str:
         self._add('after', other_datapack)
         return str(self)
@@ -1703,7 +1723,7 @@ class _DebugMod(Command):
 
 class _EffectAction(Command):
     @_fluent
-    def give(self, target: Target, effect: StrOrArg, seconds: IntOrArg = None,
+    def give(self, target: Target, effect: StrOrArg, seconds: IntOrArg | str = None,
              amplifier: IntOrArg = None, hide_particles: BoolOrArg = None, /) -> str:
         if amplifier is not None and seconds is None:
             raise ValueError('must give seconds to use amplifier')
@@ -1814,14 +1834,17 @@ class _ForceloadMod(Command):
 
 
 class _FunctionWith(Command):
+    @_fluent
     def block(self, pos: Position) -> str:
         self._add('block', *pos)
         return str(self)
 
+    @_fluent
     def entity(self, target: Target) -> str:
         self._add('entity', as_target(target))
         return str(self)
 
+    @_fluent
     def storage(self, source: StrOrArg, nbt_path: StrOrArg = None) -> str:
         self._add('storage', source)
         self._add_opt(as_resource_path(nbt_path))
@@ -1829,6 +1852,7 @@ class _FunctionWith(Command):
 
 
 class _FunctionMod(Command):
+    @_fluent
     def with_(self) -> _FunctionWith:
         self._add('with')
         return self._start(_FunctionWith())
@@ -1979,28 +2003,34 @@ class _ScoreboardObjectivesMod(Command):
 
 
 class _ScoreboardObjectivesModifyMod(Command):
+    @_fluent
     def displayname(self, name: StrOrArg | JsonText) -> str:
         self._add('displayname', name)
         return str(self)
 
+    @_fluent
     def rendertype(self, type: StrOrArg) -> str:
         self._add('rendertype', _in_group(SCOREBOARD_RENDER_TYPES, type))
         return str(self)
 
+    @_fluent
     def numberformat(self) -> _NumberFormatMod:
         self._add('numberformat')
         return self._start(_NumberFormatMod())
 
 
 class _NumberFormatMod(Command):
+    @_fluent
     def styled(self, style: NbtDef) -> str:
         self._add('styled', style)
         return str(self)
 
+    @_fluent
     def fixed(self, text: StrOrArg) -> str:
         self._add('fixed', text)
         return str(self)
 
+    @_fluent
     def blank(self) -> str:
         self._add('blank')
         return str(self)
@@ -2118,10 +2148,12 @@ class _PlaceMod(Command):
 
 
 class _RideMod(Command):
+    @_fluent
     def mount(self, target: Target) -> str:
         self._add('mount', as_single(target))
         return str(self)
 
+    @_fluent
     def dismount(self) -> str:
         self._add('dismount')
         return str(self)
@@ -2320,6 +2352,7 @@ class _TickStopMod(Command):
         super().__init__()
         self._used = False
 
+    @_fluent
     def stop(self) -> str:
         self._add('stop')
         self._used = True
@@ -2454,6 +2487,7 @@ class _BlockMod(Command):
 
 
 class _ListMod(Command):
+    @_fluent
     def uuids(self) -> str:
         self._add('uuids')
         return str(self)
@@ -2464,18 +2498,22 @@ class _AdvancementMod(Command):
         self._add('everything')
         return str(self)
 
+    @_fluent
     def only(self, advancement: StrOrArg, criterion: StrOrArg = None) -> str:
         advancement = as_advancement(advancement)
         self._add('only', advancement)
         self._add_opt(criterion)
         return str(self)
 
+    @_fluent
     def from_(self, advancement: StrOrArg) -> str:
         return self._setup('from', advancement)
 
+    @_fluent
     def through(self, advancement: StrOrArg) -> str:
         return self._setup('through', advancement)
 
+    @_fluent
     def until(self, advancement: StrOrArg) -> str:
         return self._setup('until', advancement)
 
@@ -2797,6 +2835,7 @@ def op(target: Target) -> str:
     cmd = Command()
     cmd._add('$op', as_target(target))
     return str(cmd)
+
 
 def particle(
         particle: ParticleDef, pos: Position = None, delta: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] = None,
