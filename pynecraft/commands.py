@@ -3474,7 +3474,7 @@ class Particle(Command):
         return p
 
     @classmethod
-    def dust(cls, color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg) -> Particle:
+    def dust(cls, color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg = 1) -> Particle:
         p = Particle('dust')
         p.state['color'] = cls._3_color(color)
         p.state['scale'] = de_int_arg(scale)
@@ -3482,7 +3482,7 @@ class Particle(Command):
 
     @classmethod
     def dust_color_transition(cls, from_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg,
-                              to_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg) -> Particle:
+                              to_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg = 1) -> Particle:
         p = Particle('dust_color_transition')
         p.state['from_color'] = cls._3_color(from_color)
         p.state['to_color'] = cls._3_color(to_color)
@@ -3862,7 +3862,7 @@ class JsonText(UserDict, JsonHolder):
     @classmethod
     def nbt(cls, data_target: DataTarget, resource_path: StrOrArg, interpret: BoolOrArg = None,
             separator: StrOrArg = None) -> JsonText:
-        """Returns a JSON text NBt node."""
+        """Returns a JSON text NBT node."""
         target_key, target_value = data_target_str(data_target).split(' ', 1)
         jt = cls({'nbt': as_resource_path(resource_path), target_key: target_value})
         jt['source'] = target_key
