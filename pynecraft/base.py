@@ -727,7 +727,7 @@ class Nbt(UserDict):
                 first = cls._comma(first, sout)
                 cls._to_str(e, sout)
             sout.write(']')
-        elif is_arg(elem):
+        elif isinstance(elem, Arg):
             sout.write(de_arg(elem))
         elif isinstance(elem, str):
             sout.write(_quote(elem))
