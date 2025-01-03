@@ -12,6 +12,7 @@ Cave Spider
 Chicken
 Cod
 Cow
+Creaking
 Creeper
 Dolphin
 Donkey

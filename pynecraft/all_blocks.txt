@@ -185,7 +185,7 @@ Chiseled Stone Bricks
 Chiseled Tuff
 Chiseled Tuff Bricks
 Chorus Flower
-Chorus Plant (block) / Chorus Plant
+Chorus Plant
 Clay
 Coal Ore
 Coarse Dirt
@@ -341,6 +341,7 @@ Exposed Copper Trapdoor
 Exposed Cut Copper
 Exposed Cut Copper Slab
 Exposed Cut Copper Stairs
+Eyeblossom
 Farmland
 Fern
 Fire
@@ -439,7 +440,7 @@ Large Fern
 Lava
 Lectern
 Lever
-Light Block / Light
+Light
 Light Blue Banner
 Light Blue Bed
 Light Blue Candle
@@ -600,9 +601,13 @@ Pale Oak Hanging Sign
 Pale Oak Leaves
 Pale Oak Log
 Pale Oak Planks
+Pale Oak Pressure Plate
+Pale Oak Sapling
 Pale Oak Sign
+Pale Oak Slab
 Pale Oak Stairs
 Pale Oak Trapdoor
+Pale Oak Wood
 Pearlescent Froglight
 Peony
 Petrified Oak Slab
@@ -811,6 +816,8 @@ Stripped Mangrove Log
 Stripped Mangrove Wood
 Stripped Oak Log
 Stripped Oak Wood
+Stripped Pale Oak Log
+Stripped Pale Oak Wood
 Stripped Spruce Log
 Stripped Spruce Wood
 Stripped Warped Hyphae

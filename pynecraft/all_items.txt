@@ -21,11 +21,13 @@ Beetroot Seeds
 Beetroot Soup
 Birch Boat
 Birch Boat with Chest / Birch Chest Boat
+Black Bundle
 Black Dye
 Blade Pottery Sherd
 Blaze Powder
 Blaze Rod
 Blaze Spawn Egg
+Blue Bundle
 Blue Dye
 Bogged Spawn Egg
 Bolt Armor Trim / Bolt Armor Trim Smithing Template
@@ -42,6 +44,7 @@ Breeze Rod
 Breeze Spawn Egg
 Brewer Pottery Sherd
 Brick
+Brown Bundle
 Brown Dye
 Brush
 Bucket
@@ -85,9 +88,11 @@ Cooked Salmon
 Cookie
 Copper Ingot
 Cow Spawn Egg
+Creaking Spawn Egg
 Creeper Charge Banner Pattern / Creeper Banner Pattern
 Creeper Spawn Egg
 Crossbow
+Cyan Bundle
 Cyan Dye
 Danger Pottery Sherd
 Dark Oak Boat
@@ -170,7 +175,9 @@ Golden Leggings
 Golden Pickaxe
 Golden Shovel
 Golden Sword
+Gray Bundle
 Gray Dye
+Green Bundle
 Green Dye
 Guardian Spawn Egg
 Gunpowder
@@ -214,12 +221,16 @@ Leather Cap / Leather Helmet
 Leather Horse Armor
 Leather Pants / Leather Leggings
 Leather Tunic / Leather Chestplate
+Light Blue Bundle
 Light Blue Dye
+Light Gray Bundle
 Light Gray Dye
+Lime Bundle
 Lime Dye
 Lingering Potion
 Llama Spawn Egg
 Mace
+Magenta Bundle
 Magenta Dye
 Magma Cream
 Magma Cube Spawn Egg
@@ -281,8 +292,11 @@ Oak Boat with Chest / Oak Chest Boat
 Ocelot Spawn Egg
 Ominous Bottle
 Ominous Trial Key
+Orange Bundle
 Orange Dye
 Painting
+Pale Oak Boat
+Pale Oak Boat with Chest / Pale Oak Chest Boat
 Panda Spawn Egg
 Paper
 Parrot Spawn Egg
@@ -292,6 +306,7 @@ Pig Spawn Egg
 Piglin Brute Spawn Egg
 Piglin Spawn Egg
 Pillager Spawn Egg
+Pink Bundle
 Pink Dye
 Pitcher Pod
 Plenty Pottery Sherd
@@ -307,6 +322,7 @@ Pufferfish
 Pufferfish Spawn Egg
 Pumpkin Pie
 Pumpkin Seeds
+Purple Bundle
 Purple Dye
 Rabbit Hide
 Rabbit Spawn Egg
@@ -325,8 +341,10 @@ Raw Porkchop / Porkchop
 Raw Rabbit / Rabbit
 Raw Salmon / Salmon
 Recovery Compass
+Red Bundle
 Red Dye
 Redstone Dust / Redstone
+Resin brick
 Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
@@ -403,6 +421,7 @@ Water Bucket
 Wayfinder Armor Trim / Wayfinder Armor Trim Smithing Template
 Wheat
 Wheat Seeds
+White Bundle
 White Dye
 Wild Armor Trim / Wild Armor Trim Smithing Template
 Wind Charge
@@ -417,6 +436,7 @@ Wooden Pickaxe
 Wooden Shovel
 Wooden Sword
 Written Book
+Yellow Bundle
 Yellow Dye
 Zoglin Spawn Egg
 Zombie Horse Spawn Egg
