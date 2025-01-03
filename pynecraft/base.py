@@ -18,7 +18,7 @@ from collections import UserDict, UserList
 from html.parser import HTMLParser
 from io import StringIO
 from json import JSONEncoder
-from typing import Any, Callable, Iterable, Mapping, Optional, Sequence, Tuple, TypeVar, Union
+from typing import Any, Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 
@@ -1423,7 +1423,7 @@ DurationDef = Union[StrOrArg, FloatOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
 Angle = Union[FloatOrArg, StrOrArg, RelCoord]
 IntCoord = Union[IntOrArg, IntRelCoord]
-Position = Tuple[Coord, Coord, Coord]
+Position = Union[Tuple[Coord, Coord, Coord], List[Coord]]
 XYZ = Tuple[FloatOrArg, FloatOrArg, FloatOrArg]
 Column = Tuple[Coord, Coord]
 IntColumn = Tuple[IntCoord, IntCoord]
