@@ -187,6 +187,7 @@ Chiseled Tuff Bricks
 Chorus Flower
 Chorus Plant
 Clay
+Closed Eyeblossom
 Coal Ore
 Coarse Dirt
 Cobbled Deepslate
@@ -341,7 +342,6 @@ Exposed Copper Trapdoor
 Exposed Cut Copper
 Exposed Cut Copper Slab
 Exposed Cut Copper Stairs
-Eyeblossom
 Farmland
 Fern
 Fire
@@ -565,6 +565,7 @@ Oak Wood
 Observer
 Obsidian
 Ochre Froglight
+Open Eyeblossom
 Orange Banner
 Orange Bed
 Orange Candle
