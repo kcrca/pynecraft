@@ -5,9 +5,8 @@ from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
-from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, JsonDef, JsonList, \
-    JsonText, \
-    SignCommand, SignCommands, SignMessage, SignMessages, SomeMappings, as_biome, as_block, as_entity, data, fill, \
+from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, SignCommand, SignCommands, \
+    SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, data, fill, \
     fillbiome, setblock
 from pynecraft.values import PaintingInfo, as_pattern, paintings
 
@@ -122,26 +121,26 @@ class Sign(Block):
         return self
 
     @classmethod
-    def lines_nbt(cls, texts: SignMessages, commands: SignCommands = ()) -> Nbt:
+    def lines_nbt(cls, messages: SignMessages, commands: SignCommands = ()) -> Nbt:
         """Returns the lines of NBT for sign text.
-        :param texts: The sign text, as an iterable of one to four lines of text. Entries that are None will generate no
+        :param messages: The sign text, as an iterable of one to four lines of text. Entries that are None will generate no
         NBT, any text will generate a line for the sign.
         :param commands: Commands for the sign, in order.
         :return: The NBT for the combination of text and commands.
         """
-        texts = _ensure_size(_to_list(texts), 4)
+        messages = _ensure_size(_to_list(messages), 4)
         commands = _ensure_size(_to_list(commands), 4)
-        max_count = max(len(texts), len(commands))
+        max_count = max(len(messages), len(commands))
         if max_count > 4:
             raise ValueError(f'{max_count}: Too many values for text and/or commands')
-        texts = _ensure_size(texts, 4)
+        messages = _ensure_size(messages, 4)
         commands = _ensure_size(commands, 4)
 
-        messages = []
+        lines = []
         for i in range(4):
-            messages.append(cls.line_nbt(texts[i], commands[i]))
+            lines.append(cls.line_nbt(messages[i], commands[i]))
 
-        return Nbt({'messages': messages})
+        return Nbt({'messages': lines})
 
     def _kind_name(self, wood):
         return f'{wood}_hanging_sign' if self.hanging else f'{wood}_sign'
@@ -150,9 +149,9 @@ class Sign(Block):
     def line_nbt(cls, text: SignMessage = None, command: SignCommand = None) -> Nbt:
         orig_text = text
         if text is None:
-            text = JsonText.text('')
+            text = Text.text('')
         elif isinstance(text, str):
-            text = JsonText.text(text)
+            text = Text.text(text)
         entry = text
         if isinstance(command, Callable):
             command = command(orig_text)
@@ -190,7 +189,7 @@ class Sign(Block):
                 if msg is None and cmd is None:
                     continue
                 cmds.append(
-                    data().modify(pos, f'{face}.messages[{i + start}]').set().value(str(cls.line_nbt(msg, cmd))))
+                    data().modify(pos, f'{face}.messages[{i + start}]').set().value(cls.line_nbt(msg, cmd)))
                 added += 1
             if added == 4:
                 # If everything is being changed, this is much more efficient
@@ -251,30 +250,30 @@ class WallSign(Sign):
 class Book:
     """A class for a book."""
 
-    def __init__(self, title: str = None, author: str = None, display_name: JsonDef | Tuple[JsonDef, ...] = None):
+    def __init__(self, title: str = None, author: str = None, display_name: TextDef | Tuple[TextDef, ...] = None):
         """Creates a book object."""
         self.title = title
         self.author = author
         self._display_name = None
         self.display_name = display_name
         self._pages = []
-        self._cur_page = JsonList()
+        self._cur_page = TextList()
 
     @property
-    def display_name(self) -> Tuple[JsonText, ...] | None:
+    def display_name(self) -> Tuple[Text, ...] | None:
         return self._display_name
 
     @display_name.setter
-    def display_name(self, display_name: JsonDef | Tuple[JsonDef, ...] = None) -> None:
+    def display_name(self, display_name: TextDef | Tuple[TextDef, ...] = None) -> None:
         if display_name is None:
             self._display_name = None
         else:
             self._display_name = []
             if isinstance(display_name, str):
-                self._display_name.append(str(JsonText.as_json(display_name)))
+                self._display_name.append(str(Text.as_text(display_name)))
             else:
                 for x in display_name:
-                    self._display_name.append(JsonText.as_json(x))
+                    self._display_name.append(Text.as_text(x))
 
     # Two kinds of books: Written and signed. In theory, they should hold the same kind
     # of text, but the unsigned book cannot have rich text. Hopefully in the future this _will_ be possible, so
@@ -286,19 +285,19 @@ class Book:
         self.author = author
         self.display_name = display_name
 
-    def add(self, *txt: JsonText | StrOrArg):
+    def add(self, *txt: Text | StrOrArg):
         """Add text to the current page of the book."""
         if self.title is None:
-            raise ValueError("Cannot add Json text to unsigned book")
+            raise ValueError("Cannot add text to unsigned book")
         for t in txt:
             if isinstance(t, str) or is_arg(t):
-                t = JsonText.text(de_arg(t))
+                t = Text.text(de_arg(t))
             self._cur_page.append(t)
 
     def next_page(self):
         """Start the next page."""
         self._pages.append(self._cur_page)
-        self._cur_page = JsonList()
+        self._cur_page = TextList()
 
     def as_entity(self):
         """Returns the book as an Entity object. This is useful for a ``give`` command."""
@@ -315,7 +314,7 @@ class Book:
         cur_page = self._cur_page
         self.next_page()
         components = {'written_book_content': {
-            'author': self.author, 'title': self.title, 'pages': [JsonList(x) for x in self._pages[:]]}}
+            'author': self.author, 'title': self.title, 'pages': [TextList(x) for x in self._pages[:]]}}
         if self.display_name:
             components['lore'] = self.display_name
         self._cur_page = cur_page
@@ -398,19 +397,17 @@ class BlockDisplay(Display):
 class TextDisplay(Display):
     """An object that represents a text_display entity."""
 
-    def __init__(self, text: StrOrArg | JsonText | Sequence[JsonText] = None, *args, **kwargs):
+    def __init__(self, text: StrOrArg | Text | Sequence[Text] = None, *args, **kwargs):
         """
-        Creates a TextDisplay with the given text, if any. The text can be a string, a JsonText object, or a list or
-        tuple of JsonText objects.
+        Creates a TextDisplay with the given text, if any. The text can be a string, a Text object, or a list or
+        tuple of Text objects.
         """
         super().__init__('text_display', *args, **kwargs)
         self.text(text)
 
     def text(self, text) -> TextDisplay:
         if isinstance(text, str):
-            text = str(JsonText.text(text))
-        elif isinstance(text, (JsonText, Sequence)):
-            text = str(text).replace("'", '"')
+            text = Text.text(text)
         if text is not None:
             self.merge_nbt({'text': text})
         return self
@@ -728,7 +725,7 @@ class ItemFrame(Entity):
             if 'Item' not in self.nbt:
                 self.item(block)
             nbt = self.nbt
-            nbt['Item']['components']['minecraft:custom_name'] = JsonText.text(block.name)
+            nbt['Item']['components']['minecraft:custom_name'] = Text.text(block.name)
         return self
 
 

@@ -227,97 +227,97 @@ class TestCommands(unittest.TestCase):
         sort_keys = Nbt.sort_keys
         try:
             Nbt.sort_keys = False
-            self.assertEqual({"text": "hi"}, JsonText.text('hi'))
-            self.assertEqual({"text": "hi\n"}, JsonText.text('hi\n'))
+            self.assertEqual({"text": "hi"}, Text.text('hi'))
+            self.assertEqual({"text": "hi\n"}, Text.text('hi\n'))
             self.assertEqual([{'text': 'hi', 'bold': 'true', 'italic': 'true'}, {'text': ' there', 'bold': 'true'},
-                              {'text': ' friend'}], JsonText.html_text('<b><i>hi</i> there</b> friend'))
-            self.assertEqual({"translate": "m.id", "with": ["t1", "t2"]}, JsonText.translate('m.id', 't1', 't2'))
+                              {'text': ' friend'}], Text.html_text('<b><i>hi</i> there</b> friend'))
+            self.assertEqual({"translate": "m.id", "with": ["t1", "t2"]}, Text.translate('m.id', 't1', 't2'))
             self.assertEqual({"translate": "m.id", "with": ["t1"], "fallback": "t2"},
-                             JsonText.translate('m.id', 't1', fallback='t2'))
-            self.assertEqual({"score": {"name": "sc", "objective": "obj"}}, JsonText.score(Score('sc', 'obj')))
+                             Text.translate('m.id', 't1', fallback='t2'))
+            self.assertEqual({"score": {"name": "sc", "objective": "obj"}}, Text.score(Score('sc', 'obj')))
             self.assertEqual({"score": {"name": "sc", "objective": "obj"}},
-                             JsonText.score(('sc', 'obj')))
-            self.assertEqual({"selector": "@a"}, JsonText.selector(a()))
+                             Text.score(('sc', 'obj')))
+            self.assertEqual({"selector": "@a"}, Text.selector(a()))
             self.assertEqual({"selector": "@a", "separator": {"color": "red", "text": "_"}},
-                             JsonText.selector(a(), RED, '_'))
-            self.assertEqual({"keybind": "b.id"}, JsonText.keybind('b.id'))
-            self.assertEqual({"nbt": "m:a/b", "entity": "@a", "source": "entity"}, JsonText.nbt(a(), 'm:a/b'))
+                             Text.selector(a(), RED, '_'))
+            self.assertEqual({"keybind": "b.id"}, Text.keybind('b.id'))
+            self.assertEqual({"nbt": "m:a/b", "entity": "@a", "source": "entity"}, Text.nbt(a(), 'm:a/b'))
             self.assertEqual(
                 {"nbt": "m:a/b", "block": "1 ~2 ^3", "interpret": True, "separator": "_", "source": "block"},
-                JsonText.nbt((1, r(2), d(3)), 'm:a/b', interpret=True, separator='_'))
-            self.assertEqual({"text": "boo", "extra": []}, JsonText.text('boo').extra())
+                Text.nbt((1, r(2), d(3)), 'm:a/b', interpret=True, separator='_'))
+            self.assertEqual({"text": "boo", "extra": []}, Text.text('boo').extra())
             self.assertEqual({"text": "boo", "extra": ["foo", {"text": "bar"}]},
-                             JsonText.text('boo').extra('foo', JsonText.text('bar')))
-            self.assertEqual({"text": "boo", "color": "dark_green"}, JsonText.text('boo').color(DARK_GREEN))
-            self.assertEqual({"text": "boo", "font": "m:a/b"}, JsonText.text('boo').font('m:a/b'))
-            self.assertEqual({"text": "boo", "bold": True}, JsonText.text('boo').bold())
-            self.assertEqual({"text": "boo", "italic": True}, JsonText.text('boo').italic())
-            self.assertEqual({"text": "boo", "underlined": True}, JsonText.text('boo').underlined())
-            self.assertEqual({"text": "boo", "strikethrough": True}, JsonText.text('boo').strikethrough())
-            self.assertEqual({"text": "boo", "obfuscated": True}, JsonText.text('boo').obfuscated())
-            self.assertEqual({"text": "boo", "insertion": "inserted"}, JsonText.text('boo').insertion('inserted'))
+                             Text.text('boo').extra('foo', Text.text('bar')))
+            self.assertEqual({"text": "boo", "color": "dark_green"}, Text.text('boo').color(DARK_GREEN))
+            self.assertEqual({"text": "boo", "font": "m:a/b"}, Text.text('boo').font('m:a/b'))
+            self.assertEqual({"text": "boo", "bold": True}, Text.text('boo').bold())
+            self.assertEqual({"text": "boo", "italic": True}, Text.text('boo').italic())
+            self.assertEqual({"text": "boo", "underlined": True}, Text.text('boo').underlined())
+            self.assertEqual({"text": "boo", "strikethrough": True}, Text.text('boo').strikethrough())
+            self.assertEqual({"text": "boo", "obfuscated": True}, Text.text('boo').obfuscated())
+            self.assertEqual({"text": "boo", "insertion": "inserted"}, Text.text('boo').insertion('inserted'))
 
-            self.assertEqual({"text": "boo", "clickEvent": {"action": "copy_to_clipboard", "value": "ya"}},
-                             JsonText.text('boo').click_event().copy_to_clipboard('ya'))
-            self.assertEqual({"text": "boo", "clickEvent": {"action": "open_url", "value": "http: a.com"}},
-                             JsonText.text('boo').click_event().open_url('http: a.com'))
-            self.assertEqual({"text": "boo", "clickEvent": {"action": "open_file", "value": "/a/b"}},
-                             JsonText.text('boo').click_event().open_file('/a/b'))
-            self.assertEqual({"text": "boo", "clickEvent": {"action": "change_page", "value": "p"}},
-                             JsonText.text('boo').click_event().change_page('p'))
-            self.assertEqual({"text": "boo", "clickEvent": {"action": "run_command", "value": "/say hi"}},
-                             JsonText.text('boo').click_event().run_command(say('hi')))
-            self.assertEqual({"text": "boo", "clickEvent": {"action": "run_command", "value": "/say hi there"}},
-                             JsonText.text('boo').click_event().run_command(say('hi there')))
-            self.assertEqual({"text": "boo", "clickEvent": {"action": "suggest_command", "value": "maybe"}},
-                             JsonText.text('boo').click_event().suggest_command('maybe'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "copy_to_clipboard", "value": "ya"}},
+                             Text.text('boo').click_event().copy_to_clipboard('ya'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "open_url", "url": "http: a.com"}},
+                             Text.text('boo').click_event().open_url('http: a.com'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "open_file", "value": "/a/b"}},
+                             Text.text('boo').click_event().open_file('/a/b'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "change_page", "page": "p"}},
+                             Text.text('boo').click_event().change_page('p'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "run_command", "command": "/say hi"}},
+                             Text.text('boo').click_event().run_command(say('hi')))
+            self.assertEqual({"text": "boo", "click_event": {"action": "run_command", "command": "/say hi there"}},
+                             Text.text('boo').click_event().run_command(say('hi there')))
+            self.assertEqual({"text": "boo", "click_event": {"action": "suggest_command", "command": "maybe"}},
+                             Text.text('boo').click_event().suggest_command('maybe'))
 
-            self.assertEqual({"text": "boo", "hoverEvent": {"action": "show_text", "contents": "maybe"}},
-                             JsonText.text('boo').hover_event().show_text('maybe'))
-            self.assertEqual({"text": "boo", "hoverEvent": {"action": "show_text", "contents": {"text": "not"}}},
-                             JsonText.text('boo').hover_event().show_text(JsonText.text('not')))
-            self.assertEqual({"text": "boo", "hoverEvent": {"action": "show_item", "id": "bundle"}},
-                             JsonText.text('boo').hover_event().show_item('bundle'))
+            self.assertEqual({"text": "boo", "hover_event": {"action": "show_text", "text": "maybe"}},
+                             Text.text('boo').hover_event().show_text('maybe'))
+            self.assertEqual({"text": "boo", "hover_event": {"action": "show_text", "text": {"text": "not"}}},
+                             Text.text('boo').hover_event().show_text(Text.text('not')))
+            self.assertEqual({"text": "boo", "hover_event": {"action": "show_item", "id": "bundle"}},
+                             Text.text('boo').hover_event().show_item('bundle'))
             self.assertEqual(
-                {"text": "boo", "hoverEvent": {"action": "show_item", "id": "bundle", "count": 3, "tag": "tag"}},
-                JsonText.text('boo').hover_event().show_item('bundle', count=3, tag='tag'))
-            self.assertEqual({"text": "boo", "hoverEvent": {"action": "show_entity", "type": "m:z", "id": "5-6-a-f"}},
-                             JsonText.text('boo').hover_event().show_entity('m:z', '5-6-a-f'))
-            self.assertEqual({"text": "boo", "hoverEvent": {"action": "show_entity", "type": "m:z", "id": "5-6-a-f",
+                {"text": "boo", "hover_event": {"action": "show_item", "id": "bundle", "count": 3, "tag": "tag"}},
+                Text.text('boo').hover_event().show_item('bundle', count=3, tag='tag'))
+            self.assertEqual({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f"}},
+                             Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f'))
+            self.assertEqual({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f",
                                                             "name": "Robin"}},
-                             JsonText.text('boo').hover_event().show_entity('m:z', '5-6-a-f', 'Robin'))
-            self.assertEqual(({"text": "boo", "hoverEvent": {"action": "show_entity", "type": "m:z", "id": "5-6-a-f",
+                             Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f', 'Robin'))
+            self.assertEqual(({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f",
                                                              "name": {"text": "ooh"}}}),
-                             JsonText.text('boo').hover_event().show_entity('m:z', '5-6-a-f', JsonText.text("ooh")))
+                             Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f', Text.text("ooh")))
 
             self.assertEqual((
                 {"text": "boo", "extra": [], "color": "green", "font": "m:f", "bold": True, "italic": True,
                  "underlined": True, "strikethrough": True, "obfuscated": True, "insertion": "i",
-                 "clickEvent": {"action": "open_file", "value": "s"},
-                 "hoverEvent": {"action": "show_item", "id": "bundle"}}),
-                JsonText.text('boo').extra().color(BLUE).font(
+                 "click_event": {"action": "open_file", "value": "s"},
+                 "hover_event": {"action": "show_item", "id": "bundle"}}),
+                Text.text('boo').extra().color(BLUE).font(
                     'm:f').bold().italic().underlined().strikethrough().obfuscated().insertion(
                     'i').click_event().open_file('s').hover_event().show_item('bundle').color(GREEN))
 
-            self.assertEqual({"text": "$(t)"}, JsonText.text(Arg('t')))
-            self.assertEqual({"text": "z$(t)"}, JsonText.text('z$(t)'))
-            self.assertEqual({"translate": "$(t)", "with": ["$(s)"]}, JsonText.translate(Arg('t'), Arg('s')))
+            self.assertEqual({"text": "$(t)"}, Text.text(Arg('t')))
+            self.assertEqual({"text": "z$(t)"}, Text.text('z$(t)'))
+            self.assertEqual({"translate": "$(t)", "with": ["$(s)"]}, Text.translate(Arg('t'), Arg('s')))
             self.assertEqual({"translate": "$(t)", "with": ["$(s)", "$(v)"]},
-                             JsonText.translate(Arg('t'), Arg('s'), Arg('v')))
-            self.assertEqual({"score": {"name": "$(p)", "objective": "$(o)"}}, JsonText.score((Arg('p'), Arg('o'))))
+                             Text.translate(Arg('t'), Arg('s'), Arg('v')))
+            self.assertEqual({"score": {"name": "$(p)", "objective": "$(o)"}}, Text.score((Arg('p'), Arg('o'))))
             self.assertEqual({"selector": "$(s)", "separator": {"color": "$(c)", "text": "$(t)"}},
-                             JsonText.selector(Arg('s'), Arg('c'), Arg('t')))
-            self.assertEqual({"keybind": "$(s)"}, JsonText.keybind(Arg('s')))
-            self.assertEqual({"nbt": "$(p)", "entity": "@p", "source": "entity"}, JsonText.nbt(p(), Arg('p')))
+                             Text.selector(Arg('s'), Arg('c'), Arg('t')))
+            self.assertEqual({"keybind": "$(s)"}, Text.keybind(Arg('s')))
+            self.assertEqual({"nbt": "$(p)", "entity": "@p", "source": "entity"}, Text.nbt(p(), Arg('p')))
             self.assertEqual(
                 {"nbt": "$(p)", "entity": "@p", "interpret": "$(i)", "separator": "$(s)", "source": "entity"},
-                JsonText.nbt(p(), Arg('p'), Arg('i'), Arg('s')))
+                Text.nbt(p(), Arg('p'), Arg('i'), Arg('s')))
             self.assertEqual({"text": "boo", "extra": ["$(e)", {"text": "$(b)"}]},
-                             JsonText.text('boo').extra(Arg('e'), JsonText.text(Arg('b'))))
-            self.assertEqual({"text": "foo", "color": "$(c)"}, JsonText.text('foo').color(Arg('c')))
-            self.assertEqual({"text": "foo", "font": "$(f)"}, JsonText.text('foo').font(Arg('f')))
-            self.assertEqual({"text": "boo", "underlined": "$(u)"}, JsonText.text('boo').underlined(Arg('u')))
-            self.assertEqual({"text": "boo", "insertion": "$(i)"}, JsonText.text('boo').insertion(Arg('i')))
+                             Text.text('boo').extra(Arg('e'), Text.text(Arg('b'))))
+            self.assertEqual({"text": "foo", "color": "$(c)"}, Text.text('foo').color(Arg('c')))
+            self.assertEqual({"text": "foo", "font": "$(f)"}, Text.text('foo').font(Arg('f')))
+            self.assertEqual({"text": "boo", "underlined": "$(u)"}, Text.text('boo').underlined(Arg('u')))
+            self.assertEqual({"text": "boo", "insertion": "$(i)"}, Text.text('boo').insertion(Arg('i')))
 
         finally:
             Nbt.sort_keys = sort_keys
@@ -629,29 +629,18 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9 filtered stone force',
                          clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9)).filtered('stone', FORCE))
 
-        self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9',
-                         str(clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9), LEAST)))
-        self.assertEqual('clone 1 2 3 4 5 6 4 5 6', str(clone((1, 2, 3), (4, 5, 6), (7, 8, 9), LAST)))
-        self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~4 ~5 ~6', str(clone(r(1, 2, 3), r(4, 5, 6), r(7, 8, 9), LAST)))
-        self.assertEqual('clone ~1 ~2 ~3 ~4 ~5 ~6 ~11 ~2 ~13', str(clone(r(1, 2, 3), r(4, 5, 6), (10, 0, 10), DELTA)))
-        self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9',
-                         str(clone().from_('overworld', (1, r(2), d(3)), (4, 5, 6)).to('the_end', (7, 8, 9))))
         self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9 replace',
                          str(clone()
                              .from_('overworld', (1, r(2), d(3)), (4, 5, 6))
                              .to('the_end', (7, 8, 9)).replace()))
-        self.assertEqual('clone from overworld ~1 ~2 ~3 ~4 ~5 ~6 to the_end ~11 ~2 ~13',
-                         str(clone().from_('overworld', r(1, 2, 3), r(4, 5, 6)).to('the_end', (10, 0, 10), DELTA)))
+        self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9 strict', str(clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9), STRICT)))
+        self.assertEqual('clone from overworld 1 ~2 ^3 4 5 6 to the_end 7 8 9 strict replace',
+                         str(clone()
+                             .from_('overworld', (1, r(2), d(3)), (4, 5, 6))
+                             .to('the_end', (7, 8, 9), STRICT).replace()))
+
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3))
-        with self.assertRaises(ValueError):
-            clone(r(1, 2, 3), r(4, 5, 6), d(1, 2, 3), LAST)
-        with self.assertRaises(TypeError):
-            clone(r(1, 2, 3), d(4, 5, 6), (1, 2, 3), LAST)
-        with self.assertRaises(ValueError):
-            clone(r(1, 2, 3), d(4, 5, 6), d(1, 2, 3), DELTA)
-        with self.assertRaises(ValueError):
-            clone(r(1, 2, 3), d(4, 5, 6), r(1, 2, 3), DELTA)
 
     def test_damage(self):
         self.assertEqual('damage @s 15', str(damage(s(), 15)))
@@ -922,7 +911,7 @@ class TestCommands(unittest.TestCase):
                          loot().replace().entity(a(), 12, 3).kill(p()))
 
     def test_particle(self):
-        self.assertEqual('foo', str(Particle('foo')))
+        self.assertEqual('block', str(Particle('block')))
         self.assertEqual('$(foo)', str(Particle(Arg('foo'))))
         self.assertEqual('block{block_state: stone}', str(Particle.block('stone')))
         self.assertEqual('block_marker{block_state: stone}', str(Particle.block('stone', 'block_marker')))
@@ -971,6 +960,26 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('place jigsaw m:a m:b 7 1 ~2 ^3', place().jigsaw('m:a', 'm:b', 7, (1, r(2), d(3))))
         self.assertEqual('place structure m:b', place().structure('m:b'))
         self.assertEqual('place structure m:b 1 ~2 ^3', place().structure('m:b', (1, r(2), d(3))))
+        self.assertEqual('place template m:t', place().template('m:t'))
+        self.assertEqual('place template m:t 1 ~2 ^3', place().template('m:t', (1, r(2), d(3))))
+        self.assertEqual('place template m:t 1 ~2 ^3 counterclockwise_90',
+                         place().template('m:t', (1, r(2), d(3)), COUNTERCLOCKWISE_90))
+        self.assertEqual('place template m:t 1 ~2 ^3 counterclockwise_90',
+                         place().template('m:t', (1, r(2), d(3)), 'counterclockwise_90'))
+        self.assertEqual('place template m:t 1 ~2 ^3 none', place().template('m:t', (1, r(2), d(3)), NONE))
+        self.assertEqual('place template m:t 1 ~2 ^3 none left_right',
+                         place().template('m:t', (1, r(2), d(3)), NONE, LEFT_RIGHT))
+        pos = (1, r(2), d(3))
+        self.assertEqual('place template m:t 1 ~2 ^3 none left_right 0.5',
+                         place().template('m:t', pos, NONE, LEFT_RIGHT, 0.5))
+        self.assertEqual('place template m:t 1 ~2 ^3 none left_right 0.5 17',
+                         place().template('m:t', (1, r(2), d(3)), NONE, LEFT_RIGHT, 0.5, 17))
+        self.assertEqual('place template m:t 1 ~2 ^3 none left_right 0.5 17 strict',
+                         place().template('m:t', (1, r(2), d(3)), NONE, LEFT_RIGHT, 0.5, 17, STRICT))
+
+        with self.assertRaises(ValueError):
+            pos = (1, r(2), d(3))
+            place().template('m:t', pos, NONE, LEFT_RIGHT, 5)
 
     def test_playsound(self):
         self.assertEqual('playsound m:s m:a @s', playsound('m:s', 'm:a', s()))
@@ -1335,9 +1344,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tell @s hi', tell(s(), 'hi'))
         self.assertEqual('tell @s hi', msg(s(), 'hi'))
         self.assertEqual('tell @s hi', w(s(), 'hi'))
-        self.assertEqual('tellraw @s {"text": "howdy"}', tellraw(s(), JsonText.text('howdy')))
-        self.assertEqual('tellraw @s {"text": "howdy"}', tellraw(s(), {'text': 'howdy'}))
-        self.assertEqual('tellraw @s {"text": "howdy"}', tellraw(s(), 'howdy'))
+        self.assertEqual('tellraw @s howdy', tellraw(s(), Text.text('howdy')))
+        self.assertEqual('tellraw @s howdy', tellraw(s(), {'text': 'howdy'}))
+        self.assertEqual('tellraw @s howdy', tellraw(s(), 'howdy'))
 
     def test_function(self):
         self.assertEqual('function m:b/c', str(function('m:b/c')))

@@ -10,15 +10,13 @@ from __future__ import annotations
 
 import copy
 import functools
-import json
 import math
 import re
 from abc import ABC, abstractmethod
 from collections import UserDict, UserList
 from html.parser import HTMLParser
 from io import StringIO
-from json import JSONEncoder
-from typing import Any, Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
+from typing import Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 
@@ -73,6 +71,11 @@ ROTATION_180 = 180
 ROTATION_270 = 270
 ROTATIONS = [ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270]
 
+NONE = 'none'
+CLOCKWISE_90 = 90
+COUNTERCLOCKWISE_90 = 270
+PLACE_ROTATIONS_GROUP = [NONE, ROTATION_0, CLOCKWISE_90, COUNTERCLOCKWISE_90]
+
 WHITE = 'white'
 ORANGE = 'orange'
 MAGENTA = 'magenta'
@@ -102,9 +105,9 @@ GOLD = 'gold'
 DARK_GRAY = 'dark_gray'
 AQUA = 'aqua'
 LIGHT_PURPLE = 'light_purple'
-JSON_COLORS = [BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA,
+TEXT_COLORS = [BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA,
                RED, LIGHT_PURPLE, YELLOW, WHITE]
-"""Valid colors for JSON text."""
+"""Valid colors for rich text."""
 
 OVERWORLD = 'overworld'
 THE_NETHER = 'the_nether'
@@ -529,26 +532,13 @@ def as_pitch(angle: Angle | None) -> Angle | None:
     return angle
 
 
-class JsonHolder(ABC):
-    """Base class for a holder of JSON."""
+class TextHolder(ABC):
+    """Base class for a holder of rich text."""
 
     @abstractmethod
     def content(self):
-        """Returns the JSON content to put into a string."""
+        """Returns the NBT content to put into a string."""
         pass
-
-
-class _JsonEncoder(JSONEncoder):
-    def __init__(self, *args, **kwargs):
-        kwargs['ensure_ascii'] = False
-        super().__init__(*args, **kwargs)
-
-    def default(self, o: Any) -> Any:
-        if isinstance(o, JsonHolder):
-            return o.content()
-        if isinstance(o, Nbt):
-            return dict(o)
-        return JSONEncoder.default(self, o)
 
 
 _VALID_NBT_ARRAY_TYPES = ('I', 'L', 'B')
@@ -566,9 +556,9 @@ class Nbt(UserDict):
     You can set the value of a key directly to any valid value. By default, the value of a key will be an Nbt object.
 
     The string representation is particularly tricky. Most NBT is simple key/value pairs, where values are booleans,
-    ints, floats, strings, or more NBT. A few places use JSON text. These keys (such as a sign's Text fields) must be
-    presented as JSON text. Those keys are special-cased in this code. You can also put a JsonText value for a field
-    to have it treated as JSON text.
+    ints, floats, strings, or more NBT. A few places use rich text (formerly JSON text). These keys (such as a sign's Text fields) must be
+    presented as rich text. Those keys are special-cased in this code. You can also put a Text value for a field
+    to have it treated as rich text.
 
     No attempt is made to validate the NBT against expected values, such as whether a ``Rotation`` value is a list of
     two floats or something else.
@@ -589,7 +579,6 @@ class Nbt(UserDict):
             Nbt._to_str(self, sout)
             return str(sout.getvalue())
 
-    _json_tags = ('CustomName', 'Pages')
     _forced_type_tags = {'Motion': 'd', 'Rotation': 'f',
                          'LeftArm': 'f', 'RightArm': 'f', 'LeftLeg': 'f', 'RightLeg': 'f', 'Head': 'f', 'Body': 'f'}
 
@@ -600,7 +589,7 @@ class Nbt(UserDict):
     def __setitem__(self, key, value):
         if isinstance(value, tuple):
             value = list(value)
-        elif isinstance(value, Mapping) and not isinstance(value, (Nbt, JsonHolder)):
+        elif isinstance(value, Mapping) and not isinstance(value, (Nbt, TextHolder)):
             value = Nbt.as_nbt(value)
         super().__setitem__(as_nbt_key(key), value)
 
@@ -643,7 +632,7 @@ class Nbt(UserDict):
             return str(obj)
         if isinstance(obj, cls):
             return str(obj)
-        if isinstance(obj, Mapping) and not isinstance(obj, JsonHolder):
+        if isinstance(obj, Mapping) and not isinstance(obj, TextHolder):
             return str(cls.as_nbt(obj))
         sout = StringIO()
         cls._to_str(obj, sout, False)
@@ -711,9 +700,7 @@ class Nbt(UserDict):
                 first = cls._comma(first, sout)
                 cls._write_key(key, sout)
                 cls._space(sout)
-                if key in cls._json_tags:
-                    sout.write(_quote(json.dumps(value, cls=_JsonEncoder, sort_keys=Nbt.sort_keys)))
-                elif key in cls._forced_type_tags:
+                if key in cls._forced_type_tags:
                     cls._to_str(value, sout, force_type=cls._forced_type_tags[key])
                 else:
                     cls._to_str(value, sout, force_type)
@@ -727,7 +714,7 @@ class Nbt(UserDict):
                 first = cls._comma(first, sout)
                 cls._to_str(e, sout)
             sout.write(']')
-        elif isinstance(elem, Arg):
+        elif is_arg(elem):
             sout.write(de_arg(elem))
         elif isinstance(elem, str):
             sout.write(_quote(elem))
@@ -799,7 +786,7 @@ class Nbt(UserDict):
         return self[key]
 
 
-class _ToMinecraftText(HTMLParser):
+class _ToText(HTMLParser):
     def __init__(self):
         super().__init__()
         self.attr_for = {'b': 'bold', 'i': 'italic', 'u': 'underlined', 'strike': 'strikethrough'}
@@ -818,11 +805,11 @@ class _ToMinecraftText(HTMLParser):
             node[a] = 'true'
         self.out.append(node)
 
-    def json(self) -> list:
+    def text(self) -> list:
         return self.out
 
     def __str__(self):
-        return json.dumps(self.out)
+        return Nbt.to_str(self.out)
 
 
 class Settings:
@@ -1188,7 +1175,7 @@ class Facing:
         )
 
     @property
-    def block_delta(self) -> list[int, int, int]:
+    def block_delta(self) -> list[int]:
         res = []
         for x in self.delta:
             res.append(_sign(x))
@@ -1378,10 +1365,14 @@ class Transform:
             roll = math.radians(facing.rotation[1])
             pitch = math.radians(-facing.rotation[0])
             yaw = 0
-            x = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-            y = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
-            z = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
-            w = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+            x = np.sin(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) - np.cos(roll / 2) * np.sin(pitch / 2) * np.sin(
+                yaw / 2)
+            y = np.cos(roll / 2) * np.sin(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.cos(pitch / 2) * np.sin(
+                yaw / 2)
+            z = np.cos(roll / 2) * np.cos(pitch / 2) * np.sin(yaw / 2) - np.sin(roll / 2) * np.sin(pitch / 2) * np.cos(
+                yaw / 2)
+            w = np.cos(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.sin(pitch / 2) * np.sin(
+                yaw / 2)
             return (x, y, z, w)
 
     def __init__(self, transform: Matrix | Quaternion):

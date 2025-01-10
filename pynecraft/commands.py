@@ -8,10 +8,10 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from urllib.parse import urlparse
 
 from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, \
-    as_teamoption, \
-    enchantments, game_rules, team_options
+    as_teamoption, enchantments, game_rules, team_options
 
 if TYPE_CHECKING:
     pass
@@ -19,20 +19,22 @@ if TYPE_CHECKING:
 import copy
 import dataclasses
 import functools
-import json
 import re
 import struct
 import textwrap
 from abc import ABC
-from collections import UserDict, UserList
+from collections import UserList
 from functools import wraps
 from pathlib import Path
-from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union, List
+from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
-from .base import Angle, BLUE, COLORS, Column, DIMENSION, DurationDef, EQ, GREEN, IntColumn, IntRelCoord, \
-    JSON_COLORS, JsonHolder, \
-    Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TIME_SPEC, TIME_TYPES, WHITE, YELLOW, \
-    _JsonEncoder, _ToMinecraftText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
+from .base import Angle, BLUE, CLOCKWISE_90, COLORS, COUNTERCLOCKWISE_90, Column, DIMENSION, DurationDef, EQ, GREEN, \
+    IntColumn, IntRelCoord, \
+    NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TEXT_COLORS, TIME_SPEC, TIME_TYPES, \
+    TextHolder, \
+    WHITE, \
+    YELLOW, \
+    _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
     as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
     as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, is_arg, is_int_arg, to_id, to_name, \
     FacingDef, Facing, \
@@ -336,11 +338,6 @@ NORMAL = 'normal'
 CLONE_FLAGS = [FORCE, MOVE, NORMAL]
 """Valid clone flags."""
 
-LEAST = 'least'
-LAST = 'last'
-DELTA = 'delta'
-CLONE_COORDS = [LEAST, LAST, DELTA]
-
 RESULT = 'result'
 SUCCESS = 'success'
 STORE_WHAT = [RESULT, SUCCESS]
@@ -384,6 +381,7 @@ DATAPACK_ACTIONS = [ENABLE, DISABLE]
 """Valid actions on a datapack."""
 
 FIRST = 'first'
+LAST = 'last'
 BEFORE = 'before_cmds'
 AFTER = 'after_cmds'
 ORDER = [FIRST, LAST, BEFORE, AFTER]
@@ -468,7 +466,8 @@ SCHEDULE_ACTIONS = [APPEND, REPLACE]
 
 DESTROY = 'destroy'
 KEEP = 'keep'
-SETBLOCK_ACTIONS = [DESTROY, KEEP, REPLACE]
+STRICT = 'strict'
+SETBLOCK_ACTIONS = [DESTROY, KEEP, REPLACE, STRICT]
 
 NEVER = 'never'
 HIDE_FOR_OTHER_TEAMS = 'hideForOtherTeams'
@@ -506,13 +505,15 @@ ADD_MULTIPLIED_BASE = 'add_multiplied_base'
 ADD_MULTIPLIED_TOTAL = 'add_multiplied_total'
 ATTRIBUTE_MODIFIER_ACTION_GROUP = [ADD_VALUE, ADD_MULTIPLIED_BASE, ADD_MULTIPLIED_TOTAL]
 
-INFINITE = 'infinite'
-
 BLOCK = 'block'
 BLOCK_MARKER = 'block_marker'
 DUST_PILLAR = 'dust_pillar'
 FALLING_DUST = 'falling_dust'
 BLOCK_PARTICE_TYPES = [BLOCK, BLOCK_MARKER, DUST_PILLAR, FALLING_DUST]
+
+FRONT_BACK = 'front_back'
+LEFT_RIGHT = 'left_right'
+MIRROR_GROUP = [NONE, FRONT_BACK, LEFT_RIGHT]
 
 GIVE = 'give'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -638,45 +639,48 @@ class AdvancementCriteria(Command):
             self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')
 
 
-class _JsonTextMod:
-    def __init__(self, jt: JsonText, ev: NbtDef):
-        self._jt = jt
-        self._ev = ev
+class _TextMod(Nbt):
+    def __init__(self, parent: Text):
+        super().__init__()
+        self.parent = parent
 
 
-class _JsonTextHoverAction(_JsonTextMod):
-    def show_text(self, txt: JsonText | str) -> JsonText:
-        self._ev['action'] = 'show_text'
-        self._ev['contents'] = txt
-        return self._jt
+class _TextHoverAction(_TextMod):
+    def show_text(self, txt: Text | str) -> Text:
+        self['action'] = 'show_text'
+        self['text'] = txt
+        return self.parent
 
-    def show_item(self, id: str, count: int = None, tag: str = None) -> JsonText:
-        self._ev['action'] = 'show_item'
-        self._ev['id'] = as_resource(id)
+    def show_item(self, id: str, count: int = None, tag: str = None) -> Text:
+        self['action'] = 'show_item'
+        self['id'] = as_resource(id)
         if count is not None:
-            self._ev['count'] = count
+            self['count'] = count
         if tag is not None:
-            self._ev['tag'] = tag
-        return self._jt
+            self['tag'] = tag
+        return self.parent
 
-    def show_entity(self, type: str, uuid: StrOrArg, name: JsonText | str = None) -> JsonText:
-        self._ev['action'] = 'show_entity'
-        self._ev['type'] = as_resource(type)
-        self._ev['id'] = as_uuid(uuid)
+    def show_entity(self, type: str, uuid: StrOrArg, name: Text | str = None) -> Text:
+        self['action'] = 'show_entity'
+        self['id'] = as_resource(type)
+        self['uuid'] = as_uuid(uuid)
         if name is not None:
-            self._ev['name'] = name
-        return self._jt
+            self['name'] = name
+        return self.parent
 
 
-class _JsonTextClickEventAction(_JsonTextMod):
-    def open_url(self, url: str) -> JsonText:
-        self._ev.update({'action': 'open_url', 'value': url})
-        return self._jt
+class _TextClickEventAction(_TextMod):
+    def open_url(self, url: str) -> Text:
+        result = urlparse(url)
+        if result.scheme not in ('http', 'https'):
+            raise ValueError(f'URL must be http or https: {result.scheme}')
+        self.update({'action': 'open_url', 'url': url})
+        return self.parent
 
-    def open_file(self, path: str) -> JsonText:
+    def open_file(self, path: str) -> Text:
         Path(path)
-        self._ev.update({'action': 'open_file', 'value': path})
-        return self._jt
+        self.update({'action': 'open_file', 'value': path})
+        return self.parent
 
     @staticmethod
     def _as_command(command):
@@ -684,26 +688,26 @@ class _JsonTextClickEventAction(_JsonTextMod):
             command = str(command)
         return command.strip()
 
-    def run_command(self, command: str | Command) -> JsonText:
+    def run_command(self, command: str | Command) -> Text:
         command = self._as_command(command)
         # The '/' is optional for signs, but required every else, so this is safest
         if command[0] != '/':
             command = '/' + command
-        self._ev.update({'action': 'run_command', 'value': command})
-        return self._jt
+        self.update({'action': 'run_command', 'command': command})
+        return self.parent
 
-    def suggest_command(self, chat: str | Command) -> JsonText:
+    def suggest_command(self, chat: str | Command) -> Text:
         self._as_command(chat)
-        self._ev.update({'action': 'suggest_command', 'value': chat})
-        return self._jt
+        self.update({'action': 'suggest_command', 'command': chat})
+        return self.parent
 
-    def change_page(self, page: str) -> JsonText:
-        self._ev.update({'action': 'change_page', 'value': page})
-        return self._jt
+    def change_page(self, page: str) -> Text:
+        self.update({'action': 'change_page', 'page': page})
+        return self.parent
 
-    def copy_to_clipboard(self, txt: str) -> JsonText:
-        self._ev.update({'action': 'copy_to_clipboard', 'value': txt})
-        return self._jt
+    def copy_to_clipboard(self, txt: str) -> Text:
+        self.update({'action': 'copy_to_clipboard', 'value': txt})
+        return self.parent
 
 
 class TargetSpec(Command, ABC):
@@ -1522,6 +1526,10 @@ class _CloneClause(Command):
 
 # noinspection PyAttributeOutsideInit
 class _CloneFromDimMod(Command):
+    def __init__(self, config: str = None):
+        super().__init__()
+        self.config = config
+
     @_fluent
     def from_(self, dimension: StrOrArg, start_pos: Position, end_pos: Position) -> _CloneToDimMod:
         self.dimension = dimension
@@ -1536,10 +1544,13 @@ class _CloneToDimMod(Command):
         self._from_ = from_
 
     @_fluent
-    def to(self, dimension: StrOrArg, dest_pos: Position, dest_type: str = LEAST) -> _CloneClause:
+    def to(self, dimension: StrOrArg, dest_pos: Position, config: str = None) -> _CloneClause:
         f = self._from_
-        dest_pos = _clone_dest(f.start_pos, f.end_pos, dest_pos, dest_type)
+        dest_pos = dest_pos
         self._add('clone', 'from', f.dimension, *f.start_pos, *f.end_pos, 'to', dimension, *dest_pos)
+        if config is None:
+            config = self._from_.config
+        self._add_opt(config)
         return self._start(_CloneClause())
 
 
@@ -1555,7 +1566,9 @@ class _DataSource(Command):
 
     @_fluent
     def value(self, v: StrOrArg | float | Nbt | Iterable[StrOrArg | float | Mapping]) -> str:
-        self._add('value', Nbt.to_str(v))
+        if not isinstance(v, Mapping):
+            v = Nbt.to_str(v)
+        self._add('value', v)
         return str(self)
 
     @_fluent
@@ -1797,6 +1810,11 @@ class _FilterClause(Command):
         self._add('outline')
         return str(self)
 
+    @_fluent
+    def strict(self) -> str:
+        self._add('strict')
+        return str(self)
+
 
 class _BiomeFilterClause(Command):
     @_fluent
@@ -2004,7 +2022,7 @@ class _ScoreboardObjectivesMod(Command):
 
 class _ScoreboardObjectivesModifyMod(Command):
     @_fluent
-    def displayname(self, name: StrOrArg | JsonText) -> str:
+    def displayname(self, name: StrOrArg | Text) -> str:
         self._add('displayname', name)
         return str(self)
 
@@ -2146,6 +2164,29 @@ class _PlaceMod(Command):
         self._add_opt_pos(pos)
         return str(self)
 
+    @_fluent
+    def template(self, template: StrOrArg, pos: Position = None, rotation: IntOrArg | str = None,
+                 mirror: StrOrArg = None, integrity: FloatOrArg = None, seed: IntOrArg = None,
+                 action: StrOrArg = None) -> str:
+        self._add('template', as_resource(template))
+        self._add_opt_pos(pos)
+        rotations = {0: NONE, CLOCKWISE_90: 'clockwise_90', COUNTERCLOCKWISE_90: 'counterclockwise_90', 180: '180'}
+        if is_arg(rotation):
+            rotation = de_arg(rotation)
+        elif isinstance(rotation, int):
+            try:
+                rotation = rotations[rotation]
+            except KeyError:
+                raise ValueError('Invalid number for rotation')
+        self._add_opt(rotation)
+        self._add_opt(_in_group(MIRROR_GROUP, mirror))
+        if isinstance(integrity, (int, float)) and not (0 <= integrity <= 1):
+            raise ValueError(f'integrity must be range [0.0, 1.0] {integrity}')
+        self._add_opt(de_float_arg(integrity))
+        self._add_opt(de_int_arg(seed))
+        self._add_opt(_in_group([STRICT], action))
+        return str(self)
+
 
 class _RideMod(Command):
     @_fluent
@@ -2238,9 +2279,9 @@ class _TeamMod(Command):
         elif value_type == str:
             if not isinstance(value, (str, Arg)):
                 raise ValueError(f'{value}: Must be str')
-        elif value_type == 'JsonDef':
-            if not isinstance(value, (JsonDef, Arg)):
-                raise ValueError(f'{value}: Must be JsonDef')
+        elif value_type == 'Nbt':
+            if not isinstance(value, (str, Nbt, Arg)):
+                raise ValueError(f'{value}: Must be NBT or str')
         else:
             if not is_arg(value) and value not in value_type:
                 raise ValueError(f'{value}: Must be one of {value_type}')
@@ -2555,26 +2596,8 @@ def clear(target: Target) -> _ClearClause:
     return cmd._start(_ClearClause())
 
 
-def _clone_dest(start_pos, end_pos, dest_pos, dest_type):
-    dest_type = _in_group(CLONE_COORDS, dest_type)
-    if dest_type == LEAST:
-        return dest_pos
-    # Need to deal with the case where these are relative coordinates. Probably can't handle ^ coords, because we don't
-    # know which is the min, but I can tell the min between two ~ coords.
-    min_pos = tuple(min(s, e) for s, e in zip(start_pos, end_pos))
-    if dest_type == LAST:
-        return tuple(d - (e - m) for e, d, m in zip(end_pos, dest_pos, min_pos))
-    elif dest_type == DELTA:
-        for c in dest_pos:
-            if not isinstance(c, (int, float)):
-                raise ValueError(f'{c}: Delta must contain only numbers')
-        return tuple(m + d for m, d in zip(min_pos, dest_pos))
-    else:
-        raise ValueError(f'{dest_type}: Unknown destination coords type')
-
-
-def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Position = None,
-          dest_type: str = LEAST) -> _CloneClause | _CloneFromDimMod:
+def clone(start_pos: Position = None, end_pos: Position = None,
+          dest_pos: Position = None, config: str = None) -> _CloneClause | _CloneFromDimMod:
     """
     Copies blocks from one place to another.
 
@@ -2589,18 +2612,21 @@ def clone(start_pos: Position = None, end_pos: Position = None, dest_pos: Positi
     DELTA: dest_coords is the amount ot shift the whole region. So (10, 0, 0) means to clone the region 10 blocks
     away along the X axis.
 
-    To use the 1.19.4 syntax, use "clone().from_(...).to(...)". In this form it is the "to" method that takes the
+    To use the 1.19.4+ syntax, use "clone().from_(...).to(...)". In this form it is the "to" method that takes the
     optional dest_coords interpretation parameter.
+
+    Currently, the only valid config value is "strict". This
     """
     cmd = Command()
 
     if start_pos is None:
-        return cmd._start(_CloneFromDimMod())
+        return cmd._start(_CloneFromDimMod(config))
     if end_pos is None or dest_pos is None:
         raise ValueError('Must give all positions or none of them')
 
-    dest_pos = _clone_dest(start_pos, end_pos, dest_pos, dest_type)
+    dest_pos = dest_pos
     cmd._add('$clone', *start_pos, *end_pos, *dest_pos)
+    cmd._add_opt(config)
     return cmd._start(_CloneClause())
 
 
@@ -3122,13 +3148,13 @@ msg = tell
 w = tell
 
 
-def tellraw(target: Target, *message: JsonDef) -> str:
-    """Displays a JSON message to players."""
+def tellraw(target: Target, *message: NbtDef) -> str:
+    """Displays a text message to players."""
     cmd = Command()
     cmd._add('$tellraw', target)
-    jl = JsonList()
+    jl = TextList()
     for m in message:
-        jl.append(JsonText.as_json(m))
+        jl.append(Text.as_text(m))
     if len(jl) == 1:
         jl = jl[0]
     cmd._add(jl)
@@ -3279,7 +3305,7 @@ class Block(Command):
         """The NBT you would use in a sign describing this entity, based on ``full_text``."""
         messages = []
         for i in range(4):
-            messages.append(JsonText.text(self.full_text[i]))
+            messages.append(Text.text(self.full_text[i]))
         msgs = {'messages': messages}
         nbt = Nbt()
         if front is not False:
@@ -3482,7 +3508,8 @@ class Particle(Command):
 
     @classmethod
     def dust_color_transition(cls, from_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg,
-                              to_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg = 1) -> Particle:
+                              to_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg,
+                              scale: FloatOrArg = 1) -> Particle:
         p = Particle('dust_color_transition')
         p.state['from_color'] = cls._3_color(from_color)
         p.state['to_color'] = cls._3_color(to_color)
@@ -3786,8 +3813,8 @@ class Score(Command, Expression):
 ScoreValue = Union[str, int, float, Command, Score, BinaryOp]
 
 
-class JsonList(UserList, JsonHolder):
-    """A list as part of as JSON text structure,"""
+class TextList(UserList, TextHolder):
+    """A list as part of as TextHolder structure,"""
 
     def content(self):
         return self
@@ -3797,10 +3824,10 @@ class JsonList(UserList, JsonHolder):
         return '[' + comma.join(str(x) for x in self) + ']'
 
 
-class JsonText(UserDict, JsonHolder):
-    """This class represents JSON text.
+class Text(Nbt, TextHolder):
+    """This class represents TextHolder.
 
-    You should mostly use the various static factory methods to get a well-formed JSON text component.
+    You should mostly use the various static factory methods to get a well-formed TextHolder component.
     """
 
     def __init__(self, txt: StrOrArg | Mapping = None):
@@ -3809,25 +3836,22 @@ class JsonText(UserDict, JsonHolder):
         else:
             super().__init__(txt)
 
-    def __str__(self):
-        return json.dumps(self, cls=_JsonEncoder)
-
     @classmethod
-    def text(cls, txt: StrOrArg) -> JsonText:
-        """Returns a JSON text node."""
+    def text(cls, txt: StrOrArg) -> Text:
+        """Returns a TextHolder node."""
         return cls({'text': de_arg(txt)})
 
     @classmethod
-    def html_text(cls, html: str) -> List[JsonText]:
-        """Returns a JSON text node populated from some HTML."""
-        parser = _ToMinecraftText()
+    def html_text(cls, html: str) -> TextList[Text]:
+        """Returns a TextHolder node populated from some HTML."""
+        parser = _ToText()
         parser.feed(html)
         parser.close()
-        return parser.json()
+        return parser.text()
 
     @classmethod
-    def translate(cls, translation_id: StrOrArg, *texts: StrOrArg, fallback: StrOrArg = None) -> JsonText:
-        """Returns a JSON text translation node."""
+    def translate(cls, translation_id: StrOrArg, *texts: StrOrArg, fallback: StrOrArg = None) -> Text:
+        """Returns a rich text translation node."""
         if not isinstance(texts, list):
             texts = list(texts)
         else:
@@ -3838,14 +3862,14 @@ class JsonText(UserDict, JsonHolder):
         return cls(elem)
 
     @classmethod
-    def score(cls, score: ScoreName) -> JsonText:
-        """Returns a JSON text score node. Cannot use macro for the entire score, though you can for the components."""
+    def score(cls, score: ScoreName) -> Text:
+        """Returns a TextHolder score node. Cannot use macro for the entire score, though you can for the components."""
         score = as_score(score)
         return cls({'score': {'name': str(score.target), 'objective': de_arg(score.objective)}})
 
     @classmethod
-    def selector(cls, target: Target | StrOrArg, sep_color: StrOrArg = None, sep_text: StrOrArg = None) -> JsonText:
-        """Returns a JSON text selector node."""
+    def selector(cls, target: Target | StrOrArg, sep_color: StrOrArg = None, sep_text: StrOrArg = None) -> Text:
+        """Returns a TextHolder selector node."""
         jt = cls()
         jt['selector'] = str(as_target(target))
         if sep_color:
@@ -3855,14 +3879,14 @@ class JsonText(UserDict, JsonHolder):
         return jt
 
     @classmethod
-    def keybind(cls, keybind_id: StrOrArg) -> JsonText:
-        """Returns a JSON text keybinding node."""
+    def keybind(cls, keybind_id: StrOrArg) -> Text:
+        """Returns a TextHolder keybinding node."""
         return cls({'keybind': de_arg(keybind_id)})
 
     @classmethod
     def nbt(cls, data_target: DataTarget, resource_path: StrOrArg, interpret: BoolOrArg = None,
-            separator: StrOrArg = None) -> JsonText:
-        """Returns a JSON text NBT node."""
+            separator: StrOrArg = None) -> Text:
+        """Returns a TextHolder NBT node."""
         target_key, target_value = data_target_str(data_target).split(' ', 1)
         jt = cls({'nbt': as_resource_path(resource_path), target_key: target_value})
         jt['source'] = target_key
@@ -3876,81 +3900,81 @@ class JsonText(UserDict, JsonHolder):
     def content(self):
         return dict(self)
 
-    def extra(self, *extras: JsonText | StrOrArg) -> JsonText:
-        """Adds an ``extra`` field to a JSON node."""
-        cur = self.setdefault('extra', [])
+    def extra(self, *extras: Text | StrOrArg) -> Text:
+        """Adds an ``extra`` field to rich text."""
+        if 'extra' not in self:
+            self['extra'] = []
+        cur = self['extra']
         cur.extend(de_arg(extras))
         return self
 
-    def color(self, color: StrOrArg) -> JsonText:
-        """Adds a ``color`` field to a JSON node."""
+    def color(self, color: StrOrArg) -> Text:
+        """Adds a ``color`` field to rich text."""
         if not (isinstance(color, str) and color[0] == '#'):
-            color = _in_group(JSON_COLORS, de_arg(color))
+            color = _in_group(TEXT_COLORS, de_arg(color))
         self['color'] = color
         return self
 
-    def font(self, font: StrOrArg) -> JsonText:
-        """Adds a ``font`` field to a JSON node."""
+    def font(self, font: StrOrArg) -> Text:
+        """Adds a ``font`` field to rich text."""
         self['font'] = de_arg(as_resource_path(font))
         return self
 
-    def bold(self, v: BoolOrArg = True) -> JsonText:
-        """Adds a ``bold`` field to a JSON node."""
+    def bold(self, v: BoolOrArg = True) -> Text:
+        """Adds a ``bold`` field to rich text."""
         self['bold'] = de_arg(v)
         return self
 
-    def italic(self, v: BoolOrArg = True) -> JsonText:
-        """Adds a ``italic`` field to a JSON node."""
+    def italic(self, v: BoolOrArg = True) -> Text:
+        """Adds a ``italic`` field to rich text."""
         self['italic'] = de_arg(v)
         return self
 
-    def underlined(self, v: BoolOrArg = True) -> JsonText:
-        """Adds an ``underline`` field to a JSON node."""
+    def underlined(self, v: BoolOrArg = True) -> Text:
+        """Adds an ``underline`` field to rich text."""
         self['underlined'] = de_arg(v)
         return self
 
-    def strikethrough(self, v: BoolOrArg = True) -> JsonText:
-        """Adds a ``strikethrough`` field to a JSON node."""
+    def strikethrough(self, v: BoolOrArg = True) -> Text:
+        """Adds a ``strikethrough`` field to rich text."""
         self['strikethrough'] = de_arg(v)
         return self
 
-    def obfuscated(self, v: BoolOrArg = True) -> JsonText:
-        """Adds an ``obfuscated`` field to a JSON node."""
+    def obfuscated(self, v: BoolOrArg = True) -> Text:
+        """Adds an ``obfuscated`` field to rich text."""
         self['obfuscated'] = de_arg(v)
         return self
 
-    def plain(self) -> JsonText:
+    def plain(self) -> Text:
         """Resets all text attributes in this node."""
         for v in 'italic', 'bold', 'underlined', 'strikethrough', 'obfuscated':
             self[v] = False
         return self
 
-    def insertion(self, to_insert: StrOrArg) -> JsonText:
-        """Adds an ``insertion`` field to a JSON node."""
+    def insertion(self, to_insert: StrOrArg) -> Text:
+        """Adds an ``insertion`` field to rich text."""
         self['insertion'] = de_arg(to_insert)
         return self
 
-    def click_event(self) -> _JsonTextClickEventAction:
-        """Adds a ``click_event`` field to a JSON node."""
-        ev = {}
-        self['clickEvent'] = ev
-        return _JsonTextClickEventAction(self, ev)
+    def click_event(self) -> _TextClickEventAction:
+        """Adds a ``click_event`` field to rich text."""
+        v = self['click_event'] = _TextClickEventAction(self)
+        return v
 
-    def hover_event(self) -> _JsonTextHoverAction:
-        """Adds a ``hover_event`` field to a JSON node."""
-        ev = {}
-        self['hoverEvent'] = ev
-        return _JsonTextHoverAction(self, ev)
+    def hover_event(self) -> _TextHoverAction:
+        """Adds a ``hover_event`` field to rich text."""
+        v = self['hover_event'] = _TextHoverAction(self)
+        return v
 
     @classmethod
-    def as_json(cls, text: Mapping | str | JsonText):
-        """Returns a JsonText object built from the given mapped values."""
-        if text is None or isinstance(text, JsonText):
+    def as_text(cls, text: Mapping | str | Text) -> Mapping:
+        """Returns a Text object built from the given mapped values."""
+        if text is None or isinstance(text, Text):
             return text
         if is_arg(text):
             return de_arg(text)
         if isinstance(text, str):
-            return JsonText.text(text)
+            return Text.text(text)
         elif isinstance(text, Mapping):
             return cls(text)
         else:
@@ -3963,10 +3987,10 @@ ScoreName = Union[Score, Tuple[Target, StrOrArg]]
 BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, MappingOrArg], Tuple[StrOrArg, MappingOrArg, MappingOrArg]]
 EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, MappingOrArg]]
 ParticleDef = Union[StrOrArg, Particle, Tuple[StrOrArg, MappingOrArg]]
-JsonDef = Union[JsonText, dict, StrOrArg]
+TextDef = Union[Text, dict, StrOrArg]
 SignMessage = Union[StrOrArg, NbtDef, None]
 SignMessages = Iterable[SignMessage]
-SignCommand = Union[StrOrArg, Command, NbtDef, Callable[[Union[JsonText]], JsonText], None]
+SignCommand = Union[StrOrArg, Command, NbtDef, Callable[[Union[Text]], Text], None]
 SignCommands = Iterable[SignCommand]
 Commands = Iterable[Union[Command, str]]
 RawDataTarget = Union[Position, TargetSpec, StrOrArg]

@@ -210,15 +210,15 @@ class TeamOptions(PageValuesDesc):
         super().__init__('TeamOption', WIKI + 'Commands/team', 'team_options')
         vis = ['never', 'hideForOtherTeams', 'hideForOwnTeam', 'always']
         self.data = {
-            "displayName": '"JsonDef"',
-            "color": '"JsonDef"',
+            "displayName": "'Nbt'",
+            "color": "'Nbt'",
             "friendlyFire": bool,
             "seeFriendlyInvisibles": bool,
             "nametagVisibility": vis,
             "deathMessageVisibility": vis,
             "collisionRule": ['always', 'never', 'pushOtherTeams', 'pushOwnTeam'],
-            "prefix": '"JsonDef"',
-            "suffix": '"JsonDef"'}
+            "prefix": "'Nbt'",
+            "suffix": "'Nbt'"}
 
     def fetch(self):
         tab = '<table>'

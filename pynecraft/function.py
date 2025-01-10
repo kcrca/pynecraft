@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import json
 import math
 import os
 import shutil
+from collections import UserDict
+from json import JSONEncoder
 from re import Pattern
 from typing import Any, MutableMapping
 
-from .base import _JsonEncoder, _in_group, _to_list, _to_tuple
+from .base import _in_group, _to_list, _to_tuple
 from .commands import *
 
 FLUID = 'fluid'
@@ -60,6 +63,18 @@ def as_function_name(name: str):
     if not m:
         raise ValueError(f'{name}: Invalid function name')
     return name
+
+class _JsonEncoder(JSONEncoder):
+    def __init__(self, *args, **kwargs):
+        kwargs['ensure_ascii'] = False
+        super().__init__(*args, **kwargs)
+
+    def default(self, o: Any) -> Any:
+        if isinstance(o, TextHolder):
+            return o.content()
+        if isinstance(o, Nbt):
+            return dict(o)
+        return JSONEncoder.default(self, o)
 
 
 def _write_json(values: Mapping, path: Path):
@@ -462,7 +477,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 60
+LATEST_PACK_VERSION = 62
 
 
 class DataPack:
@@ -476,7 +491,7 @@ class DataPack:
         self._name = name
         self.function_set = FunctionSet('function', self)
         self._json = {}
-        self._mcmeta = {'pack': {'pack_format': format_version, 'description': JsonText.text(name)}}
+        self._mcmeta = {'pack': {'pack_format': format_version, 'description': Text.text(name)}}
         self._description = None
         if mcmeta:
             self._mcmeta.update(mcmeta)
@@ -568,7 +583,7 @@ class DataPack:
         return self._name
 
     @property
-    def description(self) -> JsonText | None:
+    def description(self) -> Text | None:
         """The data pack description, stored in the ``pack.mcmeta`` file."""
         try:
             return self._mcmeta['pack']['description']
@@ -576,9 +591,9 @@ class DataPack:
             return None
 
     @description.setter
-    def description(self, text: JsonDef):
+    def description(self, text: TextDef):
         if isinstance(text, str):
-            text = JsonText.text(text)
+            text = Text.text(text)
         self._mcmeta['pack']['description'] = text
 
     @property
