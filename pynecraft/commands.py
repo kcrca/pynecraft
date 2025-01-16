@@ -2349,6 +2349,110 @@ class _TimeMod(Command):
         return str(self)
 
 
+class _TestMod(Command):
+    _seg_re = r'[a-zA-Z0-9*?]+'
+    _selector_re = re.compile(f'{_seg_re}(:{_seg_re})?')
+
+    @classmethod
+    def _as_selector(cls, selector: StrOrArg | None, allow_none=True) -> StrOrArg | None:
+        if is_arg(selector):
+            return de_arg(selector)
+        if selector is None:
+            if allow_none:
+                return selector
+            raise ValueError(f'Selector missing')
+        if not cls._selector_re.fullmatch(selector):
+            raise ValueError(f'Invalid test selector: {selector}')
+        return selector
+
+    @_fluent
+    def clearall(self, radius: FloatOrArg = None) -> str:
+        self._add('clearall')
+        self._add_opt(de_float_arg(radius))
+        return str(self)
+
+    @_fluent
+    def clearthat(self) -> str:
+        self._add('clearthat')
+        return str(self)
+
+    @_fluent
+    def clearthese(self) -> str:
+        self._add('clearthese')
+        return str(self)
+
+    @_fluent
+    def create(self, namespace: StrOrArg, width: IntOrArg = None, height: IntOrArg = None,
+               depth: IntOrArg = None) -> str:
+        self._add('create', as_resource(namespace))
+        self._add_opt(de_int_arg(width), de_int_arg(height), de_int_arg(depth))
+        return str(self)
+
+    @_fluent
+    def locate(self, selector: StrOrArg) -> str:
+        self._add('locate', _TestMod._as_selector(selector))
+        return str(self)
+
+    def resetall(self, radius: FloatOrArg = None) -> str:
+        self._add('resetall')
+        self._add_opt(de_float_arg(radius))
+        return str(self)
+
+    @_fluent
+    def resetthat(self) -> str:
+        self._add('resetthat')
+        return str(self)
+
+    @_fluent
+    def resetthese(self) -> str:
+        self._add('resetthese')
+        return str(self)
+
+    def pos(self, variable: StrOrArg) -> str:
+        self._add('pos', variable)
+        return str(self)
+
+    def run(self, selector: StrOrArg, count: IntOrArg = None, until_failed: BoolOrArg = None,
+            rotation_steps: IntOrArg = None, tests_per_row: IntOrArg = None) -> str:
+        self._add('run', _TestMod._as_selector(selector))
+        self._add_opt(de_int_arg(count), de_arg(until_failed), de_int_arg(rotation_steps), de_int_arg(tests_per_row))
+        return str(self)
+
+    def runclosest(self, count: IntOrArg = None, until_failed: BoolOrArg = None) -> str:
+        self._add('runclosest')
+        self._add_opt(de_int_arg(count), de_arg(until_failed))
+        return str(self)
+
+    def runfailed(self, count: IntOrArg = None, until_failed: BoolOrArg = None, rotation_steps: IntOrArg = None,
+                  tests_per_row: IntOrArg = None) -> str:
+        self._add('runfailed')
+        self._add_opt(de_int_arg(count), de_arg(until_failed), de_int_arg(rotation_steps), de_int_arg(tests_per_row))
+        return str(self)
+
+    def runmultiple(self, selector: StrOrArg, count: IntOrArg) -> str:
+        self._add('runmultiple', _TestMod._as_selector(selector))
+        self._add_opt(de_int_arg(count))
+        return str(self)
+
+    def runthat(self, count: IntOrArg = None, until_failed: BoolOrArg = None) -> str:
+        self._add('runthat')
+        self._add_opt(de_int_arg(count), de_arg(until_failed))
+        return str(self)
+
+    def runthese(self, count: IntOrArg = None, until_failed: BoolOrArg = None) -> str:
+        self._add('runthese')
+        self._add_opt(de_int_arg(count), de_arg(until_failed))
+        return str(self)
+
+    def stop(self):
+        self._add('stop')
+        return str(self)
+
+    def verify(self, selector: str) -> str:
+        self._add('verify', _TestMod._as_selector(selector))
+        return str(self)
+
+
 class _TickMod(Command):
     @_fluent
     def query(self) -> str:
@@ -3148,7 +3252,7 @@ msg = tell
 w = tell
 
 
-def tellraw(target: Target, *message: NbtDef) -> str:
+def tellraw(target: Target, *message: NbtDef | StrOrArg) -> str:
     """Displays a text message to players."""
     cmd = Command()
     cmd._add('$tellraw', target)
@@ -3159,6 +3263,13 @@ def tellraw(target: Target, *message: NbtDef) -> str:
         jl = jl[0]
     cmd._add(jl)
     return str(cmd)
+
+
+def test() -> _TestMod:
+    """Run tests"""
+    cmd = Command()
+    cmd._add('$test')
+    return cmd._start(_TestMod())
 
 
 def tick() -> _TickMod:
