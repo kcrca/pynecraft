@@ -1301,9 +1301,8 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-01-08T15:01:32-08:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-01-12T21:57:14-08:00
 __particle_dups = {}
-AMBIENT_ENTITY_EFFECT = "ambient_entity_effect"
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
 __particle_dups["block"] = "block"
@@ -1416,26 +1415,24 @@ WHITE_ASH = "white_ash"
 WHITE_SMOKE = "white_smoke"
 WITCH = "witch"
 PARTICLE_GROUP = [
-    AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, "block", BLOCK_CRUMBLE, "block_marker", BUBBLE, BUBBLE_COLUMN_UP,
-    BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, CRIMSON_SPORE, CRIT,
-    CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER,
-    DRIPPING_HONEY, DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, "dust_pillar",
-    DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT,
-    EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, "falling_dust", FALLING_HONEY,
-    FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING,
-    "flame", FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item",
-    ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA,
-    MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL,
-    SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE,
-    SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING,
-    TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION,
-    VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
+    ANGRY_VILLAGER, ASH, "block", BLOCK_CRUMBLE, "block_marker", BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP,
+    CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, CRIMSON_SPORE, CRIT, CURRENT_DOWN,
+    DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY,
+    DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, "dust_pillar", DUST_PLUME,
+    EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION,
+    EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, "falling_dust", FALLING_HONEY, FALLING_LAVA,
+    FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, "flame", FLASH,
+    GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB,
+    ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM,
+    NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE,
+    SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM,
+    SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING, TRAIL,
+    "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION,
+    WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
 ]
 
 ParticleInfo = namedtuple("Particle", ['name', 'value', 'desc'])
 particles = {
-    "AMBIENT_ENTITY_EFFECT": ParticleInfo("""Ambient Entity Effect""", "ambient_entity_effect",
-                                          """Emitted by entities with effects from a beacon or a conduit."""),
     "ANGRY_VILLAGER": ParticleInfo("""Angry Villager""", "angry_villager",
                                    """Produced when hitting villagers or when villagers fail to breed."""),
     "ASH": ParticleInfo("""Ash""", "ash", """Floats throughout the atmosphere in the soul sand valley biome."""),
@@ -1444,7 +1441,7 @@ particles = {
     "BLOCK_CRUMBLE": ParticleInfo("""Block Crumble""", "block_crumble",
                                   """Shown when a creaking heart is destroyed along with its creaking."""),
     "BLOCK_MARKER": ParticleInfo("""Block Marker""", "block_marker",
-                                 """Marks the position of barriers, structure voids and light blocks when they are held in the main hand."""),
+                                 """Marks the position of barriers and light blocks when they are held in the main hand."""),
     "BUBBLE": ParticleInfo("""Bubble""", "bubble",
                            """Appears around entities splashing in water, emitted by guardian lasers, produced by guardians moving, appears by the fishing bobber and along the path of a fish, trails behind projectiles and eyes of ender underwater."""),
     "BUBBLE_COLUMN_UP": ParticleInfo("""Bubble Column Up""", "bubble_column_up",
