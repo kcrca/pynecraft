@@ -648,7 +648,7 @@ class _TextMod(Nbt):
 class _TextHoverAction(_TextMod):
     def show_text(self, txt: Text | str) -> Text:
         self['action'] = 'show_text'
-        self['text'] = txt
+        self['value'] = txt
         return self.parent
 
     def show_item(self, id: str, count: int = None, tag: str = None) -> Text:
