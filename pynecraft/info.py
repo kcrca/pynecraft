@@ -6,8 +6,6 @@ from collections import UserDict
 from enum import Enum
 from importlib.resources import files
 
-from bidict import bidict
-
 from ._utils.fetch_things import ItemFetcher
 from .base import COLORS, Nbt, NbtDef, to_id, to_name
 from .commands import Block, Entity
@@ -419,4 +417,4 @@ armors = ('leather', 'chainmail', 'iron', 'golden', 'diamond', 'netherite')
 
 sherds = tuple(pottery_sherds[x].value for x in POTTERY_SHERD_GROUP)
 
-armor_equipment = bidict({'feet': 'boots', 'legs': 'leggings', 'chest': 'chestplate', 'head': 'helmet'})
+armor_equipment = {'feet': 'boots', 'legs': 'leggings', 'chest': 'chestplate', 'head': 'helmet'}
