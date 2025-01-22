@@ -1344,9 +1344,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tell @s hi', tell(s(), 'hi'))
         self.assertEqual('tell @s hi', msg(s(), 'hi'))
         self.assertEqual('tell @s hi', w(s(), 'hi'))
-        self.assertEqual('tellraw @s howdy', tellraw(s(), Text.text('howdy')))
-        self.assertEqual('tellraw @s howdy', tellraw(s(), {'text': 'howdy'}))
-        self.assertEqual('tellraw @s howdy', tellraw(s(), 'howdy'))
+        self.assertEqual('tellraw @s {text: howdy}', tellraw(s(), Text.text('howdy')))
+        self.assertEqual('tellraw @s {text: howdy}', tellraw(s(), {'text': 'howdy'}))
+        self.assertEqual('tellraw @s {text: howdy}', tellraw(s(), 'howdy'))
 
     def test_function(self):
         self.assertEqual('function m:b/c', str(function('m:b/c')))
