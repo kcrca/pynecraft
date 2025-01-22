@@ -284,10 +284,10 @@ class TestCommands(unittest.TestCase):
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f"}},
                              Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f'))
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f",
-                                                            "name": "Robin"}},
+                                                             "name": "Robin"}},
                              Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f', 'Robin'))
             self.assertEqual(({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f",
-                                                             "name": {"text": "ooh"}}}),
+                                                              "name": {"text": "ooh"}}}),
                              Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f', Text.text("ooh")))
 
             self.assertEqual((
@@ -1344,9 +1344,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tell @s hi', tell(s(), 'hi'))
         self.assertEqual('tell @s hi', msg(s(), 'hi'))
         self.assertEqual('tell @s hi', w(s(), 'hi'))
-        self.assertEqual('tellraw @s {text: howdy}', tellraw(s(), Text.text('howdy')))
-        self.assertEqual('tellraw @s {text: howdy}', tellraw(s(), {'text': 'howdy'}))
-        self.assertEqual('tellraw @s {text: howdy}', tellraw(s(), 'howdy'))
+        self.assertEqual('tellraw @s howdy', tellraw(s(), Text.text('howdy')))
+        self.assertEqual('tellraw @s howdy', tellraw(s(), {'text': 'howdy'}))
+        self.assertEqual('tellraw @s howdy', tellraw(s(), 'howdy'))
 
     def test_function(self):
         self.assertEqual('function m:b/c', str(function('m:b/c')))

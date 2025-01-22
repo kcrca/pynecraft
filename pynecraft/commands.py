@@ -3947,6 +3947,11 @@ class Text(Nbt, TextHolder):
         else:
             super().__init__(txt)
 
+    def __str__(self):
+        if len(self) == 1 and 'text' in self:
+            return str(self['text'])
+        return super().__str__()
+
     @classmethod
     def text(cls, txt: StrOrArg) -> Text:
         """Returns a TextHolder node."""

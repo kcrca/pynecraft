@@ -123,8 +123,8 @@ class Sign(Block):
     @classmethod
     def lines_nbt(cls, messages: SignMessages, commands: SignCommands = ()) -> Nbt:
         """Returns the lines of NBT for sign text.
-        :param messages: The sign text, as an iterable of one to four lines of text. Entries that are None will generate no
-        NBT, any text will generate a line for the sign.
+        :param messages: The sign text, as an iterable of one to four lines of text. Entries that are None will
+            generate no NBT, any text will generate a line for the sign.
         :param commands: Commands for the sign, in order.
         :return: The NBT for the combination of text and commands.
         """
@@ -157,6 +157,8 @@ class Sign(Block):
             command = command(orig_text)
         if command:
             entry = text.click_event().run_command(command)
+        if len(entry) == 1 and 'text' in entry:
+            return entry['text']
         return entry
 
     @classmethod
