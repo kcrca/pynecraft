@@ -3650,9 +3650,9 @@ class Particle(Command):
         return p
 
     @classmethod
-    def shriek(cls, delay: IntOrArg) -> Particle:
+    def shriek(cls, delay: FloatOrArg) -> Particle:
         p = Particle('shriek')
-        p.state['delay'] = de_int_arg(delay)
+        p.state['delay'] = de_float_arg(delay)
         return p
 
     @classmethod

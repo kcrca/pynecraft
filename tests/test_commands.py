@@ -223,7 +223,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$(k)', str(Entity(Arg('k'))))
         self.assertEqual('$(k){b: foo}', str(Entity(Arg('k'), nbt={'b': 'foo'})))
 
-    def test_json_text(self):
+    def test_text(self):
         sort_keys = Nbt.sort_keys
         try:
             Nbt.sort_keys = False

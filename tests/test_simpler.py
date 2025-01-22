@@ -18,15 +18,10 @@ class TestSimpler(unittest.TestCase):
         shutil.rmtree(self.tmp_path)
 
     def test_sign_lines(self):
-        self.assertEqual(
-            """{messages: [one, two, three, four]}""",
-            str(Sign.lines_nbt(("one", "two", "three", "four"))))
-        self.assertEqual(
-            """{messages: ["", "", "", ""]}""",
-            str(Sign.lines_nbt((None, ''))))
-        self.assertEqual(
-            Nbt({'messages': ['', 'foo', 'bar baz', '']}),
-            Sign.lines_nbt((None, 'foo', 'bar baz')))
+        self.assertEqual("""{messages: [one, two, three, four]}""",
+                         str(Sign.lines_nbt(("one", "two", "three", "four"))))
+        self.assertEqual("""{messages: ["", "", "", ""]}""", str(Sign.lines_nbt((None, ''))))
+        self.assertEqual(Nbt({'messages': ['', 'foo', 'bar baz', '']}), Sign.lines_nbt((None, 'foo', 'bar baz')))
 
         self.assertEqual([
             'setblock 1 ~2 ^3 air\n',
@@ -50,8 +45,7 @@ class TestSimpler(unittest.TestCase):
             text_lines(Sign((None, 'hi', 'there'), wood='spruce').place((1, r(2), d(3)), N))[1:])
 
         self.assertEqual(
-            {'messages': [{'text': '', 'click_event': {'action': 'run_command', 'command': '/say hi'}}, '',
-                          '', '']},
+            {'messages': [{'text': '', 'click_event': {'action': 'run_command', 'command': '/say hi'}}, '', '', '']},
             Sign.lines_nbt((), (say('hi'))))
         self.assertEqual({'messages': [
             {'text': 'hi', 'click_event': {'action': 'run_command', 'command': '/say boo'}}, 'there',
@@ -63,10 +57,9 @@ class TestSimpler(unittest.TestCase):
             '']},
             Sign.lines_nbt((), (say('hi'), lambda x: say('there'))))
 
-        self.assertEqual(Nbt({
-            'front_text': {'messages': ['hi', '', '', '']},
-            'back_text': {'messages': ['there', '', '', '']},
-            'is_waxed': True}),
+        self.assertEqual(
+            Nbt({'front_text': {'messages': ['hi', '', '', '']}, 'back_text': {'messages': ['there', '', '', '']},
+                 'is_waxed': True}),
             Sign().front(('hi',)).back(('there',)).wax().nbt)
 
         with self.assertRaises(ValueError):
@@ -136,32 +129,24 @@ class TestSimpler(unittest.TestCase):
 
     def test_sign(self):
         self.assertEqual(
-            {'front_text': {'messages': ['', 'hi', '', '']},
-             'back_text': {'messages': ['', 'hi', '', '']}},
+            {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']}},
             Sign((None, 'hi')).nbt)
-        self.assertEqual({'front_text': {'messages': ['', 'hi', '', '']},
-                          'back_text': {'messages': ['', 'hi', '', '']},
+        self.assertEqual({'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']},
                           'is_waxed': True}, Sign((None, 'hi'), nbt={'is_waxed': True}).nbt)
         self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
-                          'front_text': {
-                              'messages': ['', '', 'Both Sides', '']}},
+                          'front_text': {'messages': ['', '', 'Both Sides', '']}},
                          Sign().messages((None, None, 'Both Sides')).nbt)
-        self.assertEqual(
-            {'back_text': {'messages': ['', '', 'Both Sides', '']},
-             'front_text': {'messages': ['', '', 'Both Sides', '']}},
-            Sign().messages((None, None, 'Both Sides'), front=None).nbt)
-        self.assertEqual(
-            {'front_text': {'messages': ['', '', 'Both Sides', '']}},
-            Sign().messages((None, None, 'Both Sides'), front=True).nbt)
-        self.assertEqual(
-            {'back_text': {'messages': ['', '', 'Both Sides', '']}},
-            Sign().messages((None, None, 'Both Sides'), front=False).nbt)
-        self.assertEqual(
-            {'front_text': {'messages': ['', '', 'Both Sides', '']}},
-            Sign().front((None, None, 'Both Sides')).nbt)
-        self.assertEqual(
-            {'back_text': {'messages': ['', '', 'Both Sides', '']}},
-            Sign().back((None, None, 'Both Sides')).nbt)
+        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
+                          'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().messages((None, None, 'Both Sides'), front=None).nbt)
+        self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().messages((None, None, 'Both Sides'), front=True).nbt)
+        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().messages((None, None, 'Both Sides'), front=False).nbt)
+        self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().front((None, None, 'Both Sides')).nbt)
+        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().back((None, None, 'Both Sides')).nbt)
 
         self.assertEqual({'front_text': {'color': 'blue'}, 'back_text': {'color': 'blue'}}, Sign(()).color(BLUE).nbt)
         self.assertEqual({'front_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=True).nbt)
