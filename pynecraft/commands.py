@@ -3076,7 +3076,7 @@ def rotate(target: Target, rotation: tuple[FloatOrArg | RelCoord, FloatOrArg | R
     return cmd._start(_RotateMod())
 
 
-def say(msg: StrOrArg, *msgs: StrOrArg) -> str:
+def say(msg: object, *msgs: object) -> str:
     """Displays a message to multiple players."""
     cmd = Command()
     cmd._add('$say', msg, *msgs)
