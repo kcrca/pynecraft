@@ -64,6 +64,7 @@ def as_function_name(name: str):
         raise ValueError(f'{name}: Invalid function name')
     return name
 
+
 class _JsonEncoder(JSONEncoder):
     def __init__(self, *args, **kwargs):
         kwargs['ensure_ascii'] = False
@@ -477,7 +478,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 63
+LATEST_PACK_VERSION = 64
 
 
 class DataPack:
@@ -679,6 +680,12 @@ class DataPack:
     def structure(self, structure: str) -> dict[str, dict]:
         """Returns defined structures. You can add to this dict to add to the datapack. """
         return self._get_json('structure', None, structure)
+
+    def test_instance(self) -> dict[str, dict]:
+        return self._get_json('test_instance')
+
+    def test_environment(self) -> dict[str, dict]:
+        return self._get_json('test_environment')
 
     def worldgen(self, worldgen_set: str) -> dict[str, dict]:
         """Returns defined worldgen settings. You can add to this dict to add to the datapack. """
