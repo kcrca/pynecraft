@@ -3949,7 +3949,8 @@ class Text(Nbt, TextHolder):
 
     def __str__(self):
         if len(self) == 1 and 'text' in self:
-            return str(self['text'])
+            to_str = Nbt.to_str(self['text'])
+            return to_str
         return super().__str__()
 
     @classmethod
