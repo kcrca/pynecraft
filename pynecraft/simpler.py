@@ -447,7 +447,7 @@ class Item(Entity):
                 if nbt:
                     retval = retval.merge(nbt)
             elif item.nbt:
-                retval['components']['block_entity_data'] = item.nbt
+                retval['components']['minecraft:block_entity_data'] = item.nbt
         try:
             block_state = item.state
             if block_state:
