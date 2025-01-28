@@ -959,6 +959,15 @@ class RelCoord:
             raise ValueError('Not the same length')
         return tuple(op(v1[i], v2[i]) for i in range(len(v1)))
 
+    @staticmethod
+    def coords(coord: RelCoord | int | float, *coords: RelCoord | int | float):
+        if len(coords) == 0:
+            return str(coord)
+        s = f'({coord}'
+        for c in coords:
+            s += f', {c}'
+        return s + ')'
+
 
 U = TypeVar('U', bound=RelCoord)
 
