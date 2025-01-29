@@ -451,7 +451,7 @@ class Item(Entity):
         try:
             block_state = item.state
             if block_state:
-                retval['components'] = block_state
+                retval['components'] = {'block_entity_data': block_state}
         except AttributeError:
             pass
         if nbt:
@@ -720,14 +720,14 @@ class ItemFrame(Entity):
         block = as_block(name)
         if block is None:
             try:
-                del self.nbt['Item']['components']['minecraft:custom_name']
+                del self.nbt['Item']['components']['custom_name']
             except KeyError:
                 pass  # Must not be there already, ignore the error
         else:
             if 'Item' not in self.nbt:
                 self.item(block)
             nbt = self.nbt
-            nbt['Item']['components']['minecraft:custom_name'] = Text.text(block.name)
+            nbt['Item']['components']['custom_name'] = Text.text(block.name)
         return self
 
 
