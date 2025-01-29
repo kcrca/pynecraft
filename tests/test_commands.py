@@ -930,7 +930,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('entity_effect{color: 128}', str(Particle.entity_effect(128)))
         self.assertEqual('item{item: elytra}', str(Particle.item('elytra')))
         self.assertEqual('item{item: $(e)}', str(Particle.item(Arg('e'))))
-        self.assertEqual('item{item: {components: {a: b}, id: elytra}}',
+        self.assertEqual('item{item: {components: {"minecraft:a": b}, id: elytra}}',
                          str(Particle.item(Entity('elytra', components={'a': 'b'}))))
         self.assertEqual('sculk_charge{roll: 1.1f}', str(Particle.sculk_charge(1.1)))
         self.assertEqual('sculk_charge{roll: $(r)}', str(Particle.sculk_charge(Arg('r'))))

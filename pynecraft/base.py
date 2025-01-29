@@ -36,6 +36,14 @@ _time_re = re.compile(r'([0-9]+(?:\.[0-9]+)?)([dst])?', re.IGNORECASE)
 _backslash_re = re.compile(r'[\a\b\f\n\r\t\v]')
 _backslash_map = {'\\': '\\', '\a': 'a', '\b': 'b', '\f': 'f', '\n': 'n', '\r': 'r', '\t': 't', '\v': 'v'}
 
+# This works around a bug that component names _must_ be prefixed with "minecraft:" or another namespace. No other
+# key requires this. Mojang thinks this is not a bug, but a "feature request". In either case, it is required. This
+# expression is used to fix cases of this in nbt paths.
+
+# Weird expression here, but trying to be clear -- using _jed_resource without using f-str to avoid confusion with
+# the curly braces that must be in the pattern itself to allow [{foo:12}] syntax.
+_component_fix_re = re.compile(r'(components)\.([REPL]+(\.|\[[0-9]|\[\{[^}]*}+]|$))'.replace('REPL', _jed_resource))
+
 NORTH = 'north'
 EAST = 'east'
 SOUTH = 'south'
@@ -337,7 +345,8 @@ def as_nbt_path(path: StrOrArg | None) -> str | None:
         return str(path)
     if not _nbt_path_re.fullmatch(path):
         raise ValueError(f'{path}: Invalid NBT path')
-    return path
+    sub = _component_fix_re.sub(r'\1.minecraft:\2', path)
+    return sub
 
 
 def as_resource(name: StrOrArg | None, allow_namespace=True, allow_not=False) -> str | None:
@@ -688,7 +697,7 @@ class Nbt(UserDict):
         sout.write(':')
 
     @classmethod
-    def _to_str(cls, elem, sout, force_type=None):
+    def _to_str(cls, elem, sout, force_type=None, components_child=False):
         if isinstance(elem, (Nbt, dict)):
             sout.write('{')
             keys = elem.keys()
@@ -698,12 +707,22 @@ class Nbt(UserDict):
             for key in keys:
                 value = elem[key]
                 first = cls._comma(first, sout)
-                cls._write_key(key, sout)
-                cls._space(sout)
-                if key in cls._forced_type_tags:
-                    cls._to_str(value, sout, force_type=cls._forced_type_tags[key])
+                # See comment for _component_fix_re; this is a different part of that, which works unless the Nbt
+                # being stringed will be used as a child of a 'components' that is not present in this Nbt itself.
+                if components_child and not re.match('^[a-z_0-9]+:', key):
+                    cls._write_key('minecraft:' + key, sout)
                 else:
-                    cls._to_str(value, sout, force_type)
+                    cls._write_key(key, sout)
+                cls._space(sout)
+                is_components = key in ('components', 'minecraft:components')
+                # This isn't quite strictly what sort_keys means, but tag order isn't significant, so this is helpful.
+                if key == 'Tags' and isinstance(value, list) and Nbt.sort_keys:
+                    value.sort()
+                if key in cls._forced_type_tags:
+                    cls._to_str(value, sout, force_type=cls._forced_type_tags[key],
+                                components_child=is_components)
+                else:
+                    cls._to_str(value, sout, force_type, components_child=is_components)
             sout.write('}')
         elif isinstance(elem, Nbt.TypedArray):
             sout.write('[')
