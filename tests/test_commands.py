@@ -727,6 +727,7 @@ class TestCommands(unittest.TestCase):
 
     def test_say(self):
         self.assertEqual('say test', say('test'))
+        self.assertEqual('say test bar', say('test', 'bar'))
         self.assertEqual('$say v$(test)', say('v$(test)'))
         self.assertEqual('$say $(test)', say(Arg('test')))
 
@@ -1347,6 +1348,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tellraw @s howdy', tellraw(s(), Text.text('howdy')))
         self.assertEqual('tellraw @s howdy', tellraw(s(), {'text': 'howdy'}))
         self.assertEqual('tellraw @s howdy', tellraw(s(), 'howdy'))
+        self.assertEqual('tellraw @s [howdy, " ", there]', tellraw(s(), 'howdy', 'there'))
 
     def test_function(self):
         self.assertEqual('function m:b/c', str(function('m:b/c')))

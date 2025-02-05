@@ -374,7 +374,7 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual({'Facing': 5}, ItemFrame(EAST).fixed(False).nbt)
         self.assertEqual(
             {'Facing': 5, 'Fixed': True,
-             'Item': {'id': 'minecraft:my_name', 'components': {'minecraft:custom_name': {'text': 'My Name'}}}},
+             'Item': {'id': 'minecraft:my_name', 'components': {'custom_name': {'text': 'My Name'}}}},
             ItemFrame(EAST).named('My Name').nbt)
         self.assertEqual({'Facing': 5, 'Fixed': True, 'foo': 12}, ItemFrame(EAST, nbt={'foo': 12}).nbt)
         self.assertEqual({'Facing': 5, 'Fixed': True, 'Item': {'id': 'minecraft:obsidian'}},

@@ -3257,7 +3257,12 @@ def tellraw(target: Target, *message: NbtDef | StrOrArg) -> str:
     cmd = Command()
     cmd._add('$tellraw', target)
     jl = TextList()
+    first = True
     for m in message:
+        if first:
+            first = False
+        else:
+            jl.append(Text.as_text(' '))
         jl.append(Text.as_text(m))
     if len(jl) == 1:
         jl = jl[0]
