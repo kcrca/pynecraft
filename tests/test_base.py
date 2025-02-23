@@ -38,6 +38,9 @@ class TestBase(unittest.TestCase):
         self.assertEqual('"1.1"', _quote("1.1"))
         self.assertEqual('t1', _quote("t1"))
 
+    def test_strings(self):
+        self.assertEqual('{Command: "say hi"}', str(Nbt({'Command': "say hi"})))
+
     def test_to_list(self):
         self.assertListEqual([], _to_list(()))
         self.assertListEqual([], _to_list([]))
@@ -309,6 +312,7 @@ class TestBase(unittest.TestCase):
         self.assertIsNot(simple_nbt, simple_nbt.clone())
         self.assertEqual(simple_nbt, simple_nbt.clone())
         self.assertEqual(Nbt(), Nbt()['One'])
+        self.assertEqual('{Command: "$(foo) bar"}', str(Nbt({'Command': '$(foo) bar'})))
 
     def test_set_or_clear(self):
         self.assertEqual({'key': 12}, Nbt().set_or_clear('key', 12))

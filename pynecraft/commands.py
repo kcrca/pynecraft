@@ -1523,6 +1523,11 @@ class _CloneClause(Command):
         self._flag(flag)
         return str(self)
 
+    @_fluent
+    def strict(self) -> _CloneClause:
+        self._add('strict')
+        return self.clone()
+
 
 # noinspection PyAttributeOutsideInit
 class _CloneFromDimMod(Command):
@@ -1783,12 +1788,7 @@ class _ExperienceMod(Command):
         return str(self)
 
 
-class _FilterClause(Command):
-    @_fluent
-    def replace(self, block: BlockDef = None) -> str:
-        self._add('replace')
-        self._add_opt(block)
-        return str(self)
+class _FilterModifier(Command):
 
     @_fluent
     def destroy(self) -> str:
@@ -1801,11 +1801,6 @@ class _FilterClause(Command):
         return str(self)
 
     @_fluent
-    def keep(self) -> str:
-        self._add('keep')
-        return str(self)
-
-    @_fluent
     def outline(self) -> str:
         self._add('outline')
         return str(self)
@@ -1813,6 +1808,19 @@ class _FilterClause(Command):
     @_fluent
     def strict(self) -> str:
         self._add('strict')
+        return str(self)
+
+
+class _FilterClause(_FilterModifier):
+    @_fluent
+    def replace(self, block: BlockDef = None) -> _FilterModifier:
+        self._add('replace')
+        self._add_opt(block)
+        return self._start(_FilterModifier())
+
+    @_fluent
+    def keep(self) -> str:
+        self._add('keep')
         return str(self)
 
 

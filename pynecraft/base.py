@@ -235,7 +235,8 @@ def _quote(value):
         # If we don't quote these, the string "true" will become a boolean "true", etc.
         if re.fullmatch(r'true|false|\d+\.?\d*|\d*\.?\d+', value):
             return f'"{value}"'
-        if not re.fullmatch(r'\w+', value):
+        # $(foo) doesn't need to be quoted either.
+        if not re.fullmatch(r'(\w+|\$\(\w+\))', value):
             value = _backslash_re.sub(lambda x: '\\' + _backslash_map[x.group(0)], value)
             singles = value.count("'")
             doubles = value.count('"')
@@ -734,7 +735,7 @@ class Nbt(UserDict):
                 cls._to_str(e, sout)
             sout.write(']')
         elif is_arg(elem):
-            sout.write(de_arg(elem))
+            sout.write(_quote(de_arg(elem)))
         elif isinstance(elem, str):
             sout.write(_quote(elem))
         elif isinstance(elem, (list, tuple)):
@@ -1015,6 +1016,10 @@ def r(*v: FloatOrArg | Iterable[FloatOrArg]) -> RelCoord | IntRelCoord | Tuple[R
     return _rel_coord('~', r, tuple(v))
 
 
+relative = r
+"""Verbose name for r()."""
+
+
 def d(*v: float | Iterable[float]) -> RelCoord | IntCoord | Tuple[RelCoord, RelCoord] | \
                                       Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
                                       Tuple[RelCoord, ...]:
@@ -1023,6 +1028,10 @@ def d(*v: float | Iterable[float]) -> RelCoord | IntCoord | Tuple[RelCoord, RelC
     the value(s) will be IntRelCoords.
     """
     return _rel_coord('^', d, tuple(v))
+
+
+delta_from = d
+"""Verbose name for d()."""
 
 
 def days(num: float) -> TimeSpec:
