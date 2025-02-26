@@ -236,7 +236,7 @@ def _quote(value):
         if re.fullmatch(r'true|false|\d+\.?\d*|\d*\.?\d+', value):
             return f'"{value}"'
         # $(foo) doesn't need to be quoted either.
-        if not re.fullmatch(r'(\w+|\$\(\w+\))', value):
+        if not re.fullmatch(r'(\w+|\$\(\w+\))', value) or re.match(r'^\d', value):
             value = _backslash_re.sub(lambda x: '\\' + _backslash_map[x.group(0)], value)
             singles = value.count("'")
             doubles = value.count('"')
@@ -753,6 +753,8 @@ class Nbt(UserDict):
             sout.write(force_type if force_type else 'f')
         elif isinstance(elem, int):
             sout.write(str(elem))
+            if elem > 0xffff_ffff:
+                sout.write('L')
         else:
             sout.write(_quote(str(elem)))
 

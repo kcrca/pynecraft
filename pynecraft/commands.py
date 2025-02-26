@@ -1573,6 +1573,8 @@ class _DataSource(Command):
     def value(self, v: StrOrArg | float | Nbt | Iterable[StrOrArg | float | Mapping]) -> str:
         if not isinstance(v, Mapping):
             v = Nbt.to_str(v)
+        else:
+            v = Nbt.as_nbt(v)
         self._add('value', v)
         return str(self)
 
