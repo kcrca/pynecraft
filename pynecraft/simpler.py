@@ -316,7 +316,7 @@ class Book:
         cur_page = self._cur_page
         self.next_page()
         components = {'written_book_content': {
-            'author': self.author, 'title': self.title, 'pages': [TextList(x) for x in self._pages[:]]}}
+            'author': self.author, 'title': self.title, 'pages': [{'raw': x} for x in self._pages[:]]}}
         if self.display_name:
             components['lore'] = self.display_name
         self._cur_page = cur_page

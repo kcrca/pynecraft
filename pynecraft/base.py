@@ -738,7 +738,7 @@ class Nbt(UserDict):
             sout.write(_quote(de_arg(elem)))
         elif isinstance(elem, str):
             sout.write(_quote(elem))
-        elif isinstance(elem, (list, tuple)):
+        elif isinstance(elem, (list, tuple, UserList)):
             elem = cls._regularize(elem)
             sout.write('[')
             first = True
