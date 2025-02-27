@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2025-01-08T15:01:29-08:00
+# Derived from https://minecraft.wiki/Commands/team, 2025-02-26T16:46:16-08:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2025-01-08T15:01:29-08:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2025-02-26T16:46:16-08:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -190,7 +190,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-01-08T15:01:29-08:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-02-26T16:46:16-08:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -219,7 +219,6 @@ OH_SHINY = "nether/distract_piglin"
 THIS_BOAT_HAS_LEGS = "nether/ride_strider"
 UNEASY_ALLIANCE = "nether/uneasy_alliance"
 WAR_PIGS = "nether/loot_bastion"
-COUNTRY_LODE_TAKE_ME_HOME = "nether/use_lodestone"
 COVER_ME_IN_DEBRIS = "nether/netherite_armor"
 SPOOKY_SCARY_SKELETON = "nether/get_wither_skull"
 INTO_FIRE = "nether/obtain_blaze_rod"
@@ -243,6 +242,7 @@ SKYS_THE_LIMIT = "end/elytra"
 GREAT_VIEW_FROM_UP_HERE = "end/levitate"
 __advancement_dups["adventure"] = "adventure/root"
 VOLUNTARY_EXILE = "adventure/voluntary_exile"
+COUNTRY_LODE_TAKE_ME_HOME = "adventure/use_lodestone"
 IS_IT_A_BIRD = "adventure/spyglass_at_parrot"
 MONSTER_HUNTER = "adventure/kill_a_mob"
 THE_POWER_OF_BOOKS = "adventure/read_power_of_chiseled_bookshelf"
@@ -319,14 +319,14 @@ ADVANCEMENT_GROUP = [
     NOT_TODAY_THANK_YOU, ICE_BUCKET_CHALLENGE, DIAMONDS, WE_NEED_TO_GO_DEEPER, COVER_ME_WITH_DIAMONDS, ENCHANTER,
     ZOMBIE_DOCTOR, EYE_SPY, ENTER_THE_END, "nether/root", RETURN_TO_SENDER, THOSE_WERE_THE_DAYS, HIDDEN_IN_THE_DEPTHS,
     SUBSPACE_BUBBLE, A_TERRIBLE_FORTRESS, WHO_IS_CUTTING_ONIONS, OH_SHINY, THIS_BOAT_HAS_LEGS, UNEASY_ALLIANCE,
-    WAR_PIGS, COUNTRY_LODE_TAKE_ME_HOME, COVER_ME_IN_DEBRIS, SPOOKY_SCARY_SKELETON, INTO_FIRE, NOT_QUITE_NINE_LIVES,
-    FEELS_LIKE_HOME, HOT_TOURIST_DESTINATIONS, WITHERING_HEIGHTS, LOCAL_BREWERY, BRING_HOME_THE_BEACON,
-    A_FURIOUS_COCKTAIL, BEACONATOR, HOW_DID_WE_GET_HERE, "end/root", FREE_THE_END, THE_NEXT_GENERATION, REMOTE_GETAWAY,
-    THE_END_AGAIN, YOU_NEED_A_MINT, THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE,
-    "adventure/root", VOLUNTARY_EXILE, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL,
-    CRAFTING_A_NEW_LOOK, STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100,
-    SWEET_DREAMS, HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED,
-    POSTMORTAL, HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC,
+    WAR_PIGS, COVER_ME_IN_DEBRIS, SPOOKY_SCARY_SKELETON, INTO_FIRE, NOT_QUITE_NINE_LIVES, FEELS_LIKE_HOME,
+    HOT_TOURIST_DESTINATIONS, WITHERING_HEIGHTS, LOCAL_BREWERY, BRING_HOME_THE_BEACON, A_FURIOUS_COCKTAIL, BEACONATOR,
+    HOW_DID_WE_GET_HERE, "end/root", FREE_THE_END, THE_NEXT_GENERATION, REMOTE_GETAWAY, THE_END_AGAIN, YOU_NEED_A_MINT,
+    THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE, "adventure/root", VOLUNTARY_EXILE,
+    COUNTRY_LODE_TAKE_ME_HOME, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL, CRAFTING_A_NEW_LOOK,
+    STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100, SWEET_DREAMS,
+    HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED, POSTMORTAL,
+    HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC,
     CAREFUL_RESTORATION, ADVENTURING_TIME, SOUND_OF_MUSIC, LIGHT_AS_A_RABBIT, IS_IT_A_PLANE, VERY_VERY_FRIGHTENING,
     SNIPER_DUEL, BULLSEYE, ISNT_IT_SCUTE, MINECRAFT_TRIALS_EDITION, CRAFTERS_CRAFTING_CRAFTERS, LIGHTEN_UP,
     WHO_NEEDS_ROCKETS, UNDER_LOCK_AND_KEY, REVAULTING, BLOWBACK, OVEROVERKILL, "husbandry/root", BEE_OUR_GUEST,
@@ -380,8 +380,6 @@ advancements = {
     "UNEASY_ALLIANCE": AdvancementInfo("""Uneasy Alliance""", "nether/uneasy_alliance",
                                        """Rescue a Ghast from the Nether, bring it safely home to the Overworld... and then kill it."""),
     "WAR_PIGS": AdvancementInfo("""War Pigs""", "nether/loot_bastion", """Loot a Chest in a Bastion Remnant."""),
-    "COUNTRY_LODE_TAKE_ME_HOME": AdvancementInfo("""Country Lode, Take Me Home""", "nether/use_lodestone",
-                                                 """Use a Compass on a Lodestone."""),
     "COVER_ME_IN_DEBRIS": AdvancementInfo("""Cover Me in Debris""", "nether/netherite_armor",
                                           """Get a full suit of Netherite armor."""),
     "SPOOKY_SCARY_SKELETON": AdvancementInfo("""Spooky Scary Skeleton""", "nether/get_wither_skull",
@@ -417,6 +415,8 @@ advancements = {
     "ADVENTURE": AdvancementInfo("""Adventure""", "adventure/root", """Adventure, exploration and combat."""),
     "VOLUNTARY_EXILE": AdvancementInfo("""Voluntary Exile""", "adventure/voluntary_exile",
                                        """Kill a raid captain.Maybe consider staying away from villages for the time being..."""),
+    "COUNTRY_LODE_TAKE_ME_HOME": AdvancementInfo("""Country Lode, Take Me Home""", "adventure/use_lodestone",
+                                                 """Use a Compass on a Lodestone."""),
     "IS_IT_A_BIRD": AdvancementInfo("""Is It a Bird?""", "adventure/spyglass_at_parrot",
                                     """Look at a Parrot through a Spyglass."""),
     "MONSTER_HUNTER": AdvancementInfo("""Monster Hunter""", "adventure/kill_a_mob", """Kill any hostile monster."""),
@@ -567,7 +567,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2025-01-08T15:01:30-08:00
+# Derived from https://minecraft.wiki/Biome/ID, 2025-02-26T16:56:17-08:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -730,7 +730,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-01-08T15:01:31-08:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-02-26T16:56:17-08:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -817,7 +817,7 @@ effects = {
     "WATER_BREATHING": EffectInfo("""Water Breathing""", "water_breathing",
                                   """Prevents drowning and lets the affected entity breathe underwater.""", True),
     "INVISIBILITY": EffectInfo("""Invisibility""", "invisibility",
-                               """Grants Invisibility, making the affected entity invisible (but not the item they hold or the armor they wear), and reduces other mobs' detection range for the affected entity.""",
+                               """Makes the affected entity invisible (but not the item they hold or the armor they wear), and reduces other mobs' detection range for the affected entity.""",
                                True),
     "BLINDNESS": EffectInfo("""Blindness""", "blindness",
                             """Impairs vision by adding close black fog and disables the ability to sprint and critical hit.""",
@@ -858,7 +858,7 @@ effects = {
     "DOLPHINS_GRACE": EffectInfo("""Dolphin's Grace""", "dolphins_grace",
                                  """Increases swimming speed (only obtainable from dolphins and commands).""", True),
     "BAD_OMEN": EffectInfo("""Bad Omen""", "bad_omen",
-                           """Causes an ominous event upon entering a village or the trial chambers.""", None),
+                           """Causes an ominous event upon entering a village or a trial chamber.""", None),
     "HERO_OF_THE_VILLAGE": EffectInfo("""Hero of the Village""", "hero_of_the_village",
                                       """Gives discounts on trades with villagers, and makes villagers throw items at the player depending on their profession.""",
                                       True),
@@ -889,7 +889,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-01-08T15:01:31-08:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-02-26T16:56:17-08:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -986,7 +986,9 @@ enchantments = {
                                        """Increases rate of treasure bites (enchanting books, etc.).""", 3),
     "LURE": EnchantmentInfo("""Lure""", "lure", """Decreases time for bites.""", 3),
     "MENDING": EnchantmentInfo("""Mending""", "mending", """Repairs the item using experience.""", 1),
-    "MULTISHOT": EnchantmentInfo("""Multishot""", "multishot", """Fires 3 arrows at the same time.""", 1),
+    "MULTISHOT": EnchantmentInfo("""Multishot""", "multishot",
+                                 """Adds 2 to the amount of arrows fired. e.g. Multishot I = 1+2 Arrows, Multishot II = 1+2+2 Arrows.""",
+                                 1),
     "PIERCING": EnchantmentInfo("""Piercing""", "piercing",
                                 """Arrows pierce entities, allowing for arrows to pierce through stacks of mobs.""", 4),
     "POWER": EnchantmentInfo("""Power""", "power", """Increases arrow damage.""", 5),
@@ -1026,7 +1028,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-01-08T15:01:32-08:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-02-26T16:56:18-08:00
 __gamerule_dups = {}
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -1157,12 +1159,12 @@ game_rules = {
                                 """Whether the player should take damage in fire, lava, campfires, or on magma blocks.""",
                                 bool),
     "FORGIVE_DEAD_PLAYERS": GameRuleInfo("""forgive Dead Players""", "forgiveDeadPlayers",
-                                         """Makes angered neutral mobs stop being angry when the targeted player dies nearby.""",
+                                         """Makes angered neutral mobs within 65 x 21 x 65 blocks centered on the targeted player stop being angry when the they dies.""",
                                          bool),
     "FREEZE_DAMAGE": GameRuleInfo("""freeze Damage""", "freezeDamage",
                                   """Whether the player should take damage when inside powder snow.""", bool),
     "GLOBAL_SOUND_EVENTS": GameRuleInfo("""global Sound Events""", "globalSoundEvents",
-                                        """Whether certain sound events are heard by all players regardless of location.""",
+                                        """Whether the wither's spawning sound, the ender dragon's death sound and the end portal activation sound are heard by all players regardless of location.""",
                                         bool),
     "KEEP_INVENTORY": GameRuleInfo("""keep Inventory""", "keepInventory",
                                    """Whether the player should keep items and experience in their inventory after death.""",
@@ -1178,7 +1180,7 @@ game_rules = {
                                            """The maximum number of forks (contexts) that can be created during one tick. Applies to command blocks and functions.""",
                                            int),
     "MAX_ENTITY_CRAMMING": GameRuleInfo("""max Entity Cramming""", "maxEntityCramming",
-                                        """The maximum number of pushable entities a mob or player can push, before taking 6 entity cramming damage per half-second. Setting to 0 or lower disables the rule. Damage affects Survival-mode or Adventure-mode players, and all mobs but bats. Pushable entities include non-Spectator-mode players, any mob except bats, as well as boats and minecarts.""",
+                                        """The maximum number of pushable entities a mob or player can push, before taking 6HP entity cramming damage per half-second. Setting to 0 or lower disables the rule. Damage affects Survival-mode or Adventure-mode players, and all mobs but bats. Pushable entities include non-Spectator-mode players, any mob except bats, as well as boats and minecarts.""",
                                         int),
     "MINECART_MAX_SPEED": GameRuleInfo("""minecart Max Speed""", "minecartMaxSpeed",
                                        """The maximum speed a minecart may reach.""", bool),
@@ -1248,7 +1250,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-01-08T15:01:32-08:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-02-26T16:56:18-08:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1301,7 +1303,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-01-12T21:57:14-08:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-02-26T16:56:19-08:00
 __particle_dups = {}
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -1351,6 +1353,7 @@ FALLING_NECTAR = "falling_nectar"
 FALLING_OBSIDIAN_TEAR = "falling_obsidian_tear"
 FALLING_SPORE_BLOSSOM = "falling_spore_blossom"
 FALLING_WATER = "falling_water"
+FIREFLY = "firefly"
 FIREWORK = "firework"
 FISHING = "fishing"
 __particle_dups["flame"] = "flame"
@@ -1421,20 +1424,20 @@ PARTICLE_GROUP = [
     DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, "dust_pillar", DUST_PLUME,
     EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION,
     EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, "falling_dust", FALLING_HONEY, FALLING_LAVA,
-    FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, "flame", FLASH,
-    GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB,
-    ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM,
-    NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE,
-    SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM,
-    SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING, TRAIL,
-    "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION,
-    WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
+    FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREFLY, FIREWORK, FISHING, "flame",
+    FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item",
+    ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA,
+    MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL,
+    SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE,
+    SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING,
+    TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION,
+    VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
 ]
 
 ParticleInfo = namedtuple("Particle", ['name', 'value', 'desc'])
 particles = {
     "ANGRY_VILLAGER": ParticleInfo("""Angry Villager""", "angry_villager",
-                                   """Produced when hitting villagers or when villagers fail to breed."""),
+                                   """Produced when when villagers fail to breed or when a job site block gets unclaimed due to the villager being unable to reach it."""),
     "ASH": ParticleInfo("""Ash""", "ash", """Floats throughout the atmosphere in the soul sand valley biome."""),
     "BLOCK": ParticleInfo("""Block""", "block",
                           """Produced when blocks are broken, flakes off blocks being brushed, produced when iron golems walk, produced when entities fall a long distance, produced when players and cats sprint, displayed when armor stands are broken, appears when sheep eat grass."""),
@@ -1517,6 +1520,8 @@ particles = {
                                           """Drips off of spore blossoms."""),
     "FALLING_WATER": ParticleInfo("""Falling Water""", "falling_water",
                                   """Drips off of the bottom of blocks with water above, drips off the bottom of leaves during rain, drips off of wet sponges."""),
+    "FIREFLY": ParticleInfo("""Firefly""", "firefly",
+                            """Spawns from firefly bushes when the internal light level is at 13 or lower."""),
     "FIREWORK": ParticleInfo("""Firework""", "firework",
                              """Trails behind fireworks, produced when fireworks crafted with firework stars explode."""),
     "FISHING": ParticleInfo("""Fishing""", "fishing", """Represents the fish trail when fishing."""),
@@ -1630,7 +1635,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-01-08T15:01:33-08:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-02-26T16:56:19-08:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1694,7 +1699,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-01-08T15:01:33-08:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-02-26T16:56:19-08:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1754,7 +1759,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2025-01-08T15:01:34-08:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2025-02-26T16:56:20-08:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"
@@ -1875,7 +1880,7 @@ paintings = {
                                     """A skeleton at night with red flowers in the foreground. The original painting is different, depicting a woman sitting in a couch, while the skull is in the middle of a body of glacial water of sorts.""",
                                     "Kristoffer Zetterstrand", (2, 2)),
     "WITHER": PaintingInfo("""wither""", "Wither",
-                           """The creation of the wither. This is the first painting in Minecraft that is not based of a real painting. (See the trivia section for more info.).""",
+                           """The creation of the wither. This is the first painting in Minecraft that is not based on a real painting. (See the trivia section for more info.).""",
                            "Mojang(Jens Bergensten)", (2, 2)),
     "BAROQUE": PaintingInfo("""baroque""", "Baroque",
                             """A decorated pot, a cake, and a sunflower on a dark background, resembling Baroque painting.""",

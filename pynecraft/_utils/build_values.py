@@ -286,6 +286,8 @@ class Advancement(PageValuesDesc):
             pass
 
     def extract(self, cols):
+        if 'until' in str(cols[self.desc_col]):
+            return None
         return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col].next, cols[self.desc_col]))
 
     def replace(self, name, value):
