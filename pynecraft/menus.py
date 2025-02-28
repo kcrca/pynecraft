@@ -169,7 +169,7 @@ class _Placement:
         else:
             text = self.menu._to_text(entry)
             sign = WallSign(text, self.commands(entry, text), wood=self.menu.wood)
-        yield sign.place(self.placing.move(self.pos, offset), self.facing, clear=False)
+        yield sign.place(self.placing.move(self.pos, offset), self.facing)
 
     def commands(self, entry, text) -> Tuple[str, ...]:
         action = self.menu.action_factory(entry)
@@ -180,7 +180,7 @@ class _Placement:
         if close_menu:
             after = self.run_at(close_menu)
         else:
-            after = sel_sign.place(r(0, 0, 0), self.facing, clear=False)
+            after = sel_sign.place(r(0, 0, 0), self.facing)
         commands = tuple(self.run_at(str(function(self.menu.func('init'))), action)) + (after,)
         return commands
 
@@ -222,7 +222,7 @@ class Submenu(Menu):
         commands = run_at(
             function(self.parent.func('init')),
             function(self.func('init'))) + (
-                       sel_sign.place(r(0, 0, 0), facing, clear=False),)
+            sel_sign.place(r(0, 0, 0), facing),)
         return WallSign(self.text, commands, self.wood)
 
     def _close_menu_command(self):

@@ -150,8 +150,8 @@ class Sign(Block):
         orig_text = text
         if text is None:
             text = Text.text('')
-        elif isinstance(text, str):
-            text = Text.text(text)
+        elif is_arg(text) or isinstance(text, str):
+            text = Text.text(de_arg(text))
         entry = text
         if isinstance(command, Callable):
             command = command(orig_text)
@@ -206,8 +206,7 @@ class Sign(Block):
                 break
         return cmds
 
-    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
-              clear=True) -> Commands | Command:
+    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None) -> Commands | Command:
         """
         Place the sign.
 
@@ -215,7 +214,6 @@ class Sign(Block):
         :param facing: The direction the sign if facing. See as_facing() for useful parameters.
         :param water: Whether the sign is waterlogged.
         :param nbt: Any extra NBT for the sign.
-        :param clear: Clear out the block before placing
         :return: The commands to place the sign.
         """
         self._orientation(facing)
@@ -223,13 +221,7 @@ class Sign(Block):
             self.merge_state({'waterlogged': True})
         if nbt:
             self.merge_nbt(nbt)
-        if clear:
-            return (
-                setblock(pos, 'water' if water else 'air'),
-                setblock(pos, self),
-            )
-        else:
-            return setblock(pos, self)
+        return setblock(pos, self)
 
     def _orientation(self, facing):
         self.merge_state({'rotation': as_facing(facing).sign_rotation})
@@ -244,9 +236,9 @@ class WallSign(Sign):
     def _orientation(self, facing):
         self.merge_state({'facing': as_facing(facing).name})
 
-    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None, clear=True) -> Commands:
+    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None) -> Commands:
         """When placing a wall sign, the orientations are different, but also can be found in as_facing()."""
-        return super().place(pos, facing, water, nbt, clear)
+        return super().place(pos, facing, water, nbt)
 
 
 class Book:

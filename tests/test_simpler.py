@@ -33,7 +33,7 @@ class TestSimpler(unittest.TestCase):
             text_lines(Sign((None, 'hi', 'there'), front=True).place((1, r(2), d(3)), SW, nbt={'is_waxed': True})))
         self.assertEqual([
             """setblock 1 ~2 ^3 oak_sign[rotation=2]{back_text: {messages: ["", hi, there, ""]}, front_text: {messages: ["", hi, there, ""]}}""" + '\n'],
-            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, clear=False)))
+            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW)))
         self.assertEqual([
             """setblock 1 ~2 ^3 oak_sign[rotation=2, waterlogged=true]{back_text: {messages: ["", hi, there, ""]}, front_text: {messages: ["", hi, there, ""]}}""" + '\n'],
             text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, water=True))[1:])
