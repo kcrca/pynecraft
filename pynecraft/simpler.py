@@ -206,7 +206,7 @@ class Sign(Block):
                 break
         return cmds
 
-    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None) -> Commands | Command:
+    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None, clear=True) -> Commands | Command:
         """
         Place the sign.
 
@@ -221,6 +221,11 @@ class Sign(Block):
             self.merge_state({'waterlogged': True})
         if nbt:
             self.merge_nbt(nbt)
+        if clear and water:
+            return (
+                setblock(pos, 'water'),
+                setblock(pos, self),
+            )
         return setblock(pos, self)
 
     def _orientation(self, facing):

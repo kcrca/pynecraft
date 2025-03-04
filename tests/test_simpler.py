@@ -24,11 +24,9 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual(Nbt({'messages': ['', 'foo', 'bar baz', '']}), Sign.lines_nbt((None, 'foo', 'bar baz')))
 
         self.assertEqual([
-            'setblock 1 ~2 ^3 air\n',
             """setblock 1 ~2 ^3 oak_sign[rotation=2]{front_text: {messages: ["", hi, there, ""]}}""" + '\n'],
             text_lines(Sign((None, 'hi', 'there'), front=True).place((1, r(2), d(3)), SW)))
         self.assertEqual([
-            'setblock 1 ~2 ^3 air\n',
             """setblock 1 ~2 ^3 oak_sign[rotation=2]{front_text: {messages: ["", hi, there, ""]}, is_waxed: true}""" + '\n'],
             text_lines(Sign((None, 'hi', 'there'), front=True).place((1, r(2), d(3)), SW, nbt={'is_waxed': True})))
         self.assertEqual([
@@ -39,10 +37,10 @@ class TestSimpler(unittest.TestCase):
             text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), SW, water=True))[1:])
         self.assertEqual([
             """setblock 1 ~2 ^3 oak_sign[rotation=8]{back_text: {messages: ["", hi, there, ""]}, front_text: {messages: ["", hi, there, ""]}}""" + '\n'],
-            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH))[1:])
+            text_lines(Sign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH)))
         self.assertEqual([
             """setblock 1 ~2 ^3 spruce_sign[rotation=8]{back_text: {messages: ["", hi, there, ""]}, front_text: {messages: ["", hi, there, ""]}}""" + '\n'],
-            text_lines(Sign((None, 'hi', 'there'), wood='spruce').place((1, r(2), d(3)), N))[1:])
+            text_lines(Sign((None, 'hi', 'there'), wood='spruce').place((1, r(2), d(3)), N)))
 
         self.assertEqual(
             {'messages': [{'text': '', 'click_event': {'action': 'run_command', 'command': '/say hi'}}, '', '', '']},
@@ -176,7 +174,6 @@ class TestSimpler(unittest.TestCase):
 
     def test_wall_sign(self):
         self.assertEqual([
-            'setblock 1 ~2 ^3 air\n',
             """setblock 1 ~2 ^3 oak_wall_sign[facing=north]{back_text: {messages: ["", hi, there, ""]}, front_text: {messages: ["", hi, there, ""]}}""" + '\n'],
             text_lines(WallSign((None, 'hi', 'there')).place((1, r(2), d(3)), NORTH)))
         self.assertEqual([
