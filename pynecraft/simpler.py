@@ -10,22 +10,22 @@ from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entit
     fillbiome, setblock
 from pynecraft.values import PaintingInfo, as_pattern, paintings
 
-ARMORER = 'Armorer'
-BUTCHER = 'Butcher'
-CARTOGRAPHER = 'Cartographer'
-CLERIC = 'Cleric'
-FARMER = 'Farmer'
-FISHERMAN = 'Fisherman'
-FLETCHER = 'Fletcher'
-LEATHERWORKER = 'Leatherworker'
-LIBRARIAN = 'Librarian'
-MASON = 'Mason'
-NITWIT = 'Nitwit'
-SHEPHERD = 'Shepherd'
-TOOLSMITH = 'Toolsmith'
-WEAPONSMITH = 'Weaponsmith'
-NONE = 'None'
-CHILD = 'Child'
+ARMORER = 'armorer'
+BUTCHER = 'butcher'
+CARTOGRAPHER = 'cartographer'
+CLERIC = 'cleric'
+FARMER = 'farmer'
+FISHERMAN = 'fisherman'
+FLETCHER = 'fletcher'
+LEATHERWORKER = 'leatherworker'
+LIBRARIAN = 'librarian'
+MASON = 'mason'
+NITWIT = 'nitwit'
+SHEPHERD = 'shepherd'
+TOOLSMITH = 'toolsmith'
+WEAPONSMITH = 'weaponsmith'
+NONE = 'none'
+CHILD = 'child'
 VILLAGER_PROFESSIONS = (
     ARMORER,
     BUTCHER,
@@ -206,7 +206,8 @@ class Sign(Block):
                 break
         return cmds
 
-    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None, clear=True) -> Commands | Command:
+    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
+              clear=True) -> Commands | Command:
         """
         Place the sign.
 
@@ -830,13 +831,13 @@ class Villager(Entity):
 
     def profession(self, profession: str) -> Villager:
         """Sets the villager's profession. The profession can also be 'child' for non-zombie villagers."""
-        profession = profession.title()
-        if profession == 'Child':
+        profession = profession.lower()
+        if profession == 'child':
             if self.zombie:
-                raise ValueError('Child: Invalid zombie villager profession')
+                raise ValueError('child: Invalid zombie villager profession')
             profession = NONE
             self.merge_nbt({'Age': -2147483648})
-        self.merge_nbt({'VillagerData': {'profession': _in_group(VILLAGER_PROFESSIONS, profession).lower()}})
+        self.merge_nbt({'VillagerData': {'profession': _in_group(VILLAGER_PROFESSIONS, profession)}})
         return self
 
     def biome(self, biome: str) -> Villager:
