@@ -1642,7 +1642,7 @@ class _DataMod(Command):
         return str(self)
 
     @_fluent
-    def merge(self, data_target: DataTarget, nbt: NbtDef) -> str:
+    def merge(self, data_target: DataTarget, nbt: NbtDef | StrOrArg) -> str:
         self._add('merge', data_single_str(data_target), Nbt.as_nbt(nbt))
         return str(self)
 
@@ -3181,20 +3181,25 @@ def stopsound(target: Target, /, source: StrOrArg = None, sound: StrOrArg = None
     return str(cmd)
 
 
-def summon(to_summon: EntityDef, /, pos: Position = None, nbt: NbtDef = None) -> str:
+def summon(entity: EntityDef, /, pos: Position = None, nbt: NbtDef | StrOrArg = None) -> str:
     """Summons an entity."""
-    to_summon = as_entity(to_summon)
+    entity = as_entity(entity)
+    if is_arg(entity):
+        entity = Entity(de_arg(entity))
     cmd = Command()
-    cmd._add('$summon', to_summon.id)
+    cmd._add('$summon', entity.id)
     cmd._add_opt_pos(pos)
-    e_nbt = Nbt(to_summon.nbt) if to_summon.nbt else Nbt()
-    tags = e_nbt['Tags'] if 'Tags' in e_nbt else ()
-    e_nbt = e_nbt.merge(nbt)
-    # Merge tags
-    if 'Tags' in e_nbt:
-        e_nbt['Tags'] = list(set(e_nbt['Tags']) | set(tags))
-    if len(e_nbt) > 0:
-        cmd._add_opt(e_nbt)
+    if is_arg(nbt):
+        cmd._add_opt(de_arg(nbt))
+    else:
+        e_nbt = Nbt(entity.nbt) if entity.nbt else Nbt()
+        tags = e_nbt['Tags'] if 'Tags' in e_nbt else ()
+        e_nbt = e_nbt.merge(nbt)
+        # Merge tags
+        if 'Tags' in e_nbt:
+            e_nbt['Tags'] = list(set(e_nbt['Tags']) | set(tags))
+        if len(e_nbt) > 0:
+            cmd._add_opt(e_nbt)
     return str(cmd)
 
 
