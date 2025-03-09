@@ -2640,6 +2640,23 @@ class _BlockMod(Command):
         self._state.update(state)
         return self
 
+    @_fluent
+    def destroy(self) -> str:
+        # Use this, not ._add(): the order of state() and nbt() isn't defined, this makes sure the keyword's after
+        return str(self) + ' destroy'
+
+    @_fluent
+    def keep(self) -> str:
+        return str(self) + ' keep'
+
+    @_fluent
+    def replace(self) -> str:
+        return str(self) + ' replace'
+
+    @_fluent
+    def strict(self) -> str:
+        return str(self) + ' strict'
+
 
 class _ListMod(Command):
     @_fluent

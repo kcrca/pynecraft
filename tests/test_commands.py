@@ -1089,6 +1089,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(
             'setblock 1 ~2 ^3 stone[up=upper]',
             str(setblock((1, r(2), d(3)), 'stone').state({'up': 'down'}).state({'up': 'upper'})))
+        self.assertEqual('setblock 1 2 3 stone destroy', setblock((1, 2, 3), 'stone').destroy())
+        self.assertEqual('setblock 1 2 3 stone keep', setblock((1, 2, 3), 'stone').keep())
+        self.assertEqual('setblock 1 2 3 stone replace', setblock((1, 2, 3), 'stone').replace())
+        self.assertEqual('setblock 1 2 3 stone strict', setblock((1, 2, 3), 'stone').strict())
+        self.assertEqual('setblock 1 2 3 stone[up=down] strict',
+                         setblock((1, 2, 3), 'stone').state({'up': 'down'}).strict())
         self.assertEqual('setblock 1 ~2 ^3 stone[up=down]{up: upper}',
                          str(setblock((1, r(2), d(3)), 'stone').state({'up': 'down'}).nbt({'up': 'upper'})))
         self.assertEqual('$setblock 0 0 0 v$(b)', str(setblock((0, 0, 0), 'v$(b)')))
