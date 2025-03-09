@@ -853,7 +853,7 @@ class Villager(Entity):
         recipes = self.nbt['Offers'].get_list('Recipes')
         for t in trades:
             if isinstance(t, Trade):
-                if len(t.buy) not in range(1, 3):
+                if len(t.buy) not in (1, 2):
                     raise ValueError(f'{len(t.buy)}: Invalid buy length (must be 1 or 2)')
                 t = t.nbt()
             recipes.append(t)
