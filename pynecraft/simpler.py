@@ -171,9 +171,6 @@ class Sign(Block):
         if min_len is not None:
             messages += (min_len - len(messages)) * ('',)
             commands += (min_len - len(commands)) * (None,)
-        if start > 0 and blanks:
-            messages = start * empty_msg + messages
-            commands = start * (None,) + commands
         if len(messages) > 4:
             raise ValueError(f'More than 4 messages: {messages}')
         if len(commands) > 4:

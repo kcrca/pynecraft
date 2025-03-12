@@ -114,15 +114,14 @@ class TestSimpler(unittest.TestCase):
             '''data modify block 0 0 0 back_text.messages[3] set value ""'''],
             Sign.change((0, 0, 0), ("three",), start=2, min_len=2))
         self.assertEqual([
-            '''data modify block 0 0 0 front_text.messages[2] set value ""''',
-            '''data modify block 0 0 0 front_text.messages[3] set value ""''',
-            '''data modify block 0 0 0 front_text.messages[4] set value one''',
-            '''data modify block 0 0 0 back_text.messages[2] set value ""''',
-            '''data modify block 0 0 0 back_text.messages[3] set value ""''',
-            '''data modify block 0 0 0 back_text.messages[4] set value one'''],
+            '''data modify block 0 0 0 front_text.messages[2] set value one''',
+            '''data modify block 0 0 0 back_text.messages[2] set value one'''],
             Sign.change((0, 0, 0), ('one',), start=2, blanks=True))
         self.assertEqual([
-            """data merge block 0 0 0 {back_text: {messages: ["", "", one, two]}, front_text: {messages: ["", "", one, two]}}"""],
+            '''data modify block 0 0 0 front_text.messages[2] set value one''',
+            '''data modify block 0 0 0 front_text.messages[3] set value two''',
+            '''data modify block 0 0 0 back_text.messages[2] set value one''',
+            '''data modify block 0 0 0 back_text.messages[3] set value two'''],
             Sign.change((0, 0, 0), ('one', 'two'), start=2, blanks=True))
 
     def test_sign(self):
