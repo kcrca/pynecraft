@@ -1744,11 +1744,11 @@ class _DebugMod(Command):
 class _EffectAction(Command):
     @_fluent
     def give(self, target: Target, effect: StrOrArg, seconds: IntOrArg | str = None,
-             amplifier: IntOrArg = None, hide_particles: BoolOrArg = None, /) -> str:
+             amplifier: IntOrArg = None, hide_particles: BoolOrArg = None) -> str:
         if amplifier is not None and seconds is None:
             raise ValueError('must give seconds to use amplifier')
         if hide_particles is not None and amplifier is None:
-            raise ValueError('must give amplifier to use hide_particles')
+            amplifier = 1
         if isinstance(seconds, str) and not is_int_arg(seconds):
             if seconds != INFINITE:
                 raise ValueError(f'{seconds}: Invalid duration')
