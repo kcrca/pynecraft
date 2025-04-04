@@ -239,9 +239,10 @@ class WallSign(Sign):
     def _orientation(self, facing):
         self.merge_state({'facing': as_facing(facing).name})
 
-    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None) -> Commands:
+    def place(self, pos: Position, facing: FacingDef, /, water=False, nbt: NbtDef = None,
+              clear=True) -> Commands | Command:
         """When placing a wall sign, the orientations are different, but also can be found in as_facing()."""
-        return super().place(pos, facing, water, nbt)
+        return super().place(pos, facing, water, nbt, clear)
 
 
 class Book:

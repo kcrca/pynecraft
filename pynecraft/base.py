@@ -639,9 +639,9 @@ class Nbt(UserDict):
         str(dict), str(list), etc., use repr(), not str().
         """
         if is_arg(obj):
-            return str(obj)
+            return _quote(str(obj))
         if isinstance(obj, cls):
-            return str(obj)
+            return _quote(str(obj))
         if isinstance(obj, Mapping) and not isinstance(obj, TextHolder):
             return str(cls.as_nbt(obj))
         sout = StringIO()
