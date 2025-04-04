@@ -305,6 +305,8 @@ def as_slot(slot: StrOrArg | None) -> str | None:
 
 
 def as_criteria(criteria):
+    if re.fullmatch(r'(teamkill|killedByTeam)\.[a-z_]+', criteria):
+        return criteria
     return _in_group(SCORE_CRITERIA_GROUP, criteria)
 
 
