@@ -232,6 +232,12 @@ def check_float_arg(v: any) -> None:
 
 def _quote(value):
     if isinstance(value, str):
+        # If the string is a valid number, it needs to be quoted to be treated as a string
+        try:
+            return f'"{value}"'
+        except ValueError:
+            pass
+
         # If we don't quote these, the string "true" will become a boolean "true", etc.
         if re.fullmatch(r'true|false|\d+\.?\d*|\d*\.?\d+', value):
             return f'"{value}"'
