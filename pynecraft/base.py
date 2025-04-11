@@ -234,6 +234,7 @@ def _quote(value):
     if isinstance(value, str):
         # If the string is a valid number, it needs to be quoted to be treated as a string
         try:
+            float(value)
             return f'"{value}"'
         except ValueError:
             pass
