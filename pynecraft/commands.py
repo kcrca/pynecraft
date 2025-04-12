@@ -498,6 +498,8 @@ TITLE_ACTIONS = [CLEAR, RESET] + TITLE_GIVEN
 
 INFINITE = 'infinite'
 
+HEX = 'hex'
+
 RAIN = 'rain'
 THUNDER = 'thunder'
 WEATHER_TYPES = [CLEAR, RAIN, THUNDER]
@@ -2561,6 +2563,68 @@ class _TriggerMod(Command):
         return str(self)
 
 
+class _WaypointMod(Command):
+    @_fluent
+    def list(self) -> str:
+        self._add('list')
+        return str(self)
+
+    @_fluent
+    def modify(self, target: Target):
+        self._add('modify', as_single(target))
+        return self._start(_WaypointModifyMod())
+
+
+class _WaypointModifyMod(Command):
+    @_fluent
+    def color(self, color_or_reset: StrOrArg | int, hex_value: IntOrArg = None) -> str:
+        """
+        Valid invocations include:
+        * color('blue')
+        * color(Arg('color_name'))
+        * color(0xffeeff)  # same as color('hex', 0xffeeff)
+        * color('hex', 0xffeeff)
+        * color('hex', Arg(rgb))
+        * color(RESET)
+        """
+        self._add('color')
+        num = None
+        if isinstance(color_or_reset, int):
+            num = color_or_reset
+        elif color_or_reset == HEX:
+            if isinstance(hex_value, int):
+                num = hex_value
+            else:
+                self._add(HEX, de_arg(hex_value))
+        else:
+            self._add(de_arg(_in_group(TEXT_COLORS + [RESET], color_or_reset)))
+        if num is not None:
+            num_str = re.sub(r'^000(...)$', '$1', f'{num:06x}')
+            if len(num_str) not in (3, 6):
+                raise ValueError(f'Invalid hex color: {num_str} ({num}): Must have 3 or 6 digits')
+            self._add(HEX, num_str)
+        return str(self)
+
+    @_fluent
+    def fade(self, values_or_reset: StrOrArg | Tuple[FloatOrArg, FloatOrArg, FloatOrArg, FloatOrArg]) -> str:
+        """
+        Valid invocations include:
+        * fade(RESET)
+        * fade((1, Arg(a1), 100, 0.9))
+        """
+        self._add('fade')
+        if isinstance(values_or_reset, str) or is_arg(values_or_reset):
+            self._add(de_arg(_in_group([RESET], values_or_reset)))
+        else:
+            if len(values_or_reset) != 4:
+                raise ValueError(f'Four values are required: {values_or_reset}')
+            for i, v in enumerate(values_or_reset):
+                if i % 2 == 1 and isinstance(v, (int, float)) and not 0 <= v <= 1:
+                    raise ValueError("alpha values must be [0..1]")
+                self._add(de_float_arg(v))
+        return str(self)
+
+
 class _WorldBorderWarningMod(Command):
     @_fluent
     def distance(self, distance: float) -> str:
@@ -3336,6 +3400,12 @@ def trigger(objective: StrOrArg):
     cmd = Command()
     cmd._add('$trigger', as_name(objective))
     return cmd._start(_TriggerMod())
+
+
+def waypoint():
+    cmd = Command()
+    cmd._add('$waypoint')
+    return cmd._start(_WaypointMod())
 
 
 def weather(weather_name: StrOrArg, duration: DurationDef = None) -> str:

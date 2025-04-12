@@ -1569,3 +1569,19 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('test runthat 3 false', test().runthat(3, False))
         self.assertEqual('test runthese', test().runthese())
         self.assertEqual('test runthese 3 false', test().runthese(3, False))
+
+    def test_waypoint(self):
+        self.assertEqual('waypoint list', waypoint().list())
+        self.assertEqual('waypoint modify @n color blue', waypoint().modify(n()).color('blue'))
+        self.assertEqual('$waypoint modify @n color $(c)', waypoint().modify(n()).color(Arg('c')))
+        self.assertEqual('$waypoint modify @n color hex $(rgb)', waypoint().modify(n()).color(HEX, Arg('rgb')))
+        self.assertEqual('waypoint modify @n color hex 0043cd', waypoint().modify(n()).color(17357))
+        self.assertEqual('waypoint modify @n color reset', waypoint().modify(n()).color(RESET))
+        self.assertEqual('waypoint modify @n fade reset', waypoint().modify(n()).fade(RESET))
+        self.assertEqual('waypoint modify @n fade 0 0.9 10000 0.2', waypoint().modify(n()).fade((0, 0.9, 10000, 0.2)))
+        with self.assertRaises(ValueError):
+            waypoint().modify(n()).color(1_000_000_000)
+        with self.assertRaises(ValueError):
+            waypoint().modify(n()).fade((1, 0))
+        with self.assertRaises(ValueError):
+            waypoint().modify(n()).fade((1, 2, 3, 4))
