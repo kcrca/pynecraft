@@ -648,7 +648,7 @@ class Nbt(UserDict):
         if is_arg(obj):
             return _quote(str(obj))
         if isinstance(obj, cls):
-            return _quote(str(obj))
+            return str(obj)
         if isinstance(obj, Mapping) and not isinstance(obj, TextHolder):
             return str(cls.as_nbt(obj))
         sout = StringIO()

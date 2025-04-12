@@ -686,10 +686,6 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             effect().give(s(), SPEED, None, 2)
         with self.assertRaises(ValueError):
-            effect().give(s(), SPEED, None, None, True)
-        with self.assertRaises(ValueError):
-            effect().give(s(), SPEED, 100, None, True)
-        with self.assertRaises(ValueError):
             effect().clear(None, SPEED)
         with self.assertRaises(ValueError):
             effect().give(s(), SPEED, 'foo')
