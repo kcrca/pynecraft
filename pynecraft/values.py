@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2025-02-26T16:46:16-08:00
+# Derived from https://minecraft.wiki/Commands/team, 2025-04-11T22:25:52-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2025-02-26T16:46:16-08:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2025-04-11T22:25:52-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -190,7 +190,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-02-26T16:46:16-08:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-04-11T22:25:52-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -241,6 +241,7 @@ THE_CITY_AT_THE_END_OF_THE_GAME = "end/find_end_city"
 SKYS_THE_LIMIT = "end/elytra"
 GREAT_VIEW_FROM_UP_HERE = "end/levitate"
 __advancement_dups["adventure"] = "adventure/root"
+HEART_TRANSPLANTER = "adventure/heart_transplanter"
 VOLUNTARY_EXILE = "adventure/voluntary_exile"
 COUNTRY_LODE_TAKE_ME_HOME = "adventure/use_lodestone"
 IS_IT_A_BIRD = "adventure/spyglass_at_parrot"
@@ -286,6 +287,7 @@ REVAULTING = "adventure/revaulting"
 BLOWBACK = "adventure/blowback"
 OVEROVERKILL = "adventure/overoverkill"
 __advancement_dups["husbandry"] = "husbandry/root"
+STAY_HYDRATED = "husbandry/place_dried_ghast_in_water"
 BEE_OUR_GUEST = "husbandry/safely_harvest_honey"
 THE_PARROTS_AND_THE_BATS = "husbandry/breed_an_animal"
 YOUVE_GOT_A_FRIEND_IN_ME = "husbandry/allay_deliver_item_to_player"
@@ -322,15 +324,15 @@ ADVANCEMENT_GROUP = [
     WAR_PIGS, COVER_ME_IN_DEBRIS, SPOOKY_SCARY_SKELETON, INTO_FIRE, NOT_QUITE_NINE_LIVES, FEELS_LIKE_HOME,
     HOT_TOURIST_DESTINATIONS, WITHERING_HEIGHTS, LOCAL_BREWERY, BRING_HOME_THE_BEACON, A_FURIOUS_COCKTAIL, BEACONATOR,
     HOW_DID_WE_GET_HERE, "end/root", FREE_THE_END, THE_NEXT_GENERATION, REMOTE_GETAWAY, THE_END_AGAIN, YOU_NEED_A_MINT,
-    THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE, "adventure/root", VOLUNTARY_EXILE,
-    COUNTRY_LODE_TAKE_ME_HOME, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL, CRAFTING_A_NEW_LOOK,
-    STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100, SWEET_DREAMS,
-    HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED, POSTMORTAL,
-    HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC,
+    THE_CITY_AT_THE_END_OF_THE_GAME, SKYS_THE_LIMIT, GREAT_VIEW_FROM_UP_HERE, "adventure/root", HEART_TRANSPLANTER,
+    VOLUNTARY_EXILE, COUNTRY_LODE_TAKE_ME_HOME, IS_IT_A_BIRD, MONSTER_HUNTER, THE_POWER_OF_BOOKS, WHAT_A_DEAL,
+    CRAFTING_A_NEW_LOOK, STICKY_SITUATION, OL_BETSY, SURGE_PROTECTOR, CAVES__CLIFFS, RESPECTING_THE_REMNANTS, SNEAK_100,
+    SWEET_DREAMS, HERO_OF_THE_VILLAGE, IS_IT_A_BALLOON, A_THROWAWAY_JOKE, IT_SPREADS, TAKE_AIM, MONSTERS_HUNTED,
+    POSTMORTAL, HIRED_HELP, STAR_TRADER, SMITHING_WITH_STYLE, TWO_BIRDS_ONE_ARROW, WHOS_THE_PILLAGER_NOW, ARBALISTIC,
     CAREFUL_RESTORATION, ADVENTURING_TIME, SOUND_OF_MUSIC, LIGHT_AS_A_RABBIT, IS_IT_A_PLANE, VERY_VERY_FRIGHTENING,
     SNIPER_DUEL, BULLSEYE, ISNT_IT_SCUTE, MINECRAFT_TRIALS_EDITION, CRAFTERS_CRAFTING_CRAFTERS, LIGHTEN_UP,
-    WHO_NEEDS_ROCKETS, UNDER_LOCK_AND_KEY, REVAULTING, BLOWBACK, OVEROVERKILL, "husbandry/root", BEE_OUR_GUEST,
-    THE_PARROTS_AND_THE_BATS, YOUVE_GOT_A_FRIEND_IN_ME, WHATEVER_FLOATS_YOUR_GOAT, BEST_FRIENDS_FOREVER,
+    WHO_NEEDS_ROCKETS, UNDER_LOCK_AND_KEY, REVAULTING, BLOWBACK, OVEROVERKILL, "husbandry/root", STAY_HYDRATED,
+    BEE_OUR_GUEST, THE_PARROTS_AND_THE_BATS, YOUVE_GOT_A_FRIEND_IN_ME, WHATEVER_FLOATS_YOUR_GOAT, BEST_FRIENDS_FOREVER,
     GLOW_AND_BEHOLD, FISHY_BUSINESS, TOTAL_BEELOCATION, BUKKIT_BUKKIT, SMELLS_INTERESTING, A_SEEDY_PLACE, WAX_ON,
     TWO_BY_TWO, BIRTHDAY_SONG, A_COMPLETE_CATALOGUE, TACTICAL_FISHING, WHEN_THE_SQUAD_HOPS_INTO_TOWN, LITTLE_SNIFFS,
     A_BALANCED_DIET, SERIOUS_DEDICATION, WAX_OFF, THE_CUTEST_PREDATOR, WITH_OUR_POWERS_COMBINED, PLANTING_THE_PAST,
@@ -413,6 +415,8 @@ advancements = {
     "GREAT_VIEW_FROM_UP_HERE": AdvancementInfo("""Great View From Up Here""", "end/levitate",
                                                """Levitate up 50 blocks from the attacks of a Shulker."""),
     "ADVENTURE": AdvancementInfo("""Adventure""", "adventure/root", """Adventure, exploration and combat."""),
+    "HEART_TRANSPLANTER": AdvancementInfo("""Heart Transplanter""", "adventure/heart_transplanter",
+                                          """Place a Creaking Heart with the correct alignment between two Pale Oak Log blocks."""),
     "VOLUNTARY_EXILE": AdvancementInfo("""Voluntary Exile""", "adventure/voluntary_exile",
                                        """Kill a raid captain.Maybe consider staying away from villages for the time being..."""),
     "COUNTRY_LODE_TAKE_ME_HOME": AdvancementInfo("""Country Lode, Take Me Home""", "adventure/use_lodestone",
@@ -500,6 +504,8 @@ advancements = {
     "OVEROVERKILL": AdvancementInfo("""Over-Overkill""", "adventure/overoverkill",
                                     """Deal 50 hearts of damage in a single hit using the Mace."""),
     "HUSBANDRY": AdvancementInfo("""Husbandry""", "husbandry/root", """The world is full of friends and food."""),
+    "STAY_HYDRATED": AdvancementInfo("""Stay Hydrated!""", "husbandry/place_dried_ghast_in_water",
+                                     """Place a Dried Ghast block into water."""),
     "BEE_OUR_GUEST": AdvancementInfo("""Bee Our Guest""", "husbandry/safely_harvest_honey",
                                      """Use a Campfire to collect Honey from a Beehive using a Glass Bottle without aggravating the Bees."""),
     "THE_PARROTS_AND_THE_BATS": AdvancementInfo("""The Parrots and the Bats""", "husbandry/breed_an_animal",
@@ -567,7 +573,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2025-02-26T16:56:17-08:00
+# Derived from https://minecraft.wiki/Biome/ID, 2025-04-11T22:25:53-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -730,7 +736,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-02-26T16:56:17-08:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-04-11T22:25:54-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -872,7 +878,9 @@ effects = {
                             None),
     "WIND_CHARGED": EffectInfo("""Wind Charged""", "wind_charged",
                                """Affected entities emit a burst of wind upon death.""", False),
-    "WEAVING": EffectInfo("""Weaving""", "weaving", """Affected entities spread cobweb blocks upon death.""", False),
+    "WEAVING": EffectInfo("""Weaving""", "weaving",
+                          """Affected entities spread cobweb blocks upon death and increases movement speed in cobwebs by 15%.""",
+                          False),
     "OOZING": EffectInfo("""Oozing""", "oozing", """Makes the entity spawn 2 slimes upon death.""", False),
     "INFESTED": EffectInfo("""Infested""", "infested",
                            """Gives the entity a 10% chance to spawn between 1 and 3 silverfish when hurt.""", False),
@@ -889,7 +897,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-02-26T16:56:17-08:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-04-11T22:25:54-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -944,14 +952,15 @@ ENCHANTMENT_GROUP = [
 
 EnchantmentInfo = namedtuple("Enchantment", ['name', 'value', 'desc', 'max_level'])
 enchantments = {
-    "AQUA_AFFINITY": EnchantmentInfo("""Aqua Affinity""", "aqua_affinity", """Increases underwater mining speed.""", 1),
+    "AQUA_AFFINITY": EnchantmentInfo("""Aqua Affinity""", "aqua_affinity",
+                                     """Lessens the mining speed reduction that occurs when underwater.""", 1),
     "BANE_OF_ARTHROPODS": EnchantmentInfo("""Bane of Arthropods""", "bane_of_arthropods",
                                           """Increases damage and applies Slowness IV to arthropod mobs (spiders, cave spiders, silverfish, endermites and bees).""",
                                           5),
     "BLAST_PROTECTION": EnchantmentInfo("""Blast Protection""", "blast_protection",
                                         """Reduces explosion damage and knockback.""", 4),
     "BREACH": EnchantmentInfo("""Breach""", "breach",
-                              """Reduces the effectiveness of the armor on the target. The armor's effectiveness is reduced by 15% per level.""",
+                              """Reduces the effectiveness of armor on the target, including innate armor points. The armor's effectiveness is reduced by 15% per level.""",
                               4),
     "CHANNELING": EnchantmentInfo("""Channeling""", "channeling",
                                   """During thunderstorms, a thrown trident summons a lightning bolt on the target upon hit.""",
@@ -960,37 +969,37 @@ enchantments = {
                                         """Items cannot be removed from armor slots.""", 1),
     "CURSE_OF_VANISHING": EnchantmentInfo("""Curse of Vanishing""", "curse_of_vanishing",
                                           """Item disappears on death.""", 1),
-    "DENSITY": EnchantmentInfo("""Density""", "density",
-                               """Increases the damage dealt per block fallen, increasing by 0.5 per level.""", 5),
-    "DEPTH_STRIDER": EnchantmentInfo("""Depth Strider""", "depth_strider", """Increases underwater movement speed.""",
-                                     3),
+    "DENSITY": EnchantmentInfo("""Density""", "density", """Increases a mace's smash attack damage by 0.5 per level.""",
+                               5),
+    "DEPTH_STRIDER": EnchantmentInfo("""Depth Strider""", "depth_strider", """Increases movement speed in water.""", 3),
     "EFFICIENCY": EnchantmentInfo("""Efficiency""", "efficiency", """Increases mining speed.""", 5),
     "FEATHER_FALLING": EnchantmentInfo("""Feather Falling""", "feather_falling", """Reduces fall damage.""", 4),
-    "FIRE_ASPECT": EnchantmentInfo("""Fire Aspect""", "fire_aspect", """Sets target on fire.""", 2),
+    "FIRE_ASPECT": EnchantmentInfo("""Fire Aspect""", "fire_aspect", """Sets targets on fire.""", 2),
     "FIRE_PROTECTION": EnchantmentInfo("""Fire Protection""", "fire_protection",
-                                       """Reduces fire damage and burn time.""", 4),
-    "FLAME": EnchantmentInfo("""Flame""", "flame", """Arrows shot are ignited and deal fire damage to the target.""",
-                             1),
-    "FORTUNE": EnchantmentInfo("""Fortune""", "fortune", """Increases the amount of block drops.""", 3),
-    "FROST_WALKER": EnchantmentInfo("""Frost Walker""", "frost_walker",
-                                    """Freezes the water under the player's feet, allowing them to walk over water.""",
+                                       """Reduces fire damage and burning time.""", 4),
+    "FLAME": EnchantmentInfo("""Flame""", "flame", """Arrows set targets on fire.""", 1),
+    "FORTUNE": EnchantmentInfo("""Fortune""", "fortune", """Chance to receive more item drops from certain blocks.""",
+                               3),
+    "FROST_WALKER": EnchantmentInfo("""Frost Walker""", "frost_walker", """Freezes water beneath the user's feet.""",
                                     2),
     "IMPALING": EnchantmentInfo("""Impaling""", "impaling",
-                                """Increases damage against aquatic mobs. In Bedrock Edition, increases damage against mobs in water or rain.""",
+                                """In Java Edition, increases damage against aquatic mobs. In Bedrock Edition, increases damage against mobs in water or rain.""",
                                 5),
     "INFINITY": EnchantmentInfo("""Infinity""", "infinity", """Prevents consumption of arrows.""", 1),
     "KNOCKBACK": EnchantmentInfo("""Knockback""", "knockback", """Increases melee knockback.""", 2),
-    "LOOTING": EnchantmentInfo("""Looting""", "looting", """Increases mob loot.""", 3),
-    "LOYALTY": EnchantmentInfo("""Loyalty""", "loyalty", """Trident returns after being thrown.""", 3),
+    "LOOTING": EnchantmentInfo("""Looting""", "looting", """Chance to receive more item drops from certain mobs.""", 3),
+    "LOYALTY": EnchantmentInfo("""Loyalty""", "loyalty",
+                               """Returns the trident to its owner upon landing after being thrown.""", 3),
     "LUCK_OF_THE_SEA": EnchantmentInfo("""Luck of the Sea""", "luck_of_the_sea",
-                                       """Increases rate of treasure bites (enchanting books, etc.).""", 3),
-    "LURE": EnchantmentInfo("""Lure""", "lure", """Decreases time for bites.""", 3),
+                                       """Increases the rate of treasure items from fishing.""", 3),
+    "LURE": EnchantmentInfo("""Lure""", "lure", """Decreases time for bites when fishing.""", 3),
     "MENDING": EnchantmentInfo("""Mending""", "mending", """Repairs the item using experience.""", 1),
     "MULTISHOT": EnchantmentInfo("""Multishot""", "multishot",
-                                 """Adds 2 to the amount of arrows fired. e.g. Multishot I = 1+2 Arrows, Multishot II = 1+2+2 Arrows.""",
+                                 """Adds 2 arrows to the sides of the center arrow, at the cost of increasing incurred durability damage.""",
                                  1),
     "PIERCING": EnchantmentInfo("""Piercing""", "piercing",
-                                """Arrows pierce entities, allowing for arrows to pierce through stacks of mobs.""", 4),
+                                """Causes fired arrows to pierce entities, allowing for a single arrow to hit multiple mobs, and allows arrows to be picked up again after hitting a target.""",
+                                4),
     "POWER": EnchantmentInfo("""Power""", "power", """Increases arrow damage.""", 5),
     "PROJECTILE_PROTECTION": EnchantmentInfo("""Projectile Protection""", "projectile_protection",
                                              """Reduces damage from projectiles.""", 4),
@@ -999,22 +1008,32 @@ enchantments = {
     "QUICK_CHARGE": EnchantmentInfo("""Quick Charge""", "quick_charge", """Decreases crossbow charging time.""", 3),
     "RESPIRATION": EnchantmentInfo("""Respiration""", "respiration", """Extends underwater breathing time.""", 3),
     "RIPTIDE": EnchantmentInfo("""Riptide""", "riptide",
-                               """Trident launches player with itself when thrown while in water or rain.""", 3),
+                               """Trident when used launches the user while in water or rain, replacing its ability to be thrown as a projectile.""",
+                               3),
     "SHARPNESS": EnchantmentInfo("""Sharpness""", "sharpness", """Increases melee damage.""", 5),
-    "SILK_TOUCH": EnchantmentInfo("""Silk Touch""", "silk_touch", """Mined blocks drop themselves.""", 1),
-    "SMITE": EnchantmentInfo("""Smite""", "smite", """Increases damage to the undead.""", 5),
+    "SILK_TOUCH": EnchantmentInfo("""Silk Touch""", "silk_touch",
+                                  """Certain blocks that would otherwise drop different items or nothing will drop themselves instead.""",
+                                  1),
+    "SMITE": EnchantmentInfo("""Smite""", "smite", """Increases damage dealt against undead mobs.""", 5),
     "SOUL_SPEED": EnchantmentInfo("""Soul Speed""", "soul_speed",
-                                  """Increases movement speed on soul sand and soul soil.""", 3),
-    "SWEEPING_EDGE": EnchantmentInfo("""Sweeping Edge""", "sweeping_edge", """Increases sweeping attack damage.""", 3),
-    "SWIFT_SNEAK": EnchantmentInfo("""Swift Sneak""", "swift_sneak", """Increases sneaking speed.""", 3),
-    "THORNS": EnchantmentInfo("""Thorns""", "thorns",
-                              """If a mob wearing armor with that enchantment takes damage, the attacker will also take damage.""",
-                              3),
-    "UNBREAKING": EnchantmentInfo("""Unbreaking""", "unbreaking", """Reduces durability damage.""", 3),
-    "WIND_BURST": EnchantmentInfo("""Wind Burst""", "wind_burst",
-                                  """Emits a burst of wind (like that of a wind charge) upon executing a mace smash attack on an entity, launching the attacker upward. It can be used to chain smash attacks together, and the strength of the launch increases per level.""",
+                                  """Movement speed on soul sand is increased instead of decreased, and movement speed on soul soil is increased.""",
                                   3),
-    "CLEAVING": EnchantmentInfo("""Cleaving""", "cleaving", """Increases damage and shield stun time.""", 3),
+    "SWEEPING_EDGE": EnchantmentInfo("""Sweeping Edge""", "sweeping_edge",
+                                     """Increases the damage of a sword sweep attack. This increase applies to nearby entities that are close to the attacked entity, but does not apply to the attacked entity itself.""",
+                                     3),
+    "SWIFT_SNEAK": EnchantmentInfo("""Swift Sneak""", "swift_sneak",
+                                   """Lessens the movement speed reduction that occurs when sneaking.""", 3),
+    "THORNS": EnchantmentInfo("""Thorns""", "thorns",
+                              """Random chance to damage entities that attack the user, at the cost of increasing incurred durability damage.""",
+                              3),
+    "UNBREAKING": EnchantmentInfo("""Unbreaking""", "unbreaking",
+                                  """Gives a chance for items to ignore durability loss, effectively increasing their durability.""",
+                                  3),
+    "WIND_BURST": EnchantmentInfo("""Wind Burst""", "wind_burst",
+                                  """Emits a burst of wind upon executing a mace smash attack on an entity, launching the attacker upward. The strength of the launch increases per level.""",
+                                  3),
+    "CLEAVING": EnchantmentInfo("""Cleaving""", "cleaving", """Increases the damage and shield stun time of an axe.""",
+                                3),
 }
 
 for __k in tuple(enchantments.keys()):
@@ -1028,8 +1047,9 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-02-26T16:56:18-08:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-04-11T22:25:55-07:00
 __gamerule_dups = {}
+ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER = "allowFireTicksAwayFromPlayer"
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
 COMMAND_BLOCK_OUTPUT = "commandBlockOutput"
@@ -1040,8 +1060,8 @@ DISABLE_RAIDS = "disableRaids"
 DO_DAYLIGHT_CYCLE = "doDaylightCycle"
 DO_ENTITY_DROPS = "doEntityDrops"
 DO_FIRE_TICK = "doFireTick"
-DO_INSOMNIA = "doInsomnia"
 DO_IMMEDIATE_RESPAWN = "doImmediateRespawn"
+DO_INSOMNIA = "doInsomnia"
 DO_LIMITED_CRAFTING = "doLimitedCrafting"
 DO_MOB_LOOT = "doMobLoot"
 DO_MOB_SPAWNING = "doMobSpawning"
@@ -1080,25 +1100,32 @@ SNOW_ACCUMULATION_HEIGHT = "snowAccumulationHeight"
 SPAWN_CHUNK_RADIUS = "spawnChunkRadius"
 SPAWN_RADIUS = "spawnRadius"
 SPECTATORS_GENERATE_CHUNKS = "spectatorsGenerateChunks"
+TNT_EXPLODES = "tntExplodes"
 TNT_EXPLOSION_DROP_DECAY = "tntExplosionDropDecay"
+USE_LOCATOR_BAR = "useLocatorBar"
 UNIVERSAL_ANGER = "universalAnger"
 WATER_SOURCE_CONVERSION = "waterSourceConversion"
 GAME_RULE_GROUP = [
-    ANNOUNCE_ADVANCEMENTS, BLOCK_EXPLOSION_DROP_DECAY, COMMAND_BLOCK_OUTPUT, COMMAND_MODIFICATION_BLOCK_LIMIT,
-    DISABLE_ELYTRA_MOVEMENT_CHECK, DISABLE_PLAYER_MOVEMENT_CHECK, DISABLE_RAIDS, DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS,
-    DO_FIRE_TICK, DO_INSOMNIA, DO_IMMEDIATE_RESPAWN, DO_LIMITED_CRAFTING, DO_MOB_LOOT, DO_MOB_SPAWNING,
-    DO_PATROL_SPAWNING, DO_TILE_DROPS, DO_TRADER_SPAWNING, DO_VINES_SPREAD, DO_WEATHER_CYCLE, DO_WARDEN_SPAWNING,
-    DROWNING_DAMAGE, ENDER_PEARLS_VANISH_ON_DEATH, FALL_DAMAGE, FIRE_DAMAGE, FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE,
-    GLOBAL_SOUND_EVENTS, KEEP_INVENTORY, LAVA_SOURCE_CONVERSION, LOG_ADMIN_COMMANDS, MAX_COMMAND_CHAIN_LENGTH,
-    MAX_COMMAND_FORK_COUNT, MAX_ENTITY_CRAMMING, MINECART_MAX_SPEED, MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING,
-    NATURAL_REGENERATION, PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, PLAYERS_NETHER_PORTAL_DEFAULT_DELAY,
-    PLAYERS_SLEEPING_PERCENTAGE, PROJECTILES_CAN_BREAK_BLOCKS, RANDOM_TICK_SPEED, REDUCED_DEBUG_INFO,
-    SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES, SNOW_ACCUMULATION_HEIGHT, SPAWN_CHUNK_RADIUS, SPAWN_RADIUS,
-    SPECTATORS_GENERATE_CHUNKS, TNT_EXPLOSION_DROP_DECAY, UNIVERSAL_ANGER, WATER_SOURCE_CONVERSION
+    ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER, ANNOUNCE_ADVANCEMENTS, BLOCK_EXPLOSION_DROP_DECAY, COMMAND_BLOCK_OUTPUT,
+    COMMAND_MODIFICATION_BLOCK_LIMIT, DISABLE_ELYTRA_MOVEMENT_CHECK, DISABLE_PLAYER_MOVEMENT_CHECK, DISABLE_RAIDS,
+    DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS, DO_FIRE_TICK, DO_IMMEDIATE_RESPAWN, DO_INSOMNIA, DO_LIMITED_CRAFTING,
+    DO_MOB_LOOT, DO_MOB_SPAWNING, DO_PATROL_SPAWNING, DO_TILE_DROPS, DO_TRADER_SPAWNING, DO_VINES_SPREAD,
+    DO_WEATHER_CYCLE, DO_WARDEN_SPAWNING, DROWNING_DAMAGE, ENDER_PEARLS_VANISH_ON_DEATH, FALL_DAMAGE, FIRE_DAMAGE,
+    FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE, GLOBAL_SOUND_EVENTS, KEEP_INVENTORY, LAVA_SOURCE_CONVERSION,
+    LOG_ADMIN_COMMANDS, MAX_COMMAND_CHAIN_LENGTH, MAX_COMMAND_FORK_COUNT, MAX_ENTITY_CRAMMING, MINECART_MAX_SPEED,
+    MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING, NATURAL_REGENERATION, PLAYERS_NETHER_PORTAL_CREATIVE_DELAY,
+    PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, PLAYERS_SLEEPING_PERCENTAGE, PROJECTILES_CAN_BREAK_BLOCKS, RANDOM_TICK_SPEED,
+    REDUCED_DEBUG_INFO, SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES, SNOW_ACCUMULATION_HEIGHT, SPAWN_CHUNK_RADIUS,
+    SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLODES, TNT_EXPLOSION_DROP_DECAY, USE_LOCATOR_BAR, UNIVERSAL_ANGER,
+    WATER_SOURCE_CONVERSION
 ]
 
 GameRuleInfo = namedtuple("GameRule", ['name', 'value', 'desc', 'rule_type'])
 game_rules = {
+    "ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER": GameRuleInfo("""allow Fire Ticks Away From Player""",
+                                                      "allowFireTicksAwayFromPlayer",
+                                                      """Whether fire and lava ticks can occur outside of an 8 chunk range of a player.""",
+                                                      bool),
     "ANNOUNCE_ADVANCEMENTS": GameRuleInfo("""announce Advancements""", "announceAdvancements",
                                           """Whether advancements should be announced in chat.""", bool),
     "BLOCK_EXPLOSION_DROP_DECAY": GameRuleInfo("""block Explosion Drop Decay""", "blockExplosionDropDecay",
@@ -1123,10 +1150,10 @@ game_rules = {
                                     """Whether entities that are not mobs should have drops.""", bool),
     "DO_FIRE_TICK": GameRuleInfo("""do Fire Tick""", "doFireTick",
                                  """Whether fire should spread and naturally extinguish.""", bool),
-    "DO_INSOMNIA": GameRuleInfo("""do Insomnia""", "doInsomnia", """Whether phantoms can spawn in the nighttime.""",
-                                bool),
     "DO_IMMEDIATE_RESPAWN": GameRuleInfo("""do Immediate Respawn""", "doImmediateRespawn",
                                          """Players respawn immediately without showing the death screen.""", bool),
+    "DO_INSOMNIA": GameRuleInfo("""do Insomnia""", "doInsomnia", """Whether phantoms can spawn in the nighttime.""",
+                                bool),
     "DO_LIMITED_CRAFTING": GameRuleInfo("""do Limited Crafting""", "doLimitedCrafting",
                                         """Whether players can craft only those recipes that they have unlocked.""",
                                         bool),
@@ -1159,7 +1186,7 @@ game_rules = {
                                 """Whether the player should take damage in fire, lava, campfires, or on magma blocks.""",
                                 bool),
     "FORGIVE_DEAD_PLAYERS": GameRuleInfo("""forgive Dead Players""", "forgiveDeadPlayers",
-                                         """Makes angered neutral mobs within 65 x 21 x 65 blocks centered on the targeted player stop being angry when the they dies.""",
+                                         """Makes angered neutral mobs within 65 x 21 x 65 blocks centered on the targeted player stop being angry when the player dies.""",
                                          bool),
     "FREEZE_DAMAGE": GameRuleInfo("""freeze Damage""", "freezeDamage",
                                   """Whether the player should take damage when inside powder snow.""", bool),
@@ -1229,9 +1256,13 @@ game_rules = {
                                  int),
     "SPECTATORS_GENERATE_CHUNKS": GameRuleInfo("""spectators Generate Chunks""", "spectatorsGenerateChunks",
                                                """Whether players in Spectator mode can generate chunks.""", bool),
+    "TNT_EXPLODES": GameRuleInfo("""tnt Explodes""", "tntExplodes", """Whether TNT explodes after activation.""", bool),
     "TNT_EXPLOSION_DROP_DECAY": GameRuleInfo("""tnt Explosion Drop Decay""", "tntExplosionDropDecay",
                                              """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a TNT explosion.""",
                                              bool),
+    "USE_LOCATOR_BAR": GameRuleInfo("""use Locator Bar""", "useLocatorBar",
+                                    """Whether the player's locator bar is enabled indicating directions of players or entities. In Bedrock Edition, this is controlled by the equivalent locatorBar rule.""",
+                                    bool),
     "UNIVERSAL_ANGER": GameRuleInfo("""universal Anger""", "universalAnger",
                                     """Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled.""",
                                     bool),
@@ -1250,7 +1281,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-02-26T16:56:18-08:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-04-11T22:25:55-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1303,7 +1334,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-02-26T16:56:19-08:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-04-11T22:25:55-07:00
 __particle_dups = {}
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -1534,7 +1565,7 @@ particles = {
     "GUST_EMITTER": ParticleInfo("""Gust Emitter""", "gust_emitter",
                                  """Created when a wind charge hits a block. Spawns a number of gust particles."""),
     "HAPPY_VILLAGER": ParticleInfo("""Happy Villager""", "happy_villager",
-                                   """Shown when using bonemeal on plants, appears when trading with villagers, appears when feeding baby animals or dolphins, emitted by villagers upon claiming a job site block or a bed, shown when bees pollinate crops, appears when turtle eggs are placed on sand, appears when turtle eggs hatch."""),
+                                   """Shown when using bone meal on plants, appears when trading with villagers, appears when feeding baby animals or dolphins, emitted by villagers upon claiming a job site block or a bed, shown when bees pollinate crops, appears when turtle eggs are placed on sand, appears when turtle eggs hatch."""),
     "HEART": ParticleInfo("""Heart""", "heart",
                           """Appears when taming mobs, emitted by breeding mobs, feeding mobs, appears when allays duplicate."""),
     "INFESTED": ParticleInfo("""Infested""", "infested", """Produced by entities with the Infested effect."""),
@@ -1563,7 +1594,7 @@ particles = {
     "OMINOUS_SPAWNING": ParticleInfo("""Ominous Spawning""", "ominous_spawning",
                                      """Appears when an ominous item spawner spawns a item during an ominous event."""),
     "PALE_OAK_LEAVES": ParticleInfo("""Pale Oak Leaves""", "pale_oak_leaves",
-                                    """Dropped from pale oak leaves in pale garden biomes."""),
+                                    """Falls off the bottom of pale oak leaves."""),
     "POOF": ParticleInfo("""Poof""", "poof",
                          """Appears when mobs die, shown when ravagers roar after being stunned, produced when silverfish enter stone, appear around mobs spawned by spawners, shown when zombies trample turtle eggs, created when fireworks crafted without stars expire."""),
     "PORTAL": ParticleInfo("""Portal""", "portal",
@@ -1620,7 +1651,7 @@ particles = {
     "WAX_OFF": ParticleInfo("""Wax Off""", "wax_off", """Produced when scraping wax off copper."""),
     "WAX_ON": ParticleInfo("""Wax On""", "wax_on", """Produced when using honeycomb on copper."""),
     "WHITE_ASH": ParticleInfo("""White Ash""", "white_ash", """Floats in the atmosphere in basalt delta biomes."""),
-    "WHITE_SMOKE": ParticleInfo("""White Smoke""", "white_smoke", """Unknown."""),
+    "WHITE_SMOKE": ParticleInfo("""White Smoke""", "white_smoke", """Emitted by crafters when ejecting an item."""),
     "WITCH": ParticleInfo("""Witch""", "witch", """Emitted by witches."""),
 }
 
@@ -1635,7 +1666,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-02-26T16:56:19-08:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-04-11T22:25:55-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1699,7 +1730,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-02-26T16:56:19-08:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-04-11T22:25:56-07:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1759,7 +1790,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2025-02-26T16:56:20-08:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2025-04-11T22:39:45-07:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"
