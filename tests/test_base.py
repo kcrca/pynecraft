@@ -501,3 +501,45 @@ class TestBase(unittest.TestCase):
              'left_rotation': [0.0, -1.0, 0.0, 6.123233995736766e-17],
              'translation': [0, 0, 0]},
             Transform.quaternion(EAST, 5.2, NORTH).nbt())
+
+    def test_to_int(self):
+        self.assertEqual(100, Nbt.to_int('100'))
+        self.assertEqual(0x100, Nbt.to_int('0x100'))
+        self.assertEqual(0b100, Nbt.to_int('0b100'))
+        self.assertEqual(-100, Nbt.to_int('-100'))
+        self.assertEqual(-0x100, Nbt.to_int('-0x100'))
+        self.assertEqual(-0b100, Nbt.to_int('-0b100'))
+        self.assertEqual(0x10, Nbt.to_int('0x10sb'))
+        self.assertEqual(-16, Nbt.to_int('-16'))
+        self.assertEqual(-16, Nbt.to_int('-16sb'))
+        self.assertEqual(-16, Nbt.to_int('240uB'))
+        self.assertEqual(15, Nbt.to_int('15s'))
+        self.assertEqual(15, Nbt.to_int('15sS'))
+        self.assertEqual(15, Nbt.to_int('15Us'))
+
+        with self.assertRaises(ValueError):
+            Nbt.to_int('-100u')
+        with self.assertRaises(ValueError):
+            Nbt.to_int('0b500u')
+        with self.assertRaises(ValueError):
+            Nbt.to_int('82u')
+        with self.assertRaises(ValueError):
+            Nbt.to_int('-87uI')
+        with self.assertRaises(ValueError):
+            Nbt.to_int('30bu')
+        with self.assertRaises(ValueError):
+            Nbt.to_int('253sb')
+
+    def test_to_float(self):
+        self.assertEqual(0.0, Nbt.to_float('0'))
+        self.assertEqual(10.0, Nbt.to_float('10'))
+        self.assertEqual(-10.0, Nbt.to_float('-10'))
+        self.assertEqual(-10.0, Nbt.to_float('-10'))
+        self.assertEqual(10.0e2, Nbt.to_float('10e2'))
+        self.assertEqual(-10.0e-2, Nbt.to_float('-10e-2'))
+        self.assertEqual(-10.0e-3, Nbt.to_float('-10E-3'))
+        self.assertEqual(0.1, Nbt.to_float('.1'))
+        self.assertEqual(0.1, Nbt.to_float('0.1'))
+        self.assertEqual(0.0, Nbt.to_float('0.'))
+        self.assertEqual(2.e5, Nbt.to_float('2.e5'))
+        self.assertEqual(2e5, Nbt.to_float('2e5'))

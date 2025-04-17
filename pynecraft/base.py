@@ -568,6 +568,34 @@ def _as_array_type(elem_type):
 
 
 class Nbt(UserDict):
+    MAX_LONG = 0x7fff_ffff_ffff_ffff
+    MIN_LONG = -MAX_LONG - 1
+    MAX_INT = 0x7fff_fff
+    MIN_INT = -MAX_INT - 1
+    MAX_SHORT = 0x7fff
+    MIN_SHORT = -MAX_SHORT - 1
+    MAX_BYTE = 0x7f
+    MIN_BYTE = -MAX_BYTE - 1
+    MAX_ULONG = 0xffff_ffff_ffff_ffff
+    MIN_ULONG = 0
+    MAX_UINT = 0xffff_fff
+    MIN_UINT = 0
+    MAX_USHORT = 0xffff
+    MIN_USHORT = 0
+    MAX_UBYTE = 0xff
+    MIN_UBYTE = 0
+
+    MAX_FLOAT_VALUE = +3.4e+38
+    MIN_FLOAT_VALUE = 1.401298e-45
+    MIN_FLOAT_NORMAL = 1.175494e-38
+    MAX_FLOAT_EXPONENT = -126
+    MIN_FLOAT_EXPONENT = 127
+    MAX_DOUBLE_VALUE = 1.797693e+308
+    MIN_DOUBLE_VALUE = 4.900000e-324
+    MIN_DOUBLE_NORMAL = 2.225074e-308
+    MAX_DOUBLE_EXPONENT = -1022
+    MIN_DOUBLE_EXPONENT = 1023
+
     """A simple NBT handling class, that models NBT values as a python dictionary.
 
     You can set the value of a key directly to any valid value. By default, the value of a key will be an Nbt object.
@@ -638,6 +666,59 @@ class Nbt(UserDict):
                 part = part[p]
             part[path[-1]] = v
         return self
+
+    @classmethod
+    def to_int(cls, string) -> int:
+        lc_string = string.lower()
+        m = re.fullmatch(r'([-+])?(0[xb])?([0-9a-f_]+)([su])?([bsil])?', lc_string)
+        if not m:
+            raise ValueError(f'{string}: Not an integer')
+        sign, base_spec, num, signed, type = m.groups()
+        base = 16 if base_spec == '0x' else 2 if base_spec == '0b' else 10
+        num = int(num, base)
+        # disambiguation
+        if signed == 's' and not type:
+            type = 's'
+            signed = None
+        if sign == '-':
+            num = -num
+        if signed:
+            if not type:
+                raise ValueError(f'{string}: Type suffix required after signed-ness suffix')
+        if signed == 'u' and num < 0:
+            raise ValueError(f'{string}: unsigned ints cannot be negative')
+        if not type:
+            # without a known type, we can't do any other checks
+            return num
+
+        signed_ranges = {'b': (Nbt.MIN_BYTE, Nbt.MAX_BYTE + 1), 's': (Nbt.MIN_SHORT, Nbt.MAX_SHORT + 1),
+                         'i': (Nbt.MIN_INT, Nbt.MAX_INT + 1), 'l': (Nbt.MIN_LONG, Nbt.MAX_LONG + 1)}
+        unsigned_ranges = {'b': (Nbt.MIN_UBYTE, Nbt.MAX_UBYTE + 1), 's': (Nbt.MIN_USHORT, Nbt.MAX_USHORT + 1),
+                           'i': (Nbt.MIN_UINT, Nbt.MAX_UINT + 1), 'l': (Nbt.MIN_ULONG, Nbt.MAX_ULONG + 1)}
+        ranges = unsigned_ranges if signed == 'u' else signed_ranges
+        if num not in range(*ranges[type]):
+            raise ValueError(f'{string}: Outside range of type "{type}"')
+        # This is just getting the twos-complement stuff right: An unsigned value above the signed max for a type is
+        # a negative value of that type.
+        if num >= signed_ranges[type][1] and num < unsigned_ranges[type][1]:
+            num -= unsigned_ranges[type][1]
+        return num
+
+    @classmethod
+    def to_float(cls, string) -> float:
+        lc_string = string.lower()
+        m = re.fullmatch(r'([-+]?(?:[0-9_]+)?\.?(?:[0-9_]+)?(?:e-?[0-9]+)?)([df]?)', lc_string)
+        if not m:
+            raise ValueError(f'{string}: Not a float')
+        num, type = m.groups()
+        if not num or num == '-':
+            raise ValueError(f'{string}: Not a float')
+        num = float(num)
+        ranges = {'f': (Nbt.MIN_FLOAT_VALUE, Nbt.MAX_FLOAT_VALUE), 'd': (Nbt.MIN_DOUBLE_VALUE, Nbt.MAX_DOUBLE_VALUE)}
+        if type and abs(num) not in range(*ranges[type]):
+            raise ValueError(f'{string}: Outside range of type "{type}"')
+        return num
+
 
     @classmethod
     def to_str(cls, obj) -> str:
