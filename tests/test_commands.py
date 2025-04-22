@@ -1577,11 +1577,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$waypoint modify @n color hex $(rgb)', waypoint().modify(n()).color(HEX, Arg('rgb')))
         self.assertEqual('waypoint modify @n color hex 0043cd', waypoint().modify(n()).color(17357))
         self.assertEqual('waypoint modify @n color reset', waypoint().modify(n()).color(RESET))
-        self.assertEqual('waypoint modify @n fade reset', waypoint().modify(n()).fade(RESET))
-        self.assertEqual('waypoint modify @n fade 0 0.9 10000 0.2', waypoint().modify(n()).fade((0, 0.9, 10000, 0.2)))
+        self.assertEqual('waypoint modify @n style reset', waypoint().modify(n()).style(RESET))
+        self.assertEqual('waypoint modify @n style bowtie', waypoint().modify(n()).style('bowtie'))
         with self.assertRaises(ValueError):
             waypoint().modify(n()).color(1_000_000_000)
         with self.assertRaises(ValueError):
-            waypoint().modify(n()).fade((1, 0))
-        with self.assertRaises(ValueError):
-            waypoint().modify(n()).fade((1, 2, 3, 4))
+            waypoint().modify(n()).color(HEX)

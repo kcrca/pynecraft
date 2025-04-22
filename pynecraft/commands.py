@@ -2592,7 +2592,9 @@ class _WaypointModifyMod(Command):
         if isinstance(color_or_reset, int):
             num = color_or_reset
         elif color_or_reset == HEX:
-            if isinstance(hex_value, int):
+            if hex_value is None:
+                raise ValueError('hex color not provided')
+            elif isinstance(hex_value, int):
                 num = hex_value
             else:
                 self._add(HEX, de_arg(hex_value))
@@ -2606,22 +2608,8 @@ class _WaypointModifyMod(Command):
         return str(self)
 
     @_fluent
-    def fade(self, values_or_reset: StrOrArg | Tuple[FloatOrArg, FloatOrArg, FloatOrArg, FloatOrArg]) -> str:
-        """
-        Valid invocations include:
-        * fade(RESET)
-        * fade((1, Arg(a1), 100, 0.9))
-        """
-        self._add('fade')
-        if isinstance(values_or_reset, str) or is_arg(values_or_reset):
-            self._add(de_arg(_in_group([RESET], values_or_reset)))
-        else:
-            if len(values_or_reset) != 4:
-                raise ValueError(f'Four values are required: {values_or_reset}')
-            for i, v in enumerate(values_or_reset):
-                if i % 2 == 1 and isinstance(v, (int, float)) and not 0 <= v <= 1:
-                    raise ValueError("alpha values must be [0..1]")
-                self._add(de_float_arg(v))
+    def style(self, style_or_reset: StrOrArg) -> str:
+        self._add('style', style_or_reset)
         return str(self)
 
 
