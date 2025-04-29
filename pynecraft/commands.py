@@ -2608,8 +2608,21 @@ class _WaypointModifyMod(Command):
         return str(self)
 
     @_fluent
-    def style(self, style_or_reset: StrOrArg) -> str:
-        self._add('style', style_or_reset)
+    def style(self, style_or_reset: StrOrArg = None) -> str | _WaypointStyleSet:
+        self._add('style')
+        if style_or_reset:
+            if style_or_reset != 'reset':
+                self._add('set')
+            self._add(de_arg(style_or_reset))
+            return str(self)
+        else:
+            return self._start(_WaypointStyleSet())
+
+
+class _WaypointStyleSet(Command):
+    @_fluent
+    def set(self, style: StrOrArg) -> str:
+        self._add('set', de_arg(style))
         return str(self)
 
 
@@ -2763,7 +2776,7 @@ def advancement(action: StrOrArg, target: Selector) -> _AdvancementMod:
 def attribute(target: Target, attribute: StrOrArg) -> _AttributeMod:
     """Queries, adds, removes, or sets an entity attribute."""
     cmd = Command()
-    cmd._add('$attribute', as_single(target), as_resource(attribute))
+    cmd._add('$attribute', as_single(target), as_resource(attribute, add_namespace=True))
     return cmd._start(_AttributeMod())
 
 
@@ -3581,6 +3594,7 @@ class Entity(Block):
             components = state
         self._custom_name = False
         self._custom_name_visible = False
+        self._attributes = Nbt()
         id = de_arg(id)
         super().__init__(id, components, nbt, name=name)
 

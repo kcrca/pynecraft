@@ -357,12 +357,13 @@ def as_nbt_path(path: StrOrArg | None) -> str | None:
     return sub
 
 
-def as_resource(name: StrOrArg | None, allow_namespace=True, allow_not=False) -> str | None:
+def as_resource(name: StrOrArg | None, allow_namespace=True, allow_not=False, add_namespace=False) -> str | None:
     """Checks if the argument is a valid resource name, or None. If not, it raises ValueError.
 
     :param name: The (probable) resource name.
     :param allow_namespace: Whether to allow a resource prefix such as 'minecraft:'...
     :param allow_not: Whether to allow a '!' before the name.
+    :param: add_namespace: If no namespace is given, prepend 'minecraft:'
     :return: the input value.
     """
     if is_arg(name):
@@ -377,6 +378,8 @@ def as_resource(name: StrOrArg | None, allow_namespace=True, allow_not=False) ->
         raise ValueError(f'{eval_name}: Invalid resource')
     if not allow_namespace and m.group(2):
         raise ValueError(f'{eval_name}: Namespace given ({m.group(2)} but not allowed')
+    if add_namespace and not m.group(2):
+        name = f'minecraft:{name}'
     return name
 
 
@@ -718,7 +721,6 @@ class Nbt(UserDict):
         if type and abs(num) not in range(*ranges[type]):
             raise ValueError(f'{string}: Outside range of type "{type}"')
         return num
-
 
     @classmethod
     def to_str(cls, obj) -> str:
@@ -1349,12 +1351,15 @@ for __i, __r in enumerate(SIGN_DIRECTIONS):
         # This affects only zero.
         _facing[__i].h_number = __i
         _facing[__r] = _facing[__i]
+        if isinstance(__r, (int, float)):
+            _facing[int(__r)] = _facing[__i]
     else:
         __deg = round((__i * 22.5 + 720) % 360, 1)
         __angle = math.radians(__deg)
         # noinspection PyTypeChecker
         _facing[__r] = Facing(__r, (-math.sin(__angle), 0, math.cos(__angle)), ((720 + __deg) % 360, 0), math.nan, __i)
         _facing[__i] = _facing[__r]
+        _facing[round(2 * __deg) / 2] = _facing[__r]
 
 _facing_info = {NORTH: (0, -1, 0), EAST: (1, 0, 270), SOUTH: (0, 1, 180), WEST: (-1, 0, 90)}
 
@@ -1536,7 +1541,7 @@ FloatOrArg = Union[int, float, Arg, str]
 StrOrArg = Union[str, Arg]
 
 NbtDef = Union[Nbt, Mapping]
-FacingDef = Union[int, str, Facing]
+FacingDef = Union[int, float, str, Facing]
 DurationDef = Union[StrOrArg, FloatOrArg, TimeSpec]
 Coord = Union[FloatOrArg, RelCoord]
 Angle = Union[FloatOrArg, StrOrArg, RelCoord]

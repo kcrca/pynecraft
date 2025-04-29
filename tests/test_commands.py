@@ -572,9 +572,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('xyzzy', str(literal('xyzzy')))
 
     def test_attribute(self):
-        self.assertEqual('attribute @s foo get', attribute(s(), 'foo').get())
-        self.assertEqual('$attribute @s foo modifier add $(uuid) "robin" 1.3',
-                         attribute(s(), 'foo').modifier().add(Arg('uuid'), 'robin', 1.3))
+        self.assertEqual('attribute @s minecraft:foo get', attribute(s(), 'foo').get())
+        self.assertEqual('$attribute @s minecraft:foo modifier add $(uuid) "robin" 1.3',
+                         attribute(s(), 'minecraft:foo').modifier().add(Arg('uuid'), 'robin', 1.3))
         self.assertEqual('$attribute @s x$(k) get', attribute(s(), 'x$(k)').get())
         self.assertEqual('$attribute @s $(f) get', attribute(s(), Arg('f')).get())
 
@@ -1578,7 +1578,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('waypoint modify @n color hex 0043cd', waypoint().modify(n()).color(17357))
         self.assertEqual('waypoint modify @n color reset', waypoint().modify(n()).color(RESET))
         self.assertEqual('waypoint modify @n style reset', waypoint().modify(n()).style(RESET))
-        self.assertEqual('waypoint modify @n style bowtie', waypoint().modify(n()).style('bowtie'))
+        self.assertEqual('waypoint modify @n style set bowtie', waypoint().modify(n()).style('bowtie'))
+        self.assertEqual('waypoint modify @n style set bowtie', waypoint().modify(n()).style().set('bowtie'))
         with self.assertRaises(ValueError):
             waypoint().modify(n()).color(1_000_000_000)
         with self.assertRaises(ValueError):
