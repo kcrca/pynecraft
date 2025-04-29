@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2025-04-11T22:25:52-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2025-04-22T15:06:40-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2025-04-11T22:25:52-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2025-04-22T15:06:40-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -190,7 +190,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-04-11T22:25:52-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-04-22T15:06:40-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -573,7 +573,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2025-04-11T22:25:53-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2025-04-22T15:06:41-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -736,7 +736,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-04-11T22:25:54-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-04-22T15:06:41-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -897,7 +897,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-04-11T22:25:54-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-04-22T15:06:41-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -1047,7 +1047,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-04-11T22:25:55-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-04-22T15:06:42-07:00
 __gamerule_dups = {}
 ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER = "allowFireTicksAwayFromPlayer"
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
@@ -1080,6 +1080,7 @@ FREEZE_DAMAGE = "freezeDamage"
 GLOBAL_SOUND_EVENTS = "globalSoundEvents"
 KEEP_INVENTORY = "keepInventory"
 LAVA_SOURCE_CONVERSION = "lavaSourceConversion"
+LOCATOR_BAR = "locatorBar"
 LOG_ADMIN_COMMANDS = "logAdminCommands"
 MAX_COMMAND_CHAIN_LENGTH = "maxCommandChainLength"
 MAX_COMMAND_FORK_COUNT = "maxCommandForkCount"
@@ -1102,7 +1103,6 @@ SPAWN_RADIUS = "spawnRadius"
 SPECTATORS_GENERATE_CHUNKS = "spectatorsGenerateChunks"
 TNT_EXPLODES = "tntExplodes"
 TNT_EXPLOSION_DROP_DECAY = "tntExplosionDropDecay"
-USE_LOCATOR_BAR = "useLocatorBar"
 UNIVERSAL_ANGER = "universalAnger"
 WATER_SOURCE_CONVERSION = "waterSourceConversion"
 GAME_RULE_GROUP = [
@@ -1111,12 +1111,12 @@ GAME_RULE_GROUP = [
     DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS, DO_FIRE_TICK, DO_IMMEDIATE_RESPAWN, DO_INSOMNIA, DO_LIMITED_CRAFTING,
     DO_MOB_LOOT, DO_MOB_SPAWNING, DO_PATROL_SPAWNING, DO_TILE_DROPS, DO_TRADER_SPAWNING, DO_VINES_SPREAD,
     DO_WEATHER_CYCLE, DO_WARDEN_SPAWNING, DROWNING_DAMAGE, ENDER_PEARLS_VANISH_ON_DEATH, FALL_DAMAGE, FIRE_DAMAGE,
-    FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE, GLOBAL_SOUND_EVENTS, KEEP_INVENTORY, LAVA_SOURCE_CONVERSION,
+    FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE, GLOBAL_SOUND_EVENTS, KEEP_INVENTORY, LAVA_SOURCE_CONVERSION, LOCATOR_BAR,
     LOG_ADMIN_COMMANDS, MAX_COMMAND_CHAIN_LENGTH, MAX_COMMAND_FORK_COUNT, MAX_ENTITY_CRAMMING, MINECART_MAX_SPEED,
     MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING, NATURAL_REGENERATION, PLAYERS_NETHER_PORTAL_CREATIVE_DELAY,
     PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, PLAYERS_SLEEPING_PERCENTAGE, PROJECTILES_CAN_BREAK_BLOCKS, RANDOM_TICK_SPEED,
     REDUCED_DEBUG_INFO, SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES, SNOW_ACCUMULATION_HEIGHT, SPAWN_CHUNK_RADIUS,
-    SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLODES, TNT_EXPLOSION_DROP_DECAY, USE_LOCATOR_BAR, UNIVERSAL_ANGER,
+    SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLODES, TNT_EXPLOSION_DROP_DECAY, UNIVERSAL_ANGER,
     WATER_SOURCE_CONVERSION
 ]
 
@@ -1198,6 +1198,9 @@ game_rules = {
                                    bool),
     "LAVA_SOURCE_CONVERSION": GameRuleInfo("""lava Source Conversion""", "lavaSourceConversion",
                                            """Whether new sources of lava are allowed to form.""", bool),
+    "LOCATOR_BAR": GameRuleInfo("""locator Bar""", "locatorBar",
+                                """Whether the player's locator bar is enabled indicating directions of players or entities.""",
+                                bool),
     "LOG_ADMIN_COMMANDS": GameRuleInfo("""log Admin Commands""", "logAdminCommands",
                                        """Whether to log admin commands to server log.""", bool),
     "MAX_COMMAND_CHAIN_LENGTH": GameRuleInfo("""max Command Chain Length""", "maxCommandChainLength",
@@ -1260,9 +1263,6 @@ game_rules = {
     "TNT_EXPLOSION_DROP_DECAY": GameRuleInfo("""tnt Explosion Drop Decay""", "tntExplosionDropDecay",
                                              """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a TNT explosion.""",
                                              bool),
-    "USE_LOCATOR_BAR": GameRuleInfo("""use Locator Bar""", "useLocatorBar",
-                                    """Whether the player's locator bar is enabled indicating directions of players or entities. In Bedrock Edition, this is controlled by the equivalent locatorBar rule.""",
-                                    bool),
     "UNIVERSAL_ANGER": GameRuleInfo("""universal Anger""", "universalAnger",
                                     """Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled.""",
                                     bool),
@@ -1281,7 +1281,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-04-11T22:25:55-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-04-22T15:06:42-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1334,7 +1334,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-04-11T22:25:55-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-04-22T15:06:42-07:00
 __particle_dups = {}
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -1492,7 +1492,7 @@ particles = {
     "CRIMSON_SPORE": ParticleInfo("""Crimson Spore""", "crimson_spore",
                                   """Floats throughout the atmosphere in the crimson forest biome."""),
     "CRIT": ParticleInfo("""Crit""", "crit",
-                         """Trails behind crossbow shots and fully charged bow shots, produced by evoker fangs, appears when landing a critical hit on an entity."""),
+                         """Trails behind crossbow shots and fully charged bow shots, trails behind all spectral arrow entities, produced by evoker fangs, appears when landing a critical hit on an entity."""),
     "CURRENT_DOWN": ParticleInfo("""Current Down""", "current_down", """Represents downward bubble columns."""),
     "DAMAGE_INDICATOR": ParticleInfo("""Damage Indicator""", "damage_indicator",
                                      """Appears when a melee attack damages an entity."""),
@@ -1666,7 +1666,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-04-11T22:25:55-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-04-22T15:06:42-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1730,7 +1730,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-04-11T22:25:56-07:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-04-22T15:06:43-07:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1790,7 +1790,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2025-04-11T22:39:45-07:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2025-04-22T15:06:43-07:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"
