@@ -3562,8 +3562,13 @@ class Block(Command):
         return str(v)
 
     def _state_str(self):
+        return self.__class__.state_str(self.state)
+
+    @classmethod
+    def state_str(cls, nbt: NbtDef):
+        nbt = Nbt.as_nbt(nbt)
         comma = ', ' if Nbt.use_spaces else ','
-        return '[' + comma.join((k + '=' + self._state_value(v)) for k, v in self.state.items()) + ']'
+        return '[' + comma.join((k + '=' + cls._state_value(v)) for k, v in nbt.items()) + ']'
 
 
 class Entity(Block):
