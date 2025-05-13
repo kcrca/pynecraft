@@ -1584,3 +1584,8 @@ class TestCommands(unittest.TestCase):
             waypoint().modify(n()).color(1_000_000_000)
         with self.assertRaises(ValueError):
             waypoint().modify(n()).color(HEX)
+
+    def test_dialog(self):
+        self.assertEqual('dialog show @s happy', dialog().show(s(), 'happy'))
+        self.assertEqual('dialog clear @s', dialog().clear(s()))
+        self.assertEqual('$dialog show @s $(x)', dialog().show(s(), Arg('x')))

@@ -1745,6 +1745,18 @@ class _DebugMod(Command):
         return str(self)
 
 
+class _DialogPart(Command):
+    @_fluent
+    def show(self, target: TargetSpec, dialog: StrOrArg):
+        self._add('show', as_target(target), as_resource(dialog))
+        return str(self)
+
+    @_fluent
+    def clear(self, target: TargetSpec):
+        self._add('clear', as_target(target))
+        return str(self)
+
+
 class _EffectAction(Command):
     @_fluent
     def give(self, target: Target, effect: StrOrArg, seconds: IntOrArg | str = None,
@@ -2868,6 +2880,13 @@ def deop(*targets: Target) -> str:
     cmd = Command()
     cmd._add('$deop', *targets)
     return str(cmd)
+
+
+def dialog() -> _DialogPart:
+    """Manages custom dialogs."""
+    cmd = Command()
+    cmd._add('$dialog')
+    return cmd._start(_DialogPart())
 
 
 def difficulty(difficulty: StrOrArg = None) -> str:
