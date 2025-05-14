@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2025-04-22T15:06:40-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2025-05-13T17:54:38-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -46,10 +46,10 @@ team_options = {
                             """Decides the color of the team and players in chat, above their head, on the Tab menu, and on the sidebar. Also changes the color of the outline of the entities caused by the Glowing effect.""",
                             'Nbt'),
     "FRIENDLY_FIRE": TeamOptionInfo("""friendly Fire""", "friendlyFire",
-                                    """Enables/Disables players inflicting damage on each other when on the same team. (Note: players can still inflict status effects on each other.) Does not affect some non-player entities in a team.""",
+                                    """Enables/Disables players inflicting damage to each other when on the same team. (Note: players can still inflict status effects on each other.) Does not affect some non-player entities in a team.""",
                                     bool),
     "SEE_FRIENDLY_INVISIBLES": TeamOptionInfo("""see Friendly Invisibles""", "seeFriendlyInvisibles",
-                                              """Decides whether invisible players is semi-transparent or completely invisible for other players on their team.""",
+                                              """Decides whether invisible players are semi-transparent or completely invisible to other players on their team.""",
                                               bool),
     "NAMETAG_VISIBILITY": TeamOptionInfo("""nametag Visibility""", "nametagVisibility",
                                          """Decides whose name tags above their heads can be seen.""",
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2025-04-22T15:06:40-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2025-05-13T17:54:38-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -190,7 +190,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-04-22T15:06:40-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-05-13T17:54:39-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -573,7 +573,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2025-04-22T15:06:41-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2025-05-13T17:54:39-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -736,7 +736,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-04-22T15:06:41-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-05-13T17:54:41-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -852,7 +852,7 @@ effects = {
                              """Floats the affected entity upward, higher levels make the affected entity float up faster.""",
                              False),
     "LUCK": EffectInfo("""Luck""", "luck",
-                       """Increases chances of better and more loot, higher levels increase the chances of better and more loot.""",
+                       """Increases chances of better loot from fishing, higher levels increase the chances of better and more loot.""",
                        True),
     "BAD_LUCK": EffectInfo("""Bad Luck""", "unluck",
                            """Reduces chances of better and more loot from fishing and chests, higher levels reduces the chances of good loot even more.""",
@@ -897,7 +897,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-04-22T15:06:41-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-05-13T17:54:41-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -953,14 +953,14 @@ ENCHANTMENT_GROUP = [
 EnchantmentInfo = namedtuple("Enchantment", ['name', 'value', 'desc', 'max_level'])
 enchantments = {
     "AQUA_AFFINITY": EnchantmentInfo("""Aqua Affinity""", "aqua_affinity",
-                                     """Lessens the mining speed reduction that occurs when underwater.""", 1),
+                                     """Removes the mining speed reduction that occurs when underwater.""", 1),
     "BANE_OF_ARTHROPODS": EnchantmentInfo("""Bane of Arthropods""", "bane_of_arthropods",
                                           """Increases damage and applies Slowness IV to arthropod mobs (spiders, cave spiders, silverfish, endermites and bees).""",
                                           5),
     "BLAST_PROTECTION": EnchantmentInfo("""Blast Protection""", "blast_protection",
                                         """Reduces explosion damage and knockback.""", 4),
     "BREACH": EnchantmentInfo("""Breach""", "breach",
-                              """Reduces the effectiveness of armor on the target, including innate armor points. The armor's effectiveness is reduced by 15% per level.""",
+                              """Reduces the effectiveness of armor on the target, including innate armor points.""",
                               4),
     "CHANNELING": EnchantmentInfo("""Channeling""", "channeling",
                                   """During thunderstorms, a thrown trident summons a lightning bolt on the target upon hit.""",
@@ -969,9 +969,9 @@ enchantments = {
                                         """Items cannot be removed from armor slots.""", 1),
     "CURSE_OF_VANISHING": EnchantmentInfo("""Curse of Vanishing""", "curse_of_vanishing",
                                           """Item disappears on death.""", 1),
-    "DENSITY": EnchantmentInfo("""Density""", "density", """Increases a mace's smash attack damage by 0.5 per level.""",
-                               5),
-    "DEPTH_STRIDER": EnchantmentInfo("""Depth Strider""", "depth_strider", """Increases movement speed in water.""", 3),
+    "DENSITY": EnchantmentInfo("""Density""", "density", """Increases the damage of a mace's smash attack.""", 5),
+    "DEPTH_STRIDER": EnchantmentInfo("""Depth Strider""", "depth_strider",
+                                     """Lessens the movement speed reduction that occurs when in water.""", 3),
     "EFFICIENCY": EnchantmentInfo("""Efficiency""", "efficiency", """Increases mining speed.""", 5),
     "FEATHER_FALLING": EnchantmentInfo("""Feather Falling""", "feather_falling", """Reduces fall damage.""", 4),
     "FIRE_ASPECT": EnchantmentInfo("""Fire Aspect""", "fire_aspect", """Sets targets on fire.""", 2),
@@ -980,12 +980,14 @@ enchantments = {
     "FLAME": EnchantmentInfo("""Flame""", "flame", """Arrows set targets on fire.""", 1),
     "FORTUNE": EnchantmentInfo("""Fortune""", "fortune", """Chance to receive more item drops from certain blocks.""",
                                3),
-    "FROST_WALKER": EnchantmentInfo("""Frost Walker""", "frost_walker", """Freezes water beneath the user's feet.""",
+    "FROST_WALKER": EnchantmentInfo("""Frost Walker""", "frost_walker",
+                                    """Turns water into frosted ice beneath the wearer's feet, and provides immunity to campfire and magma block damage.""",
                                     2),
     "IMPALING": EnchantmentInfo("""Impaling""", "impaling",
                                 """In Java Edition, increases damage against aquatic mobs. In Bedrock Edition, increases damage against mobs in water or rain.""",
                                 5),
-    "INFINITY": EnchantmentInfo("""Infinity""", "infinity", """Prevents consumption of arrows.""", 1),
+    "INFINITY": EnchantmentInfo("""Infinity""", "infinity",
+                                """Prevents consumption of arrows, but not spectral arrows or tipped arrows.""", 1),
     "KNOCKBACK": EnchantmentInfo("""Knockback""", "knockback", """Increases melee knockback.""", 2),
     "LOOTING": EnchantmentInfo("""Looting""", "looting", """Chance to receive more item drops from certain mobs.""", 3),
     "LOYALTY": EnchantmentInfo("""Loyalty""", "loyalty",
@@ -1005,10 +1007,10 @@ enchantments = {
                                              """Reduces damage from projectiles.""", 4),
     "PROTECTION": EnchantmentInfo("""Protection""", "protection", """Reduces most forms of damage.""", 4),
     "PUNCH": EnchantmentInfo("""Punch""", "punch", """Increases arrow knockback.""", 2),
-    "QUICK_CHARGE": EnchantmentInfo("""Quick Charge""", "quick_charge", """Decreases crossbow charging time.""", 3),
+    "QUICK_CHARGE": EnchantmentInfo("""Quick Charge""", "quick_charge", """Increases crossbow charging speed.""", 3),
     "RESPIRATION": EnchantmentInfo("""Respiration""", "respiration", """Extends underwater breathing time.""", 3),
     "RIPTIDE": EnchantmentInfo("""Riptide""", "riptide",
-                               """Trident when used launches the user while in water or rain, replacing its ability to be thrown as a projectile.""",
+                               """Trident when used launches the wielder while in water or rain, replacing its ability to be thrown as a projectile.""",
                                3),
     "SHARPNESS": EnchantmentInfo("""Sharpness""", "sharpness", """Increases melee damage.""", 5),
     "SILK_TOUCH": EnchantmentInfo("""Silk Touch""", "silk_touch",
@@ -1030,7 +1032,7 @@ enchantments = {
                                   """Gives a chance for items to ignore durability loss, effectively increasing their durability.""",
                                   3),
     "WIND_BURST": EnchantmentInfo("""Wind Burst""", "wind_burst",
-                                  """Emits a burst of wind upon executing a mace smash attack on an entity, launching the attacker upward. The strength of the launch increases per level.""",
+                                  """Causes a burst of wind upon executing a mace smash attack that launches the attacker upward.""",
                                   3),
     "CLEAVING": EnchantmentInfo("""Cleaving""", "cleaving", """Increases the damage and shield stun time of an axe.""",
                                 3),
@@ -1047,7 +1049,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-04-22T15:06:42-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-05-13T17:54:41-07:00
 __gamerule_dups = {}
 ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER = "allowFireTicksAwayFromPlayer"
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
@@ -1281,7 +1283,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-04-22T15:06:42-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-05-13T17:54:42-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -1334,7 +1336,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-04-22T15:06:42-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-05-13T17:54:42-07:00
 __particle_dups = {}
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -1434,6 +1436,7 @@ SPLASH = "splash"
 SPORE_BLOSSOM_AIR = "spore_blossom_air"
 SQUID_INK = "squid_ink"
 SWEEP_ATTACK = "sweep_attack"
+TINTED_LEAVES = "tinted_leaves"
 TOTEM_OF_UNDYING = "totem_of_undying"
 TRAIL = "trail"
 __particle_dups["trial_omen"] = "trial_omen"
@@ -1460,9 +1463,9 @@ PARTICLE_GROUP = [
     ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA,
     MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL,
     SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE,
-    SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING,
-    TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION,
-    VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
+    SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TINTED_LEAVES,
+    TOTEM_OF_UNDYING, TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER,
+    VAULT_CONNECTION, VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
 ]
 
 ParticleInfo = namedtuple("Particle", ['name', 'value', 'desc'])
@@ -1492,7 +1495,7 @@ particles = {
     "CRIMSON_SPORE": ParticleInfo("""Crimson Spore""", "crimson_spore",
                                   """Floats throughout the atmosphere in the crimson forest biome."""),
     "CRIT": ParticleInfo("""Crit""", "crit",
-                         """Trails behind crossbow shots and fully charged bow shots, trails behind all spectral arrow entities, produced by evoker fangs, appears when landing a critical hit on an entity."""),
+                         """Trails behind crossbow shots and fully charged bow shots, produced by evoker fangs, appears when landing a critical hit on an entity."""),
     "CURRENT_DOWN": ParticleInfo("""Current Down""", "current_down", """Represents downward bubble columns."""),
     "DAMAGE_INDICATOR": ParticleInfo("""Damage Indicator""", "damage_indicator",
                                      """Appears when a melee attack damages an entity."""),
@@ -1570,7 +1573,7 @@ particles = {
                           """Appears when taming mobs, emitted by breeding mobs, feeding mobs, appears when allays duplicate."""),
     "INFESTED": ParticleInfo("""Infested""", "infested", """Produced by entities with the Infested effect."""),
     "INSTANT_EFFECT": ParticleInfo("""Instant Effect""", "instant_effect",
-                                   """Produced when splash potions or lingering potions of Instant Health or Instant Damage break."""),
+                                   """Produced when splash potions or lingering potions of Instant Health or Instant Damage break. Also produced trailing spectral arrow entities."""),
     "ITEM": ParticleInfo("""Item""", "item",
                          """Produced when tools break, produced when eating food, produced when splash potions or lingering potions break, shown when eyes of ender break."""),
     "ITEM_COBWEB": ParticleInfo("""Item Cobweb""", "item_cobweb", """Produced by entities with the Weaving effect."""),
@@ -1630,6 +1633,8 @@ particles = {
     "SQUID_INK": ParticleInfo("""Squid Ink""", "squid_ink", """Produced by squid when hit."""),
     "SWEEP_ATTACK": ParticleInfo("""Sweep Attack""", "sweep_attack",
                                  """Appears when a sweeping attack is performed."""),
+    "TINTED_LEAVES": ParticleInfo("""Tinted Leaves""", "tinted_leaves",
+                                  """Falls off the bottom of any type leaves except pale oak leaves. Its color corresponds to the leaves block its falling off."""),
     "TOTEM_OF_UNDYING": ParticleInfo("""Totem Of Undying""", "totem_of_undying",
                                      """Produced when a totem of undying is used."""),
     "TRAIL": ParticleInfo("""Trail""", "trail",
@@ -1666,7 +1671,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-04-22T15:06:42-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-05-13T17:54:43-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1730,7 +1735,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-04-22T15:06:43-07:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-05-13T17:54:44-07:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1751,9 +1756,10 @@ RELIC = "music_disc_relic"
 CREATOR = "music_disc_creator"
 CREATOR_MUSIC_BOX = "music_disc_creator_music_box"
 PRECIPICE = "music_disc_precipice"
+TEARS = "music_disc_tears"
 DISC_GROUP = [
     THIRTEEN, CAT, BLOCKS, CHIRP, FAR, MALL, MELLOHI, STAL, STRAD, WARD, ELEVEN, WAIT, OTHERSIDE, FIVE, PIGSTEP, RELIC,
-    CREATOR, CREATOR_MUSIC_BOX, PRECIPICE
+    CREATOR, CREATOR_MUSIC_BOX, PRECIPICE, TEARS
 ]
 
 DiscInfo = namedtuple("Disc", ['name', 'value', 'desc', 'composer'])
@@ -1777,6 +1783,7 @@ discs = {
     "CREATOR": DiscInfo("""Creator""", "music_disc_creator", None, "Lena Raine"),
     "CREATOR_MUSIC_BOX": DiscInfo("""Creator Music Box""", "music_disc_creator_music_box", None, ""),
     "PRECIPICE": DiscInfo("""Precipice""", "music_disc_precipice", None, "Aaron Cherof"),
+    "TEARS": DiscInfo("""Tears""", "music_disc_tears", None, "Amos Roddy"),
 }
 
 for __k in tuple(discs.keys()):
@@ -1790,7 +1797,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2025-04-22T15:06:43-07:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2025-05-13T17:54:44-07:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"
