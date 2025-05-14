@@ -593,8 +593,6 @@ class DataPack:
 
     @description.setter
     def description(self, text: TextDef):
-        if isinstance(text, str):
-            text = Text.text(text)
         self._mcmeta['pack']['description'] = text
 
     @property
@@ -671,11 +669,11 @@ class DataPack:
 
     def predicate(self) -> dict[str, dict]:
         """Returns defined predicates. You can add to this dict to add to the datapack."""
-        return self.json_directory('predicate')
+        return self.registry('predicate')
 
     def recipe(self) -> dict[str, dict]:
         """Returns defined recipes. You can add to this dict to add to the datapack. """
-        return self.json_directory('recipe')
+        return self.registry('recipe')
 
     def structure(self, structure: str) -> dict[str, dict]:
         """Returns defined structures. You can add to this dict to add to the datapack. """
@@ -691,7 +689,7 @@ class DataPack:
         """Returns defined worldgen settings. You can add to this dict to add to the datapack. """
         return self._get_json('worldgen', WORLDGEN_SETS, worldgen_set)
 
-    def json_directory(self, name: str) -> dict[str, dict]:
+    def registry(self, name: str) -> dict[str, dict]:
         """Returns an arbitrary directory at the top level of the data pack's JSON directory."""
         return self._get_json(name)
 

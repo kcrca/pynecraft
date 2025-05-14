@@ -271,6 +271,12 @@ class TestCommands(unittest.TestCase):
                              Text.text('boo').click_event().run_command(say('hi there')))
             self.assertEqual({"text": "boo", "click_event": {"action": "suggest_command", "command": "maybe"}},
                              Text.text('boo').click_event().suggest_command('maybe'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "custom", "id": "my_id"}},
+                             Text.text('boo').click_event().custom('my_id'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "custom", "id": "my_id", "payload": "freedom"}},
+                             Text.text('boo').click_event().custom('my_id', 'freedom'))
+            self.assertEqual({"text": "boo", "click_event": {"action": "show_dialog", "dialog": "hello"}},
+                             Text.text('boo').click_event().show_dialog('hello'))
 
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_text", "value": "maybe"}},
                              Text.text('boo').hover_event().show_text('maybe'))

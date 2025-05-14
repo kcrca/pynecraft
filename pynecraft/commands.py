@@ -151,6 +151,7 @@ def data_single_str(data_target: DataTarget) -> str:
 def _as_target_spec(target: DataTarget, single=False) -> str:
     if not isinstance(target, DataTargetBase):
         if isinstance(target, tuple):
+            # noinspection PyTypeChecker
             target = block(target)
         elif isinstance(target, TargetSpec):
             target = entity(target, single=single)
@@ -177,6 +178,7 @@ def as_position(pos: Position | StrOrArg) -> Position | str:
         for c in pos:
             if not isinstance(c, (int, float, IntRelCoord, RelCoord)) and not is_arg(c):
                 raise ValueError(f'{c}: not a coordinate')
+        # noinspection PyTypeChecker
         return pos
     raise ValueError(f'{str(pos)}: Invalid position')
 
@@ -711,6 +713,17 @@ class _TextClickEventAction(_TextMod):
 
     def copy_to_clipboard(self, txt: str) -> Text:
         self.update({'action': 'copy_to_clipboard', 'value': txt})
+        return self.parent
+
+    def custom(self, id: StrOrArg, payload: StrOrArg = None) -> Text:
+        action = {'action': 'custom', 'id': de_arg(id)}
+        if payload:
+            action['payload'] = de_arg(payload)
+        self.update(action)
+        return self.parent
+
+    def show_dialog(self, dialog: StrOrArg) -> Text:
+        self.update({'action': 'show_dialog', 'dialog': de_arg(dialog)})
         return self.parent
 
 
@@ -1312,7 +1325,7 @@ class _ExecuteMod(Command):
         return self
 
     @_fluent
-    def run(self, cmd: str | Command | Commands, *other_cmds: str | Command | Commands) -> str | tuple[str]:
+    def run(self, cmd: str | Command | Commands, *other_cmds: str | Command | Commands) -> str | tuple[str, ...]:
         """
         If cmds is empty, expect the command to follow.
         Otherwise, return an 'execute' command for each element of cmds.
@@ -4231,6 +4244,13 @@ class Text(Nbt, TextHolder):
             return cls(text)
         else:
             raise ValueError(f'{text}: Not a dictionary')
+
+
+def custom_dialog(type: str, title: TextDef, external_title: TextDef, body: NbtDef, can_close_with_escape=True) -> Nbt:
+    nbt = Nbt({'type': type, 'title': title, 'external_title': external_title, 'body': body})
+    if can_close_with_escape:
+        nbt['can_close_with_escape'] = True
+    return nbt
 
 
 MappingOrArg = Union[Mapping, StrOrArg]
