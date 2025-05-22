@@ -7,7 +7,7 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Sequence, TYPE_CHECKING
 from urllib.parse import urlparse
 
 from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, \
@@ -4246,8 +4246,12 @@ class Text(Nbt, TextHolder):
             raise ValueError(f'{text}: Not a dictionary')
 
 
-def custom_dialog(type: str, title: TextDef, external_title: TextDef, body: NbtDef, can_close_with_escape=True) -> Nbt:
-    nbt = Nbt({'type': type, 'title': title, 'external_title': external_title, 'body': body})
+def custom_dialog(type: str, title: TextDef, external_title: TextDef, body: Sequence, added_nbt=None,
+                  can_close_with_escape=True) -> Nbt:
+    nbt = Nbt({'type': f'minecraft:{type}', 'title': {'text': title}, 'external_title': {'text': external_title},
+               'body': body})
+    if nbt:
+        nbt = nbt.merge(added_nbt)
     if can_close_with_escape:
         nbt['can_close_with_escape'] = True
     return nbt

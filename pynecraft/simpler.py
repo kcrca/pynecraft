@@ -1,14 +1,31 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
+from typing import Callable, Iterable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
-from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, SignCommand, SignCommands, \
+from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, SignCommand, \
+    SignCommands, \
     SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, data, fill, \
     fillbiome, setblock
 from pynecraft.values import PaintingInfo, as_pattern, paintings
+
+NOTICE = 'notice'
+CONFIRMATION = 'confirmation'
+MULTI_ACTION = 'multi_action'
+SERVER_LINKS = 'server_links'
+DIALOG_LIST = 'dialog_list'
+SIMPLE_INPUT_FORM = 'simple_input_form'
+MULTI_ACTION_INPUT_FORM = 'multi_action_input_form'
+DIALOG_TYPES = [NOTICE, CONFIRMATION, MULTI_ACTION, SERVER_LINKS, DIALOG_LIST, SIMPLE_INPUT_FORM,
+                MULTI_ACTION_INPUT_FORM]
+
+TEXT = 'text'
+BOOLEAN = 'boolean'
+SINGLE_OPTION = 'single_option'
+NUMBER_RANGE = 'number_range'
+INPUT_TYPES = [TEXT, BOOLEAN, SINGLE_OPTION, NUMBER_RANGE]
 
 ARMORER = 'armorer'
 BUTCHER = 'butcher'
@@ -653,7 +670,8 @@ class Offset:
     # them to make the type checker happier.
     CoordsOut = Union[
         RelCoord, Tuple[RelCoord, RelCoord], Tuple[IntRelCoord, IntRelCoord], Tuple[RelCoord, RelCoord, RelCoord],
-        float, Tuple[float, float], Tuple[int, int], Tuple[float, float, float], Tuple[int, int, int],
+        float, Tuple[float, float], Tuple[int, int], Tuple[float, float, float], Tuple[int, int, int], Tuple[
+            float, ...], Tuple[int, ...],
         Tuple[RelCoord, ...]]
 
     def __init__(self, *position: float):
@@ -952,3 +970,188 @@ def as_color_num(color: IntOrArg | StrOrArg | None) -> int | str | None:
     if color not in range(len(COLORS)):
         raise ValueError(f'{color}: Unknown color')
     return color
+
+
+class Dialog(Nbt):
+    def __init__(self, type: str, title: TextDef, body: Iterable[NbtDef], external_title: TextDef = None):
+        if isinstance(title, str):
+            title = {'text': str}
+        if isinstance(external_title, str):
+            external_title = {'text': str}
+        body = map(lambda x: Nbt.as_nbt(x), body)
+        super().__init__(type=_in_group(DIALOG_TYPES, type), title=title, body=body)
+        self.set_if('external_title', external_title)
+
+    @property
+    def can_close_with_escape(self):
+        try:
+            return self['can_close_with_escape']
+        except KeyError:
+            return None
+
+    @can_close_with_escape.setter
+    def can_close_with_escape(self, can):
+        if can is None:
+            try:
+                del self['can_close_with_escape']
+            except KeyError:
+                pass
+        else:
+            self['can_close_with_escape'] = can
+
+    @classmethod
+    def click_event(cls):
+        return Text().click_event()
+
+    @classmethod
+    def action(cls, label: TextDef, tooltip: str = None, width: int = None, on_click: Nbt = None):
+        nbt = Nbt(label=label, tooltip=tooltip)
+        if width:
+            nbt['width'] = width
+        if on_click:
+            nbt['on_click'] = Dialog._is_action(on_click)
+        return nbt
+
+    @classmethod
+    def _is_action(cls, action: NbtDef):
+        action = Nbt.as_nbt(action)
+        if 'label' not in action:
+            raise KeyError('Action missing "label"')
+        return action
+
+    @classmethod
+    def notice(self, title: TextDef, body: Iterable[NbtDef], action: NbtDef, *, external_title: TextDef = None) -> Dialog:
+        widget = Dialog(NOTICE, title, body, external_title)
+        widget['action'] = Dialog._is_action(action)
+        return widget
+
+    @classmethod
+    def text(cls, title: TextDef, body: Iterable[NbtDef], label: str, initial: str="", *, width: int = None, label_visible: bool = None, max_length: int = None,
+             multiline: Sequence[int, int] | int = None, external_title: TextDef = None) -> Dialog:
+        widget = Dialog(TEXT,  title, body, external_title)
+        widget['label'] = label
+        widget['initial'] = initial
+        widget.set_if('width', width, 'label_visible', label_visible, 'max_length', max_length)
+        ml = {}
+        if isinstance(multiline, int):
+            ml['height'] = multiline
+        elif isinstance(multiline, Sequence):
+            if len(multiline):
+                ml['height'] = multiline[0]
+                if len(multiline) == 2:
+                    ml['max_lines'] = multiline[1]
+                else:
+                    raise ValueError('multiline value has at most two values')
+        if ml:
+            widget['multiline'] = ml
+        return widget
+
+    @classmethod
+    def boolean(cls, label: str, initial: bool = False, *, on_true: str = None, on_false: str = None) -> Dialog:
+        widget = Dialog(type=BOOLEAN, label=label, initial=initial)
+        widget.set_if('on_true', on_true, 'on_false', on_false)
+        return widget
+
+    @classmethod
+    def single_option(cls, label: str, options: Iterable[NbtDef | str | float], *, width: int = None,
+                      label_visible: bool = None,
+                      default_ids=False) -> Dialog:
+        """
+        Creates a single option input widget. If an option is a str or number, it becomes an option with the display
+        being that value and the id being the to_id() of that value. If default_ids is True, then an option without
+        an id is given the ID for to_id() of its display or, if there is no display, "option_N" where N is its index
+        in the option list.
+        """
+
+        # Validate / transmogrify options
+        def to_nbt_opt(opt):
+            if isinstance(opt, (str, float)):
+                return Nbt(display=str(opt), id=to_id(str(opt)))
+            else:
+                return Nbt.as_nbt(opt)
+
+        options = tuple(map(to_nbt_opt, options))
+        found = None
+        for i, v in enumerate(options):
+            if 'id' not in v:
+                try:
+                    if default_ids:
+                        v['id'] = to_id(v['display'])
+                except KeyError:
+                    v['id'] = f'option_{i}'
+            else:
+                raise ValueError(f'id required for {v}')
+            try:
+                if v['initial']:
+                    if found:
+                        raise ValueError(f'only one option can be the initial one: {found, v["display"]}')
+                    found = v['display']
+            except KeyError:
+                pass
+        if not len(options):
+            raise ValueError('options are required')
+
+        # Build the widget
+        widget = Dialog(type=SINGLE_OPTION, label=label, options=options)
+        widget.set_if('width', width, 'label_visible', label_visible)
+        return widget
+
+    @classmethod
+    def number_range(cls, label: str, start: int, end: int, step: int = 1, *, initial: int = None, width: int = None,
+                     label_format: str = None) -> Dialog:
+        widget = Dialog(type=NUMBER_RANGE, label=label, start=start, end=end)
+        widget.set_if('step', step, 'initial', initial, 'width', width, 'label_format', label_format)
+        return widget
+
+    @classmethod
+    def _is_input(cls, input: NbtDef):
+        input = Nbt.as_nbt(input)
+        _in_group(INPUT_TYPES, input['type'])
+        return input
+
+    @classmethod
+    def confirmation(cls, title: TextDef, body: Iterable[NbtDef], yes: NbtDef, no: NbtDef, *,
+                     external_title: TextDef = None) -> Dialog:
+        d = Dialog(CONFIRMATION, title, body, external_title)
+        d['yes'] = Dialog._is_action(yes)
+        d['no'] = Dialog._is_action(no)
+        return d
+
+    @classmethod
+    def multi_action(cls, title: TextDef, body: Iterable[NbtDef], actions: Iterable[NbtDef], *, columns: int = None,
+                     on_cancel: NbtDef = None, external_title: TextDef = None) -> Dialog:
+        d = Dialog(MULTI_ACTION, title, body, external_title)
+        d['actions'] = map(lambda x: Dialog._is_action(x), actions)
+        d.set_if('columns', columns)
+        d.set_if('on_cancel', Dialog._is_action(on_cancel))
+        return d
+
+    @classmethod
+    def server_links(cls, title: TextDef, body: Iterable[NbtDef], *, on_click: NbtDef = None, on_cancel: NbtDef = None,
+                     columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
+        d = Dialog(SERVER_LINKS, title, body, external_title)
+        d.set_if('on_click', Dialog._is_action(on_click))
+        d.set_if('on_cancel', Dialog._is_action(on_cancel))
+        d.set_if('columns', columns)
+        d.set_if('button_width', button_width)
+        return d
+
+    @classmethod
+    def dialog_list(cls, title: TextDef, body: Iterable[NbtDef], dialogs: Iterable[NbtDef], *, on_cancel: NbtDef = None,
+                    columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
+        d = Dialog(DIALOG_LIST, title, body, external_title)
+        d['dialogs'] = map(lambda x: Nbt.as_nbt(x), dialogs)
+        d.set_if('on_cancel', Dialog._is_action(on_cancel))
+        d.set_if('columns', columns)
+        d.set_if('button_width', button_width)
+        return d
+
+    @classmethod
+    def simple_input_form(cls, title: TextDef, body: Iterable[NbtDef], inputs: Iterable[NbtDef], *,
+                          action: NbtDef = None, external_title: TextDef = None) -> Dialog:
+        if not inputs:
+            raise ValueError('At least one input is required')
+        d = Dialog(SIMPLE_INPUT_FORM, title, body, external_title)
+        d['inputs'] = map(lambda x: Dialog._is_input(x), inputs)
+        d.set_if('action', Dialog._is_action(action))
+        return d
