@@ -321,7 +321,7 @@ def string(obj):
     return str(obj)
 
 
-def _ensure_size(lst: Iterable[any, ...], size: int, fill=None) -> list:
+def _ensure_size(lst: Iterable[any], size: int, fill=None) -> list:
     lst = _to_list(lst)
     if len(lst) > size:
         raise ValueError('Too many values in list')
@@ -668,6 +668,15 @@ class Nbt(UserDict):
             for p in path[:-1]:
                 part = part[p]
             part[path[-1]] = v
+        return self
+
+    def set_if(self, key: str, value: object, *args) -> Nbt:
+        """Set values if they aren't None. The first key/value pair is required, more can be given."""
+        if value is not None:
+            self[key] = value
+        for i in range(0, len(args), 2):
+            if args[i + 1] is not None:
+                self[args[i]] = args[i + 1]
         return self
 
     @classmethod

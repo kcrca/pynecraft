@@ -324,6 +324,12 @@ class TestBase(unittest.TestCase):
         self.assertEqual({'o1': {'o2': {'o3': {}}}},
                          Nbt({'o1': {'o2': {'o3': {'key': True}}}}).set_or_clear('o1.o2.o3.key', False))
 
+    def test_set_if(self):
+        self.assertEqual({'key': 'value'}, Nbt().set_if('key', 'value'))
+        self.assertEqual({}, Nbt().set_if('key', None))
+        self.assertEqual({'key1': 'value1'}, Nbt().set_if('key1', 'value1', 'key2', None))
+        self.assertEqual({'key1': 'value1', 'key2': 27}, Nbt().set_if('key1', 'value1', 'key2', 27))
+
     def test_nbt_str(self):
         self.assertEqual('{}', Nbt.to_str({}))
         self.assertEqual('{}', Nbt.to_str(Nbt({})))
