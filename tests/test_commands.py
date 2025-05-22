@@ -258,43 +258,43 @@ class TestCommands(unittest.TestCase):
             self.assertEqual({"text": "boo", "insertion": "inserted"}, Text.text('boo').insertion('inserted'))
 
             self.assertEqual({"text": "boo", "click_event": {"action": "copy_to_clipboard", "value": "ya"}},
-                             Text.text('boo').click_event().copy_to_clipboard('ya'))
+                             Text.text('boo').click_event(ClickEvent.copy_to_clipboard('ya')))
             self.assertEqual({"text": "boo", "click_event": {"action": "open_url", "url": "http: a.com"}},
-                             Text.text('boo').click_event().open_url('http: a.com'))
+                             Text.text('boo').click_event(ClickEvent.open_url('http: a.com')))
             self.assertEqual({"text": "boo", "click_event": {"action": "open_file", "value": "/a/b"}},
-                             Text.text('boo').click_event().open_file('/a/b'))
+                             Text.text('boo').click_event(ClickEvent.open_file('/a/b')))
             self.assertEqual({"text": "boo", "click_event": {"action": "change_page", "page": "p"}},
-                             Text.text('boo').click_event().change_page('p'))
+                             Text.text('boo').click_event(ClickEvent.change_page('p')))
             self.assertEqual({"text": "boo", "click_event": {"action": "run_command", "command": "/say hi"}},
-                             Text.text('boo').click_event().run_command(say('hi')))
+                             Text.text('boo').click_event(ClickEvent.run_command(say('hi'))))
             self.assertEqual({"text": "boo", "click_event": {"action": "run_command", "command": "/say hi there"}},
-                             Text.text('boo').click_event().run_command(say('hi there')))
+                             Text.text('boo').click_event(ClickEvent.run_command(say('hi there'))))
             self.assertEqual({"text": "boo", "click_event": {"action": "suggest_command", "command": "maybe"}},
-                             Text.text('boo').click_event().suggest_command('maybe'))
+                             Text.text('boo').click_event(ClickEvent.suggest_command('maybe')))
             self.assertEqual({"text": "boo", "click_event": {"action": "custom", "id": "my_id"}},
-                             Text.text('boo').click_event().custom('my_id'))
+                             Text.text('boo').click_event(ClickEvent.custom('my_id')))
             self.assertEqual({"text": "boo", "click_event": {"action": "custom", "id": "my_id", "payload": "freedom"}},
-                             Text.text('boo').click_event().custom('my_id', 'freedom'))
+                             Text.text('boo').click_event(ClickEvent.custom('my_id', 'freedom')))
             self.assertEqual({"text": "boo", "click_event": {"action": "show_dialog", "dialog": "hello"}},
-                             Text.text('boo').click_event().show_dialog('hello'))
+                             Text.text('boo').click_event(ClickEvent.show_dialog('hello')))
 
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_text", "value": "maybe"}},
-                             Text.text('boo').hover_event().show_text('maybe'))
+                             Text.text('boo').hover_event(HoverEvent.show_text('maybe')))
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_text", "value": {"text": "not"}}},
-                             Text.text('boo').hover_event().show_text(Text.text('not')))
+                             Text.text('boo').hover_event(HoverEvent.show_text(Text.text('not'))))
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_item", "id": "bundle"}},
-                             Text.text('boo').hover_event().show_item('bundle'))
+                             Text.text('boo').hover_event(HoverEvent.show_item('bundle')))
             self.assertEqual(
                 {"text": "boo", "hover_event": {"action": "show_item", "id": "bundle", "count": 3, "tag": "tag"}},
-                Text.text('boo').hover_event().show_item('bundle', count=3, tag='tag'))
+                Text.text('boo').hover_event(HoverEvent.show_item('bundle', count=3, tag='tag')))
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f"}},
-                             Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f'))
+                             Text.text('boo').hover_event(HoverEvent.show_entity('m:z', '5-6-a-f')))
             self.assertEqual({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f",
                                                              "name": "Robin"}},
-                             Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f', 'Robin'))
+                             Text.text('boo').hover_event(HoverEvent.show_entity('m:z', '5-6-a-f', 'Robin')))
             self.assertEqual(({"text": "boo", "hover_event": {"action": "show_entity", "id": "m:z", "uuid": "5-6-a-f",
                                                               "name": {"text": "ooh"}}}),
-                             Text.text('boo').hover_event().show_entity('m:z', '5-6-a-f', Text.text("ooh")))
+                             Text.text('boo').hover_event(HoverEvent.show_entity('m:z', '5-6-a-f', Text.text("ooh"))))
 
             self.assertEqual((
                 {"text": "boo", "extra": [], "color": "green", "font": "m:f", "bold": True, "italic": True,
@@ -303,7 +303,8 @@ class TestCommands(unittest.TestCase):
                  "hover_event": {"action": "show_item", "id": "bundle"}}),
                 Text.text('boo').extra().color(BLUE).font(
                     'm:f').bold().italic().underlined().strikethrough().obfuscated().insertion(
-                    'i').click_event().open_file('s').hover_event().show_item('bundle').color(GREEN))
+                    'i').click_event(ClickEvent.open_file('s')).hover_event(HoverEvent.show_item('bundle')).color(
+                    GREEN))
 
             self.assertEqual({"text": "$(t)"}, Text.text(Arg('t')))
             self.assertEqual({"text": "z$(t)"}, Text.text('z$(t)'))

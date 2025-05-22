@@ -5,7 +5,7 @@ from typing import Callable, Iterable, Mapping, MutableMapping, Sequence, Tuple,
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
-from pynecraft.commands import Block, BlockDef, COLORS, Command, Commands, Entity, EntityDef, SignCommand, \
+from pynecraft.commands import Block, BlockDef, COLORS, ClickEvent, Command, Commands, Entity, EntityDef, SignCommand, \
     SignCommands, \
     SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, data, fill, \
     fillbiome, setblock
@@ -173,7 +173,7 @@ class Sign(Block):
         if isinstance(command, Callable):
             command = command(orig_text)
         if command:
-            entry = text.click_event().run_command(command)
+            entry = text.click_event(ClickEvent.run_command(command))
         if len(entry) == 1 and 'text' in entry:
             return entry['text']
         return entry
@@ -1000,16 +1000,9 @@ class Dialog(Nbt):
             self['can_close_with_escape'] = can
 
     @classmethod
-    def click_event(cls):
-        return Text().click_event()
-
-    @classmethod
-    def action(cls, label: TextDef, tooltip: str = None, width: int = None, on_click: Nbt = None):
+    def action(cls, label: TextDef, tooltip: str = None, width: int = None, on_click: ClickEvent = None):
         nbt = Nbt(label=label, tooltip=tooltip)
-        if width:
-            nbt['width'] = width
-        if on_click:
-            nbt['on_click'] = Dialog._is_action(on_click)
+        nbt.set_if('width', width, 'on_click', on_click)
         return nbt
 
     @classmethod
@@ -1020,15 +1013,17 @@ class Dialog(Nbt):
         return action
 
     @classmethod
-    def notice(self, title: TextDef, body: Iterable[NbtDef], action: NbtDef, *, external_title: TextDef = None) -> Dialog:
+    def notice(self, title: TextDef, body: Iterable[NbtDef], action: NbtDef, *,
+               external_title: TextDef = None) -> Dialog:
         widget = Dialog(NOTICE, title, body, external_title)
         widget['action'] = Dialog._is_action(action)
         return widget
 
     @classmethod
-    def text(cls, title: TextDef, body: Iterable[NbtDef], label: str, initial: str="", *, width: int = None, label_visible: bool = None, max_length: int = None,
+    def text(cls, title: TextDef, body: Iterable[NbtDef], label: str, initial: str = "", *, width: int = None,
+             label_visible: bool = None, max_length: int = None,
              multiline: Sequence[int, int] | int = None, external_title: TextDef = None) -> Dialog:
-        widget = Dialog(TEXT,  title, body, external_title)
+        widget = Dialog(TEXT, title, body, external_title)
         widget['label'] = label
         widget['initial'] = initial
         widget.set_if('width', width, 'label_visible', label_visible, 'max_length', max_length)
@@ -1119,31 +1114,31 @@ class Dialog(Nbt):
 
     @classmethod
     def multi_action(cls, title: TextDef, body: Iterable[NbtDef], actions: Iterable[NbtDef], *, columns: int = None,
-                     on_cancel: NbtDef = None, external_title: TextDef = None) -> Dialog:
+                     on_cancel: ClickEvent = None, external_title: TextDef = None) -> Dialog:
         d = Dialog(MULTI_ACTION, title, body, external_title)
         d['actions'] = map(lambda x: Dialog._is_action(x), actions)
         d.set_if('columns', columns)
-        d.set_if('on_cancel', Dialog._is_action(on_cancel))
+        d.set_if('on_cancel', on_cancel)
         return d
 
     @classmethod
-    def server_links(cls, title: TextDef, body: Iterable[NbtDef], *, on_click: NbtDef = None, on_cancel: NbtDef = None,
-                     columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
+    def server_links(cls, title: TextDef, body: Iterable[NbtDef], *, on_click: ClickEvent = None,
+                     on_cancel: ClickEvent = None, columns: int = None, button_width: int = None,
+                     external_title: TextDef = None) -> Dialog:
         d = Dialog(SERVER_LINKS, title, body, external_title)
-        d.set_if('on_click', Dialog._is_action(on_click))
-        d.set_if('on_cancel', Dialog._is_action(on_cancel))
+        d.set_if('on_click', on_click)
+        d.set_if('on_cancel', on_cancel)
         d.set_if('columns', columns)
         d.set_if('button_width', button_width)
         return d
 
     @classmethod
-    def dialog_list(cls, title: TextDef, body: Iterable[NbtDef], dialogs: Iterable[NbtDef], *, on_cancel: NbtDef = None,
-                    columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
+    def dialog_list(cls, title: TextDef, body: Iterable[NbtDef], dialogs: Iterable[NbtDef], *,
+                    on_cancel: ClickEvent = None, columns: int = None, button_width: int = None,
+                    external_title: TextDef = None) -> Dialog:
         d = Dialog(DIALOG_LIST, title, body, external_title)
         d['dialogs'] = map(lambda x: Nbt.as_nbt(x), dialogs)
-        d.set_if('on_cancel', Dialog._is_action(on_cancel))
-        d.set_if('columns', columns)
-        d.set_if('button_width', button_width)
+        d.set_if('on_cancel', on_cancel, 'columns', columns, 'button_width', button_width)
         return d
 
     @classmethod

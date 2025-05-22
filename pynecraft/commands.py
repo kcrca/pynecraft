@@ -651,42 +651,36 @@ class _TextMod(Nbt):
         self.parent = parent
 
 
-class _TextHoverAction(_TextMod):
-    def show_text(self, txt: Text | str) -> Text:
-        self['action'] = 'show_text'
-        self['value'] = txt
-        return self.parent
+class HoverEvent(Nbt):
+    @classmethod
+    def show_text(cls, txt: Text | str) -> HoverEvent:
+        return cls({'action': 'show_text', 'value': txt})
 
-    def show_item(self, id: str, count: int = None, tag: str = None) -> Text:
-        self['action'] = 'show_item'
-        self['id'] = as_resource(id)
-        if count is not None:
-            self['count'] = count
-        if tag is not None:
-            self['tag'] = tag
-        return self.parent
+    @classmethod
+    def show_item(cls, id: str, count: int = None, tag: str = None) -> HoverEvent:
+        event = cls({ 'action' : 'show_item', 'id': as_resource(id)})
+        event.set_if('count', count, 'tag', tag)
+        return event
 
-    def show_entity(self, type: str, uuid: StrOrArg, name: Text | str = None) -> Text:
-        self['action'] = 'show_entity'
-        self['id'] = as_resource(type)
-        self['uuid'] = as_uuid(uuid)
-        if name is not None:
-            self['name'] = name
-        return self.parent
+    @classmethod
+    def show_entity(cls, type: str, uuid: StrOrArg, name: Text | str = None) -> HoverEvent:
+        event = cls({'action': 'show_entity', 'id': as_resource(type), 'uuid': as_uuid(uuid)})
+        event.set_if('name', name)
+        return event
 
 
-class _TextClickEventAction(_TextMod):
-    def open_url(self, url: str) -> Text:
+class ClickEvent(Nbt):
+    @classmethod
+    def open_url(cls, url: str) -> ClickEvent:
         result = urlparse(url)
         if result.scheme not in ('http', 'https'):
             raise ValueError(f'URL must be http or https: {result.scheme}')
-        self.update({'action': 'open_url', 'url': url})
-        return self.parent
+        return cls({'action': 'open_url', 'url': url})
 
-    def open_file(self, path: str) -> Text:
+    @classmethod
+    def open_file(cls, path: str) -> ClickEvent:
         Path(path)
-        self.update({'action': 'open_file', 'value': path})
-        return self.parent
+        return cls({'action': 'open_file', 'value': path})
 
     @staticmethod
     def _as_command(command):
@@ -694,37 +688,37 @@ class _TextClickEventAction(_TextMod):
             command = str(command)
         return command.strip()
 
-    def run_command(self, command: str | Command) -> Text:
-        command = self._as_command(command)
-        # The '/' is optional for signs, but required every else, so this is safest
+    @classmethod
+    def run_command(cls, command: str | Command) -> ClickEvent:
+        command = cls._as_command(command)
+        # The '/' is optional for signs, but required everywhere else, so this is safest
         if command[0] != '/':
             command = '/' + command
-        self.update({'action': 'run_command', 'command': command})
-        return self.parent
+        return cls({'action': 'run_command', 'command': command})
 
-    def suggest_command(self, chat: str | Command) -> Text:
-        self._as_command(chat)
-        self.update({'action': 'suggest_command', 'command': chat})
-        return self.parent
+    @classmethod
+    def suggest_command(cls, chat: str | Command) -> ClickEvent:
+        chat = cls._as_command(chat)
+        return cls({'action': 'suggest_command', 'command': chat})
 
-    def change_page(self, page: str) -> Text:
-        self.update({'action': 'change_page', 'page': page})
-        return self.parent
+    @classmethod
+    def change_page(cls, page: str) -> ClickEvent:
+        return cls({'action': 'change_page', 'page': page})
 
-    def copy_to_clipboard(self, txt: str) -> Text:
-        self.update({'action': 'copy_to_clipboard', 'value': txt})
-        return self.parent
+    @classmethod
+    def copy_to_clipboard(cls, txt: str) -> ClickEvent:
+        return cls({'action': 'copy_to_clipboard', 'value': txt})
 
-    def custom(self, id: StrOrArg, payload: StrOrArg = None) -> Text:
+    @classmethod
+    def custom(cls, id: StrOrArg, payload: StrOrArg = None) -> ClickEvent:
         action = {'action': 'custom', 'id': de_arg(id)}
         if payload:
             action['payload'] = de_arg(payload)
-        self.update(action)
-        return self.parent
+        return cls(action)
 
-    def show_dialog(self, dialog: StrOrArg) -> Text:
-        self.update({'action': 'show_dialog', 'dialog': de_arg(dialog)})
-        return self.parent
+    @classmethod
+    def show_dialog(cls, dialog: StrOrArg) -> ClickEvent:
+        return cls({'action': 'show_dialog', 'dialog': de_arg(dialog)})
 
 
 class TargetSpec(Command, ABC):
@@ -4221,15 +4215,15 @@ class Text(Nbt, TextHolder):
         self['insertion'] = de_arg(to_insert)
         return self
 
-    def click_event(self) -> _TextClickEventAction:
+    def click_event(self, event: ClickEvent) -> Text:
         """Adds a ``click_event`` field to rich text."""
-        v = self['click_event'] = _TextClickEventAction(self)
-        return v
+        self['click_event'] = event
+        return self
 
-    def hover_event(self) -> _TextHoverAction:
+    def hover_event(self, event: HoverEvent) -> Text:
         """Adds a ``hover_event`` field to rich text."""
-        v = self['hover_event'] = _TextHoverAction(self)
-        return v
+        self['hover_event'] = event
+        return self
 
     @classmethod
     def as_text(cls, text: Mapping | str | Text) -> Mapping:
