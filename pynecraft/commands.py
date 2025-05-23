@@ -716,7 +716,7 @@ class ClickEvent(Nbt):
         return cls({'action': 'suggest_command', 'command': chat})
 
     @classmethod
-    def change_page(cls, page: str) -> ClickEvent:
+    def change_page(cls, page: int) -> ClickEvent:
         return cls({'action': 'change_page', 'page': page})
 
     @classmethod

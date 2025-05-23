@@ -263,8 +263,8 @@ class TestCommands(unittest.TestCase):
                              Text.text('boo').click_event(ClickEvent.open_url('http: a.com')))
             self.assertEqual({"text": "boo", "click_event": {"action": "open_file", "value": "/a/b"}},
                              Text.text('boo').click_event(ClickEvent.open_file('/a/b')))
-            self.assertEqual({"text": "boo", "click_event": {"action": "change_page", "page": "p"}},
-                             Text.text('boo').click_event(ClickEvent.change_page('p')))
+            self.assertEqual({"text": "boo", "click_event": {"action": "change_page", "page": 5}},
+                             Text.text('boo').click_event(ClickEvent.change_page(5)))
             self.assertEqual({"text": "boo", "click_event": {"action": "run_command", "command": "/say hi"}},
                              Text.text('boo').click_event(ClickEvent.run_command(say('hi'))))
             self.assertEqual({"text": "boo", "click_event": {"action": "run_command", "command": "/say hi there"}},
