@@ -7,7 +7,7 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 
 from __future__ import annotations
 
-from typing import Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, \
@@ -264,6 +264,20 @@ def as_entity(entity: EntityDef | None) -> Entity | Arg | None:
     if isinstance(entity, Iterable):
         return Entity(*entity)
     return entity
+
+
+def as_text(text: TextDef) -> Text | None:
+    """Returns a Text object built from the given mapped values."""
+    if text is None or isinstance(text, Text):
+        return text
+    if is_arg(text):
+        return de_arg(text)
+    if isinstance(text, str):
+        return Text.text(text)
+    elif isinstance(text, Mapping):
+        return Text(text)
+    else:
+        raise ValueError(f'{text}: Not a dictionary')
 
 
 def as_score(score: ScoreName | None) -> Score | None:
@@ -658,7 +672,7 @@ class HoverEvent(Nbt):
 
     @classmethod
     def show_item(cls, id: str, count: int = None, tag: str = None) -> HoverEvent:
-        event = cls({ 'action' : 'show_item', 'id': as_resource(id)})
+        event = cls({'action': 'show_item', 'id': as_resource(id)})
         event.set_if('count', count, 'tag', tag)
         return event
 
@@ -3387,8 +3401,8 @@ def tellraw(target: Target, *message: NbtDef | StrOrArg) -> str:
         if first:
             first = False
         else:
-            jl.append(Text.as_text(' '))
-        jl.append(Text.as_text(m))
+            jl.append(as_text(' '))
+        jl.append(as_text(m))
     if len(jl) == 1:
         jl = jl[0]
     cmd._add(jl)
@@ -4227,28 +4241,7 @@ class Text(Nbt, TextHolder):
 
     @classmethod
     def as_text(cls, text: Mapping | str | Text) -> Mapping:
-        """Returns a Text object built from the given mapped values."""
-        if text is None or isinstance(text, Text):
-            return text
-        if is_arg(text):
-            return de_arg(text)
-        if isinstance(text, str):
-            return Text.text(text)
-        elif isinstance(text, Mapping):
-            return cls(text)
-        else:
-            raise ValueError(f'{text}: Not a dictionary')
-
-
-def custom_dialog(type: str, title: TextDef, external_title: TextDef, body: Sequence, added_nbt=None,
-                  can_close_with_escape=True) -> Nbt:
-    nbt = Nbt({'type': f'minecraft:{type}', 'title': {'text': title}, 'external_title': {'text': external_title},
-               'body': body})
-    if nbt:
-        nbt = nbt.merge(added_nbt)
-    if can_close_with_escape:
-        nbt['can_close_with_escape'] = True
-    return nbt
+        return as_text(text)
 
 
 MappingOrArg = Union[Mapping, StrOrArg]
@@ -4257,7 +4250,7 @@ ScoreName = Union[Score, Tuple[Target, StrOrArg]]
 BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, MappingOrArg], Tuple[StrOrArg, MappingOrArg, MappingOrArg]]
 EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, MappingOrArg]]
 ParticleDef = Union[StrOrArg, Particle, Tuple[StrOrArg, MappingOrArg]]
-TextDef = Union[Text, dict, StrOrArg]
+TextDef = Union[Text, Mapping, StrOrArg]
 SignMessage = Union[StrOrArg, NbtDef, None]
 SignMessages = Iterable[SignMessage]
 SignCommand = Union[StrOrArg, Command, NbtDef, Callable[[Union[Text]], Text], None]

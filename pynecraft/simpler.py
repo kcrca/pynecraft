@@ -7,7 +7,8 @@ from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, Nb
     Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
 from pynecraft.commands import Block, BlockDef, COLORS, ClickEvent, Command, Commands, Entity, EntityDef, SignCommand, \
     SignCommands, \
-    SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, data, fill, \
+    SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, as_text, data, \
+    fill, \
     fillbiome, setblock
 from pynecraft.values import PaintingInfo, as_pattern, paintings
 
@@ -229,6 +230,7 @@ class Sign(Block):
         :param facing: The direction the sign if facing. See as_facing() for useful parameters.
         :param water: Whether the sign is waterlogged.
         :param nbt: Any extra NBT for the sign.
+        :param clear: Set output place to air (or water) before setting the sign
         :return: The commands to place the sign.
         """
         self._orientation(facing)
@@ -285,10 +287,10 @@ class Book:
         else:
             self._display_name = []
             if isinstance(display_name, str):
-                self._display_name.append(str(Text.as_text(display_name)))
+                self._display_name.append(str(as_text(display_name)))
             else:
                 for x in display_name:
-                    self._display_name.append(Text.as_text(x))
+                    self._display_name.append(as_text(x))
 
     # Two kinds of books: Written and signed. In theory, they should hold the same kind
     # of text, but the unsigned book cannot have rich text. Hopefully in the future this _will_ be possible, so
@@ -678,6 +680,7 @@ class Offset:
         """Creates an offsetting object with the given values."""
         if len(position) == 0:
             raise ValueError(f'Must have at least one value in offset')
+        # noinspection PyTypeChecker
         self.position: tuple[float] = position
 
     def r(self, *values: CoordsIn) -> CoordsOut:
@@ -704,6 +707,7 @@ class Offset:
                 raise ValueError(f'{f}: incompatible RelCoord type')
             else:
                 vec.append(v)
+        # noinspection PyTypeChecker
         vals = RelCoord.add(vec, self.position)
         if len(vals) == 1:
             return vals[0]
@@ -781,7 +785,6 @@ class Trade:
         })
         if len(self.buy) > 1:
             values['buyB'] = {'id': self.buy[1][0], 'Count': self.buy[1][1]}
-        ones = []
         for k, v in values.items():
             if k != 'rewardExp' and v['Count'] == 1:
                 del v['Count']
@@ -973,14 +976,11 @@ def as_color_num(color: IntOrArg | StrOrArg | None) -> int | str | None:
 
 
 class Dialog(Nbt):
-    def __init__(self, type: str, title: TextDef, body: Iterable[NbtDef], external_title: TextDef = None):
-        if isinstance(title, str):
-            title = {'text': str}
-        if isinstance(external_title, str):
-            external_title = {'text': str}
-        body = map(lambda x: Nbt.as_nbt(x), body)
-        super().__init__(type=_in_group(DIALOG_TYPES, type), title=title, body=body)
-        self.set_if('external_title', external_title)
+    def __init__(self, type: str, title: TextDef, body: Iterable[NbtDef] = (), external_title: TextDef = None):
+        if body is not None:
+            body = list(map(lambda x: Nbt.as_nbt(x), body))
+        super().__init__(type=_in_group(DIALOG_TYPES, type), title=as_text(title))
+        self.set_if('body', body, 'external_title', as_text(external_title))
 
     @property
     def can_close_with_escape(self):
@@ -1000,33 +1000,36 @@ class Dialog(Nbt):
             self['can_close_with_escape'] = can
 
     @classmethod
-    def action(cls, label: TextDef, tooltip: str = None, width: int = None, on_click: ClickEvent = None):
+    def click_action(cls, label: TextDef, on_click: NbtDef = None, tooltip: str = None, width: int = None):
         nbt = Nbt(label=label, tooltip=tooltip)
         nbt.set_if('width', width, 'on_click', on_click)
         return nbt
 
     @classmethod
-    def _is_action(cls, action: NbtDef):
+    def _as_click_action(cls, action: NbtDef):
+        if action is None:
+            return None
         action = Nbt.as_nbt(action)
         if 'label' not in action:
             raise KeyError('Action missing "label"')
         return action
 
     @classmethod
-    def notice(self, title: TextDef, body: Iterable[NbtDef], action: NbtDef, *,
-               external_title: TextDef = None) -> Dialog:
-        widget = Dialog(NOTICE, title, body, external_title)
-        widget['action'] = Dialog._is_action(action)
-        return widget
+    def plain_message(cls, contents: TextDef, *, width: int = None) -> Nbt:
+        return Nbt({'type': 'plain_message', 'contents': contents}).set_if('width', width)
 
     @classmethod
-    def text(cls, title: TextDef, body: Iterable[NbtDef], label: str, initial: str = "", *, width: int = None,
-             label_visible: bool = None, max_length: int = None,
-             multiline: Sequence[int, int] | int = None, external_title: TextDef = None) -> Dialog:
-        widget = Dialog(TEXT, title, body, external_title)
-        widget['label'] = label
-        widget['initial'] = initial
-        widget.set_if('width', width, 'label_visible', label_visible, 'max_length', max_length)
+    def item(cls, item: NbtDef, *, description: TextDef = None, show_decoration: bool = None, show_tooltip: bool = None,
+             width: int = None, height: int = None) -> Nbt:
+        return Nbt({'type': 'item', 'item': item}).set_if(
+            'description', as_text(description), 'show_decoration', show_decoration, 'show_tooltip', show_tooltip,
+            'width', width, 'height', height)
+
+    @classmethod
+    def text(cls, label: str, initial: str = "", key: str = None, *, width: int = None, label_visible: bool = None,
+             max_length: int = None, multiline: Sequence[int, int] | int = None) -> Nbt:
+        widget = Nbt(type=TEXT, label=label, key=Dialog._default_to_label(key, label))
+        widget.set_if('initial', initial, 'width', width, 'label_visible', label_visible, 'max_length', max_length)
         ml = {}
         if isinstance(multiline, int):
             ml['height'] = multiline
@@ -1042,15 +1045,21 @@ class Dialog(Nbt):
         return widget
 
     @classmethod
-    def boolean(cls, label: str, initial: bool = False, *, on_true: str = None, on_false: str = None) -> Dialog:
-        widget = Dialog(type=BOOLEAN, label=label, initial=initial)
+    def _default_to_label(cls, key, label):
+        if key:
+            return key
+        return to_id(label)
+
+    @classmethod
+    def boolean(cls, label: str, initial: bool = False, key: str = None, *, on_true: str = None,
+                on_false: str = None) -> Nbt:
+        widget = Nbt(type=BOOLEAN, label=label, initial=initial, key=Dialog._default_to_label(key, label))
         widget.set_if('on_true', on_true, 'on_false', on_false)
         return widget
 
     @classmethod
-    def single_option(cls, label: str, options: Iterable[NbtDef | str | float], *, width: int = None,
-                      label_visible: bool = None,
-                      default_ids=False) -> Dialog:
+    def single_option(cls, label: str, options: Iterable[NbtDef | str | float], key: str = None, *, width: int = None,
+                      label_visible: bool = None, default_ids=False) -> Nbt:
         """
         Creates a single option input widget. If an option is a str or number, it becomes an option with the display
         being that value and the id being the to_id() of that value. If default_ids is True, then an option without
@@ -1087,43 +1096,53 @@ class Dialog(Nbt):
             raise ValueError('options are required')
 
         # Build the widget
-        widget = Dialog(type=SINGLE_OPTION, label=label, options=options)
+        key = Dialog._default_to_label(key, label)
+        widget = Nbt(type=SINGLE_OPTION, label=label, key=key, options=options)
         widget.set_if('width', width, 'label_visible', label_visible)
         return widget
 
     @classmethod
-    def number_range(cls, label: str, start: int, end: int, step: int = 1, *, initial: int = None, width: int = None,
-                     label_format: str = None) -> Dialog:
-        widget = Dialog(type=NUMBER_RANGE, label=label, start=start, end=end)
+    def number_range(cls, label: str, start: int, end: int, step: int = 1, key: str = None, *, initial: int = None,
+                     width: int = None, label_format: str = None) -> Nbt:
+        key = Dialog._default_to_label(key, label)
+        widget = Nbt(type=NUMBER_RANGE, label=label, key=key, start=start, end=end)
         widget.set_if('step', step, 'initial', initial, 'width', width, 'label_format', label_format)
         return widget
 
     @classmethod
-    def _is_input(cls, input: NbtDef):
+    def _as_input(cls, input: NbtDef):
         input = Nbt.as_nbt(input)
+        if 'type' not in input:
+            raise ValueError(f'no type in input: {input}')
         _in_group(INPUT_TYPES, input['type'])
         return input
 
     @classmethod
-    def confirmation(cls, title: TextDef, body: Iterable[NbtDef], yes: NbtDef, no: NbtDef, *,
+    def notice(cls, title: TextDef, body: Iterable[NbtDef] = (), *, click_action: NbtDef = None,
+               external_title: TextDef = None) -> Dialog:
+        widget = Dialog(NOTICE, title, body, external_title).set_if('action', Dialog._as_click_action(click_action))
+        return widget
+
+    @classmethod
+    def confirmation(cls, title: TextDef, yes_click_action: NbtDef, no_click_action: NbtDef, *, body: Iterable[NbtDef],
                      external_title: TextDef = None) -> Dialog:
         d = Dialog(CONFIRMATION, title, body, external_title)
-        d['yes'] = Dialog._is_action(yes)
-        d['no'] = Dialog._is_action(no)
+        d['yes'] = Dialog._as_click_action(yes_click_action)
+        d['no'] = Dialog._as_click_action(no_click_action)
         return d
 
     @classmethod
-    def multi_action(cls, title: TextDef, body: Iterable[NbtDef], actions: Iterable[NbtDef], *, columns: int = None,
-                     on_cancel: ClickEvent = None, external_title: TextDef = None) -> Dialog:
+    def multi_action(cls, title: TextDef, click_actions: Iterable[NbtDef], *, body: Iterable[NbtDef] = None,
+                     columns: int = None, on_cancel: ClickEvent = None, external_title: TextDef = None) -> Dialog:
         d = Dialog(MULTI_ACTION, title, body, external_title)
-        d['actions'] = map(lambda x: Dialog._is_action(x), actions)
+        d['actions'] = tuple(map(lambda x: Dialog._as_click_action(x), click_actions))
         d.set_if('columns', columns)
         d.set_if('on_cancel', on_cancel)
         return d
 
     @classmethod
-    def server_links(cls, title: TextDef, body: Iterable[NbtDef], *, on_click: ClickEvent = None,
-                     on_cancel: ClickEvent = None, columns: int = None, button_width: int = None,
+    def server_links(cls, title: TextDef, *, on_click: ClickEvent = None, on_cancel: ClickEvent = None,
+                     columns: int = None, button_width: int = None, body: Iterable[NbtDef],
                      external_title: TextDef = None) -> Dialog:
         d = Dialog(SERVER_LINKS, title, body, external_title)
         d.set_if('on_click', on_click)
@@ -1133,20 +1152,76 @@ class Dialog(Nbt):
         return d
 
     @classmethod
-    def dialog_list(cls, title: TextDef, body: Iterable[NbtDef], dialogs: Iterable[NbtDef], *,
-                    on_cancel: ClickEvent = None, columns: int = None, button_width: int = None,
+    def dialog_list(cls, title: TextDef, dialogs: Iterable[NbtDef], *, on_cancel: ClickEvent = None,
+                    columns: int = None, button_width: int = None, body: Iterable[NbtDef] = (),
                     external_title: TextDef = None) -> Dialog:
         d = Dialog(DIALOG_LIST, title, body, external_title)
-        d['dialogs'] = map(lambda x: Nbt.as_nbt(x), dialogs)
+        d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), dialogs))
         d.set_if('on_cancel', on_cancel, 'columns', columns, 'button_width', button_width)
         return d
 
     @classmethod
-    def simple_input_form(cls, title: TextDef, body: Iterable[NbtDef], inputs: Iterable[NbtDef], *,
-                          action: NbtDef = None, external_title: TextDef = None) -> Dialog:
+    def command_template(cls, template: str) -> Nbt:
+        return Nbt({'type': 'command_template', 'template': template})
+
+    @classmethod
+    def custom_template(cls, template: str, namespace_id: str) -> Nbt:
+        return Nbt({'type': 'custom_template', 'template': template, 'id': namespace_id})
+
+    @classmethod
+    def custom_form(cls, namespace_id: str) -> Nbt:
+        return Nbt({'type': 'custom_form', 'id': namespace_id})
+
+    @classmethod
+    def _as_submit(cls, on_submit: NbtDef):
+        if on_submit is None:
+            return None
+        if not 'type' in on_submit:
+            raise ValueError(f'"type" field missing: {on_submit}')
+        _in_group(['command_template', 'custom_template', 'custom_form'], on_submit['type'])
+        return Nbt.as_nbt(on_submit)
+
+    @classmethod
+    def submit_action(cls, label: TextDef, on_submit: NbtDef = None, id: str = None, tooltip: str = None,
+                      width: int = None):
+        id = Dialog._default_to_label(id, label)
+        nbt = Nbt(label=label, id=id, tooltip=tooltip, on_submit=on_submit)
+        nbt.set_if('width', width, 'on_submit', Dialog._as_submit(on_submit))
+        return nbt
+
+    @classmethod
+    def _as_submit_action(cls, action):
+        if action is None:
+            raise ValueError(f'action missing')
+        if 'id' not in action or 'on_submit' not in action:
+            raise ValueError(f'id and on_submit required in actions: {action}')
+        return action
+
+    @classmethod
+    def simple_input_form(cls, title: TextDef, inputs: Iterable[NbtDef], submit_action: NbtDef, *,
+                          body: Iterable[NbtDef] = (), external_title: TextDef = None) -> Dialog:
         if not inputs:
             raise ValueError('At least one input is required')
         d = Dialog(SIMPLE_INPUT_FORM, title, body, external_title)
-        d['inputs'] = map(lambda x: Dialog._is_input(x), inputs)
-        d.set_if('action', Dialog._is_action(action))
+        d['inputs'] = Dialog._as_inputs(inputs)
+        d['action'] = Dialog._as_submit_action(submit_action)
         return d
+
+    @classmethod
+    def multi_action_input_form(cls, title: TextDef, inputs: Iterable[NbtDef], actions: Iterable[NbtDef], *,
+                                columns: int = None, body: Iterable[NbtDef] = (),
+                                external_title: TextDef = None) -> Dialog:
+
+        if not inputs:
+            raise ValueError('At least one input is required')
+        if not actions:
+            raise ValueError('At least one action is required')
+        d = Dialog(MULTI_ACTION_INPUT_FORM, title, body, external_title)
+        d['inputs'] = Dialog._as_inputs(inputs)
+        d['actions'] = tuple(map(Dialog._as_submit_action, actions))
+        d.set_if('columns', columns)
+        return d
+
+    @classmethod
+    def _as_inputs(cls, inputs):
+        return tuple(map(lambda x: Dialog._as_input(x), inputs))
