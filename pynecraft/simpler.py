@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import string
 from typing import Callable, Iterable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
@@ -1048,7 +1049,7 @@ class Dialog(Nbt):
     def _default_to_label(cls, key, label):
         if key:
             return key
-        return to_id(label)
+        return to_id(label.translate(str.maketrans('', '', string.punctuation)))
 
     @classmethod
     def boolean(cls, label: str, initial: bool = False, key: str = None, *, on_true: str = None,
@@ -1059,7 +1060,7 @@ class Dialog(Nbt):
 
     @classmethod
     def single_option(cls, label: str, options: Iterable[NbtDef | str | float], key: str = None, *, width: int = None,
-                      label_visible: bool = None, default_ids=False) -> Nbt:
+                      label_visible: bool = None, default_ids=True) -> Nbt:
         """
         Creates a single option input widget. If an option is a str or number, it becomes an option with the display
         being that value and the id being the to_id() of that value. If default_ids is True, then an option without
@@ -1083,10 +1084,10 @@ class Dialog(Nbt):
                         v['id'] = to_id(v['display'])
                 except KeyError:
                     v['id'] = f'option_{i}'
-            else:
+            elif not default_ids:
                 raise ValueError(f'id required for {v}')
             try:
-                if v['initial']:
+                if 'initial' in v and v['initial']:
                     if found:
                         raise ValueError(f'only one option can be the initial one: {found, v["display"]}')
                     found = v['display']
