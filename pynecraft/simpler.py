@@ -7,10 +7,8 @@ from typing import Callable, Iterable, Mapping, MutableMapping, Sequence, Tuple,
 from pynecraft.base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
 from pynecraft.commands import Block, BlockDef, COLORS, ClickEvent, Command, Commands, Entity, EntityDef, SignCommand, \
-    SignCommands, \
-    SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, as_text, data, \
-    fill, \
-    fillbiome, setblock
+    SignCommands, SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, \
+    as_text, data, fill, fillbiome, setblock
 from pynecraft.values import PaintingInfo, as_pattern, paintings
 
 NOTICE = 'notice'
@@ -976,6 +974,14 @@ def as_color_num(color: IntOrArg | StrOrArg | None) -> int | str | None:
     return color
 
 
+def _as_tuple(v):
+    if isinstance(v, tuple):
+        return v
+    if isinstance(v, list):
+        return tuple(v)
+    return (v,)
+
+
 class Dialog(Nbt):
     """
     This class helps you build custom dialog boxes. You generally use one of the factory methods named for the
@@ -1004,7 +1010,7 @@ class Dialog(Nbt):
             if isinstance(body, Mapping):
                 body = Nbt.as_nbt(body)
             else:
-                body = list(map(lambda x: Nbt.as_nbt(x), body))
+                body = tuple(map(lambda x: Nbt.as_nbt(x), body))
         else:
             # an empty tuple is the same as this
             body = None
@@ -1106,8 +1112,14 @@ class Dialog(Nbt):
         by running to_id() on the display, after stripping punctuation. If there is no display, it will be "option_N"
         where N is its index in the option list.
 
+        :param label:
+        :param options:
+        :param key:
         :param initial: The initial value. Formally you would identify an initial value by creating NBT with 'initial': True.
-        this parameter lets you set it by putting in the value here instead.
+                this parameter lets you set it by putting in the value here instead.
+        :param width:
+        :param label_visible:
+        :param default_ids:
         """
 
         # Validate / transmogrify options
@@ -1120,7 +1132,7 @@ class Dialog(Nbt):
             else:
                 return Nbt.as_nbt(opt)
 
-        options = tuple(map(to_nbt_opt, options))
+        options = tuple(map(to_nbt_opt, _as_tuple(options)))
         if not len(options):
             raise ValueError('options are required')
         found = None
@@ -1185,13 +1197,11 @@ class Dialog(Nbt):
         return d
 
     @classmethod
-    def multi_action(cls, title: TextDef, click_actions: Iterable[NbtDef], *, body: Iterable[NbtDef] = None,
+    def multi_action(cls, title: TextDef, click_actions: NbtDef | Iterable[NbtDef], *, body: Iterable[NbtDef] = None,
                      columns: int = None, on_cancel: ClickEvent = None, external_title: TextDef = None) -> Dialog:
         """Factory method for a multi_action dialog."""
         d = Dialog(MULTI_ACTION, title, body, external_title)
-        if isinstance(click_actions, Nbt):
-            click_actions = (click_actions,)
-        d['actions'] = tuple(map(lambda x: Dialog._as_click_action(x), click_actions))
+        d['actions'] = tuple(map(lambda x: Dialog._as_click_action(x), _as_tuple(click_actions)))
         d.set_if('columns', columns)
         d.set_if('on_cancel', on_cancel)
         return d
@@ -1209,14 +1219,12 @@ class Dialog(Nbt):
         return d
 
     @classmethod
-    def dialog_list(cls, title: TextDef, dialogs: Iterable[NbtDef] | NbtDef, *, on_cancel: ClickEvent = None,
+    def dialog_list(cls, title: TextDef, dialogs: NbtDef | Iterable[NbtDef], *, on_cancel: ClickEvent = None,
                     columns: int = None, button_width: int = None, body: Iterable[NbtDef] = (),
                     external_title: TextDef = None) -> Dialog:
         """Factory method for a dialog_list dialog."""
         d = Dialog(DIALOG_LIST, title, body, external_title)
-        if isinstance(dialogs, NbtDef):
-            dialogs = (dialogs,)
-        d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), dialogs))
+        d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), _as_tuple(dialogs)))
         d.set_if('on_cancel', on_cancel, 'columns', columns, 'button_width', button_width)
         return d
 
@@ -1262,7 +1270,7 @@ class Dialog(Nbt):
         return action
 
     @classmethod
-    def simple_input_form(cls, title: TextDef, inputs: Iterable[NbtDef] | NbtDef, submit_action: NbtDef, *,
+    def simple_input_form(cls, title: TextDef, inputs: NbtDef | Iterable[NbtDef], submit_action: NbtDef, *,
                           body: Iterable[NbtDef] = (), external_title: TextDef = None) -> Dialog:
         """Factory method for a simple_input_form dialog."""
         if not inputs:
@@ -1273,7 +1281,7 @@ class Dialog(Nbt):
         return d
 
     @classmethod
-    def multi_action_input_form(cls, title: TextDef, inputs: Iterable[NbtDef], actions: Iterable[NbtDef] | NbtDef, *,
+    def multi_action_input_form(cls, title: TextDef, inputs: Iterable[NbtDef], actions: NbtDef | Iterable[NbtDef], *,
                                 columns: int = None, body: Iterable[NbtDef] = (),
                                 external_title: TextDef = None) -> Dialog:
         """Factory method for a multi_action_input_form dialog."""
@@ -1281,16 +1289,12 @@ class Dialog(Nbt):
             raise ValueError('At least one input is required')
         if not actions:
             raise ValueError('At least one action is required')
-        if isinstance(actions, NbtDef):
-            actions = (actions,)
         d = Dialog(MULTI_ACTION_INPUT_FORM, title, body, external_title)
         d['inputs'] = Dialog._as_inputs(inputs)
-        d['actions'] = tuple(map(Dialog._as_submit_action, actions))
+        d['actions'] = tuple(map(Dialog._as_submit_action, _as_tuple(actions)))
         d.set_if('columns', columns)
         return d
 
     @classmethod
     def _as_inputs(cls, inputs):
-        if isinstance(inputs, NbtDef):
-            inputs = (inputs,)
-        return tuple(map(lambda x: Dialog._as_input(x), inputs))
+        return tuple(map(lambda x: Dialog._as_input(x), _as_tuple(inputs)))

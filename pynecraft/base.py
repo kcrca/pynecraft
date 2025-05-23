@@ -171,6 +171,7 @@ class Arg:
 def de_arg(v: any) -> any:
     if not isinstance(v, str) and isinstance(v, Sequence):
         c = v.__class__
+        # noinspection PyArgumentList
         v = c(de_arg(x) for x in v)
     return str(v) if isinstance(v, Arg) else v
 
@@ -364,6 +365,7 @@ def as_resource(name: StrOrArg | None, allow_namespace=True, allow_not=False, ad
     :param allow_namespace: Whether to allow a resource prefix such as 'minecraft:'...
     :param allow_not: Whether to allow a '!' before the name.
     :param: add_namespace: If no namespace is given, prepend 'minecraft:'
+    :param add_namespace:
     :return: the input value.
     """
     if is_arg(name):
@@ -509,16 +511,17 @@ def as_angle(angle: Angle) -> Angle:
 
 
 def as_yaw(angle: Angle | StrOrArg | None) -> Angle | None:
+    # noinspection GrazieInspection
     """Checks if the angle is a valid yaw value, or None.
 
-     "Valid" means a value that as_facing() or as_angle() accepts. If it is a number or RelCoord, it must be in
-     the range [-180, 180).
+         "Valid" means a value that as_facing() or as_angle() accepts. If it is a number or RelCoord, it must be in
+         the range [-180, 180).
 
-    An Arg is also valid.
+        An Arg is also valid.
 
-    :param angle: The (probable) yaw angle.
-    :return: The input value.
-    """
+        :param angle: The (probable) yaw angle.
+        :return: The input value.
+        """
     if is_float_arg(angle):
         return de_float_arg(angle)
     if angle is not None:
@@ -712,7 +715,7 @@ class Nbt(UserDict):
             raise ValueError(f'{string}: Outside range of type "{type}"')
         # This is just getting the twos-complement stuff right: An unsigned value above the signed max for a type is
         # a negative value of that type.
-        if num >= signed_ranges[type][1] and num < unsigned_ranges[type][1]:
+        if signed_ranges[type][1] <= num < unsigned_ranges[type][1]:
             num -= unsigned_ranges[type][1]
         return num
 
@@ -802,6 +805,7 @@ class Nbt(UserDict):
             sout.write('{')
             keys = elem.keys()
             if Nbt.sort_keys:
+                # noinspection PyTypeChecker
                 keys = sorted(keys, key=str.casefold)
             first = True
             for key in keys:
@@ -1492,9 +1496,10 @@ class Transform:
             return Nbt({'right_rotation': self._nbt_quat(self.right), 'scale': self.scale,
                         'left_rotation': self._nbt_quat(self.left), 'translation': self.translation})
 
-        def _canonicalize(self, rot):
+        @staticmethod
+        def _canonicalize(rot):
             if rot is None:
-                return (0, 0, 0, 1)
+                return 0, 0, 0, 1
             if isinstance(rot, tuple):
                 return rot
             facing = as_facing(rot)
@@ -1514,7 +1519,7 @@ class Transform:
                 yaw / 2)
             w = np.cos(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.sin(pitch / 2) * np.sin(
                 yaw / 2)
-            return (x, y, z, w)
+            return x, y, z, w
 
     def __init__(self, transform: Matrix | Quaternion):
         super().__init__()

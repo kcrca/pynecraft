@@ -29,18 +29,11 @@ from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
 from .base import Angle, BLUE, CLOCKWISE_90, COLORS, COUNTERCLOCKWISE_90, Column, DIMENSION, DurationDef, EQ, GREEN, \
-    IntColumn, IntRelCoord, \
-    NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TEXT_COLORS, TIME_SPEC, TIME_TYPES, \
-    TextHolder, \
-    WHITE, \
-    YELLOW, \
-    _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, _to_list, as_column, \
-    as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, as_resource, \
-    as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, is_arg, is_int_arg, to_id, to_name, \
-    FacingDef, Facing, \
-    Arg, \
-    StrOrArg, IntOrArg, \
-    BoolOrArg, FloatOrArg, _arg_re
+    IntColumn, IntRelCoord, NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TEXT_COLORS, \
+    TIME_SPEC, TIME_TYPES, TextHolder, WHITE, YELLOW, _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, \
+    _to_list, as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, \
+    as_resource, as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, is_arg, is_int_arg, to_id, \
+    to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, BoolOrArg, FloatOrArg, _arg_re
 
 
 def _fluent(method):
@@ -77,7 +70,7 @@ def as_target(target: Target) -> TargetSpec | str | None:
     Checks if the argument is a valid target for commands, such as (the equivalent of) '@p' or usernames,
     or None. If not, it raises a ValueError.
 
-    Valid targets are subclasses of TargetSpec, a '*', or a user name.
+    Valid targets are subclasses of TargetSpec, a '*', or a username.
 
     :param target: The (probable) target.
     :return: a TargetSpec object, created if need be, or None.
@@ -186,7 +179,7 @@ def as_position(pos: Position | StrOrArg) -> Position | str:
 def as_user(name: StrOrArg) -> str:
     """Checks if the argument is a valid username.
 
-    :param name: The (probable) user name.
+    :param name: The (probable) username.
     :return: The input value.
     """
     if is_arg(name):
@@ -529,7 +522,7 @@ BLOCK = 'block'
 BLOCK_MARKER = 'block_marker'
 DUST_PILLAR = 'dust_pillar'
 FALLING_DUST = 'falling_dust'
-BLOCK_PARTICE_TYPES = [BLOCK, BLOCK_MARKER, DUST_PILLAR, FALLING_DUST]
+BLOCK_PARTICLE_TYPES = [BLOCK, BLOCK_MARKER, DUST_PILLAR, FALLING_DUST]
 
 FRONT_BACK = 'front_back'
 LEFT_RIGHT = 'left_right'
@@ -3017,11 +3010,11 @@ def gamerule(rule: StrOrArg | IntOrArg, value: BoolOrArg | IntOrArg = None) -> s
     elif value is not None:
         rule_type = game_rules[rule].rule_type
         if rule_type == int:
-            if type(value) != int:
+            if not isinstance(value, int):
                 raise ValueError(f'{rule}: int value required')
             cmd._add(int(value))
         elif rule_type == bool:
-            if type(value) != bool:
+            if not isinstance(value, bool):
                 raise ValueError(f'{rule}: bool value required')
             cmd._add(_bool(value))
         else:
@@ -3629,7 +3622,7 @@ class Entity(Block):
         :param id: The entity ID.
         :param nbt: Any NBT for the entity.
         :param components: Any component data for the entity. This just an alias for Block's state field, to
-                        be compatible with terminology. But syntacitically they behave the same.
+                        be compatible with terminology. But syntactically they behave the same.
         :param name: The entity's human-friendly name.
         :param state: Can be used instead of 'components', but you can't specify both
         """
@@ -3739,18 +3732,18 @@ class Particle(Command):
         if is_arg(color):
             return de_arg(color)
         else:
-            return (de_float_arg(color[0]), de_float_arg(color[1]), de_float_arg(color[2]))
+            return de_float_arg(color[0]), de_float_arg(color[1]), de_float_arg(color[2])
 
     @classmethod
     def _4_color(cls, color):
         if is_int_arg(color):
             return de_int_arg(color)
         else:
-            return (de_float_arg(color[0]), de_float_arg(color[1]), de_float_arg(color[2]), de_float_arg(color[3]))
+            return de_float_arg(color[0]), de_float_arg(color[1]), de_float_arg(color[2]), de_float_arg(color[3])
 
     @classmethod
     def block(cls, block: BlockDef, type: StrOrArg = BLOCK, state: Arg | NbtDef = None) -> Particle:
-        p = Particle(_in_group(BLOCK_PARTICE_TYPES, type))
+        p = Particle(_in_group(BLOCK_PARTICLE_TYPES, type))
         if (is_arg(block) or isinstance(block, str)) and state is None:
             p.state['block_state'] = de_arg(block)
         else:
@@ -4115,7 +4108,7 @@ class Text(Nbt, TextHolder):
         return cls({'text': de_arg(txt)})
 
     @classmethod
-    def html_text(cls, html: str) -> TextList[Text]:
+    def html_text(cls, html: str) -> list:
         """Returns a TextHolder node populated from some HTML."""
         parser = _ToText()
         parser.feed(html)

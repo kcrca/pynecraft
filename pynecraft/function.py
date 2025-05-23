@@ -213,7 +213,7 @@ class Loop(Function):
     As an example, you could have the following:
 
     ```
-    Loop(('foo', 'funcs')).loop(lambda step: say(f'{step.i}: {step.elem}, ('Red', 'Green', 'Blue'))
+    Loop(('foo', 'funcs').loop(lambda step: say(f'{step.i}: {step.elem}, ('Red', 'Green', 'Blue'))
     ```
 
     The lambda will be invoked three times. The ``step`` argument defines the data for the specific iteration; ``i``
@@ -478,7 +478,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 77
+LATEST_PACK_VERSION = 78
 
 
 class DataPack:
@@ -821,7 +821,7 @@ class FunctionSet:
         return self._functions
 
     @property
-    def children(self) -> tuple[FunctionSet]:
+    def children(self) -> tuple[FunctionSet, ...]:
         """The child FunctionSets of this set. This is read-only"""
         return tuple(self._kids)
 
