@@ -977,33 +977,49 @@ def as_color_num(color: IntOrArg | StrOrArg | None) -> int | str | None:
 
 
 class Dialog(Nbt):
+    """
+    This class helps you build custom dialog boxes. You generally use one of the factory methods named for the
+    possible types (notice, confirmation, etc.).
+
+    Other factory methods build inputs, actions, etc.
+
+    The result is an Nbt object, so if you want to set values this does not provide, you can
+    put in any NBT you want.
+
+    Throughout, whenever a text component is needed, a simple string will be handled a text component with that text.
+    """
+
     def __init__(self, type: str, title: TextDef, body: Iterable[NbtDef] = (), external_title: TextDef = None):
-        if body is not None:
-            body = list(map(lambda x: Nbt.as_nbt(x), body))
+        """
+        Creates a new custom dialog. Typically, you will use one of the factory methods instead of
+        invoking this directly. They in turn invoke this with the right type, passing through the
+        other parameters to this method.
+
+        :param type: The dialog type.
+        :param title: The dialog title.
+        :param body: The body of the method, if any.
+        :param external_title: The external title, if different from "title"
+        """
+        if body:
+            if isinstance(body, Mapping):
+                body = Nbt.as_nbt(body)
+            else:
+                body = list(map(lambda x: Nbt.as_nbt(x), body))
+        else:
+            # an empty tuple is the same as this
+            body = None
         super().__init__(type=_in_group(DIALOG_TYPES, type), title=as_text(title))
         self.set_if('body', body, 'external_title', as_text(external_title))
 
-    @property
-    def can_close_with_escape(self):
-        try:
-            return self['can_close_with_escape']
-        except KeyError:
-            return None
-
-    @can_close_with_escape.setter
-    def can_close_with_escape(self, can):
-        if can is None:
-            try:
-                del self['can_close_with_escape']
-            except KeyError:
-                pass
-        else:
-            self['can_close_with_escape'] = can
+    def can_close_with_escape(self, can: bool) -> Dialog:
+        self['can_close_with_escape'] = can
+        return self
 
     @classmethod
     def click_action(cls, label: TextDef, on_click: NbtDef = None, tooltip: str = None, width: int = None):
-        nbt = Nbt(label=label, tooltip=tooltip)
-        nbt.set_if('width', width, 'on_click', on_click)
+        """Factory method to create a click action."""
+        nbt = Nbt(label=label)
+        nbt.set_if('tooltip', tooltip, 'width', width, 'on_click', on_click)
         return nbt
 
     @classmethod
@@ -1017,71 +1033,104 @@ class Dialog(Nbt):
 
     @classmethod
     def plain_message(cls, contents: TextDef, *, width: int = None) -> Nbt:
-        return Nbt({'type': 'plain_message', 'contents': contents}).set_if('width', width)
+        """Factory method for a plain_message body component."""
+        return Nbt({'type': 'plain_message', 'contents': as_text(contents)}).set_if('width', width)
 
     @classmethod
-    def item(cls, item: NbtDef, *, description: TextDef = None, show_decoration: bool = None, show_tooltip: bool = None,
-             width: int = None, height: int = None) -> Nbt:
+    def item(cls, item: NbtDef | Item | str, *, description: TextDef = None, show_decoration: bool = None,
+             show_tooltip: bool = None, width: int = None, height: int = None) -> Nbt:
+        """Factory method for an item body component."""
+        if isinstance(item, str):
+            item = Item.nbt_for(item)
+        elif isinstance(item, Item):
+            item = Item.nbt_for(item.id)
         return Nbt({'type': 'item', 'item': item}).set_if(
             'description', as_text(description), 'show_decoration', show_decoration, 'show_tooltip', show_tooltip,
             'width', width, 'height', height)
 
     @classmethod
-    def text(cls, label: str, initial: str = "", key: str = None, *, width: int = None, label_visible: bool = None,
+    def text(cls, label: str, initial: str = None, key: str = None, *, width: int = None, label_visible: bool = None,
              max_length: int = None, multiline: Sequence[int, int] | int = None) -> Nbt:
-        widget = Nbt(type=TEXT, label=label, key=Dialog._default_to_label(key, label))
+        """
+        Factory method for a text input component.
+
+        :param label:
+        :param initial:
+        :param key: If not provided, the key will be generated invoking to_id on the label after stripping the punctuation.
+        :param width:
+        :param max_length:
+        :param label_visible:
+        :param multiline: If a single int, or a list with a single value, it is used as the height. The second value
+        from a list will be max_lines.
+        """
+        widget = Nbt(type=TEXT, label=label, key=Dialog._default_from_label(key, label))
         widget.set_if('initial', initial, 'width', width, 'label_visible', label_visible, 'max_length', max_length)
-        ml = {}
+        ml = Nbt()
         if isinstance(multiline, int):
             ml['height'] = multiline
         elif isinstance(multiline, Sequence):
             if len(multiline):
-                ml['height'] = multiline[0]
+                ml.set_if('height', multiline[0])
                 if len(multiline) == 2:
-                    ml['max_lines'] = multiline[1]
-                else:
+                    ml.set_if('max_lines', multiline[1])
+                elif len(multiline) > 2:
                     raise ValueError('multiline value has at most two values')
         if ml:
             widget['multiline'] = ml
         return widget
 
     @classmethod
-    def _default_to_label(cls, key, label):
+    def _default_from_label(cls, key, label):
         if key:
             return key
         return to_id(label.translate(str.maketrans('', '', string.punctuation)))
 
     @classmethod
-    def boolean(cls, label: str, initial: bool = False, key: str = None, *, on_true: str = None,
+    def boolean(cls, label: str, initial: bool = None, key: str = None, *, on_true: str = None,
                 on_false: str = None) -> Nbt:
-        widget = Nbt(type=BOOLEAN, label=label, initial=initial, key=Dialog._default_to_label(key, label))
-        widget.set_if('on_true', on_true, 'on_false', on_false)
+        """Factory method for a boolean (checkbox) input component. Key is handled the same as with text()."""
+        widget = Nbt(type=BOOLEAN, label=label, key=Dialog._default_from_label(key, label))
+        widget.set_if('on_true', on_true, 'on_false', on_false, 'initial', initial)
         return widget
 
     @classmethod
-    def single_option(cls, label: str, options: Iterable[NbtDef | str | float], key: str = None, *, width: int = None,
-                      label_visible: bool = None, default_ids=True) -> Nbt:
+    def single_option(cls, label: str, options: Iterable[NbtDef | str | int | float], key: str = None, *,
+                      initial: str | int | float = None, width: int = None, label_visible: bool = None,
+                      default_ids=True) -> Nbt:
         """
-        Creates a single option input widget. If an option is a str or number, it becomes an option with the display
-        being that value and the id being the to_id() of that value. If default_ids is True, then an option without
-        an id is given the ID for to_id() of its display or, if there is no display, "option_N" where N is its index
-        in the option list.
+        Factory method for a single option input widget. Key is handled the same as with text().
+
+        If an option is a str or number, it becomes an option with the display being that value, but has no ID.
+
+        If an option has no provided ID, it is an error unless default_ids is True, when the ID will be generated
+        by running to_id() on the display, after stripping punctuation. If there is no display, it will be "option_N"
+        where N is its index in the option list.
+
+        :param initial: The initial value. Formally you would identify an initial value by creating NBT with 'initial': True.
+        this parameter lets you set it by putting in the value here instead.
         """
 
         # Validate / transmogrify options
         def to_nbt_opt(opt):
-            if isinstance(opt, (str, float)):
-                return Nbt(display=str(opt), id=to_id(str(opt)))
+            if isinstance(opt, (str, int, float)):
+                nbt = Nbt(display=str(opt), id=to_id(str(opt)))
+                if opt == initial:
+                    nbt['initial'] = True
+                return nbt
             else:
                 return Nbt.as_nbt(opt)
 
         options = tuple(map(to_nbt_opt, options))
+        if not len(options):
+            raise ValueError('options are required')
         found = None
+        if isinstance(initial, (int, float)):
+            initial = str(initial)
         for i, v in enumerate(options):
             if 'id' not in v:
                 try:
                     if default_ids:
-                        v['id'] = to_id(v['display'])
+                        v['id'] = Dialog._default_from_label(None, v['display'])
                 except KeyError:
                     v['id'] = f'option_{i}'
             elif not default_ids:
@@ -1093,19 +1142,20 @@ class Dialog(Nbt):
                     found = v['display']
             except KeyError:
                 pass
-        if not len(options):
-            raise ValueError('options are required')
+        if len(set(map(lambda x: x['display'], options))) != len(options):
+            raise ValueError('Duplicate options')
 
         # Build the widget
-        key = Dialog._default_to_label(key, label)
+        key = Dialog._default_from_label(key, label)
         widget = Nbt(type=SINGLE_OPTION, label=label, key=key, options=options)
         widget.set_if('width', width, 'label_visible', label_visible)
         return widget
 
     @classmethod
-    def number_range(cls, label: str, start: int, end: int, step: int = 1, key: str = None, *, initial: int = None,
+    def number_range(cls, label: str, start: int, end: int, step: int = None, key: str = None, *, initial: int = None,
                      width: int = None, label_format: str = None) -> Nbt:
-        key = Dialog._default_to_label(key, label)
+        """Factory method for a number range component. Key is handled the same as with text()."""
+        key = Dialog._default_from_label(key, label)
         widget = Nbt(type=NUMBER_RANGE, label=label, key=key, start=start, end=end)
         widget.set_if('step', step, 'initial', initial, 'width', width, 'label_format', label_format)
         return widget
@@ -1119,14 +1169,16 @@ class Dialog(Nbt):
         return input
 
     @classmethod
-    def notice(cls, title: TextDef, body: Iterable[NbtDef] = (), *, click_action: NbtDef = None,
+    def notice(cls, title: TextDef, body: Iterable[NbtDef] = None, *, click_action: NbtDef = None,
                external_title: TextDef = None) -> Dialog:
+        """Factory method for a notice dialog."""
         widget = Dialog(NOTICE, title, body, external_title).set_if('action', Dialog._as_click_action(click_action))
         return widget
 
     @classmethod
-    def confirmation(cls, title: TextDef, yes_click_action: NbtDef, no_click_action: NbtDef, *, body: Iterable[NbtDef],
-                     external_title: TextDef = None) -> Dialog:
+    def confirmation(cls, title: TextDef, yes_click_action: NbtDef, no_click_action: NbtDef, *,
+                     body: Iterable[NbtDef] = (), external_title: TextDef = None) -> Dialog:
+        """Factory method for a confirmation dialog."""
         d = Dialog(CONFIRMATION, title, body, external_title)
         d['yes'] = Dialog._as_click_action(yes_click_action)
         d['no'] = Dialog._as_click_action(no_click_action)
@@ -1135,7 +1187,10 @@ class Dialog(Nbt):
     @classmethod
     def multi_action(cls, title: TextDef, click_actions: Iterable[NbtDef], *, body: Iterable[NbtDef] = None,
                      columns: int = None, on_cancel: ClickEvent = None, external_title: TextDef = None) -> Dialog:
+        """Factory method for a multi_action dialog."""
         d = Dialog(MULTI_ACTION, title, body, external_title)
+        if isinstance(click_actions, Nbt):
+            click_actions = (click_actions,)
         d['actions'] = tuple(map(lambda x: Dialog._as_click_action(x), click_actions))
         d.set_if('columns', columns)
         d.set_if('on_cancel', on_cancel)
@@ -1143,8 +1198,9 @@ class Dialog(Nbt):
 
     @classmethod
     def server_links(cls, title: TextDef, *, on_click: ClickEvent = None, on_cancel: ClickEvent = None,
-                     columns: int = None, button_width: int = None, body: Iterable[NbtDef],
+                     columns: int = None, button_width: int = None, body: Iterable[NbtDef] = None,
                      external_title: TextDef = None) -> Dialog:
+        """Factory method for a server_links dialog."""
         d = Dialog(SERVER_LINKS, title, body, external_title)
         d.set_if('on_click', on_click)
         d.set_if('on_cancel', on_cancel)
@@ -1153,41 +1209,48 @@ class Dialog(Nbt):
         return d
 
     @classmethod
-    def dialog_list(cls, title: TextDef, dialogs: Iterable[NbtDef], *, on_cancel: ClickEvent = None,
+    def dialog_list(cls, title: TextDef, dialogs: Iterable[NbtDef] | NbtDef, *, on_cancel: ClickEvent = None,
                     columns: int = None, button_width: int = None, body: Iterable[NbtDef] = (),
                     external_title: TextDef = None) -> Dialog:
+        """Factory method for a dialog_list dialog."""
         d = Dialog(DIALOG_LIST, title, body, external_title)
+        if isinstance(dialogs, NbtDef):
+            dialogs = (dialogs,)
         d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), dialogs))
         d.set_if('on_cancel', on_cancel, 'columns', columns, 'button_width', button_width)
         return d
 
     @classmethod
     def command_template(cls, template: str) -> Nbt:
+        """Factory method for a command_template submit action, part of the full submit_action()."""
         return Nbt({'type': 'command_template', 'template': template})
 
     @classmethod
     def custom_template(cls, template: str, namespace_id: str) -> Nbt:
+        """Factory method for a custom_template submit action, part of the full submit_action()."""
         return Nbt({'type': 'custom_template', 'template': template, 'id': namespace_id})
 
     @classmethod
     def custom_form(cls, namespace_id: str) -> Nbt:
+        """Factory method for a custom_form submit action, part of the full submit_action()."""
         return Nbt({'type': 'custom_form', 'id': namespace_id})
 
     @classmethod
     def _as_submit(cls, on_submit: NbtDef):
         if on_submit is None:
             return None
-        if not 'type' in on_submit:
+        if 'type' not in on_submit:
             raise ValueError(f'"type" field missing: {on_submit}')
         _in_group(['command_template', 'custom_template', 'custom_form'], on_submit['type'])
         return Nbt.as_nbt(on_submit)
 
     @classmethod
-    def submit_action(cls, label: TextDef, on_submit: NbtDef = None, id: str = None, tooltip: str = None,
+    def submit_action(cls, label: TextDef, on_submit: NbtDef = None, *, id: str = None, tooltip: str = None,
                       width: int = None):
-        id = Dialog._default_to_label(id, label)
-        nbt = Nbt(label=label, id=id, tooltip=tooltip, on_submit=on_submit)
-        nbt.set_if('width', width, 'on_submit', Dialog._as_submit(on_submit))
+        """Factory method for a submit action"""
+        id = Dialog._default_from_label(id, label)
+        nbt = Nbt(label=label, id=id)
+        nbt.set_if('tooltip', tooltip, 'width', width, 'on_submit', Dialog._as_submit(on_submit))
         return nbt
 
     @classmethod
@@ -1199,8 +1262,9 @@ class Dialog(Nbt):
         return action
 
     @classmethod
-    def simple_input_form(cls, title: TextDef, inputs: Iterable[NbtDef], submit_action: NbtDef, *,
+    def simple_input_form(cls, title: TextDef, inputs: Iterable[NbtDef] | NbtDef, submit_action: NbtDef, *,
                           body: Iterable[NbtDef] = (), external_title: TextDef = None) -> Dialog:
+        """Factory method for a simple_input_form dialog."""
         if not inputs:
             raise ValueError('At least one input is required')
         d = Dialog(SIMPLE_INPUT_FORM, title, body, external_title)
@@ -1209,14 +1273,16 @@ class Dialog(Nbt):
         return d
 
     @classmethod
-    def multi_action_input_form(cls, title: TextDef, inputs: Iterable[NbtDef], actions: Iterable[NbtDef], *,
+    def multi_action_input_form(cls, title: TextDef, inputs: Iterable[NbtDef], actions: Iterable[NbtDef] | NbtDef, *,
                                 columns: int = None, body: Iterable[NbtDef] = (),
                                 external_title: TextDef = None) -> Dialog:
-
+        """Factory method for a multi_action_input_form dialog."""
         if not inputs:
             raise ValueError('At least one input is required')
         if not actions:
             raise ValueError('At least one action is required')
+        if isinstance(actions, NbtDef):
+            actions = (actions,)
         d = Dialog(MULTI_ACTION_INPUT_FORM, title, body, external_title)
         d['inputs'] = Dialog._as_inputs(inputs)
         d['actions'] = tuple(map(Dialog._as_submit_action, actions))
@@ -1225,4 +1291,6 @@ class Dialog(Nbt):
 
     @classmethod
     def _as_inputs(cls, inputs):
+        if isinstance(inputs, NbtDef):
+            inputs = (inputs,)
         return tuple(map(lambda x: Dialog._as_input(x), inputs))
