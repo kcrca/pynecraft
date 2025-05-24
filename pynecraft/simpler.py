@@ -1201,7 +1201,9 @@ class Dialog(Nbt):
                      columns: int = None, on_cancel: ClickEvent = None, external_title: TextDef = None) -> Dialog:
         """Factory method for a multi_action dialog."""
         d = Dialog(MULTI_ACTION, title, body, external_title)
-        d['actions'] = tuple(map(lambda x: Dialog._as_click_action(x), _as_tuple(click_actions)))
+        if isinstance(click_actions, Nbt):
+            click_actions = (click_actions,)
+        d['actions'] = tuple(map(lambda x: Dialog._as_click_action(x), click_actions))
         d.set_if('columns', columns)
         d.set_if('on_cancel', on_cancel)
         return d
@@ -1224,7 +1226,9 @@ class Dialog(Nbt):
                     external_title: TextDef = None) -> Dialog:
         """Factory method for a dialog_list dialog."""
         d = Dialog(DIALOG_LIST, title, body, external_title)
-        d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), _as_tuple(dialogs)))
+        if isinstance(dialogs, NbtDef):
+            dialogs = (dialogs,)
+        d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), dialogs))
         d.set_if('on_cancel', on_cancel, 'columns', columns, 'button_width', button_width)
         return d
 
@@ -1289,12 +1293,16 @@ class Dialog(Nbt):
             raise ValueError('At least one input is required')
         if not actions:
             raise ValueError('At least one action is required')
+        if isinstance(actions, NbtDef):
+            actions = (actions,)
         d = Dialog(MULTI_ACTION_INPUT_FORM, title, body, external_title)
         d['inputs'] = Dialog._as_inputs(inputs)
-        d['actions'] = tuple(map(Dialog._as_submit_action, _as_tuple(actions)))
+        d['actions'] = tuple(map(Dialog._as_submit_action, actions))
         d.set_if('columns', columns)
         return d
 
     @classmethod
     def _as_inputs(cls, inputs):
-        return tuple(map(lambda x: Dialog._as_input(x), _as_tuple(inputs)))
+        if isinstance(inputs, NbtDef):
+            inputs = (inputs,)
+        return tuple(map(lambda x: Dialog._as_input(x), inputs))

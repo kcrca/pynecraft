@@ -846,7 +846,7 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             gamerule(DISABLE_RAIDS, 17)
         with self.assertRaises(ValueError):
-            gamerule(MAX_COMMAND_CHAIN_LENGTH, True)
+            gamerule(MAX_COMMAND_CHAIN_LENGTH, "True")
         with self.assertRaises(ValueError):
             gamerule('nothing', 17)
 
