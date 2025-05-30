@@ -1,0 +1,4 @@
+Make all possible places take DataTarget without keywords (e.g., str meaans 'storage')
+
+in 24w12a (https://www.minecraft.net/en-us/article/minecraft-snapshot-24w21a) it says that attribute command has changed,
+but it doesn't clearly say how. Look into this when the doc catches up with this.

@@ -678,6 +678,14 @@ class HoverEvent(Nbt):
 
 class ClickEvent(Nbt):
     @classmethod
+    def from_nbt(cls, nbt: NbtDef) -> ClickEvent:
+        if isinstance(nbt, ClickEvent):
+            return nbt
+        event = ClickEvent()
+        event.update(nbt)
+        return event
+
+    @classmethod
     def open_url(cls, url: str) -> ClickEvent:
         result = urlparse(url)
         if result.scheme not in ('http', 'https'):
