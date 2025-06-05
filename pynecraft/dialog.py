@@ -1,5 +1,5 @@
 import string
-from typing import Iterable, Self, Sequence, Tuple
+from typing import Iterable, Self
 
 from .base import Nbt, NbtDef, _in_group, to_id
 from .commands import ClickEvent, TextDef, as_text
@@ -180,7 +180,7 @@ def _as_inputs(inputs):
 
 
 def text(label: str, initial: str = None, key: str = None, *, width: int = None, label_visible: bool = None,
-         max_length: int = None, multiline: Tuple[int, int] | Tuple[int] | int = None) -> Input:
+         max_length: int = None, multiline: NbtDef = None) -> Input:
     """
     Factory method for a text input component.
 
@@ -190,23 +190,12 @@ def text(label: str, initial: str = None, key: str = None, *, width: int = None,
     :param width:
     :param max_length:
     :param label_visible:
-    :param multiline: If a single int, or a list with a single value, it is used as the height. The second value
-    from a list will be max_lines.
+    :param multiline: An NBT with the optional fields 'height' and 'max_lines'.
     """
     input = Input(TEXT, label, key)
     input.set_if('initial', initial, 'width', width, 'label_visible', label_visible, 'max_length', max_length)
-    ml = Nbt()
-    if isinstance(multiline, int):
-        ml['height'] = multiline
-    elif isinstance(multiline, Sequence):
-        if len(multiline):
-            ml.set_if('height', multiline[0])
-            if len(multiline) == 2:
-                ml.set_if('max_lines', multiline[1])
-            elif len(multiline) > 2:
-                raise ValueError('multiline value has at most two values')
-    if ml:
-        input['multiline'] = ml
+    if multiline:
+        input['multiline'] = Nbt.as_nbt(multiline)
     return input
 
 

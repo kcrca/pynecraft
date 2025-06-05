@@ -37,14 +37,9 @@ class TestSimpler(unittest.TestCase):
              'label_visible': False},
             text('No Way!', initial='Yup', width=3, max_length=20, label_visible=False))
         self.assertEqual(
-            {'type': 'text', 'label': 'No Way!', 'key': 'no_way', 'multiline': {'height': 17}},
-            text('No Way!', multiline=17))
-        self.assertEqual(
-            {'type': 'text', 'label': 'No Way!', 'key': 'no_way', 'multiline': {'height': 17}},
-            text('No Way!', multiline=(17,)))
-        self.assertEqual(
-            {'type': 'text', 'label': 'No Way!', 'key': 'no_way', 'multiline': {'height': 17, 'max_lines': 19}},
-            text('No Way!', multiline=(17, 19)))
+            {'type': 'text', 'label': 'No Way!', 'key': 'no_way', 'multiline': {'height': 17, 'max_lines': 12}},
+            text('No Way!', multiline={'height': 17, 'max_lines': 12}))
+        self.assertEqual({'type': 'text', 'label': 'No Way!', 'key': 'no_way'}, text('No Way!', multiline={}))
         self.assertEqual({'type': 'boolean', 'label': 'Maybe', 'key': 'maybe'}, boolean('Maybe'))
         self.assertEqual(
             {'type': 'boolean', 'label': 'Maybe', 'key': 'uh', 'initial': True, 'on_true': 'oui', 'on_false': 'non'},
@@ -107,7 +102,7 @@ class TestSimpler(unittest.TestCase):
     def test_dialog_notice(self):
         self.assertEqual({'type': 'notice', 'title': {'text': 'howdy'}}, notice('howdy'))
         self.assertEqual(
-            {'type': 'notice', 'title': {'text': 'howdy'}, 'body':[ {'type': 'item', 'item': {'id': 'minecraft:cake'}}],
+            {'type': 'notice', 'title': {'text': 'howdy'}, 'body': [{'type': 'item', 'item': {'id': 'minecraft:cake'}}],
              'external_title': {'text': 'ext'}},
             notice('howdy', external_title='ext').body(item('cake')))
 
@@ -154,7 +149,8 @@ class TestSimpler(unittest.TestCase):
                         button_width=7))
 
     def test_dialog_submit_actions(self):
-        self.assertEqual({'type': 'command_template', 'template': 'foo', 'id': 'commandtemplate'}, command_template('foo')),
+        self.assertEqual({'type': 'command_template', 'template': 'foo', 'id': 'commandtemplate'},
+                         command_template('foo')),
         self.assertEqual({'type': 'custom_template', 'template': 'foo', 'id': 'ns'},
                          custom_template('foo', 'ns')),
         self.assertEqual({'type': 'custom_form', 'id': 'ns'}, custom_form('ns')),
