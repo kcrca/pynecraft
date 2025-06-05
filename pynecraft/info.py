@@ -7,7 +7,8 @@ from enum import Enum
 from importlib.resources import files
 
 from ._utils.fetch_things import ItemFetcher
-from .base import COLORS, Nbt, NbtDef, to_id, to_name
+from .base import AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE, DARK_RED, GOLD, \
+    GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, WHITE, YELLOW, to_id, to_name
 from .commands import Block, Entity
 from .simpler import Item, as_color_num
 from .values import POTTERY_SHERD_GROUP, pottery_sherds
@@ -269,6 +270,25 @@ moon_phases = (
 
 axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
 """The kinds of axolotls."""
+
+text_colors = {
+    BLACK: 0x000000,
+    DARK_BLUE: 0x0000aa,
+    DARK_GREEN: 0x00aa00,
+    DARK_AQUA: 0x00aaaa,
+    DARK_RED: 0xaa0000,
+    DARK_PURPLE: 0xaa00aa,
+    GOLD: 0xffaa00,
+    GRAY: 0xaaaaaa,
+    DARK_GRAY: 555555,
+    BLUE: 0x5555ff,
+    GREEN: 0x55ff55,
+    AQUA: 0x55ffff,
+    RED: 0xff5555,
+    LIGHT_PURPLE: 0xff55ff,
+    YELLOW: 0xffff55,
+    WHITE: 0xffffff,
+}
 
 
 class Fish(Entity):
