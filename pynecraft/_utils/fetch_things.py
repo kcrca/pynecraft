@@ -45,7 +45,9 @@ class Fetcher(ABC):
         return []
 
     def find_desc(self, elem):
-        return elem.find_all('li')
+        for d in elem.find_all('li'):
+            if 'Lodestone Compass' not in str(d):
+                yield d
 
     def fetch(self):
         html = requests.get(self.url).text

@@ -232,7 +232,6 @@ Lime Bundle
 Lime Dye
 Lingering Potion
 Llama Spawn Egg
-Lodestone Compass
 Mace
 Magenta Bundle
 Magenta Dye
