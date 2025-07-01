@@ -29,6 +29,7 @@ Blaze Rod
 Blaze Spawn Egg
 Blue Bundle
 Blue Dye
+Blue Egg
 Bogged Spawn Egg
 Bolt Armor Trim / Bolt Armor Trim Smithing Template
 Bone
@@ -46,6 +47,7 @@ Brewer Pottery Sherd
 Brick
 Brown Bundle
 Brown Dye
+Brown Egg
 Brush
 Bucket
 Bucket of Axolotl / Axolotl Bucket
@@ -183,6 +185,7 @@ Guardian Spawn Egg
 Gunpowder
 Guster Banner Pattern
 Guster Pottery Sherd
+Happy Ghast Spawn Egg
 Heart Pottery Sherd
 Heart of the Sea
 Heartbreak Pottery Sherd
@@ -229,6 +232,7 @@ Lime Bundle
 Lime Dye
 Lingering Potion
 Llama Spawn Egg
+Lodestone Compass
 Mace
 Magenta Bundle
 Magenta Dye
@@ -259,6 +263,7 @@ Music Disc Chirp
 Music Disc Creator
 Music Disc Creator Music Box
 Music Disc Far
+Music Disc Lava Chicken
 Music Disc Mall
 Music Disc Mellohi
 Music Disc Otherside
@@ -267,6 +272,7 @@ Music Disc Precipice
 Music Disc Relic
 Music Disc Stal
 Music Disc Strad
+Music Disc Tears
 Music Disc Wait
 Music Disc Ward
 Name Tag
@@ -344,7 +350,7 @@ Recovery Compass
 Red Bundle
 Red Dye
 Redstone Dust / Redstone
-Resin brick
+Resin Brick
 Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle

@@ -34,6 +34,9 @@ class Fetcher(ABC):
     def is_end(self, elem) -> bool:
         pass
 
+    def is_ignore(self, elem) -> bool:
+        return False
+
     @abstractmethod
     def get_id(self, raw_id: str, raw_desc: str) -> tuple[str, str]:
         pass
@@ -41,8 +44,8 @@ class Fetcher(ABC):
     def added(self, things: list[str]):
         return []
 
-    def desc_elem(self):
-        return 'li'
+    def find_desc(self, elem):
+        return elem.find_all('li')
 
     def fetch(self):
         html = requests.get(self.url).text
@@ -52,7 +55,9 @@ class Fetcher(ABC):
         for elem in start.find_next_siblings():
             if self.is_end(elem):
                 break
-            for li in elem.find_all(self.desc_elem()):
+            if self.is_ignore(elem):
+                continue
+            for li in self.find_desc(elem):
                 raw_text = strip_spaces(li.text)  # Discard the zero-width non-joiners
                 m = re.search(r'\[(.*) only]', raw_text, re.IGNORECASE)
                 if m and not ('Java' in m.group(1) or 'JE' in m.group(1)):
@@ -151,8 +156,8 @@ class ItemFetcher(Fetcher):
     def __init__(self):
         super().__init__('items', 'https://minecraft.wiki/Item?so=search#List_of_items')
 
-    def get_start(self, page):
-        return page.find('h2', string='List of items')
+    def get_start(self, page: BeautifulSoup):
+        return page.find('h2', string='Lists of items')
 
     def is_end(self, elem):
         return elem.name == 'h2' or 'Education' in elem.text
@@ -237,8 +242,11 @@ class MobFetcher(Fetcher):
     def is_end(self, elem):
         return elem.name == 'h2' or 'Unused mobs' in elem.text or 'Upcoming' in elem.text
 
-    def desc_elem(self):
-        return 'td'
+    def is_ignore(self, elem) -> bool:
+        return 'NPC' in str(elem)
+
+    def find_desc(self, elem):
+        return elem.find_all(class_='mob-name')
 
     def get_id(self, raw_id: str, raw_desc: str):
         id = re.sub(r'\s*\(.*', '', raw_id)

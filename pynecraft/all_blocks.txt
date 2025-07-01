@@ -142,7 +142,9 @@ Bubble Coral
 Bubble Coral Block
 Bubble Coral Fan
 Budding Amethyst
+Bush
 Cactus
+Cactus Flower
 Cake
 Calcite
 Calibrated Sculk Sensor
@@ -320,6 +322,7 @@ Dirt Path
 Dispenser
 Dragon Egg
 Dragon Head
+Dried Ghast
 Dried Kelp Block
 Dripstone Block
 Dropper
@@ -348,6 +351,7 @@ Fire
 Fire Coral
 Fire Coral Block
 Fire Coral Fan
+Firefly Bush
 Fletching Table
 Flower Pot
 Flowering Azalea
@@ -438,6 +442,7 @@ Lapis Lazuli Ore / Lapis Ore
 Large Amethyst Bud
 Large Fern
 Lava
+Leaf Litter
 Lectern
 Lever
 Light
@@ -743,6 +748,7 @@ Sculk Vein
 Sea Lantern
 Sea Pickle
 Seagrass
+Short Dry Grass
 Short Grass
 Shroomlight
 Shulker Box
@@ -831,10 +837,13 @@ Suspicious Gravel
 Suspicious Sand
 Sweet Berry Bush
 TNT
+Tall Dry Grass
 Tall Grass
 Tall Seagrass
 Target
 Terracotta
+Test Block
+Test Instance Block
 Tinted Glass
 Torch
 Torchflower
@@ -937,6 +946,7 @@ White Stained Glass Pane
 White Terracotta
 White Tulip
 White Wool
+Wildflowers
 Wither Rose
 Wither Skeleton Skull
 Yellow Banner

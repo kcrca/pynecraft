@@ -28,6 +28,7 @@ Ghast
 Glow Squid
 Goat
 Guardian
+Happy Ghast
 Hoglin
 Horse
 Husk
