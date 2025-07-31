@@ -95,9 +95,6 @@ class BlockFetcher(Fetcher):
         if re.search('Ominous|Torchflower Crop|Pitcher Crop|Bubble Column|Gateway|Frosted Ice|Portal$', raw_id):
             # This is not really a block at all.
             return None, None
-        if re.search('Resin', raw_id):
-            # This isn't even in expreuimental yet (1.21.2).
-            return None, None
 
         # this appears once randomly, and it shouldn't
         if ' (block)' in raw_id:
