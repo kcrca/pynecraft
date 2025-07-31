@@ -1,7 +1,7 @@
 import unittest
 
 from pynecraft.commands import Text
-from pynecraft.fonts import *
+from pynecraft.wrap import *
 
 
 class TestFonts(unittest.TestCase):
@@ -17,3 +17,8 @@ class TestFonts(unittest.TestCase):
                           [Text('14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27')],
                           [Text('28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41')],
                           [Text('42\n43\n44\n45\n46\n47\n48\n49\n')]], BookWrap().add(s).pages())
+
+    def test_wrapping(self):
+        # We don't yet have the right font, so the right count isn't known
+        self.assertLess(1, len(BookWrap().add(Text(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec condimentum aliquet nisl. Phasellus non tincidunt nibh, vel aliquam turpis. Proin sit amet libero nec nunc efficitur egestas. Phasellus sed mi dictum, mattis est eu, molestie dolor. Mauris sodales in erat iaculis molestie. Donec tempor vitae turpis et gravida. Duis et ornare orci, vitae lacinia sapien. Sed congue justo vel dapibus porta. Nulla pretium sollicitudin odio, quis eleifend metus molestie ac. Vivamus convallis augue nec ex dictum tristique. Donec porttitor magna ac purus laoreet, ac eleifend dui hendrerit.')).pages()))

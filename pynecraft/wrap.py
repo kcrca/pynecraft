@@ -17,8 +17,7 @@ fonts = {
     (False, False): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial", 12),
     (True, False): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold", 12),
     (False, True): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Italic", 12),
-    (True, True): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold Italic",
-                                     12),
+    (True, True): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold Italic", 12),
 }
 
 
@@ -64,9 +63,9 @@ class BookWrap:
                         self._cur_width += width
                         new_text += token
                     else:
-                        new_text += '\n'
+                        new_text = new_text.rstrip() + '\n'
                         self._cur_width = 0
-                        if not re.match(' +', token):
+                        if not re.match(r'\s+', token):
                             new_text += token
                             self._cur_width = width
                 # Add lines, and if there are too many, start a new page
@@ -85,5 +84,3 @@ class BookWrap:
                     self._cur_page += 1
                     texts = [new_node] + texts
         return self
-
-
