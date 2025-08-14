@@ -37,17 +37,17 @@ class BookWrap:
     def add(self, *text: TextDef):
         texts = [as_text(t) for t in text]
         while texts:
-            t = texts.pop()
+            node = texts.pop()
             if self._cur_page == len(self._pages):
-                self._pages.append([t])
+                self._pages.append([node])
             else:
-                self._pages[self._cur_page].append(t)
+                self._pages[self._cur_page].append(node)
             types = self._types
-            types[0] = t['bold'] if 'bold' in t else False
-            types[1] = t['italic'] if 'italic' in t else False
+            types[0] = node['bold'] if 'bold' in node else False
+            types[1] = node['italic'] if 'italic' in node else False
             font = fonts[tuple(types)]
-            if 'text' in t:
-                txt = t['text']
+            if 'text' in node:
+                txt = node['text']
                 pos = 0
                 # build a new version of the text with inserted newlines where needed
                 new_text = ''
@@ -72,14 +72,14 @@ class BookWrap:
                 new_lines = new_text.count('\n')
                 if self._cur_line + new_lines < self._max_lines:
                     self._cur_line += new_lines
-                    t['text'] = new_text
+                    node['text'] = new_text
                 else:
                     split_pos = -1
                     for i in range(self._max_lines - self._cur_line):
                         split_pos = new_text.find('\n', split_pos + 1)
                     next_text = new_text[split_pos + 1:]
-                    t['text'] = new_text[:split_pos]
-                    new_node = t.copy()
+                    node['text'] = new_text[:split_pos]
+                    new_node = node.copy()
                     new_node['text'] = next_text
                     self._cur_page += 1
                     texts = [new_node] + texts
