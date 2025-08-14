@@ -478,7 +478,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 81
+LATEST_PACK_VERSION = "83.0"
 
 
 class DataPack:
@@ -487,7 +487,7 @@ class DataPack:
     location therein.
     """
 
-    def __init__(self, name: str, format_version: int = LATEST_PACK_VERSION, /,
+    def __init__(self, name: str, format_version: str = LATEST_PACK_VERSION, /,
                  mcmeta: Mapping = None):
         self._name = name
         self.function_set = FunctionSet('function', self)
