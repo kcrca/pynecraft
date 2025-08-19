@@ -6,8 +6,9 @@ from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 from .base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
     Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
 from .commands import Block, BlockDef, COLORS, ClickEvent, Command, Commands, Entity, EntityDef, SignCommand, \
-    SignCommands, SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, as_biome, as_block, as_entity, \
-    as_text, data, fill, fillbiome, setblock
+    SignCommands, SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, a, as_biome, as_block, \
+    as_entity, \
+    as_text, data, e, execute, fill, fillbiome, n, return_, scoreboard, setblock
 from .values import PaintingInfo, as_pattern, paintings
 
 ARMORER = 'armorer'
@@ -963,3 +964,54 @@ def _as_tuple(v):
     if isinstance(v, list):
         return tuple(v)
     return (v,)
+
+
+class Trigger:
+    """
+    This class presents a simple model for basic triggers. Given a score, it creates commands for a function that can
+    be run in a repeating command block testing for trigger values and acting on them if so,
+    then resetting/re-enabling the trigger. It also builds commands for an init function that sets up the objective.
+
+    Specifically, on each tick the first check will be a fast-reject: Does any player have any score in the
+    objective? If not, return 0. Otherwise, for each of the values for which a trigger has been defined by calling
+    trigger(), if any player has that value in the objective, it will execute the commands for that trigger once (no
+    matter how many players have that value). Once these have all been tested, all players' scores are cleared form
+    the objective, and the objective is enabled for all players.
+
+    There is an init function defined by the init() method that ensures the objective exists with no scores and all
+    players are enabled. You should call this to set (or reset) the triggers.
+    """
+
+    def __init__(self, name: str):
+        """
+        :param name: The objective to use. It must be of type 'trigger', though we cannot validate that here. The
+        init_cmds() functions returns commands for initializing it if you need that.
+        """
+        self.name = name
+        self._values = set()
+        self._pre = [
+            execute().unless().entity(n().scores({self.name: (0, None)})).run(return_(0))
+        ]
+        self._cmds = []
+        self._post = [
+            scoreboard().players().reset((a(), self.name)),
+            scoreboard().players().enable((a(), self.name)),
+        ]
+
+    def trigger(self, cmd: str | Command | Commands, value: int = 1) -> Trigger:
+        """Defines an action for a given trigger value."""
+        if value in self._values:
+            raise ValueError(f'{value}: Duplicate trigger value')
+        self._cmds.append(execute().if_().entity(e().scores({self.name: value})).run(cmd))
+        self._values.add(value)
+        return self
+
+    def commands(self) -> list[str]:
+        """Returns the commands that should be run when you want the actions to run."""
+        if len(self._values) == 0:
+            raise ValueError('No values for trigger')
+        return self._pre + self._cmds + self._post
+
+    def init_commands(self) -> Commands:
+        """Returns the commands to initialize the objective."""
+        return scoreboard().objectives().add(self.name, 'trigger'), self._post

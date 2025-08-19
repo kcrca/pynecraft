@@ -4171,7 +4171,7 @@ class Text(Nbt, TextHolder):
             jt['separator'] = de_arg(separator)
         return jt
 
-    def content(self):
+    def content(self) -> dict:
         return dict(self)
 
     def extra(self, *extras: Text | StrOrArg) -> Text:
@@ -4251,7 +4251,7 @@ ScoreName = Union[Score, Tuple[Target, StrOrArg]]
 BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, MappingOrArg], Tuple[StrOrArg, MappingOrArg, MappingOrArg]]
 EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, MappingOrArg]]
 ParticleDef = Union[StrOrArg, Particle, Tuple[StrOrArg, MappingOrArg]]
-TextDef = Union[Text, Mapping, StrOrArg|Tuple[Union[Text, Mapping, StrOrArg]]]
+TextDef = Union[Text, Mapping, StrOrArg | Tuple[Union[Text, Mapping, StrOrArg]]]
 SignMessage = Union[StrOrArg, NbtDef, None]
 SignMessages = Iterable[SignMessage]
 SignCommand = Union[StrOrArg, Command, NbtDef, Callable[[Union[Text]], Text], None]
