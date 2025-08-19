@@ -1828,6 +1828,22 @@ class _ExperienceMod(Command):
         return str(self)
 
 
+class _FetchProfileMod(Command):
+    @_fluent
+    def name(self, name: StrOrArg) -> str:
+        self._add('name', de_arg(name))
+        return str(self)
+
+    @_fluent
+    def id(self, id: Uuid|StrOrArg) -> str:
+        if isinstance(id, str):
+            id = de_arg(id)
+        else:
+            id = id.hex_str
+        self._add('id', id)
+        return str(self)
+
+
 class _FilterModifier(Command):
 
     @_fluent
@@ -2956,6 +2972,12 @@ def experience() -> _ExperienceMod:
 
 
 xp = experience
+
+
+def fetchprofile() -> _FetchProfileMod:
+    cmd = Command()
+    cmd._add('fetchprofile')
+    return cmd._start(_FetchProfileMod())
 
 
 def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClause | str:

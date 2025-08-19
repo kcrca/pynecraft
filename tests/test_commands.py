@@ -821,6 +821,10 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('datapack list', datapack().list())
         self.assertEqual('datapack list enabled', datapack().list(ENABLED))
 
+    def test_fetchprofile(self):
+        self.assertEqual('fetchprofile name fred', fetchprofile().name('fred'))
+        self.assertEqual('fetchprofile id 00000001-ffff-fffe-0000-0003fffffffc', fetchprofile().id(Uuid(1, -2, 3, -4)))
+
     def test_forceload(self):
         self.assertEqual('forceload add 1 ~2', forceload().add((1, r(2))))
         self.assertEqual('forceload add 1 ~2 4 5', forceload().add((1, r(2)), (4, 5)))
