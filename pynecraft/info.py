@@ -440,3 +440,5 @@ sherds = tuple(pottery_sherds[x].value for x in POTTERY_SHERD_GROUP)
 armor_equipment = {'feet': 'boots', 'legs': 'leggings', 'chest': 'chestplate', 'head': 'helmet'}
 
 copper_golem_poses = ('standing', 'sitting', 'running', 'star')
+
+weatherings = ('', 'exposed', 'weathered', 'oxidized')

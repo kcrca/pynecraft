@@ -373,7 +373,7 @@ class Loop(Function):
             if as_iteration:
                 new_body = []
                 pos = 0
-                for i in range(0, len(self._iterations)):
+                for i in range(len(self._iterations)):
                     iter_suffix = self._iter_suffix(i)
                     prefix = str(self._prefix_for(i)) + ' '
                     new_body.append(prefix + str(function(self.full_name + iter_suffix)))
@@ -425,7 +425,7 @@ class Loop(Function):
         :param body_func: The function to call for each iteration of the loop. This returns the same kind of values
                           that add() will take.
         :param items: The items that will be iterated over. Can be a simple range or any other iterable.
-        :param bounce: If True, the loop will "bounce" between the list values. A loop with range(0, 4) and bounce True
+        :param bounce: If True, the loop will "bounce" between the list values. A loop with range(4) and bounce True
                        will go through the values (0, 1, 2, 3, 2, 1) instead of (0, 1, 2, 3).
         :param replace: If True, will replace the loops contents; otherwise you will get an AssertionError.
         :return: the Loop object.
