@@ -437,7 +437,7 @@ class Item(Entity):
             item_id = 'minecraft:' + item_id
         retval = Nbt({'id': item_id})
         if count != 1:
-            retval = retval.merge({'Count': count})
+            retval = retval.merge({'count': count})
         # Filled maps are stored directly, not shunted an inner tag
         if item_id:
             if item_id == 'minecraft:filled_map':
