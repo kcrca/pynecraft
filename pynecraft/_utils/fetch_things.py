@@ -101,10 +101,11 @@ class BlockFetcher(Fetcher):
             raw_id = re.sub(r' \(block\)', '', raw_id)
         id = raw_id
         desc = strip_spaces(raw_desc)  # Discard the zero-width non-joiners
+        if id == 'Chain':
+            id = desc = 'Iron Chain'
         if 'upcoming' in id:
             id = re.sub(r'\s*\[*upcoming.*', '', id)
             desc = re.sub(r'\s*\[*upcoming.*', '', desc)
-            # desc = re.sub(r'\s*\[*upcoming.*', ' [x]', desc)
         if 'Lapis' in id and id != 'Lapis Lazuli':
             id = id.replace('Lapis Lazuli', 'Lapis')
         elif 'Bale' in id:
@@ -164,6 +165,9 @@ class ItemFetcher(Fetcher):
     def get_id(self, raw_id, raw_desc):
         #  This is in the list as a way to say "any potion", it's not an item.
         if 'Potions' in raw_id:
+            return None, None
+        # This is in the list... whY? I don't know.
+        if raw_id == 'Water Bottle':
             return None, None
 
         id = raw_id
