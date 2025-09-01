@@ -1117,18 +1117,6 @@ class StorageDataTarget(DataTargetBase):
         self._add('storage', as_resource_path(store))
 
 
-def block(pos: Position | StrOrArg) -> BlockDataTarget:
-    return BlockDataTarget(pos)
-
-
-def entity(target: TargetSpec | StrOrArg, single=False) -> EntityDataTarget:
-    return EntityDataTarget(target, single)
-
-
-def storage(store: StrOrArg) -> StorageDataTarget:
-    return StorageDataTarget(store)
-
-
 class _IfClause(Command):
     @_fluent
     def biome(self, pos: Position, biome: StrOrArg) -> _ExecuteMod:
@@ -1835,7 +1823,7 @@ class _FetchProfileMod(Command):
         return str(self)
 
     @_fluent
-    def id(self, id: Uuid|StrOrArg) -> str:
+    def id(self, id: Uuid | StrOrArg) -> str:
         if isinstance(id, str):
             id = de_arg(id)
         else:
@@ -2809,6 +2797,36 @@ class _AdvancementMod(Command):
     def _setup(self, param, advancement):
         self._add(param, as_advancement(advancement))
         return str(self)
+
+
+def block(pos: Position | StrOrArg) -> BlockDataTarget:
+    """
+    Convenience function to be explicit about using a block as a data target. This allows you to put in the `block`
+    keyword in your code, such as `data().modify(block(r(1, 1, 0), ...)`. Syntactically this is unnecessary, as (most)
+    commands will simply accept coordinates as meaning `block` implicitly, such as `data().modify(r(1, 1, 0), ...)`.
+    But it can help making the code more exactly like the minecraft command if you want it.
+    """
+    return BlockDataTarget(pos)
+
+
+def entity(target: TargetSpec | StrOrArg, single=False) -> EntityDataTarget:
+    """
+    Convenience function to be explicit about using an entity as a data target. This allows you to put in the `entity`
+    keyword in your code, such as `data().modify(entity(p()), ...)`. Syntactically this is unnecessary, as (most)
+    commands will simply accept an entity selector as meaning `entity` implicitly, such as `data().modify(p(), ...)`.
+    But it can help making the code more exactly like the minecraft command if you want it.
+    """
+    return EntityDataTarget(target, single)
+
+
+def storage(store: StrOrArg) -> StorageDataTarget:
+    """
+    Convenience function to be explicit about using storage as a data target. This allows you to put in the `storage`
+    keyword in a command, such as `data().modify(storage("stuff", ...)`. Syntactically this is unnecessary, as (most)
+    commands will simply accept a string as meaning `storage` implicitly, such as `data().modify("stuff", ...)`.
+    But it can help making the code more exactly like the minecraft command if you want it.
+    """
+    return StorageDataTarget(store)
 
 
 def advancement(action: StrOrArg, target: Selector) -> _AdvancementMod:
