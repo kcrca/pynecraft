@@ -442,3 +442,19 @@ armor_equipment = {'feet': 'boots', 'legs': 'leggings', 'chest': 'chestplate', '
 copper_golem_poses = ('standing', 'sitting', 'running', 'star')
 
 weatherings = ('', 'exposed', 'weathered', 'oxidized')
+
+
+def weathering_id(weathering: str, base='copper', join='_') -> str:
+    """Returns the weathering as an ID (copper, exposed_copper, etc.)."""
+    return f'{weathering.lower()}{join}{to_id(base)}'.strip(join) if weathering else base
+
+
+def weathering_name(weathering: str, base='Copper', join=' ') -> str:
+    """Returns the weathering as a name (Copper, Exposed Copper, etc.)."""
+    return f'{weathering.title()}{join}{to_name(base)}'.strip(join) if weathering else base
+
+
+def weathering_property(weathering: str) -> str:
+    """Returns the weathering as a property value, such as the weathering of a copper golem entity (unaffected,
+    exposed, etc.)."""
+    return f'{weathering.lower()}' if weathering else 'unaffected'
