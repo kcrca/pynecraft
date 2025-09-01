@@ -238,10 +238,10 @@ Lava Bucket
 Lead
 Leather
 Leather Boots
-Leather Cap / Leather Helmet
+Leather Chestplate
+Leather Helmet
 Leather Horse Armor
-Leather Pants / Leather Leggings
-Leather Tunic / Leather Chestplate
+Leather Leggings
 Light Blue Bundle
 Light Blue Dye
 Light Blue Harness
