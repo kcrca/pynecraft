@@ -24,7 +24,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2025-06-30T18:19:21-07:00
+# Derived from https://minecraft.wiki/Commands/team, 2025-09-01T16:52:41-07:00
 __teamoption_dups = {}
 __teamoption_dups["displayname"] = "displayName"
 COLOR = "color"
@@ -64,7 +64,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2025-06-30T18:19:21-07:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2025-09-01T16:52:41-07:00
 __pattern_dups = {}
 BASE = "base"
 STRIPE_BOTTOM = "stripe_bottom"
@@ -172,7 +172,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-06-30T18:19:21-07:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2025-09-01T16:52:41-07:00
 __advancement_dups = {}
 MINECRAFT = "story/root"
 STONE_AGE = "story/mine_stone"
@@ -335,7 +335,7 @@ advancements = {
     "SPOOKY_SCARY_SKELETON": AdvancementInfo("""Spooky Scary Skeleton""", "nether/get_wither_skull", """Obtain a Wither Skeleton's skull."""),
     "INTO_FIRE": AdvancementInfo("""Into Fire""", "nether/obtain_blaze_rod", """Relieve a Blaze of its rod."""),
     "NOT_QUITE_NINE_LIVES": AdvancementInfo("""Not Quite "Nine" Lives""", "nether/charge_respawn_anchor", """Charge a Respawn Anchor to the maximum."""),
-    "FEELS_LIKE_HOME": AdvancementInfo("""Feels Like Home""", "nether/ride_strider_in_overworld_lava", """Take a Strider for a loooong ride on a lava lake in the Overworld."""),
+    "FEELS_LIKE_HOME": AdvancementInfo("""Feels Like Home""", "nether/ride_strider_in_overworld_lava", """Take a Strider for a loooong [sic] ride on a lava lake in the Overworld."""),
     "HOT_TOURIST_DESTINATIONS": AdvancementInfo("""Hot Tourist Destinations""", "nether/explore_nether", """Explore all Nether biomes."""),
     "WITHERING_HEIGHTS": AdvancementInfo("""Withering Heights""", "nether/summon_wither", """Summon the Wither."""),
     "LOCAL_BREWERY": AdvancementInfo("""Local Brewery""", "nether/brew_potion", """Brew a Potion."""),
@@ -442,7 +442,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2025-06-30T18:19:22-07:00
+# Derived from https://minecraft.wiki/Biome/ID, 2025-09-01T16:52:41-07:00
 __biome_dups = {}
 THE_VOID = "the_void"
 __biome_dups["plains"] = "plains"
@@ -594,7 +594,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-06-30T18:19:22-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-09-01T16:52:42-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -641,14 +641,14 @@ EFFECT_GROUP = [
 
 EffectInfo = namedtuple("Effect", ['name', 'value', 'desc', 'positive'])
 effects = {
-    "SPEED": EffectInfo("""Speed""", "speed", """Increases walking speed; higher levels make the affected entity faster and increases the player's field of view when affected.""", True),
-    "SLOWNESS": EffectInfo("""Slowness""", "slowness", """Decreases walking speed; higher levels make the affected entity slower and decreases the player's field of view when affected.""", False),
+    "SPEED": EffectInfo("""Speed""", "speed", """Increases walking speed; higher levels make the affected entity faster and increase the player's field of view when affected.""", True),
+    "SLOWNESS": EffectInfo("""Slowness""", "slowness", """Decreases walking speed; higher levels make the affected entity slower and decrease the player's field of view when affected.""", False),
     "HASTE": EffectInfo("""Haste""", "haste", """Increases mining and attack speed, higher levels increase the player's mining and attack speed.""", True),
     "MINING_FATIGUE": EffectInfo("""Mining Fatigue""", "mining_fatigue", """Decreases mining and attack speed, higher levels decrease the player's mining and attack speed.""", False),
     "STRENGTH": EffectInfo("""Strength""", "strength", """Increases melee damage, higher levels make the affected entity do more melee damage.""", True),
     "INSTANT_HEALTH": EffectInfo("""Instant Health""", "instant_health", """Heals living entities, damages undead, higher levels heal more health and do more damage.""", True),
     "INSTANT_DAMAGE": EffectInfo("""Instant Damage""", "instant_damage", """Damages living entities, heals undead, higher levels do more damage and heal more health.""", False),
-    "JUMP_BOOST": EffectInfo("""Jump Boost""", "jump_boost", """Increases jump height and reduces fall damage, higher levels make the affected entity jump higher and reduces more fall damage.""", True),
+    "JUMP_BOOST": EffectInfo("""Jump Boost""", "jump_boost", """Increases jump height and reduces fall damage, higher levels make the affected entity jump higher and reduce more fall damage.""", True),
     "NAUSEA": EffectInfo("""Nausea""", "nausea", """Wobbles and warps the screen, and increasingly gets worse.""", False),
     "REGENERATION": EffectInfo("""Regeneration""", "regeneration", """Regenerates health over time, higher levels make health regenerate quicker.""", True),
     "RESISTANCE": EffectInfo("""Resistance""", "resistance", """Reduces damage, higher levels reduce more damage.""", True),
@@ -694,7 +694,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-06-30T18:19:22-07:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2025-09-01T16:52:42-07:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -754,7 +754,7 @@ enchantments = {
     "CURSE_OF_VANISHING": EnchantmentInfo("""Curse of Vanishing""", "curse_of_vanishing", """Item disappears on death.""", 1),
     "DENSITY": EnchantmentInfo("""Density""", "density", """Increases the damage of a mace's smash attack.""", 5),
     "DEPTH_STRIDER": EnchantmentInfo("""Depth Strider""", "depth_strider", """Lessens the movement speed reduction that occurs when in water.""", 3),
-    "EFFICIENCY": EnchantmentInfo("""Efficiency""", "efficiency", """Increases mining speed.""", 5),
+    "EFFICIENCY": EnchantmentInfo("""Efficiency""", "efficiency", """Increases mining efficiency.""", 5),
     "FEATHER_FALLING": EnchantmentInfo("""Feather Falling""", "feather_falling", """Reduces fall damage.""", 4),
     "FIRE_ASPECT": EnchantmentInfo("""Fire Aspect""", "fire_aspect", """Sets targets on fire.""", 2),
     "FIRE_PROTECTION": EnchantmentInfo("""Fire Protection""", "fire_protection", """Reduces fire damage and burning time.""", 4),
@@ -802,8 +802,9 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-06-30T18:19:23-07:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2025-09-01T16:52:42-07:00
 __gamerule_dups = {}
+ALLOW_ENTERING_USING_NETHER_PORTALS = "allowEnteringUsingNetherPortals"
 ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER = "allowFireTicksAwayFromPlayer"
 ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
 BLOCK_EXPLOSION_DROP_DECAY = "blockExplosionDropDecay"
@@ -827,6 +828,7 @@ DO_VINES_SPREAD = "doVinesSpread"
 DO_WEATHER_CYCLE = "doWeatherCycle"
 DO_WARDEN_SPAWNING = "doWardenSpawning"
 DROWNING_DAMAGE = "drowningDamage"
+ENABLE_COMMAND_BLOCKS = "enableCommandBlocks"
 ENDER_PEARLS_VANISH_ON_DEATH = "enderPearlsVanishOnDeath"
 FALL_DAMAGE = "fallDamage"
 FIRE_DAMAGE = "fireDamage"
@@ -848,12 +850,13 @@ PLAYERS_NETHER_PORTAL_CREATIVE_DELAY = "playersNetherPortalCreativeDelay"
 PLAYERS_NETHER_PORTAL_DEFAULT_DELAY = "playersNetherPortalDefaultDelay"
 PLAYERS_SLEEPING_PERCENTAGE = "playersSleepingPercentage"
 PROJECTILES_CAN_BREAK_BLOCKS = "projectilesCanBreakBlocks"
+PVP = "pvp"
 RANDOM_TICK_SPEED = "randomTickSpeed"
 REDUCED_DEBUG_INFO = "reducedDebugInfo"
 SEND_COMMAND_FEEDBACK = "sendCommandFeedback"
 SHOW_DEATH_MESSAGES = "showDeathMessages"
 SNOW_ACCUMULATION_HEIGHT = "snowAccumulationHeight"
-SPAWN_CHUNK_RADIUS = "spawnChunkRadius"
+SPAWN_MONSTERS = "spawnMonsters"
 SPAWN_RADIUS = "spawnRadius"
 SPECTATORS_GENERATE_CHUNKS = "spectatorsGenerateChunks"
 TNT_EXPLODES = "tntExplodes"
@@ -861,11 +864,12 @@ TNT_EXPLOSION_DROP_DECAY = "tntExplosionDropDecay"
 UNIVERSAL_ANGER = "universalAnger"
 WATER_SOURCE_CONVERSION = "waterSourceConversion"
 GAME_RULE_GROUP = [
-    ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER, ANNOUNCE_ADVANCEMENTS, BLOCK_EXPLOSION_DROP_DECAY, COMMAND_BLOCK_OUTPUT, COMMAND_MODIFICATION_BLOCK_LIMIT, DISABLE_ELYTRA_MOVEMENT_CHECK, DISABLE_PLAYER_MOVEMENT_CHECK, DISABLE_RAIDS, DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS, DO_FIRE_TICK, DO_IMMEDIATE_RESPAWN, DO_INSOMNIA, DO_LIMITED_CRAFTING, DO_MOB_LOOT, DO_MOB_SPAWNING, DO_PATROL_SPAWNING, DO_TILE_DROPS, DO_TRADER_SPAWNING, DO_VINES_SPREAD, DO_WEATHER_CYCLE, DO_WARDEN_SPAWNING, DROWNING_DAMAGE, ENDER_PEARLS_VANISH_ON_DEATH, FALL_DAMAGE, FIRE_DAMAGE, FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE, GLOBAL_SOUND_EVENTS, KEEP_INVENTORY, LAVA_SOURCE_CONVERSION, LOCATOR_BAR, LOG_ADMIN_COMMANDS, MAX_COMMAND_CHAIN_LENGTH, MAX_COMMAND_FORK_COUNT, MAX_ENTITY_CRAMMING, MINECART_MAX_SPEED, MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING, NATURAL_REGENERATION, PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, PLAYERS_SLEEPING_PERCENTAGE, PROJECTILES_CAN_BREAK_BLOCKS, RANDOM_TICK_SPEED, REDUCED_DEBUG_INFO, SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES, SNOW_ACCUMULATION_HEIGHT, SPAWN_CHUNK_RADIUS, SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLODES, TNT_EXPLOSION_DROP_DECAY, UNIVERSAL_ANGER, WATER_SOURCE_CONVERSION
+    ALLOW_ENTERING_USING_NETHER_PORTALS, ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER, ANNOUNCE_ADVANCEMENTS, BLOCK_EXPLOSION_DROP_DECAY, COMMAND_BLOCK_OUTPUT, COMMAND_MODIFICATION_BLOCK_LIMIT, DISABLE_ELYTRA_MOVEMENT_CHECK, DISABLE_PLAYER_MOVEMENT_CHECK, DISABLE_RAIDS, DO_DAYLIGHT_CYCLE, DO_ENTITY_DROPS, DO_FIRE_TICK, DO_IMMEDIATE_RESPAWN, DO_INSOMNIA, DO_LIMITED_CRAFTING, DO_MOB_LOOT, DO_MOB_SPAWNING, DO_PATROL_SPAWNING, DO_TILE_DROPS, DO_TRADER_SPAWNING, DO_VINES_SPREAD, DO_WEATHER_CYCLE, DO_WARDEN_SPAWNING, DROWNING_DAMAGE, ENABLE_COMMAND_BLOCKS, ENDER_PEARLS_VANISH_ON_DEATH, FALL_DAMAGE, FIRE_DAMAGE, FORGIVE_DEAD_PLAYERS, FREEZE_DAMAGE, GLOBAL_SOUND_EVENTS, KEEP_INVENTORY, LAVA_SOURCE_CONVERSION, LOCATOR_BAR, LOG_ADMIN_COMMANDS, MAX_COMMAND_CHAIN_LENGTH, MAX_COMMAND_FORK_COUNT, MAX_ENTITY_CRAMMING, MINECART_MAX_SPEED, MOB_EXPLOSION_DROP_DECAY, MOB_GRIEFING, NATURAL_REGENERATION, PLAYERS_NETHER_PORTAL_CREATIVE_DELAY, PLAYERS_NETHER_PORTAL_DEFAULT_DELAY, PLAYERS_SLEEPING_PERCENTAGE, PROJECTILES_CAN_BREAK_BLOCKS, PVP, RANDOM_TICK_SPEED, REDUCED_DEBUG_INFO, SEND_COMMAND_FEEDBACK, SHOW_DEATH_MESSAGES, SNOW_ACCUMULATION_HEIGHT, SPAWN_MONSTERS, SPAWN_RADIUS, SPECTATORS_GENERATE_CHUNKS, TNT_EXPLODES, TNT_EXPLOSION_DROP_DECAY, UNIVERSAL_ANGER, WATER_SOURCE_CONVERSION
 ]
 
 GameRuleInfo = namedtuple("GameRule", ['name', 'value', 'desc', 'rule_type'])
 game_rules = {
+    "ALLOW_ENTERING_USING_NETHER_PORTALS": GameRuleInfo("""allow Entering Using Nether Portals""", "allowEnteringUsingNetherPortals", """Whether the Nether can be entered by using Nether portals.""", bool),
     "ALLOW_FIRE_TICKS_AWAY_FROM_PLAYER": GameRuleInfo("""allow Fire Ticks Away From Player""", "allowFireTicksAwayFromPlayer", """Whether fire and lava ticks can occur outside of an 8 chunk range of a player.""", bool),
     "ANNOUNCE_ADVANCEMENTS": GameRuleInfo("""announce Advancements""", "announceAdvancements", """Whether advancements should be announced in chat.""", bool),
     "BLOCK_EXPLOSION_DROP_DECAY": GameRuleInfo("""block Explosion Drop Decay""", "blockExplosionDropDecay", """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a block explosion (e.g. clicking a bed in dimensions other than the Overworld).""", bool),
@@ -889,6 +893,7 @@ game_rules = {
     "DO_WEATHER_CYCLE": GameRuleInfo("""do Weather Cycle""", "doWeatherCycle", """Whether the weather can change naturally. The /weather command can still change weather.""", bool),
     "DO_WARDEN_SPAWNING": GameRuleInfo("""do Warden Spawning""", "doWardenSpawning", """Whether wardens can spawn.""", bool),
     "DROWNING_DAMAGE": GameRuleInfo("""drowning Damage""", "drowningDamage", """Whether the player should take damage when drowning.""", bool),
+    "ENABLE_COMMAND_BLOCKS": GameRuleInfo("""enable Command Blocks""", "enableCommandBlocks", """Whether command blocks should be enabled in-game.""", bool),
     "ENDER_PEARLS_VANISH_ON_DEATH": GameRuleInfo("""ender Pearls Vanish On Death""", "enderPearlsVanishOnDeath", """Controls whether thrown ender pearls vanish when the player dies.""", bool),
     "FALL_DAMAGE": GameRuleInfo("""fall Damage""", "fallDamage", """Whether the player should take fall damage.""", bool),
     "FIRE_DAMAGE": GameRuleInfo("""fire Damage""", "fireDamage", """Whether the player should take damage in fire, lava, campfires, or on magma blocks.""", bool),
@@ -904,18 +909,19 @@ game_rules = {
     "MAX_ENTITY_CRAMMING": GameRuleInfo("""max Entity Cramming""", "maxEntityCramming", """The maximum number of pushable entities a mob or player can push, before taking 6HP entity cramming damage per half-second. Setting to 0 or lower disables the rule. Damage affects Survival-mode or Adventure-mode players, and all mobs but bats. Pushable entities include non-Spectator-mode players, any mob except bats, as well as boats and minecarts.""", int),
     "MINECART_MAX_SPEED": GameRuleInfo("""minecart Max Speed""", "minecartMaxSpeed", """The maximum speed a minecart may reach.""", bool),
     "MOB_EXPLOSION_DROP_DECAY": GameRuleInfo("""mob Explosion Drop Decay""", "mobExplosionDropDecay", """Whether block loot is dropped by all blocks (false) or randomly (true) depending on how far the block is from the center of a mob explosion (e.g. Creeper explosion).""", bool),
-    "MOB_GRIEFING": GameRuleInfo("""mob Griefing""", "mobGriefing", """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals.""", bool),
+    "MOB_GRIEFING": GameRuleInfo("""mob Griefing""", "mobGriefing", """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals[BE only] should be able to change blocks, and whether mobs can pick up items. When mobGriefing is disabled, piglins do not pick up gold ingots, but a player can still barter with them by using the item on the mob. Similarly, villagers do not pick up food items but can still breed until they run out of any food already in their inventory. This also affects the capability of zombie-like creatures like zombified piglins and drowned to pathfind to turtle eggs.""", bool),
     "NATURAL_REGENERATION": GameRuleInfo("""natural Regeneration""", "naturalRegeneration", """Whether the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.).""", bool),
     "PLAYERS_NETHER_PORTAL_CREATIVE_DELAY": GameRuleInfo("""players Nether Portal Creative Delay""", "playersNetherPortalCreativeDelay", """Controls the time that a creative player needs to stand in a nether portal before changing dimensions.""", int),
     "PLAYERS_NETHER_PORTAL_DEFAULT_DELAY": GameRuleInfo("""players Nether Portal Default Delay""", "playersNetherPortalDefaultDelay", """Controls the time that a non-creative player needs to stand in a nether portal before changing dimensions.""", int),
     "PLAYERS_SLEEPING_PERCENTAGE": GameRuleInfo("""players Sleeping Percentage""", "playersSleepingPercentage", """What percentage of players in the Overworld must sleep to skip the night. A percentage value of 0 or less allows the night to be skipped by just 1 player, and a percentage value more than 100 prevents players from skipping the night.""", int),
     "PROJECTILES_CAN_BREAK_BLOCKS": GameRuleInfo("""projectiles Can Break Blocks""", "projectilesCanBreakBlocks", """Whether impact projectiles destroy blocks that are destructible by them, i.e. chorus flowers, pointed dripstone, and decorated pots.""", bool),
+    "PVP": GameRuleInfo("""pvp""", "pvp", """Whether players can damage other players.""", bool),
     "RANDOM_TICK_SPEED": GameRuleInfo("""random Tick Speed""", "randomTickSpeed", """How often a random block tick occurs (such as plant growth, leaf decay, etc.) per chunk section per game tick. 0 and negative values disables random ticks, higher numbers increase random ticks. Setting to a high integer results in high speeds of decay and growth. Numbers over 4096 make plant growth or leaf decay instantaneous.""", int),
     "REDUCED_DEBUG_INFO": GameRuleInfo("""reduced Debug Info""", "reducedDebugInfo", """Whether the debug screen shows all or reduced information; and whether the effects of F3 + B (entity hitboxes) and F3 + G (chunk boundaries) are shown.""", bool),
     "SEND_COMMAND_FEEDBACK": GameRuleInfo("""send Command Feedback""", "sendCommandFeedback", """Whether the feedback from commands executed by a player should show up in chat. Also affects the default behavior of whether command blocks store their output text.""", bool),
     "SHOW_DEATH_MESSAGES": GameRuleInfo("""show Death Messages""", "showDeathMessages", """Whether death messages are put into chat when a player dies. Also affects whether a message is sent to the pet's owner when the pet dies.""", bool),
     "SNOW_ACCUMULATION_HEIGHT": GameRuleInfo("""snow Accumulation Height""", "snowAccumulationHeight", """The maximum number of snow layers that can be accumulated on each block.""", int),
-    "SPAWN_CHUNK_RADIUS": GameRuleInfo("""spawn Chunk Radius""", "spawnChunkRadius", """The size of the spawn chunks of the world.""", bool),
+    "SPAWN_MONSTERS": GameRuleInfo("""spawn Monsters""", "spawnMonsters", """Whether monsters can spawn naturally.""", bool),
     "SPAWN_RADIUS": GameRuleInfo("""spawn Radius""", "spawnRadius", """The number of blocks outward from the world spawn coordinates that a player spawns in when first joining a server or when dying without a personal spawnpoint. Has no effect on servers where the default game mode is Adventure.""", int),
     "SPECTATORS_GENERATE_CHUNKS": GameRuleInfo("""spectators Generate Chunks""", "spectatorsGenerateChunks", """Whether players in Spectator mode can generate chunks.""", bool),
     "TNT_EXPLODES": GameRuleInfo("""tnt Explodes""", "tntExplodes", """Whether TNT explodes after activation.""", bool),
@@ -936,7 +942,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-06-30T18:19:23-07:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2025-09-01T16:52:43-07:00
 __scorecriteria_dups = {}
 DUMMY = "dummy"
 TRIGGER = "trigger"
@@ -980,7 +986,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-06-30T18:19:23-07:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2025-09-01T16:52:43-07:00
 __particle_dups = {}
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -995,6 +1001,7 @@ CAMPFIRE_SIGNAL_SMOKE = "campfire_signal_smoke"
 CHERRY_LEAVES = "cherry_leaves"
 CLOUD = "cloud"
 COMPOSTER = "composter"
+COPPER_FIRE_FLAME = "copper_fire_flame"
 CRIMSON_SPORE = "crimson_spore"
 CRIT = "crit"
 CURRENT_DOWN = "current_down"
@@ -1096,7 +1103,7 @@ WHITE_ASH = "white_ash"
 WHITE_SMOKE = "white_smoke"
 WITCH = "witch"
 PARTICLE_GROUP = [
-    ANGRY_VILLAGER, ASH, "block", BLOCK_CRUMBLE, "block_marker", BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, CRIMSON_SPORE, CRIT, CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY, DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, "dust_pillar", DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, "falling_dust", FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREFLY, FIREWORK, FISHING, "flame", FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
+    ANGRY_VILLAGER, ASH, "block", BLOCK_CRUMBLE, "block_marker", BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, COPPER_FIRE_FLAME, CRIMSON_SPORE, CRIT, CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY, DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, "dust_pillar", DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, "falling_dust", FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREFLY, FIREWORK, FISHING, "flame", FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain", REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
 ]
 
 ParticleInfo = namedtuple("Particle", ['name', 'value', 'desc'])
@@ -1114,6 +1121,7 @@ particles = {
     "CHERRY_LEAVES": ParticleInfo("""Cherry Leaves""", "cherry_leaves", """Falls off the bottom of cherry leaves."""),
     "CLOUD": ParticleInfo("""Cloud""", "cloud", """Appears when placing wet sponges in the Nether, shown when entering a village with the Bad Omen effect."""),
     "COMPOSTER": ParticleInfo("""Composter""", "composter", """Produced when placing items in a composter."""),
+    "COPPER_FIRE_FLAME": ParticleInfo("""Copper Fire Flame""", "copper_fire_flame", """Represents the flame of copper torches."""),
     "CRIMSON_SPORE": ParticleInfo("""Crimson Spore""", "crimson_spore", """Floats throughout the atmosphere in the crimson forest biome."""),
     "CRIT": ParticleInfo("""Crit""", "crit", """Trails behind crossbow shots and fully charged bow shots, produced by evoker fangs, appears when landing a critical hit on an entity."""),
     "CURRENT_DOWN": ParticleInfo("""Current Down""", "current_down", """Represents downward bubble columns."""),
@@ -1228,7 +1236,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-06-30T18:19:23-07:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2025-09-01T16:52:43-07:00
 __potterysherd_dups = {}
 SCRAPE_POTTERY_SHERD = "scrape_pottery_sherd"
 GUSTER_POTTERY_SHERD = "guster_pottery_sherd"
@@ -1290,7 +1298,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-06-30T18:19:24-07:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2025-09-01T16:52:43-07:00
 __disc_dups = {}
 THIRTEEN = "music_disc_13"
 CAT = "music_disc_cat"
@@ -1354,7 +1362,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2025-06-30T18:19:24-07:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2025-09-01T16:52:44-07:00
 __painting_dups = {}
 KEBAB = "Kebab med tre pepperoni"
 AZTEC = "de_aztec"
@@ -1434,7 +1442,7 @@ paintings = {
     "STAGE": PaintingInfo("""stage""", "The Stage Is Set", """Scenery from the video game Space Quest I, with the character Graham from the video game series King’s Quest appearing twice. The texture was changed in Alpha v1.1.1.""", "Kristoffer Zetterstrand", (2, 2)),
     "VOID": PaintingInfo("""void""", "The void", """An angel praying into a void with fire below.""", "Kristoffer Zetterstrand", (2, 2)),
     "SKULL_AND_ROSES": PaintingInfo("""skull_and_roses""", "Skull and Roses", """A skeleton at night with red flowers in the foreground. The original painting is different, depicting a woman sitting in a couch, while the skull is in the middle of a body of glacial water of sorts.""", "Kristoffer Zetterstrand", (2, 2)),
-    "WITHER": PaintingInfo("""wither""", "Wither", """The creation of the wither. This is the first painting in Minecraft that is not based on a real painting. (See the trivia section for more info.).""", "Mojang(Jens Bergensten)", (2, 2)),
+    "WITHER": PaintingInfo("""wither""", "Wither", """The creation of the wither.""", "Mojang(Jens Bergensten)", (2, 2)),
     "BAROQUE": PaintingInfo("""baroque""", "Baroque", """A decorated pot, a cake, and a sunflower on a dark background, resembling Baroque painting.""", "Sarah Boeving", (2, 2)),
     "HUMBLE": PaintingInfo("""humble""", "Humble", """A version of Grant Wood’s American Gothic, where two villagers are in front of a village house.""", "Sarah Boeving", (2, 2)),
     "BOUQUET": PaintingInfo("""bouquet""", "Bouquet", """A bouquet of flowers next to a stairway with a person sitting beside it.""", "Kristoffer Zetterstrand", (3, 3)),
@@ -1446,9 +1454,9 @@ paintings = {
     "SUNFLOWERS": PaintingInfo("""sunflowers""", "Sunflowers", """Some potted plants on a table with a two-dimensional sunflower.""", "Kristoffer Zetterstrand", (3, 3)),
     "TIDES": PaintingInfo("""tides""", "Tides", """A person sitting in a fetal position by a shoreline. The naked person from the original painting has been given clothes.""", "Kristoffer Zetterstrand", (3, 3)),
     "DENNIS": PaintingInfo("""dennis""", "Dennis", """A painting of a pale wolf, inspired by a painting depicting Dennis seen in A Minecraft Movie.""", "Sarah Boeving", (3, 3)),
-    "BACKYARD": PaintingInfo("""backyard""", "Backyard", """A brick archway with two women sitting in the yard. The scenery is based on the painting The Courtyard of a House in Delft by Pieter de Hooch.""", "Kristoffer Zetterstrand", (3, 4)),
+    "BACKYARD": PaintingInfo("""backyard""", "Backyard", """A brick archway with two women sitting in the yard. The scenery is based on the painting The Courtyard of a House in Delft by Pieter de Hooch. The figures on the right are from Jacques-Louis David’s Oath of the Horatii.""", "Kristoffer Zetterstrand", (3, 4)),
     "POND": PaintingInfo("""pond""", "Pond", """A maiden sitting in a pond, next to a half-submerged skeleton. Death and the Maiden was a common motif in Renaissance art, ultimately derived from the Medieval genre Dance of Death.""", "Kristoffer Zetterstrand", (3, 4)),
-    "FIGHTERS": PaintingInfo("""fighters""", "Fighters", """Two men poised to fight. The fighters are from the video game The Way of the Exploding Fist.""", "Kristoffer Zetterstrand", (4, 2)),
+    "FIGHTERS": PaintingInfo("""fighters""", "Fighters", """Two men poised to fight. The fighters are from the video game The Way of the Exploding Fist. The backdrop is based on the painting Indian Summer, Vermont by Willard Metcalf.""", "Kristoffer Zetterstrand", (4, 2)),
     "CHANGING": PaintingInfo("""changing""", "Changing", """A person changing clothes in front of some set pieces, including a contrasting gloomy mountain and a sunny countryside.""", "Kristoffer Zetterstrand", (4, 2)),
     "FINDING": PaintingInfo("""finding""", "Finding", """A person looks into a recently-dug hole with Hellenistic ruins in the background. Studio lights are set up next to them.""", "Kristoffer Zetterstrand", (4, 2)),
     "LOWMIST": PaintingInfo("""lowmist""", "Lowmist", """A digital render of a mountainous landscape. This motif was created using the scenery generator Terragen, with the renderer deliberately crashed during the construction process.""", "Kristoffer Zetterstrand", (4, 2)),
@@ -1457,7 +1465,7 @@ paintings = {
     "DONKEY_KONG": PaintingInfo("""donkey_kong""", "Kong", """A paper-looking screenshot of the level 100m from the arcade video game Donkey Kong.""", "Kristoffer Zetterstrand", (4, 3)),
     "POINTER": PaintingInfo("""pointer""", "Pointer", """The main character of the video game International Karate + in a fighting stance touching a large hand. It could also be interpreted as a play on Michelangelo’s famous painting The Creation of Adam. The hand is the artist’s own. The scenery is based on the painting Winter Landscape with Church by Caspar David Friedrich.""", "Kristoffer Zetterstrand", (4, 4)),
     "PIGSCENE": PaintingInfo("""pigscene""", "Pigscene", """A girl pointing to a pig on a canvas. In the original painting, the canvas shows red, green and blue blocks, representing the three colors of the RGB color model that is typically used by computer displays. This painting is based on the painting The Artist’s Studio by Jacob van Oost.""", "Kristoffer Zetterstrand", (4, 4)),
-    "BURNING_SKULL": PaintingInfo("""burning_skull""", "Skull On Fire", """A skull on fire; in the background, there is a moon in a clear night sky. This painting is based on a Minecraft screenshot,.""", "Kristoffer Zetterstrand", (4, 4)),
+    "BURNING_SKULL": PaintingInfo("""burning_skull""", "Skull On Fire", """A skull on fire; in the background, there is a moon in a clear night sky. This painting is based on a Minecraft screenshot, with the grass block and the three-dimensional skull added on top. The actual painting was added in Beta 1.3. (See the trivia section for more info.).""", "Kristoffer Zetterstrand", (4, 4)),
     "ORB": PaintingInfo("""orb""", "Orb", """An orb of light in the middle of an Italian landscape at night. This painting is based on the painting St. Francis in Ecstasy by Giovanni Bellini.""", "Kristoffer Zetterstrand", (4, 4)),
     "UNPACKED": PaintingInfo("""unpacked""", "Unpacked", """A Minecraft landscape, showing a cliff with a waterfall and a pig floating in water. This painting is based on pack.png.""", "Sarah Boeving", (4, 4)),
     "EARTH": PaintingInfo("""earth""", "Earth", """One of the four classical elements: Earth.""", "Mojang(Unknown Artist)", (2, 2)),
