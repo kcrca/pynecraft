@@ -2,6 +2,8 @@
 #
 # font = mcfonts.from_java_font_file(Path('/Users/arnold/clarity/default_resourcepack/assets/minecraft/font/default.json'))
 # print('hi')
+from __future__ import annotations
+
 import re
 
 from PIL import ImageFont
@@ -34,26 +36,25 @@ class BookWrap:
     def pages(self):
         return self._pages
 
-    def add(self, *text: TextDef):
+    def add(self, *text: TextDef) -> BookWrap:
         texts = [as_text(t) for t in text]
+        pos = 0
         while texts:
             node = texts.pop()
             if self._cur_page == len(self._pages):
-                self._pages.append([node])
-            else:
-                self._pages[self._cur_page].append(node)
+                # We need to start a new page
+                self._pages.append([])
+            self._pages[self._cur_page].append(node)
             types = self._types
-            types[0] = node['bold'] if 'bold' in node else False
-            types[1] = node['italic'] if 'italic' in node else False
+            types[0] = bool(node['bold']) if 'bold' in node else False
+            types[1] = bool(node['italic']) if 'italic' in node else False
             font = fonts[tuple(types)]
             if 'text' in node:
                 txt = node['text']
-                pos = 0
                 # build a new version of the text with inserted newlines where needed
                 new_text = ''
                 for token in re.split(r'(\s)', txt):
-                    bbox = font.getbbox(token)
-                    width = bbox[2] - bbox[0]
+                    width = self._get_width(font, token)
                     pos += len(token)
                     if token == '\n':
                         # This is a newline
@@ -63,6 +64,17 @@ class BookWrap:
                         self._cur_width += width
                         new_text += token
                     else:
+                        for m in reversed(tuple(x for x in re.finditer(r'[-/]+', token))):
+                            sep_pos = m.regs[0][1]
+                            subtoken = token[:sep_pos]
+                            subwidth = self._get_width(font, subtoken)
+                            if self._cur_width + subwidth < self._max_width:
+                                self._cur_width += subwidth
+                                new_text += subtoken
+                                token = token[sep_pos:]
+                                width = self._get_width(font, token)
+                                break
+
                         new_text = new_text.rstrip() + '\n'
                         self._cur_width = 0
                         if not re.match(r'\s+', token):
@@ -84,3 +96,8 @@ class BookWrap:
                     self._cur_page += 1
                     texts = [new_node] + texts
         return self
+
+    def _get_width(self, font, token):
+        bbox = font.getbbox(token)
+        width = bbox[2] - bbox[0]
+        return width
