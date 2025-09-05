@@ -1377,15 +1377,15 @@ for __i, __r in enumerate(SIGN_DIRECTIONS):
 _facing_info = {NORTH: (0, -1, 0), EAST: (1, 0, 270), SOUTH: (0, 1, 180), WEST: (-1, 0, 90)}
 
 
-def _in_group(group: list | tuple, name: StrOrArg | int | None, allow_none=True):
-    if allow_none and name is None:
-        return name
-    if is_arg(name):
-        return name
+def _in_group(group: list | tuple, thing: StrOrArg | int | None, allow_none=True):
+    if allow_none and thing is None:
+        return thing
+    if is_arg(thing):
+        return thing
 
-    if name not in group:
-        raise ValueError(f'{name}: Not in {group}')
-    return name
+    if thing not in group:
+        raise ValueError(f'{thing}: Not in {group}')
+    return thing
 
 
 def rotate_facing(facing: FacingDef, rotated_by: int) -> Facing:

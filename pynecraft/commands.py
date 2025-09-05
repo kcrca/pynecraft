@@ -1161,6 +1161,8 @@ class _IfClause(Command):
 
     @_fluent
     def score(self, score: ScoreName) -> _ScoreClause:
+        """Both kind of score clause. This works for `matches`, but if you want a relation check (such as `<=`), you
+        need to use the `is_` method, such as `execute().if_().score(score1).is_(LT, score2)`"""
         self._add('score', as_score(score))
         return self._start(_ScoreClause())
 

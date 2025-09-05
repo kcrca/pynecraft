@@ -458,3 +458,7 @@ def weathering_property(weathering: str) -> str:
     """Returns the weathering as a property value, such as the weathering of a copper golem entity (unaffected,
     exposed, etc.)."""
     return f'{weathering.lower()}' if weathering else 'unaffected'
+
+
+default_skins = ("alex", "ari", "efe", "kai", "makena", "noor", "steve", "sunny", "zuri")
+"""The names of the default skins"""
