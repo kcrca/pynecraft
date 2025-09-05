@@ -1117,18 +1117,6 @@ class StorageDataTarget(DataTargetBase):
         self._add('storage', as_resource_path(store))
 
 
-def block(pos: Position | StrOrArg) -> BlockDataTarget:
-    return BlockDataTarget(pos)
-
-
-def entity(target: TargetSpec | StrOrArg, single=False) -> EntityDataTarget:
-    return EntityDataTarget(target, single)
-
-
-def storage(store: StrOrArg) -> StorageDataTarget:
-    return StorageDataTarget(store)
-
-
 class _IfClause(Command):
     @_fluent
     def biome(self, pos: Position, biome: StrOrArg) -> _ExecuteMod:
@@ -1173,6 +1161,8 @@ class _IfClause(Command):
 
     @_fluent
     def score(self, score: ScoreName) -> _ScoreClause:
+        """Both kind of score clause. This works for `matches`, but if you want a relation check (such as `<=`), you
+        need to use the `is_` method, such as `execute().if_().score(score1).is_(LT, score2)`"""
         self._add('score', as_score(score))
         return self._start(_ScoreClause())
 
@@ -1825,6 +1815,22 @@ class _ExperienceMod(Command):
     @_fluent
     def query(self, target: Target, which: StrOrArg) -> str:
         self._add('query', as_single(target), _in_group(EXPERIENCE_POINTS, which))
+        return str(self)
+
+
+class _FetchProfileMod(Command):
+    @_fluent
+    def name(self, name: StrOrArg) -> str:
+        self._add('name', de_arg(name))
+        return str(self)
+
+    @_fluent
+    def id(self, id: Uuid | StrOrArg) -> str:
+        if isinstance(id, str):
+            id = de_arg(id)
+        else:
+            id = id.hex_str
+        self._add('id', id)
         return str(self)
 
 
@@ -2795,6 +2801,36 @@ class _AdvancementMod(Command):
         return str(self)
 
 
+def block(pos: Position | StrOrArg) -> BlockDataTarget:
+    """
+    Convenience function to be explicit about using a block as a data target. This allows you to put in the `block`
+    keyword in your code, such as `data().modify(block(r(1, 1, 0), ...)`. Syntactically this is unnecessary, as (most)
+    commands will simply accept coordinates as meaning `block` implicitly, such as `data().modify(r(1, 1, 0), ...)`.
+    But it can help making the code more exactly like the minecraft command if you want it.
+    """
+    return BlockDataTarget(pos)
+
+
+def entity(target: TargetSpec | StrOrArg, single=False) -> EntityDataTarget:
+    """
+    Convenience function to be explicit about using an entity as a data target. This allows you to put in the `entity`
+    keyword in your code, such as `data().modify(entity(p()), ...)`. Syntactically this is unnecessary, as (most)
+    commands will simply accept an entity selector as meaning `entity` implicitly, such as `data().modify(p(), ...)`.
+    But it can help making the code more exactly like the minecraft command if you want it.
+    """
+    return EntityDataTarget(target, single)
+
+
+def storage(store: StrOrArg) -> StorageDataTarget:
+    """
+    Convenience function to be explicit about using storage as a data target. This allows you to put in the `storage`
+    keyword in a command, such as `data().modify(storage("stuff", ...)`. Syntactically this is unnecessary, as (most)
+    commands will simply accept a string as meaning `storage` implicitly, such as `data().modify("stuff", ...)`.
+    But it can help making the code more exactly like the minecraft command if you want it.
+    """
+    return StorageDataTarget(store)
+
+
 def advancement(action: StrOrArg, target: Selector) -> _AdvancementMod:
     """Gives or takes an advancement from one or more players.
 
@@ -2956,6 +2992,12 @@ def experience() -> _ExperienceMod:
 
 
 xp = experience
+
+
+def fetchprofile() -> _FetchProfileMod:
+    cmd = Command()
+    cmd._add('fetchprofile')
+    return cmd._start(_FetchProfileMod())
 
 
 def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClause | str:
@@ -4171,7 +4213,7 @@ class Text(Nbt, TextHolder):
             jt['separator'] = de_arg(separator)
         return jt
 
-    def content(self):
+    def content(self) -> dict:
         return dict(self)
 
     def extra(self, *extras: Text | StrOrArg) -> Text:
@@ -4251,7 +4293,7 @@ ScoreName = Union[Score, Tuple[Target, StrOrArg]]
 BlockDef = Union[StrOrArg, Block, Tuple[StrOrArg, MappingOrArg], Tuple[StrOrArg, MappingOrArg, MappingOrArg]]
 EntityDef = Union[StrOrArg, Entity, Tuple[StrOrArg, MappingOrArg]]
 ParticleDef = Union[StrOrArg, Particle, Tuple[StrOrArg, MappingOrArg]]
-TextDef = Union[Text, Mapping, StrOrArg|Tuple[Union[Text, Mapping, StrOrArg]]]
+TextDef = Union[Text, Mapping, StrOrArg | Tuple[Union[Text, Mapping, StrOrArg]]]
 SignMessage = Union[StrOrArg, NbtDef, None]
 SignMessages = Iterable[SignMessage]
 SignCommand = Union[StrOrArg, Command, NbtDef, Callable[[Union[Text]], Text], None]

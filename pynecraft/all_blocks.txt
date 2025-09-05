@@ -8,6 +8,7 @@ Acacia Log
 Acacia Planks
 Acacia Pressure Plate
 Acacia Sapling
+Acacia Shelf
 Acacia Sign
 Acacia Slab
 Acacia Stairs
@@ -37,6 +38,7 @@ Bamboo Mosaic Slab
 Bamboo Mosaic Stairs
 Bamboo Planks
 Bamboo Pressure Plate
+Bamboo Shelf
 Bamboo Shoot / Bamboo Sapling
 Bamboo Sign
 Bamboo Slab
@@ -62,6 +64,7 @@ Birch Log
 Birch Planks
 Birch Pressure Plate
 Birch Sapling
+Birch Shelf
 Birch Sign
 Birch Slab
 Birch Stairs
@@ -99,6 +102,7 @@ Block of Raw Copper / Raw Copper Block
 Block of Raw Gold / Raw Gold Block
 Block of Raw Iron / Raw Iron Block
 Block of Redstone / Redstone Block
+Block of Resin / Resin Block
 Block of Stripped Bamboo / Stripped Bamboo Block
 Blue Banner
 Blue Bed
@@ -156,7 +160,6 @@ Carved Pumpkin
 Cauldron
 Cave Air
 Cave Vines
-Chain
 Chain Command Block
 Cherry Button
 Cherry Door
@@ -168,6 +171,7 @@ Cherry Log
 Cherry Planks
 Cherry Pressure Plate
 Cherry Sapling
+Cherry Shelf
 Cherry Sign
 Cherry Slab
 Cherry Stairs
@@ -182,6 +186,7 @@ Chiseled Nether Bricks
 Chiseled Polished Blackstone
 Chiseled Quartz Block
 Chiseled Red Sandstone
+Chiseled Resin Bricks
 Chiseled Sandstone
 Chiseled Stone Bricks
 Chiseled Tuff
@@ -205,10 +210,16 @@ Cocoa
 Command Block
 Composter
 Conduit
+Copper Bars
 Copper Bulb
+Copper Chain
+Copper Chest
 Copper Door
+Copper Golem Statue
 Copper Grate
+Copper Lantern
 Copper Ore
+Copper Torch
 Copper Trapdoor
 Cornflower
 Cracked Deepslate Bricks
@@ -231,6 +242,7 @@ Crimson Nylium
 Crimson Planks
 Crimson Pressure Plate
 Crimson Roots
+Crimson Shelf
 Crimson Sign
 Crimson Slab
 Crimson Stairs
@@ -268,6 +280,7 @@ Dark Oak Log
 Dark Oak Planks
 Dark Oak Pressure Plate
 Dark Oak Sapling
+Dark Oak Shelf
 Dark Oak Sign
 Dark Oak Slab
 Dark Oak Stairs
@@ -338,13 +351,19 @@ End Stone Bricks
 Ender Chest
 Exposed Chiseled Copper
 Exposed Copper
+Exposed Copper Bars
 Exposed Copper Bulb
+Exposed Copper Chain
+Exposed Copper Chest
 Exposed Copper Door
+Exposed Copper Golem Statue
 Exposed Copper Grate
+Exposed Copper Lantern
 Exposed Copper Trapdoor
 Exposed Cut Copper
 Exposed Cut Copper Slab
 Exposed Cut Copper Stairs
+Exposed Lightning Rod
 Farmland
 Fern
 Fire
@@ -414,6 +433,7 @@ Infested Mossy Stone Bricks
 Infested Stone
 Infested Stone Bricks
 Iron Bars
+Iron Chain
 Iron Door
 Iron Ore
 Iron Trapdoor
@@ -430,6 +450,7 @@ Jungle Log
 Jungle Planks
 Jungle Pressure Plate
 Jungle Sapling
+Jungle Shelf
 Jungle Sign
 Jungle Slab
 Jungle Stairs
@@ -513,6 +534,7 @@ Mangrove Planks
 Mangrove Pressure Plate
 Mangrove Propagule
 Mangrove Roots
+Mangrove Shelf
 Mangrove Sign
 Mangrove Slab
 Mangrove Stairs
@@ -562,6 +584,7 @@ Oak Log
 Oak Planks
 Oak Pressure Plate
 Oak Sapling
+Oak Shelf
 Oak Sign
 Oak Slab
 Oak Stairs
@@ -587,13 +610,19 @@ Orange Wool
 Oxeye Daisy
 Oxidized Chiseled Copper
 Oxidized Copper
+Oxidized Copper Bars
 Oxidized Copper Bulb
+Oxidized Copper Chain
+Oxidized Copper Chest
 Oxidized Copper Door
+Oxidized Copper Golem Statue
 Oxidized Copper Grate
+Oxidized Copper Lantern
 Oxidized Copper Trapdoor
 Oxidized Cut Copper
 Oxidized Cut Copper Slab
 Oxidized Cut Copper Stairs
+Oxidized Lightning Rod
 Packed Ice
 Packed Mud
 Pale Hanging Moss
@@ -609,6 +638,7 @@ Pale Oak Log
 Pale Oak Planks
 Pale Oak Pressure Plate
 Pale Oak Sapling
+Pale Oak Shelf
 Pale Oak Sign
 Pale Oak Slab
 Pale Oak Stairs
@@ -731,6 +761,11 @@ Redstone Torch
 Redstone Wire
 Reinforced Deepslate
 Repeating Command Block
+Resin Brick Slab
+Resin Brick Stairs
+Resin Brick Wall
+Resin Bricks
+Resin Clump
 Respawn Anchor
 Rooted Dirt
 Rose Bush
@@ -791,6 +826,7 @@ Spruce Log
 Spruce Planks
 Spruce Pressure Plate
 Spruce Sapling
+Spruce Shelf
 Spruce Sign
 Spruce Slab
 Spruce Stairs
@@ -878,6 +914,7 @@ Warped Nylium
 Warped Planks
 Warped Pressure Plate
 Warped Roots
+Warped Shelf
 Warped Sign
 Warped Slab
 Warped Stairs
@@ -887,49 +924,79 @@ Warped Wart Block
 Water
 Waxed Block of Copper / Waxed Copper Block
 Waxed Chiseled Copper
+Waxed Copper Bars
 Waxed Copper Bulb
+Waxed Copper Chain
+Waxed Copper Chest
 Waxed Copper Door
+Waxed Copper Golem Statue
 Waxed Copper Grate
+Waxed Copper Lantern
 Waxed Copper Trapdoor
 Waxed Cut Copper
 Waxed Cut Copper Slab
 Waxed Cut Copper Stairs
 Waxed Exposed Chiseled Copper
 Waxed Exposed Copper
+Waxed Exposed Copper Bars
 Waxed Exposed Copper Bulb
+Waxed Exposed Copper Chain
+Waxed Exposed Copper Chest
 Waxed Exposed Copper Door
+Waxed Exposed Copper Golem Statue
 Waxed Exposed Copper Grate
+Waxed Exposed Copper Lantern
 Waxed Exposed Copper Trapdoor
 Waxed Exposed Cut Copper
 Waxed Exposed Cut Copper Slab
 Waxed Exposed Cut Copper Stairs
+Waxed Exposed Lightning Rod
+Waxed Lightning Rod
 Waxed Oxidized Chiseled Copper
 Waxed Oxidized Copper
+Waxed Oxidized Copper Bars
 Waxed Oxidized Copper Bulb
+Waxed Oxidized Copper Chain
+Waxed Oxidized Copper Chest
 Waxed Oxidized Copper Door
+Waxed Oxidized Copper Golem Statue
 Waxed Oxidized Copper Grate
+Waxed Oxidized Copper Lantern
 Waxed Oxidized Copper Trapdoor
 Waxed Oxidized Cut Copper
 Waxed Oxidized Cut Copper Slab
 Waxed Oxidized Cut Copper Stairs
+Waxed Oxidized Lightning Rod
 Waxed Weathered Chiseled Copper
 Waxed Weathered Copper
+Waxed Weathered Copper Bars
 Waxed Weathered Copper Bulb
+Waxed Weathered Copper Chain
+Waxed Weathered Copper Chest
 Waxed Weathered Copper Door
+Waxed Weathered Copper Golem Statue
 Waxed Weathered Copper Grate
+Waxed Weathered Copper Lantern
 Waxed Weathered Copper Trapdoor
 Waxed Weathered Cut Copper
 Waxed Weathered Cut Copper Slab
 Waxed Weathered Cut Copper Stairs
+Waxed Weathered Lightning Rod
 Weathered Chiseled Copper
 Weathered Copper
+Weathered Copper Bars
 Weathered Copper Bulb
+Weathered Copper Chain
+Weathered Copper Chest
 Weathered Copper Door
+Weathered Copper Golem Statue
 Weathered Copper Grate
+Weathered Copper Lantern
 Weathered Copper Trapdoor
 Weathered Cut Copper
 Weathered Cut Copper Slab
 Weathered Cut Copper Stairs
+Weathered Lightning Rod
 Weeping Vines
 Wet Sponge
 Wheat Crops / Wheat

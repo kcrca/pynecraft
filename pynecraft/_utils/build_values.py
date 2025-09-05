@@ -18,10 +18,17 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 import bs4
+import num2words
 import requests
 from bs4 import BeautifulSoup
 
 from pynecraft.base import to_id
+
+
+class SkipEntry(Exception):
+    """This allows anything in the call stack to decide the entry should be skipped."""
+    pass
+
 
 WIKI = 'https://minecraft.wiki/'
 noinspection = '# noinspection SpellCheckingInspection,GrazieInspection'
@@ -129,8 +136,9 @@ class PageValuesDesc(ValuesDesc):
                         self.header(i, th.text.strip())
                 else:
                     cells = row.find_all('td')
-                    extracted = self.extract(cells)
-                    if not extracted:
+                    try:
+                        extracted = self.extract(cells)
+                    except SkipEntry:
                         continue
                     display_name, value, desc = extracted
                     name = re.sub(r'[^\w\s]', '', display_name)
@@ -160,9 +168,26 @@ def clean(cell) -> str:
     """
     if not isinstance(cell, str):
         cell = cell.text
-    s = re.sub(r'\s+', ' ', cell.strip())
-    s = re.sub(u'[\u200c\u200b]', '', s).strip()  # Discard the zero-width non-joiners
-    return re.sub(r'\s*[\[*].*', '', s, flags=re.DOTALL)  # Discard footnotes
+    # Canonicalize whitespace for the matches below
+    cell = re.sub(r'\s+', ' ', cell)
+    if re.search(r'\[JE only].*[BE only]', cell):
+        cell = cell[:cell.find('[JE only]')]
+    # if re.search(r'\[B(edrock )?E(dition)? only]', cell):
+    #     raise SkipEntry
+    if '[until' in cell:
+        raise SkipEntry
+    s = re.sub(u'[\u200c\u200b]', '', cell.strip()).strip()  # Discard the zero-width non-joiners
+    # remove stuff
+    s = re.sub('|'.join((
+        r'\[[0-9]+]',  # footnote markers
+        r'\[J(ava )?E(dition)? only]',  # JE only annotations
+        r'\[upcoming[^]]*]',  # "upcoming" notices
+        r'\[more information needed]',  # internal wiki notation
+        r'\[[^]]*[Ee]xperiment[^]]*]',  # annotations on experiments
+    )), '', s)
+    # s = re.sub('"', r'\"', s)
+    s = re.sub(r'\s+', ' ', s).strip()  # remove any that have occurred during removal above
+    return s
 
 
 def to_desc(text):
@@ -286,8 +311,6 @@ class Advancement(PageValuesDesc):
             pass
 
     def extract(self, cols):
-        if 'until' in str(cols[self.desc_col]):
-            return None
         return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col].next, cols[self.desc_col]))
 
     def replace(self, name, value):
@@ -324,7 +347,7 @@ class Effect(PageValuesDesc):
         desc = cols[self.name_col]
         name = clean(cols[self.value_col])
         if re.search(r'BE\s+only', desc.text):
-            return None
+            raise SkipEntry
         type_desc = cols[self.type_col].text
         self.types[name] = True if 'Positive' in type_desc else False if 'Negative' in type_desc else None
         return (clean(cols[x].text) for x in (self.name_col, self.value_col, self.desc_col))
@@ -410,7 +433,7 @@ class GameRule(PageValuesDesc):
 
     def extract(self, cols):
         if 'yes' not in cols[self.filter_col].text.lower():
-            return None
+            raise SkipEntry
         value = clean(cols[self.value_col].text)
         name = camel_to_name(value)
         self.types[value] = 'int' if clean(cols[self.type_col]).lower() == 'int' else 'bool'
@@ -439,10 +462,10 @@ class Particle(PageValuesDesc):
 
     def extract(self, cols):
         if len(cols) < 2:
-            return None
+            raise SkipEntry
         value = clean(cols[self.value_col].text)
         if value == '—':
-            return None
+            raise SkipEntry
         if value[-1] == '*':
             value = value[:-1]
         name = clean(value.replace('_', ' ')).title()
@@ -542,7 +565,10 @@ class Pattern(PageValuesDesc):
 
     def extract(self, cols):
         name = clean(cols[self.value_col].text).lower().replace('_', ' ').title()
-        return name, clean(cols[self.value_col].next.text), clean(cols[self.desc_col].text)
+        desc = cols[self.desc_col].text
+        desc = re.sub('(?s)\[JE\s+only.*', '', desc)
+        value = cols[self.value_col].next.text
+        return name, clean(value), clean(desc)
 
 
 class Disc(PageValuesDesc):
@@ -565,8 +591,13 @@ class Disc(PageValuesDesc):
             self.composer_col = col
 
     def extract(self, cols) -> tuple[str, str, str]:
-        name = re.sub('[()]', '', clean(cols[self.name_col])).replace('"', '')
-        value = f'music_disc_{to_id(name)}'
+        raw_name = cols[self.name_col].text
+        raw_num = None
+        if m := re.fullmatch(r'[^\w]*(\d+)[^\w]*', raw_name):
+            raw_num = int(m.group(1))
+            raw_name = num2words.num2words(raw_num, lang='en')
+        name = re.sub('[()"\']', '', clean(raw_name))
+        value = f'music_disc_{str(raw_num) if raw_num else to_id(name)}'
         try:
             num = int(name)
             name = self.names[num]

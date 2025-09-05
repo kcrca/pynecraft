@@ -96,15 +96,13 @@ class BlockFetcher(Fetcher):
             # This is not really a block at all.
             return None, None
 
-        # this appears once randomly, and it shouldn't
-        if ' (block)' in raw_id:
-            raw_id = re.sub(r' \(block\)', '', raw_id)
         id = raw_id
         desc = strip_spaces(raw_desc)  # Discard the zero-width non-joiners
+        if id == 'Chain':
+            id = desc = 'Iron Chain'
         if 'upcoming' in id:
             id = re.sub(r'\s*\[*upcoming.*', '', id)
             desc = re.sub(r'\s*\[*upcoming.*', '', desc)
-            # desc = re.sub(r'\s*\[*upcoming.*', ' [x]', desc)
         if 'Lapis' in id and id != 'Lapis Lazuli':
             id = id.replace('Lapis Lazuli', 'Lapis')
         elif 'Bale' in id:
@@ -113,8 +111,6 @@ class BlockFetcher(Fetcher):
             id = re.sub(r'Redstone (Repeater|Comparator)', r'\1', id)
         elif id == 'Monster Spawner':
             id = 'Spawner'
-        elif id == 'Grass':
-            id = 'Short Grass'
         if 'Block' in id or 'Crops' in id:
             id = re.sub(r'Block of (.*)', r'\1 Block', id)
             id = re.sub(r'(Jigsaw|Light|Smooth Quartz|Wheat) (Block|Crops)', r'\1', id)
@@ -162,8 +158,8 @@ class ItemFetcher(Fetcher):
         return elem.name == 'h2' or 'Education' in elem.text
 
     def get_id(self, raw_id, raw_desc):
-        #  This is in the list as a way to say "any potion", it's not an item.
-        if 'Potions' in raw_id:
+        # This is in the list... whY? I don't know.
+        if raw_id == 'Water Bottle':
             return None, None
 
         id = raw_id
@@ -209,10 +205,6 @@ class ItemFetcher(Fetcher):
             id = 'Writable Book'
         elif ' Cap' in id:
             id = id.replace('Cap', 'Helmet')
-        elif ' Pants' in id:
-            id = id.replace('Pants', 'Leggings')
-        elif ' Tunic' in id:
-            id = id.replace('Tunic', 'Chestplate')
         elif 'Bucket of' in id or 'Eye of' in id:
             id = re.sub(r'(Bucket|Eye) of (.*)', r'\2 \1', id)
         elif ' s ' in id:  # was 's before replacement above
@@ -221,8 +213,6 @@ class ItemFetcher(Fetcher):
             m = re.fullmatch('Raw (Copper|Iron|Gold)', id)
             if not m:
                 id = id[4:]
-        elif id == 'Scute':
-            id = 'Turtle Scute'
 
         return id, desc
 
@@ -250,9 +240,6 @@ class MobFetcher(Fetcher):
     def get_id(self, raw_id: str, raw_desc: str):
         id = re.sub(r'\s*\(.*', '', raw_id)
         desc = re.sub(r'\s*\(.*', '', raw_desc)
-        # Not really mobs, you can't summon them.
-        if 'Jockey' in desc or 'Horseman' in desc:
-            return None, None
         return id, desc
 
     def added(self, things: list[str]):

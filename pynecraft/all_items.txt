@@ -23,6 +23,7 @@ Birch Boat
 Birch Boat with Chest / Birch Chest Boat
 Black Bundle
 Black Dye
+Black Harness
 Blade Pottery Sherd
 Blaze Powder
 Blaze Rod
@@ -30,6 +31,7 @@ Blaze Spawn Egg
 Blue Bundle
 Blue Dye
 Blue Egg
+Blue Harness
 Bogged Spawn Egg
 Bolt Armor Trim / Bolt Armor Trim Smithing Template
 Bone
@@ -48,6 +50,7 @@ Brick
 Brown Bundle
 Brown Dye
 Brown Egg
+Brown Harness
 Brush
 Bucket
 Bucket of Axolotl / Axolotl Bucket
@@ -88,7 +91,19 @@ Cooked Porkchop
 Cooked Rabbit
 Cooked Salmon
 Cookie
+Copper Axe
+Copper Boots
+Copper Chestplate
+Copper Golem Spawn Egg
+Copper Helmet
+Copper Hoe
+Copper Horse Armor
 Copper Ingot
+Copper Leggings
+Copper Nugget
+Copper Pickaxe
+Copper Shovel
+Copper Sword
 Cow Spawn Egg
 Creaking Spawn Egg
 Creeper Charge Banner Pattern / Creeper Banner Pattern
@@ -96,6 +111,7 @@ Creeper Spawn Egg
 Crossbow
 Cyan Bundle
 Cyan Dye
+Cyan Harness
 Danger Pottery Sherd
 Dark Oak Boat
 Dark Oak Boat with Chest / Dark Oak Chest Boat
@@ -179,8 +195,10 @@ Golden Shovel
 Golden Sword
 Gray Bundle
 Gray Dye
+Gray Harness
 Green Bundle
 Green Dye
+Green Harness
 Guardian Spawn Egg
 Gunpowder
 Guster Banner Pattern
@@ -220,21 +238,25 @@ Lava Bucket
 Lead
 Leather
 Leather Boots
-Leather Cap / Leather Helmet
+Leather Chestplate
+Leather Helmet
 Leather Horse Armor
-Leather Pants / Leather Leggings
-Leather Tunic / Leather Chestplate
+Leather Leggings
 Light Blue Bundle
 Light Blue Dye
+Light Blue Harness
 Light Gray Bundle
 Light Gray Dye
+Light Gray Harness
 Lime Bundle
 Lime Dye
+Lime Harness
 Lingering Potion
 Llama Spawn Egg
 Mace
 Magenta Bundle
 Magenta Dye
+Magenta Harness
 Magma Cream
 Magma Cube Spawn Egg
 Mangrove Boat
@@ -299,6 +321,7 @@ Ominous Bottle
 Ominous Trial Key
 Orange Bundle
 Orange Dye
+Orange Harness
 Painting
 Pale Oak Boat
 Pale Oak Boat with Chest / Pale Oak Chest Boat
@@ -313,12 +336,14 @@ Piglin Spawn Egg
 Pillager Spawn Egg
 Pink Bundle
 Pink Dye
+Pink Harness
 Pitcher Pod
 Plenty Pottery Sherd
 Poisonous Potato
 Polar Bear Spawn Egg
 Popped Chorus Fruit
 Potato
+Potion
 Powder Snow Bucket
 Prismarine Crystals
 Prismarine Shard
@@ -329,6 +354,7 @@ Pumpkin Pie
 Pumpkin Seeds
 Purple Bundle
 Purple Dye
+Purple Harness
 Rabbit Hide
 Rabbit Spawn Egg
 Rabbit Stew
@@ -348,6 +374,7 @@ Raw Salmon / Salmon
 Recovery Compass
 Red Bundle
 Red Dye
+Red Harness
 Redstone Dust / Redstone
 Resin Brick
 Rib Armor Trim / Rib Armor Trim Smithing Template
@@ -428,6 +455,7 @@ Wheat
 Wheat Seeds
 White Bundle
 White Dye
+White Harness
 Wild Armor Trim / Wild Armor Trim Smithing Template
 Wind Charge
 Witch Spawn Egg
@@ -443,6 +471,7 @@ Wooden Sword
 Written Book
 Yellow Bundle
 Yellow Dye
+Yellow Harness
 Zoglin Spawn Egg
 Zombie Horse Spawn Egg
 Zombie Spawn Egg

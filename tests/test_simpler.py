@@ -529,6 +529,25 @@ class TestSimpler(unittest.TestCase):
         with self.assertRaises(ValueError):
             as_color('ecru')
 
+    def test_trigger(self):
+        self.assertEqual([
+            'execute unless entity @n[scores={foo=0..}] run return 0',
+            'execute if entity @e[scores={foo=1}] run say hi',
+            'scoreboard players reset @a foo',
+            'scoreboard players enable @a foo'],
+            Trigger('foo').trigger(say('hi')).commands())
+        self.assertEqual([
+            'execute unless entity @n[scores={foo=0..}] run return 0',
+            'execute if entity @e[scores={foo=1}] run say hi',
+            'execute if entity @e[scores={foo=2}] run say oops',
+            'scoreboard players reset @a foo',
+            'scoreboard players enable @a foo'],
+            Trigger('foo').trigger(say('hi')).trigger(say('oops'), 2).commands())
+        with self.assertRaises(ValueError):
+            Trigger('foo').commands()
+        with self.assertRaises(ValueError):
+            Trigger('foo').trigger('x', 7).trigger('x', 7)
+
     def test_macro(self):
         shield = Shield().add_pattern(Arg('pat'), Arg('c'))
         self.assertEqual(
