@@ -3300,12 +3300,13 @@ def setidletimeout(minutes: int) -> str:
     return str(cmd)
 
 
-def setworldspawn(pos: Position = None, yaw: FloatOrArg = None) -> str:
+def setworldspawn(pos: Position = None, yaw: FloatOrArg = None, pitch: FloatOrArg = None) -> str:
     """Sets the dir spawn."""
     cmd = Command()
     cmd._add('$setworldspawn')
     cmd._add_opt_pos(pos)
     cmd._add_opt(as_yaw(yaw))
+    cmd._add_opt(pitch)
     return str(cmd)
 
 
