@@ -1110,9 +1110,14 @@ class TestCommands(unittest.TestCase):
     def test_setworldspawn_command(self):
         self.assertEqual('setworldspawn', setworldspawn())
         self.assertEqual('setworldspawn 1 ~2 ^3', setworldspawn((1, r(2), d(3))))
-        self.assertEqual('setworldspawn 1 ~2 ^3 9.3', setworldspawn((1, r(2), d(3)), 9.3))
-        self.assertEqual('$setworldspawn $(x) $(y) $(z) $(angle)',
-                         setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('angle')))
+        self.assertEqual('setworldspawn 1 ~2 ^3', setworldspawn((1, r(2), d(3))))
+        self.assertEqual('setworldspawn 1 ~2 ^3 9.3 17', setworldspawn((1, r(2), d(3)), 9.3, 17))
+        self.assertEqual('setworldspawn 1 ~2 ^3 180.0 17', setworldspawn((1, r(2), d(3)), NORTH, 17))
+        self.assertEqual('setworldspawn 1 ~2 ^3 180.0', setworldspawn((1, r(2), d(3)), NORTH))
+        self.assertEqual('$setworldspawn $(x) $(y) $(z) $(yaw) $(pitch)',
+                         setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('yaw'), Arg('pitch')))
+        self.assertEqual('$setworldspawn $(x) $(y) $(z) $(yaw)',
+                         setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('yaw')))
 
     def test_spawnpoint_command(self):
         self.assertEqual('spawnpoint', spawnpoint())

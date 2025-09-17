@@ -460,5 +460,8 @@ def weathering_property(weathering: str) -> str:
     return f'{weathering.lower()}' if weathering else 'unaffected'
 
 
+mannequin_poses = ('standing', 'crouching', 'swimming', 'fall_flying', 'sleeping')
+"""The poses a mannequin can in."""
+
 default_skins = ("alex", "ari", "efe", "kai", "makena", "noor", "steve", "sunny", "zuri")
 """The names of the default skins"""
