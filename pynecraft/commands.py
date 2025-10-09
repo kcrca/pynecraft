@@ -1155,20 +1155,25 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
+    def loaded(self, pos: Position) -> _ExecuteMod:
+        self._add('loaded', *pos)
+        return self._start(_ExecuteMod())
+
+    @_fluent
     def predicate(self, predicate: StrOrArg) -> _ExecuteMod:
         self._add('predicate', predicate)
         return self._start(_ExecuteMod())
 
     @_fluent
     def score(self, score: ScoreName) -> _ScoreClause:
-        """Both kind of score clause. This works for `matches`, but if you want a relation check (such as `<=`), you
+        """Both kinds of score clause. This works for `matches`, but if you want a relation check (such as `<=`), you
         need to use the `is_` method, such as `execute().if_().score(score1).is_(LT, score2)`"""
         self._add('score', as_score(score))
         return self._start(_ScoreClause())
 
     @_fluent
-    def loaded(self, pos: Position) -> _ExecuteMod:
-        self._add('loaded', *pos)
+    def stopwatch(self, id: str, range: Range) -> _ExecuteMod:
+        self._add('stopwatch', as_resource(id), as_range(range))
         return self._start(_ExecuteMod())
 
 
@@ -2251,6 +2256,28 @@ class _RideMod(Command):
     @_fluent
     def dismount(self) -> str:
         self._add('dismount')
+        return str(self)
+
+
+class _StopwatchMod(Command):
+    @_fluent
+    def create(self) -> str:
+        self._add('create')
+        return str(self)
+
+    @_fluent
+    def query(self) -> str:
+        self._add('query')
+        return str(self)
+
+    @_fluent
+    def restart(self) -> str:
+        self._add('restart')
+        return str(self)
+
+    @_fluent
+    def remove(self) -> str:
+        self._add('remove')
         return str(self)
 
 
@@ -3347,6 +3374,12 @@ def stopsound(target: Target, /, source: StrOrArg = None, sound: StrOrArg = None
     cmd._add('$stopsound', as_target(target))
     cmd._add_opt(as_resource_path(source), as_resource_path(sound))
     return str(cmd)
+
+
+def stopwatch(target: Target) -> _StopwatchMod:
+    cmd = Command()
+    cmd._add('$stopwatch', as_target(target))
+    return cmd._start(_StopwatchMod())
 
 
 def summon(entity: EntityDef, /, pos: Position = None, nbt: NbtDef | StrOrArg = None) -> str:

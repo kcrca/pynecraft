@@ -132,6 +132,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('biome 1 ~2 ^3 desert', str(_IfClause().biome((1, r(2), d(3)), DESERT)))
         self.assertEqual('entity @e[tag=foo]', str(_IfClause().entity(e().tag('foo'))))
         self.assertEqual('loaded 1 ~2 ^3', str(_IfClause().loaded((1, r(2), d(3)))))
+        self.assertEqual('stopwatch foo 1', str(_IfClause().stopwatch('foo', 1)))
+        self.assertEqual('stopwatch foo 1.3..', str(_IfClause().stopwatch('foo', (1.3, None))))
         with self.assertRaises(ValueError):
             _IfClause().score(('*', 'bar')).is_('foo', ('up', 'down'))
         with self.assertRaises(ValueError):
@@ -1138,6 +1140,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('stopsound @a', stopsound(a()))
         self.assertEqual('stopsound @a m:/a/b', stopsound(a(), 'm:/a/b'))
         self.assertEqual('stopsound @a m:/a/b m:c', stopsound(a(), 'm:/a/b', 'm:c'))
+
+    def test_stopwatch_command(self):
+        self.assertEqual('stopwatch sw create', stopwatch('sw').create())
+        self.assertEqual('stopwatch sw query', stopwatch('sw').query())
+        self.assertEqual('stopwatch sw restart', stopwatch('sw').restart())
+        self.assertEqual('stopwatch sw remove', stopwatch('sw').remove())
 
     def test_summon_command(self):
         self.assertEqual('summon m:z', summon('m:z'))
