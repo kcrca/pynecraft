@@ -982,27 +982,25 @@ class Trigger:
     players are enabled. You should call this to set (or reset) the triggers.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, objective: str):
         """
-        :param name: The objective to use. It must be of type 'trigger', though we cannot validate that here. The
+        :param objective: The objective to use. It must be of type 'trigger', though we cannot validate that here. The
         init_cmds() functions returns commands for initializing it if you need that.
         """
-        self.name = name
+        self.objective = objective
         self._values = set()
-        self._pre = [
-            execute().unless().entity(n().scores({self.name: (0, None)})).run(return_(0))
-        ]
+        self._pre = [execute().unless().entity(n().scores({self.objective: (0, None)})).run(return_(0))]
         self._cmds = []
         self._post = [
-            scoreboard().players().reset((a(), self.name)),
-            scoreboard().players().enable((a(), self.name)),
+            scoreboard().players().reset((a(), self.objective)),
+            scoreboard().players().enable((a(), self.objective)),
         ]
 
     def trigger(self, cmd: str | Command | Commands, value: int = 1) -> Trigger:
         """Defines an action for a given trigger value."""
         if value in self._values:
             raise ValueError(f'{value}: Duplicate trigger value')
-        self._cmds.append(execute().if_().entity(e().scores({self.name: value})).run(cmd))
+        self._cmds.append(execute().if_().entity(e().scores({self.objective: value})).run(cmd))
         self._values.add(value)
         return self
 
@@ -1014,4 +1012,4 @@ class Trigger:
 
     def init_commands(self) -> Commands:
         """Returns the commands to initialize the objective."""
-        return scoreboard().objectives().add(self.name, 'trigger'), self._post
+        return scoreboard().objectives().add(self.objective, 'trigger'), self._post
