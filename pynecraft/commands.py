@@ -2261,23 +2261,23 @@ class _RideMod(Command):
 
 class _StopwatchMod(Command):
     @_fluent
-    def create(self) -> str:
-        self._add('create')
+    def create(self, id: StrOrArg) -> str:
+        self._add('create', as_resource(id))
         return str(self)
 
     @_fluent
-    def query(self) -> str:
-        self._add('query')
+    def query(self, id: StrOrArg) -> str:
+        self._add('query', as_resource(id))
         return str(self)
 
     @_fluent
-    def restart(self) -> str:
-        self._add('restart')
+    def restart(self, id: StrOrArg) -> str:
+        self._add('restart', as_resource(id))
         return str(self)
 
     @_fluent
-    def remove(self) -> str:
-        self._add('remove')
+    def remove(self, id: StrOrArg) -> str:
+        self._add('remove', as_resource(id))
         return str(self)
 
 
@@ -3376,9 +3376,9 @@ def stopsound(target: Target, /, source: StrOrArg = None, sound: StrOrArg = None
     return str(cmd)
 
 
-def stopwatch(target: Target) -> _StopwatchMod:
+def stopwatch() -> _StopwatchMod:
     cmd = Command()
-    cmd._add('$stopwatch', as_target(target))
+    cmd._add('$stopwatch')
     return cmd._start(_StopwatchMod())
 
 
