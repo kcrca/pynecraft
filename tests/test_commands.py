@@ -1144,6 +1144,7 @@ class TestCommands(unittest.TestCase):
     def test_stopwatch_command(self):
         self.assertEqual('stopwatch create sw', stopwatch().create('sw'))
         self.assertEqual('stopwatch query sw', stopwatch().query('sw'))
+        self.assertEqual('stopwatch query sw 15', stopwatch().query('sw', 15))
         self.assertEqual('stopwatch restart sw', stopwatch().restart('sw'))
         self.assertEqual('stopwatch remove sw', stopwatch().remove('sw'))
 

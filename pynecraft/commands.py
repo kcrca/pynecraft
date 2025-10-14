@@ -2266,8 +2266,9 @@ class _StopwatchMod(Command):
         return str(self)
 
     @_fluent
-    def query(self, id: StrOrArg) -> str:
+    def query(self, id: StrOrArg, scale: IntOrArg = None) -> str:
         self._add('query', as_resource(id))
+        self._add_opt(scale)
         return str(self)
 
     @_fluent
