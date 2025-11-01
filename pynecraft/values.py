@@ -594,7 +594,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-11-01T11:24:35-07:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2025-11-01T13:02:59-07:00
 __effect_dups = {}
 SPEED = "speed"
 SLOWNESS = "slowness"
@@ -634,7 +634,7 @@ RAID_OMEN = "raid_omen"
 WIND_CHARGED = "wind_charged"
 WEAVING = "weaving"
 OOZING = "oozing"
-INFESTED = "Infested"
+INFESTED = "infested"
 BREATH_OF_THE_NAUTILUS = "breath_of_the_nautilus"
 EFFECT_GROUP = [
     SPEED, SLOWNESS, HASTE, MINING_FATIGUE, STRENGTH, INSTANT_HEALTH, INSTANT_DAMAGE, JUMP_BOOST, NAUSEA, REGENERATION, RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY, BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON, WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, BAD_LUCK, SLOW_FALLING, CONDUIT_POWER, DOLPHINS_GRACE, BAD_OMEN, "hero_of_the_village", DARKNESS, TRIAL_OMEN, RAID_OMEN, WIND_CHARGED, WEAVING, OOZING, INFESTED, BREATH_OF_THE_NAUTILUS
@@ -680,7 +680,7 @@ effects = {
     "WIND_CHARGED": EffectInfo("""Wind Charged""", "wind_charged", """Affected entities emit a burst of wind upon death.""", False),
     "WEAVING": EffectInfo("""Weaving""", "weaving", """Lessens the movement speed decrease from being in a cobweb by 25%, and causes cobwebs to be spread upon death.""", False),
     "OOZING": EffectInfo("""Oozing""", "oozing", """Makes the entity spawn 2 slimes upon death.""", False),
-    "INFESTED": EffectInfo("""Infested""", "Infested", """Gives the entity a 10% chance to spawn between 1 and 3 silverfish when hurt.""", False),
+    "INFESTED": EffectInfo("""Infested""", "infested", """Gives the entity a 10% chance to spawn between 1 and 3 silverfish when hurt.""", False),
     "BREATH_OF_THE_NAUTILUS": EffectInfo("""Breath of the Nautilus""", "breath_of_the_nautilus", """Freezes an entity's oxygen bar.""", True),
 }
 
@@ -1052,7 +1052,7 @@ GUST = "gust"
 GUST_EMITTER = "gust_emitter"
 HAPPY_VILLAGER = "happy_villager"
 HEART = "heart"
-__particle_dups["Infested"] = "infested"
+__particle_dups["infested"] = "infested"
 INSTANT_EFFECT = "instant_effect"
 __particle_dups["item"] = "item"
 ITEM_COBWEB = "item_cobweb"
