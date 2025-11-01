@@ -21,6 +21,7 @@ import bs4
 import num2words
 import requests
 from bs4 import BeautifulSoup
+from titlecase import titlecase
 
 from pynecraft.base import to_id
 
@@ -474,7 +475,7 @@ class Particle(PageValuesDesc):
             raise SkipEntry
         if value[-1] == '*':
             value = value[:-1]
-        name = clean(value.replace('_', ' ')).title()
+        name = titlecase(clean(value.replace('_', ' ')))
         desc = clean(cols[self.desc_col])
         return name, value, desc
 
@@ -570,7 +571,7 @@ class Pattern(PageValuesDesc):
             self.value_col = col
 
     def extract(self, cols):
-        name = clean(cols[self.value_col].text).lower().replace('_', ' ').title()
+        name = titlecase(clean(cols[self.value_col].text).lower().replace('_', ' '))
         desc = cols[self.desc_col].text
         desc = re.sub('(?s)\[JE\s+only.*', '', desc)
         value = cols[self.value_col].next.text

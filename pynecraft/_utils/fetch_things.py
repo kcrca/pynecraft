@@ -17,6 +17,7 @@ from pathlib import Path
 import regex
 import requests
 from bs4 import BeautifulSoup
+from titlecase import titlecase
 
 cwd = Path(sys.path[0])
 
@@ -166,7 +167,7 @@ class ItemFetcher(Fetcher):
         desc = strip_spaces(raw_desc)
 
         if 'Music Disc' in raw_desc:
-            id = desc = raw_desc.replace('(', '').replace(')', '').title()
+            id = desc = titlecase(raw_desc.replace('(', '').replace(')', ''))
         elif 'Banner Pattern ' in raw_desc:
             m = re.fullmatch(r'Banner Pattern \(([^ ]+)( .*)?.*\)', desc)
             id = f'{m.group(1)} Banner Pattern'.replace('Snout', 'Piglin').replace('Thing', 'Mojang')

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Callable, Iterable, Tuple
 
+from titlecase import titlecase
+
 from .base import DOWN, Facing, FacingDef, Position, ROTATION_270, UP, as_facing, r
 from .commands import BlockDef, Selector, e, execute, fill, function
 from .function import Function
@@ -203,7 +205,7 @@ class Submenu(Menu):
         if not action_factory:
             action_factory = parent.action_factory
         if not text:
-            text = parent._to_text(name.title())
+            text = parent._to_text(titlecase(name))
         self.text = text
         if not wood:
             wood = parent.wood

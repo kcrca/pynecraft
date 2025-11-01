@@ -19,6 +19,7 @@ from io import StringIO
 from typing import Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
+from titlecase import titlecase
 
 _jed_resource = r'a-zA-Z0-9_.-'
 _resource_re = re.compile(fr'''(\#)?                          # Allow leading '#' for a tag
@@ -975,7 +976,7 @@ def to_name(id: StrOrArg) -> str:
     """
     if is_arg(id):
         return str(id)
-    return id.replace('_', ' ').title()
+    return titlecase(id.replace('_', ' '))
 
 
 # noinspection PyShadowingNames

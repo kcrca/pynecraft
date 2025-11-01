@@ -6,6 +6,8 @@ from collections import UserDict
 from enum import Enum
 from importlib.resources import files
 
+from titlecase import titlecase
+
 from ._utils.fetch_things import ItemFetcher
 from .base import AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE, DARK_RED, GOLD, \
     GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, WHITE, YELLOW, to_id, to_name
@@ -451,7 +453,7 @@ def weathering_id(weathering: str, base='copper', join='_') -> str:
 
 def weathering_name(weathering: str, base='Copper', join=' ') -> str:
     """Returns the weathering as a name (Copper, Exposed Copper, etc.)."""
-    return f'{weathering.title()}{join}{to_name(base)}'.strip(join) if weathering else base
+    return f'{titlecase(weathering)}{join}{to_name(base)}'.strip(join) if weathering else base
 
 
 def weathering_property(weathering: str) -> str:

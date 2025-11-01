@@ -7,10 +7,12 @@ Blaze
 Bogged
 Breeze
 Camel
+Camel Husk[upcoming]
 Cat
 Cave Spider
 Chicken
 Cod
+Copper Golem
 Cow
 Creaking
 Creeper
@@ -37,8 +39,10 @@ Llama
 Magma Cube
 Mooshroom
 Mule
+Nautilus[upcoming]
 Ocelot
 Panda
+Parched[upcoming]
 Parrot
 Phantom
 Pig
@@ -77,5 +81,7 @@ Wither Skeleton
 Wolf
 Zoglin
 Zombie
+Zombie Horse[upcoming]
+Zombie Nautilus[upcoming]
 Zombie Villager
 Zombified Piglin
