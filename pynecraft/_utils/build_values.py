@@ -174,20 +174,26 @@ def clean(cell) -> str:
         cell = cell[:cell.find('[JE only]')]
     # if re.search(r'\[B(edrock )?E(dition)? only]', cell):
     #     raise SkipEntry
+    # "foo [until 1.2] bar [upcoming 1.2]" becomes "[upcoming 1.2]", because this happens. I know this could be
+    #     cell = re.sub(cell, r'^.*\[until ([^]]*)](.*\[upcoming \1])', r'\2')
+    # but for some reason the backreference is "unknown", so I do it the long way
+    m = re.fullmatch(r'.*\[until (.*)](.*\[upcoming (.*)]).*', cell)
+    if m and m.group(1) == m.group(3):
+        cell = m.group(2)
+    cell = re.sub(u'[\u200c\u200b]', '', cell.strip()).strip()  # Discard the zero-width non-joiners
     if '[until' in cell:
         raise SkipEntry
-    s = re.sub(u'[\u200c\u200b]', '', cell.strip()).strip()  # Discard the zero-width non-joiners
     # remove stuff
-    s = re.sub('|'.join((
+    cell = re.sub('|'.join((
         r'\[[0-9]+]',  # footnote markers
         r'\[J(ava )?E(dition)? only]',  # JE only annotations
         r'\[upcoming[^]]*]',  # "upcoming" notices
         r'\[more information needed]',  # internal wiki notation
         r'\[[^]]*[Ee]xperiment[^]]*]',  # annotations on experiments
-    )), '', s)
+    )), '', cell)
     # s = re.sub('"', r'\"', s)
-    s = re.sub(r'\s+', ' ', s).strip()  # remove any that have occurred during removal above
-    return s
+    cell = re.sub(r'\s+', ' ', cell).strip()  # remove any that have occurred during removal above
+    return cell
 
 
 def to_desc(text):
@@ -432,7 +438,7 @@ class GameRule(PageValuesDesc):
             pass
 
     def extract(self, cols):
-        if 'yes' not in cols[self.filter_col].text.lower():
+        if cols[self.filter_col].text.lower().strip() not in ('yes', 'upcoming'):
             raise SkipEntry
         value = clean(cols[self.value_col].text)
         name = camel_to_name(value)
