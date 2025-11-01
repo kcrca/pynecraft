@@ -2701,8 +2701,8 @@ class _WorldBorderWarningMod(Command):
         return str(self)
 
     @_fluent
-    def time(self, time_sec: int) -> str:
-        self._add('time', time_sec)
+    def time(self, duration: DurationDef) -> str:
+        self._add('time', as_duration(duration))
         return str(self)
 
 
@@ -2720,9 +2720,9 @@ class _WorldBorderDamageMod(Command):
 
 class _WorldBorderMod(Command):
     @_fluent
-    def add(self, distance: float, duration_secs: int = None) -> str:
+    def add(self, distance: float, duration: DurationDef = None) -> str:
         self._add('add', distance)
-        self._add_opt(duration_secs)
+        self._add_opt(as_duration(duration))
         return str(self)
 
     @_fluent
@@ -2741,8 +2741,9 @@ class _WorldBorderMod(Command):
         return str(self)
 
     @_fluent
-    def set(self, diameter: float) -> str:
+    def set(self, diameter: float, duration: DurationDef = None) -> str:
         self._add('set', diameter)
+        self._add_opt(as_duration(duration))
         return str(self)
 
     @_fluent
