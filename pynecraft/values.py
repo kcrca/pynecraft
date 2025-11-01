@@ -936,8 +936,8 @@ for __k in tuple(game_rules.keys()):
     game_rules[v.value] = v
 
 
-def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
-    return _as_things(GAME_RULE_GROUP, __gamerule_dups, *values)
+def as_gamerule(*args: StrOrArg) -> str | Tuple[str, ...]:
+    return _as_things(GAME_RULE_GROUP, __gamerule_dups, *args)
 
 
 
