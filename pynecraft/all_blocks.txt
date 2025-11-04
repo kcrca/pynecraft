@@ -15,7 +15,6 @@ Acacia Stairs
 Acacia Trapdoor
 Acacia Wood
 Activator Rail
-Air
 Allium
 Amethyst Cluster
 Ancient Debris
@@ -158,8 +157,6 @@ Carrots
 Cartography Table
 Carved Pumpkin
 Cauldron
-Cave Air
-Cave Vines
 Chain Command Block
 Cherry Button
 Cherry Door
@@ -192,7 +189,6 @@ Chiseled Stone Bricks
 Chiseled Tuff
 Chiseled Tuff Bricks
 Chorus Flower
-Chorus Plant
 Clay
 Closed Eyeblossom
 Coal Ore
@@ -387,6 +383,7 @@ Granite
 Granite Slab
 Granite Stairs
 Granite Wall
+Grass
 Grass Block
 Gravel
 Gray Banner
@@ -437,7 +434,7 @@ Iron Chain
 Iron Door
 Iron Ore
 Iron Trapdoor
-Jack o'Lantern / Jack o Lantern
+Jack o'Lantern / Jack O Lantern
 Jigsaw Block / Jigsaw
 Jukebox
 Jungle Button
@@ -542,7 +539,6 @@ Mangrove Trapdoor
 Mangrove Wood
 Medium Amethyst Bud
 Melon
-Melon Stem
 Monster Spawner / Spawner
 Moss Block
 Moss Carpet
@@ -707,7 +703,6 @@ Prismarine Slab
 Prismarine Stairs
 Prismarine Wall
 Pumpkin
-Pumpkin Stem
 Purple Banner
 Purple Bed
 Purple Candle

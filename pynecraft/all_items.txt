@@ -61,6 +61,7 @@ Bucket of Tadpole / Tadpole Bucket
 Bucket of Tropical Fish / Tropical Fish Bucket
 Bundle
 Burn Pottery Sherd
+Camel Husk Spawn Egg
 Camel Spawn Egg
 Carrot
 Carrot on a Stick
@@ -71,14 +72,12 @@ Chainmail Chestplate
 Chainmail Helmet
 Chainmail Leggings
 Charcoal
-Charcoal
 Cherry Boat
 Cherry Boat with Chest / Cherry Chest Boat
 Chicken Spawn Egg
 Chorus Fruit
 Clay Ball
 Clock
-Coal
 Coal
 Coast Armor Trim / Coast Armor Trim Smithing Template
 Cocoa Beans
@@ -100,9 +99,11 @@ Copper Hoe
 Copper Horse Armor
 Copper Ingot
 Copper Leggings
+Copper Nautilus Armor
 Copper Nugget
 Copper Pickaxe
 Copper Shovel
+Copper Spear
 Copper Sword
 Cow Spawn Egg
 Creaking Spawn Egg
@@ -124,8 +125,10 @@ Diamond Helmet
 Diamond Hoe
 Diamond Horse Armor
 Diamond Leggings
+Diamond Nautilus Armor
 Diamond Pickaxe
 Diamond Shovel
+Diamond Spear
 Diamond Sword
 Disc Fragment / Disc Fragment 5
 Dolphin Spawn Egg
@@ -190,8 +193,10 @@ Golden Helmet
 Golden Hoe
 Golden Horse Armor
 Golden Leggings
+Golden Nautilus Armor
 Golden Pickaxe
 Golden Shovel
+Golden Spear
 Golden Sword
 Gray Bundle
 Gray Dye
@@ -204,6 +209,7 @@ Gunpowder
 Guster Banner Pattern
 Guster Pottery Sherd
 Happy Ghast Spawn Egg
+Harness
 Heart Pottery Sherd
 Heart of the Sea
 Heartbreak Pottery Sherd
@@ -224,14 +230,15 @@ Iron Hoe
 Iron Horse Armor
 Iron Ingot
 Iron Leggings
+Iron Nautilus Armor
 Iron Nugget
 Iron Pickaxe
 Iron Shovel
+Iron Spear
 Iron Sword
 Item Frame
 Jungle Boat
 Jungle Boat with Chest / Jungle Chest Boat
-Kelp
 Knowledge Book
 Lapis Lazuli
 Lava Bucket
@@ -240,8 +247,8 @@ Leather
 Leather Boots
 Leather Cap / Leather Helmet
 Leather Horse Armor
-Leather Pants
-Leather Tunic
+Leather Pants / Leather Leggings
+Leather Tunic / Leather Chestplate
 Light Blue Bundle
 Light Blue Dye
 Light Blue Harness
@@ -253,6 +260,7 @@ Lime Dye
 Lime Harness
 Lingering Potion
 Llama Spawn Egg
+Lodestone Compass
 Mace
 Magenta Bundle
 Magenta Dye
@@ -298,6 +306,7 @@ Music Disc Wait
 Music Disc Ward
 Name Tag
 Nautilus Shell
+Nautilus Spawn Egg
 Nether Brick
 Nether Quartz / Quartz
 Nether Star
@@ -309,9 +318,11 @@ Netherite Helmet
 Netherite Hoe
 Netherite Ingot
 Netherite Leggings
+Netherite Nautilus Armor
 Netherite Pickaxe
 Netherite Scrap
 Netherite Shovel
+Netherite Spear
 Netherite Sword
 Netherite Upgrade / Netherite Upgrade Smithing Template
 Oak Boat
@@ -327,6 +338,7 @@ Pale Oak Boat
 Pale Oak Boat with Chest / Pale Oak Chest Boat
 Panda Spawn Egg
 Paper
+Parched Spawn Egg
 Parrot Spawn Egg
 Phantom Membrane
 Phantom Spawn Egg
@@ -377,11 +389,13 @@ Red Dye
 Red Harness
 Redstone Dust / Redstone
 Resin Brick
+Resin Clump
 Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
 Salmon Spawn Egg
 Scrape Pottery Sherd
+Scute
 Sentry Armor Trim / Sentry Armor Trim Smithing Template
 Shaper Armor Trim / Shaper Armor Trim Smithing Template
 Sheaf Pottery Sherd
@@ -399,6 +413,7 @@ Skull Charge Banner Pattern / Skull Banner Pattern
 Skull Pottery Sherd
 Slime Spawn Egg
 Slimeball / Slime Ball
+Smithing Template
 Sniffer Spawn Egg
 Snort Pottery Sherd
 Snout Armor Trim / Snout Armor Trim Smithing Template
@@ -420,6 +435,7 @@ Stone Axe
 Stone Hoe
 Stone Pickaxe
 Stone Shovel
+Stone Spear
 Stone Sword
 Stray Spawn Egg
 Strider Spawn Egg
@@ -467,6 +483,7 @@ Wooden Axe
 Wooden Hoe
 Wooden Pickaxe
 Wooden Shovel
+Wooden Spear
 Wooden Sword
 Written Book
 Yellow Bundle
@@ -474,6 +491,7 @@ Yellow Dye
 Yellow Harness
 Zoglin Spawn Egg
 Zombie Horse Spawn Egg
+Zombie Nautilus Spawn Egg
 Zombie Spawn Egg
 Zombie Villager Spawn Egg
 Zombified Piglin Spawn Egg
