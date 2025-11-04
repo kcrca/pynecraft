@@ -5,7 +5,7 @@ block, reminding them every second. It only warns players who have opted in, how
 
 import sys
 
-from pynecraft import TimeSpec, r
+from pynecraft.base import TimeSpec, r
 from pynecraft.commands import REPLACE, Score, a, comment, execute, return_, s, schedule, tell
 from pynecraft.function import BLOCK, DataPack, Function
 
