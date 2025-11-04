@@ -8,7 +8,6 @@ from importlib.resources import files
 
 from titlecase import titlecase
 
-from ._utils.fetch_things import ItemFetcher
 from .base import AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE, DARK_RED, GOLD, \
     GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, WHITE, YELLOW, to_id, to_name
 from .commands import Block, Entity
@@ -30,8 +29,6 @@ must_give_items: dict[str, Item] = {}
 """Items that are not in the creative inventory, by name."""
 must_give_items_by_id: dict[str, Item] = {}
 """Items that are not in the creative inventory, by ID."""
-operator_menu: dict[str, Item] = {}
-"""Items that are only in the creative inventory if the 'Operator Menu' option is turned on."""
 
 
 def __read_things(which: str, ctor):
@@ -52,17 +49,17 @@ def __read_things(which: str, ctor):
 
 
 def __read_lists():
-    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id, \
-        operator_menu
+    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id
+
     blocks, blocks_by_id = __read_things('blocks', Block)
     items, items_by_id = __read_things('items', Block)
     mobs, mobs_by_id = __read_things('mobs', Entity)
 
-    for item_name in ItemFetcher.must_give:
+    must_give_items = {'Knowledge Book': 'Knowledge Book'}
+
+    for item_name in must_give_items:
         item = must_give_items[item_name] = items[item_name]
         must_give_items_by_id[item.id] = item
-        if item_name in ItemFetcher.operator_menu:
-            operator_menu[item_name] = items[item_name]
 
 
 __read_lists()

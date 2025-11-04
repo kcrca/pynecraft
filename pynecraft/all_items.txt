@@ -209,7 +209,6 @@ Gunpowder
 Guster Banner Pattern
 Guster Pottery Sherd
 Happy Ghast Spawn Egg
-Harness
 Heart Pottery Sherd
 Heart of the Sea
 Heartbreak Pottery Sherd
@@ -260,7 +259,6 @@ Lime Dye
 Lime Harness
 Lingering Potion
 Llama Spawn Egg
-Lodestone Compass
 Mace
 Magenta Bundle
 Magenta Dye
@@ -395,7 +393,6 @@ Rotten Flesh
 Saddle
 Salmon Spawn Egg
 Scrape Pottery Sherd
-Scute
 Sentry Armor Trim / Sentry Armor Trim Smithing Template
 Shaper Armor Trim / Shaper Armor Trim Smithing Template
 Sheaf Pottery Sherd
@@ -413,7 +410,6 @@ Skull Charge Banner Pattern / Skull Banner Pattern
 Skull Pottery Sherd
 Slime Spawn Egg
 Slimeball / Slime Ball
-Smithing Template
 Sniffer Spawn Egg
 Snort Pottery Sherd
 Snout Armor Trim / Snout Armor Trim Smithing Template

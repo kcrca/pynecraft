@@ -9,11 +9,15 @@ with open(Path.home() / 'clarity' / 'default_resourcepack' / 'assets' / 'minecra
 
 unholdable_items_re = re.compile('|'.join((
     r'Filled Map',
+    r'Lodestone Compass', # This is really a variant of Compass
     r'Brewing Stand', # These are blocks but are in here too, though the rest of the blocks aren't
     r'Cauldron',
     r'Flower Pot',
     r'Pitcher Plant',
-    r'^Sign$',  # Don't know why this is here
+    r'^Sign$',  # Don't know why these are here
+    r'^Scute',
+    r'^Smithing Template',
+    r'^Harness$',
     r'Pottery Shard',  # Old names (why is it still here?)
 )))
 unholdable_blocks_re = re.compile('|'.join((
@@ -30,6 +34,7 @@ unholdable_blocks_re = re.compile('|'.join((
     r'Frosted Ice',  # Only from enchantment
     r'(?<!Pitcher) Plant',  # All plants but pitcher plant
     r' Cauldron',  # The specific cauldrons (water, lava, ...)
+    r'^Grass$', # generic grass, which isn't a specific thing
     r'^Potted',  # Potted plants
     r'Ominous Banner',
     r' Crop$',
