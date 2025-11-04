@@ -478,7 +478,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = "87.0"
+LATEST_PACK_VERSION = "93.0"
 
 
 class DataPack:
