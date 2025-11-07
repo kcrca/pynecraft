@@ -91,7 +91,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('store result block 1 ~2 ^3 {} short 1.3', str(
             _ExecuteMod().store(RESULT).block((1, r(2), d(3)), '{}', SHORT, 1.3)))
         self.assertEqual('run say hi', str(_ExecuteMod().run(say('hi'))))
-        self.assertEqual('entity @p', str(_ExecuteMod().entity(p())))
         self.assertEqual('if items block 1 2 3 armor.* #iron_armor',
                          str(_ExecuteMod().if_().items((1, 2, 3), 'armor.*', '#iron_armor')))
         self.assertEqual('if items entity @s armor.* #iron_armor',
@@ -841,18 +840,18 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('gamemode survival @s', gamemode(SURVIVAL, s()))
 
     def test_gamerule(self):
-        self.assertEqual('gamerule disableRaids', gamerule(DISABLE_RAIDS))
-        self.assertEqual('gamerule disableRaids true', gamerule(DISABLE_RAIDS, True))
-        self.assertEqual('gamerule maxCommandChainLength 13', gamerule(MAX_COMMAND_CHAIN_LENGTH, 13))
-        self.assertEqual('gamerule disableRaids true', gamerule('disableRaids', True))
+        self.assertEqual('gamerule raids', gamerule(RAIDS))
+        self.assertEqual('gamerule raids true', gamerule(RAIDS, True))
+        self.assertEqual('gamerule max_command_sequence_length 13', gamerule(MAX_COMMAND_SEQUENCE_LENGTH, 13))
+        self.assertEqual('gamerule raids true', gamerule('raids', True))
         self.assertEqual('$gamerule $(r) $(v)', gamerule(Arg('r'), Arg('v')))
-        self.assertEqual('$gamerule disableRaids $(v)', gamerule(DISABLE_RAIDS, Arg('v')))
+        self.assertEqual('$gamerule raids $(v)', gamerule(RAIDS, Arg('v')))
         self.assertEqual('$gamerule $(r) 12', gamerule(Arg('r'), 12))
         self.assertEqual('$gamerule $(r) true', gamerule(Arg('r'), True))
         with self.assertRaises(ValueError):
-            gamerule(DISABLE_RAIDS, 17)
+            gamerule(RAIDS, 17)
         with self.assertRaises(ValueError):
-            gamerule(MAX_COMMAND_CHAIN_LENGTH, "True")
+            gamerule(MAX_COMMAND_SEQUENCE_LENGTH, "True")
         with self.assertRaises(ValueError):
             gamerule('nothing', 17)
 
