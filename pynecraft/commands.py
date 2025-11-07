@@ -1254,11 +1254,6 @@ class _ExecuteMod(Command):
         return self
 
     @_fluent
-    def entity(self, target: EntityDef) -> _ExecuteMod:
-        self._add('entity', as_target(target))
-        return self
-
-    @_fluent
     def facing(self, pos: Position) -> _ExecuteMod:
         self._add('facing', *pos)
         return self
