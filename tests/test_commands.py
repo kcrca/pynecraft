@@ -1326,8 +1326,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('time add 9', time().add(9))
         self.assertEqual('time add 14d', time().add('14d'))
         self.assertEqual('time query gametime', time().query(GAMETIME))
+        self.assertEqual('time pause', time().pause())
+        self.assertEqual('time resume', time().resume())
         self.assertEqual('time set 9', time().set(9))
-        self.assertEqual('time set 14d', time().set('14d'))
+        self.assertEqual('time of foo add 9', time().of('foo').add(9))
+        with self.assertRaises(ValueError):
+            time().of('foo').of('bar')
 
     def test_title_command(self):
         self.assertEqual('title @s clear', title(s()).clear())

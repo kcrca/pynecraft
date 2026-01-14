@@ -1925,8 +1925,11 @@ class _FunctionWith(Command):
 
 class _FunctionMod(Command):
     @_fluent
-    def with_(self) -> _FunctionWith:
+    def with_(self, data_target: DataTarget = None) -> _FunctionWith | str:
         self._add('with')
+        if data_target:
+            self._add(as_data_target(data_target))
+            return str(self)
         return self._start(_FunctionWith())
 
 
@@ -2406,6 +2409,17 @@ class _RotateToMod(Command):
 
 
 class _TimeMod(Command):
+    def __init__(self, of_used: bool = False):
+        super().__init__()
+        self._of_used = of_used
+
+    @_fluent
+    def of(self, clock: str) -> _TimeMod:
+        if self._of_used:
+            raise ValueError('"of" can be used at most once')
+        self._add('of', as_resource(clock))
+        return self._start(_TimeMod(True))
+
     @_fluent
     def add(self, amount: DurationDef) -> str:
         self._add('add', as_duration(amount))
@@ -2414,6 +2428,16 @@ class _TimeMod(Command):
     @_fluent
     def query(self, which: StrOrArg) -> str:
         self._add('query', _in_group(TIME_TYPES, which))
+        return str(self)
+
+    @_fluent
+    def pause(self) -> str:
+        self._add('pause')
+        return str(self)
+
+    @_fluent
+    def resume(self) -> str:
+        self._add('resume')
         return str(self)
 
     @_fluent
