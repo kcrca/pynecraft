@@ -1156,6 +1156,15 @@ class TestCommands(unittest.TestCase):
                          summon(Entity('m:z', nbt={'Tags': ['t1']}), (1, r(2), d(3)), Nbt({'Tags': ['t2']})).replace(
                              't2, t1', 't1, t2'))
 
+    def test_swing_command(self):
+        self.assertEqual('swing', str(swing()))
+        self.assertEqual('swing @p', str(swing(p())))
+        self.assertEqual('swing @p offhand', str(swing(p(), 'offhand')))
+        self.assertEqual('swing offhand', str(swing('offhand')))
+        self.assertEqual('swing offhand', str(swing(None, 'offhand')))
+        with self.assertRaises(ValueError):
+            swing('offhand', 'foo')
+
     def test_tag_command(self):
         self.assertEqual('tag @s add foo', tag(s()).add('foo'))
         self.assertEqual('tag @s list', tag(s()).list())

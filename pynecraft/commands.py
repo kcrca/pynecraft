@@ -3425,6 +3425,27 @@ def summon(entity: EntityDef, /, pos: Position = None, nbt: NbtDef | StrOrArg = 
     return str(cmd)
 
 
+def swing(entity: EntityDef = None, which: str = None) -> str:
+    cmd = Command()
+    cmd._add('swing')
+    # Allow "swing('offhand')" or "swing('mainhand')"
+    if isinstance(entity, str):
+        bad_cmd = False
+        try:
+            _in_group(HANDS, entity)
+            if which is not None:
+                bad_cmd = True
+        except ValueError:
+            pass
+        if bad_cmd:
+            raise ValueError(f'swing("{entity}") cannot be also have another hand')
+        which = entity
+        entity = None
+
+    cmd._add_opt(entity, _in_group(HANDS, which))
+    return str(cmd)
+
+
 def tag(target: Target) -> _TagMod:
     """Controls entity tags."""
     cmd = Command()
