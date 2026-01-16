@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from pynecraft.base import DARK_GREEN, GAMETIME, LT, NORTH, THE_NETHER, WEST, d, days, r, seconds, ticks
+from pynecraft.base import DARK_GREEN, LT, NORTH, THE_NETHER, WEST, d, days, r, seconds, ticks
 from pynecraft.commands import *
 from pynecraft.commands import AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
     _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
@@ -1334,7 +1334,7 @@ class TestCommands(unittest.TestCase):
     def test_time_command(self):
         self.assertEqual('time add 9', time().add(9))
         self.assertEqual('time add 14d', time().add('14d'))
-        self.assertEqual('time query gametime', time().query(GAMETIME))
+        self.assertEqual('time query gametime', time().query('gametime'))
         self.assertEqual('time pause', time().pause())
         self.assertEqual('time resume', time().resume())
         self.assertEqual('time set 9', time().set(9))

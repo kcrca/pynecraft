@@ -30,7 +30,7 @@ from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
 from .base import Angle, BLUE, CLOCKWISE_90, COLORS, COUNTERCLOCKWISE_90, Column, DIMENSION, DurationDef, EQ, GREEN, \
     IntColumn, IntRelCoord, NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TEXT_COLORS, \
-    TIME_SPEC, TIME_TYPES, TextHolder, WHITE, YELLOW, _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, \
+    TIME_SPEC, TextHolder, WHITE, YELLOW, _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, \
     _to_list, as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, \
     as_resource, as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, is_arg, is_int_arg, to_id, \
     to_name, FacingDef, Facing, Arg, StrOrArg, IntOrArg, BoolOrArg, FloatOrArg, _arg_re
@@ -2427,7 +2427,7 @@ class _TimeMod(Command):
 
     @_fluent
     def query(self, which: StrOrArg) -> str:
-        self._add('query', _in_group(TIME_TYPES, which))
+        self._add('query', as_resource(which))
         return str(self)
 
     @_fluent

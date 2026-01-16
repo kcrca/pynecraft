@@ -124,11 +124,7 @@ THE_END = 'the_end'
 DIMENSION = [OVERWORLD, THE_NETHER, THE_END]
 """Valid dimension names."""
 
-DAYTIME = 'daytime'
-GAMETIME = 'gametime'
 DAY = 'day'
-TIME_TYPES = [DAYTIME, GAMETIME, DAY]
-
 NIGHT = 'night'
 NOON = 'noon'
 MIDNIGHT = 'midnight'
