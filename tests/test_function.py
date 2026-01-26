@@ -12,8 +12,8 @@ def loop_func(step):
 
 class TestFunctions(unittest.TestCase):
 
-    def __init__(self, methodName: str = ...):
-        super().__init__(methodName)
+    def __init__(self, method_name: str = ...):
+        super().__init__(method_name)
         self.tmp_path: Path = Path('/xyzzy')  # Gets overridden in setUp, but this makes the checker happier
 
     def setUp(self) -> None:
@@ -207,7 +207,9 @@ class TestFunctions(unittest.TestCase):
         loaded = Loop.load('foo')
         self.assertEqual(saved.adjuster, loaded.adjuster)
 
-        saved = Loop(score, 'loop').adjust(('adj1', 'adj2', 'adj23')).add('before').loop(loop_func, range(0, 3)).add(
+        saved = Loop(score, 'loop').adjust(
+            'adj1', 'adj2', 'adj23').add(
+            'before').loop(loop_func, range(0, 3)).add(
             'after')
         saved.save('foo')
         loaded = Loop.load('foo')
@@ -260,42 +262,37 @@ class TestFunctions(unittest.TestCase):
         self.assertTrue((expected / 'f2.mcfunction').exists())
 
     def test_function_heirarchy(self):
-        """
-        pack -> [internal set] -----> func
-                                \---> sub_set -----> sub_func
-        :return:
-        """
         pack = DataPack('packer')
-        set = pack.function_set
+        fset = pack.function_set
         func = Function('func')
         sub_set = FunctionSet('dir')
         sub_func = Function('sub_func')
 
-        self.assertIs(set.pack, pack)
+        self.assertIs(fset.pack, pack)
         self.assertIsNone(func.pack)
         self.assertIsNone(sub_set.pack)
         self.assertIsNone(sub_func.pack)
 
-        self.assertIsNone(set.parent)
+        self.assertIsNone(fset.parent)
         self.assertIsNone(func.parent)
         self.assertIsNone(sub_set.parent)
         self.assertIsNone(sub_func.parent)
 
-        set.add_child(sub_set)
-        set.add(func)
+        fset.add_child(sub_set)
+        fset.add(func)
         sub_set.add(sub_func)
 
-        self.assertIs(pack, set.pack)
+        self.assertIs(pack, fset.pack)
         self.assertIs(pack, func.pack)
         self.assertIs(pack, sub_set.pack)
         self.assertIs(pack, sub_func.pack)
 
-        self.assertIsNone(set.parent)
-        self.assertIs(set, func.parent)
-        self.assertIs(set, sub_set.parent)
+        self.assertIsNone(fset.parent)
+        self.assertIs(fset, func.parent)
+        self.assertIs(fset, sub_set.parent)
         self.assertIs(sub_set, sub_func.parent)
 
-        self.assertEqual('packer:', set.full_name)
+        self.assertEqual('packer:', fset.full_name)
         self.assertEqual('packer:func', func.full_name)
         self.assertEqual('packer:dir', sub_set.full_name)
         self.assertEqual('packer:dir/sub_func', sub_func.full_name)
@@ -324,10 +321,10 @@ class TestFunctions(unittest.TestCase):
         tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'packer' / 'tags' / 'block'
         self.assertTrue(tags_dir.exists())
         with open(tags_dir / 'air.json') as fp:
-            written_air= json.load(fp)
+            written_air = json.load(fp)
         self.assertEqual({'values': ['air', 'cave_air']}, written_air)
         with open(tags_dir / 'stoneish.json') as fp:
-            written_air= json.load(fp)
+            written_air = json.load(fp)
         self.assertEqual({'values': ['stone', 'slate']}, written_air, 'List not expanded to dict')
 
         pack1 = pack

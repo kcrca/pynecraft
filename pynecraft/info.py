@@ -84,9 +84,9 @@ class _ItemForBlockDict(UserDict):
                 pass
 
     def __getitem__(self, item):
-        if item not in self:
-            if item in blocks:
-                return Item(item)
+        if item not in self and item in blocks:
+            return Item(item)
+        return None
 
 
 block_items = _ItemForBlockDict({

@@ -7,7 +7,7 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse
 
 from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, \
@@ -589,7 +589,7 @@ class Command:
         """Returns a deep copy of this object."""
         return copy.deepcopy(self)
 
-    def _add(self, *objs: any, space: object = True):
+    def _add(self, *objs: Any, space: object = True):
         to_add = ' '.join(str(x) for x in
                           map(lambda x: _float(x) if isinstance(x, float) else _bool(x) if isinstance(x, bool) else x,
                               objs))
@@ -607,7 +607,7 @@ class Command:
         if self._rep:
             self._rep += str(to_add)
 
-    def _add_opt(self, *objs: any):
+    def _add_opt(self, *objs: Any):
         for o in objs:
             if o is not None:
                 self._add(o)
@@ -631,25 +631,25 @@ class _ScoreClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def matches(self, range: Range | bool) -> _ExecuteMod:
+    def matches(self, rng: Range | bool) -> _ExecuteMod:
         self._add('matches')
-        if isinstance(range, bool):
-            self._add(int(range))
+        if isinstance(rng, bool):
+            self._add(int(rng))
         else:
-            self._add(as_range(range))
+            self._add(as_range(rng))
         return self._start(_ExecuteMod())
 
 
 class AdvancementCriteria(Command):
-    def __init__(self, advancement: StrOrArg, criteria: BoolOrArg | StrOrArg | tuple[StrOrArg, BoolOrArg]):
+    def __init__(self, adv: StrOrArg, criteria: BoolOrArg | StrOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
-        advancement = as_advancement(advancement)
+        adv = as_advancement(adv)
         if is_arg(criteria):
-            self._add(f'{advancement}={str(criteria)}')
+            self._add(f'{adv}={str(criteria)}')
         elif isinstance(criteria, BoolOrArg):
-            self._add(f'{advancement}={_bool(criteria)}')
+            self._add(f'{adv}={_bool(criteria)}')
         else:
-            self._add(f'{advancement}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')
+            self._add(f'{adv}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')
 
 
 class _TextMod(Nbt):
@@ -799,7 +799,7 @@ class Uuid(TargetSpec):
         return {'UUIDMost': most, 'UUIDLeast': least}
 
     @property
-    def most_least(self) -> (int, int):
+    def most_least(self) -> Tuple[int, int]:
         """The most/least values for the UUID."""
         return self._ints[0] << 32 | (0xffffffff & self._ints[1]), self._ints[2] << 32 | (0xffffffff & self._ints[3])
 
@@ -911,7 +911,7 @@ class Selector(TargetSpec):
             return self._selector
         return self._selector + '[' + super().__str__() + ']'
 
-    def _add_arg(self, key: str, value: any):
+    def _add_arg(self, key: str, value: Any):
         v = str(value)
         if v.find('=') < 0 or v[0] == '{':
             v = f'{key}={v}'
@@ -926,13 +926,13 @@ class Selector(TargetSpec):
         self._add_if(',')
         self._add(v)
 
-    def _unique_arg(self, key: str, value: any):
+    def _unique_arg(self, key: str, value: Any):
         if key in self._args:
             raise KeyError(f'{key}: Already set in target')
         self._add_arg(key, value)
         return self
 
-    def _multi_args(self, key: str, value: any, values):
+    def _multi_args(self, key: str, value: Any, values):
         self._add_arg(key, value)
         for v in values:
             self._add_arg(key, v)
@@ -1686,7 +1686,7 @@ class _RandomMod(Command):
         return str(self)
 
     @_fluent
-    def value(self, range: (IntOrArg, IntOrArg), sequence: StrOrArg = None, /, in_chat: bool = False) -> str:
+    def value(self, range: Tuple[IntOrArg, IntOrArg], sequence: StrOrArg = None, /, in_chat: bool = False) -> str:
         return self.roll(range, sequence, in_chat)
 
     @_fluent
@@ -3059,7 +3059,6 @@ def fillbiome(start_pos: Position, end_pos: Position, biome: StrOrArg) -> _Biome
     cmd = Command()
     cmd._add('$fillbiome', *start_pos, *end_pos, as_biome(biome))
     return cmd._start(_BiomeFilterClause())
-    pass
 
 
 def forceload() -> _ForceloadMod:
@@ -4382,12 +4381,12 @@ SomeBlockDefs = Union[BlockDef, Iterable[BlockDef]]
 SomeMappings = Union[Mapping, Iterable[Mapping]]
 
 
-def lines(*orig: any) -> list[str]:
+def lines(*orig: Any) -> list[str]:
     """Flatten a tree of commands into a one-line-per-command flat list."""
     return _lines([], orig)
 
 
-def _lines(result: list[str], orig: any) -> list[str]:
+def _lines(result: list[str], orig: Any) -> list[str]:
     for item in orig:
         if isinstance(item, str):
             item = item.rstrip()

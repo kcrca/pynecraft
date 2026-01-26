@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import json
-import math
 import os
 import shutil
 from collections import UserDict
 from json import JSONEncoder
 from re import Pattern
-from typing import Any, MutableMapping
+from typing import MutableMapping
+
+import math
 
 from .base import _in_group, _to_list, _to_tuple
 from .commands import *
@@ -41,7 +42,7 @@ WORLDGEN_SETS = [NOISE_SETTINGS, BIOME, CONFIGURED_CARVER, CONFIGURED_SURFACE_BU
                  CONFIGURED_STRUCTURE_FEATURE, STRUCTURE_SET, TEMPLATE_POOL, PROCESSOR_LIST]
 
 
-def text_lines(*orig: any) -> Iterable[str]:
+def text_lines(*orig: Any) -> Iterable[str]:
     """Converts a number of commands and lines into a sequence of single lines, each terminated by newlines."""
     result = []
     for cmd in lines(orig):
@@ -180,7 +181,7 @@ class Function:
             path = path.with_suffix(Function.SUFFIX)
         return path
 
-    def add(self: T, *cmds: [Command | str]) -> T:
+    def add(self: T, *cmds: Command | str | Commands) -> T:
         """Adds commands to the function.
 
         You can provide a list of strings or Command objects, or any un-flat iterables of them. They will be flattened
@@ -258,8 +259,8 @@ class Loop(Function):
         i: int
         stage: int
         count: int
-        elem: any
-        last: any
+        elem: Any
+        last: Any
         loop: Loop
 
     class TestControls:
@@ -468,7 +469,7 @@ class Loop(Function):
             self.to_incr.set(1),
         )
 
-    def adjust(self, *adjuster: [Command | str]) -> Loop:
+    def adjust(self, *adjuster: Command | str) -> Loop:
         """
         Execute a command or commands after the loop value is incremented but before it is constrained to the max
         value. This can be used, for example, to skip a value in the middle if it is not compatible with another

@@ -155,6 +155,7 @@ class Sign(Block):
             text = Text.text(de_arg(text))
         entry = text
         if isinstance(command, Callable):
+            # noinspection PyTypeChecker
             command = command(orig_text)
         if command:
             entry = text.click_event(ClickEvent.run_command(command))

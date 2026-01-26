@@ -10,14 +10,14 @@ from __future__ import annotations
 
 import copy
 import functools
-import math
 import re
 from abc import ABC, abstractmethod
 from collections import UserDict, UserList
 from html.parser import HTMLParser
 from io import StringIO
-from typing import Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
+from typing import Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union, Any
 
+import math
 import numpy as np
 from titlecase import titlecase
 
@@ -165,7 +165,7 @@ class Arg:
         return hash(self.name)
 
 
-def de_arg(v: any) -> any:
+def de_arg(v: Any) -> Any:
     if not isinstance(v, str) and isinstance(v, Sequence):
         c = v.__class__
         # noinspection PyArgumentList
@@ -173,18 +173,18 @@ def de_arg(v: any) -> any:
     return str(v) if isinstance(v, Arg) else v
 
 
-def is_arg(v: any) -> bool:
+def is_arg(v: Any) -> bool:
     return isinstance(v, Arg) or (isinstance(v, str) and _arg_re.search(v))
 
 
-def is_int_arg(v: any) -> bool:
+def is_int_arg(v: Any) -> bool:
     """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
     that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
     return (isinstance(v, int) and not isinstance(v, bool)) or isinstance(v, Arg) or (
             isinstance(v, str) and _int_arg_re.fullmatch(v) is not None)
 
 
-def de_int_arg(v: any) -> any:
+def de_int_arg(v: Any) -> Any:
     """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
     that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
     if is_int_arg(v) and not isinstance(v, int):
@@ -192,7 +192,7 @@ def de_int_arg(v: any) -> any:
     return v
 
 
-def check_int_arg(v: any) -> None:
+def check_int_arg(v: Any) -> None:
     """Validates that ``is_num_arg(v)`` returns True, or if v is a collection, applies this test recursively."""
     if not isinstance(v, str) and isinstance(v, Iterable):
         for x in v:
@@ -203,13 +203,13 @@ def check_int_arg(v: any) -> None:
     return v
 
 
-def is_float_arg(v: any) -> bool:
+def is_float_arg(v: Any) -> bool:
     """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
     that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
     return isinstance(v, float) or isinstance(v, Arg) or (isinstance(v, str) and _float_arg_re.fullmatch(v) is not None)
 
 
-def de_float_arg(v: any) -> any:
+def de_float_arg(v: Any) -> Any:
     """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
     that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
     if is_float_arg(v) and not isinstance(v, float):
@@ -217,7 +217,7 @@ def de_float_arg(v: any) -> any:
     return v
 
 
-def check_float_arg(v: any) -> None:
+def check_float_arg(v: Any) -> None:
     """Validates that ``is_num_arg(v)`` returns True, or if v is a collection, applies this test recursively."""
     if not isinstance(v, str) and isinstance(v, Iterable):
         for x in v:
@@ -319,7 +319,7 @@ def string(obj):
     return str(obj)
 
 
-def _ensure_size(lst: Iterable[any], size: int, fill=None) -> list:
+def _ensure_size(lst: Iterable[Any], size: int, fill=None) -> list:
     lst = _to_list(lst)
     if len(lst) > size:
         raise ValueError('Too many values in list')
@@ -651,7 +651,7 @@ class Nbt(UserDict):
         self[key] = nbt
         return nbt
 
-    def set_or_clear(self, path: str, v: any) -> Nbt:
+    def set_or_clear(self, path: str, v: Any) -> Nbt:
         """
         If `v` is `None` or `False`, remove `path` from the nbt; otherwise set the value at `path` to be `v`.
         """
@@ -680,11 +680,11 @@ class Nbt(UserDict):
         return self
 
     @classmethod
-    def to_int(cls, string) -> int:
-        lc_string = string.lower()
-        m = re.fullmatch(r'([-+])?(0[xb])?([0-9a-f_]+)([su])?([bsil])?', lc_string)
+    def to_int(cls, name) -> int:
+        lc_name = name.lower()
+        m = re.fullmatch(r'([-+])?(0[xb])?([0-9a-f_]+)([su])?([bsil])?', lc_name)
         if not m:
-            raise ValueError(f'{string}: Not an integer')
+            raise ValueError(f'{name}: Not an integer')
         sign, base_spec, num, signed, type = m.groups()
         base = 16 if base_spec == '0x' else 2 if base_spec == '0b' else 10
         num = int(num, base)
@@ -696,9 +696,9 @@ class Nbt(UserDict):
             num = -num
         if signed:
             if not type:
-                raise ValueError(f'{string}: Type suffix required after signed-ness suffix')
+                raise ValueError(f'{name}: Type suffix required after signed-ness suffix')
         if signed == 'u' and num < 0:
-            raise ValueError(f'{string}: unsigned ints cannot be negative')
+            raise ValueError(f'{name}: unsigned ints cannot be negative')
         if not type:
             # without a known type, we can't do any other checks
             return num
@@ -709,7 +709,7 @@ class Nbt(UserDict):
                            'i': (Nbt.MIN_UINT, Nbt.MAX_UINT + 1), 'l': (Nbt.MIN_ULONG, Nbt.MAX_ULONG + 1)}
         ranges = unsigned_ranges if signed == 'u' else signed_ranges
         if num not in range(*ranges[type]):
-            raise ValueError(f'{string}: Outside range of type "{type}"')
+            raise ValueError(f'{name}: Outside range of type "{type}"')
         # This is just getting the twos-complement stuff right: An unsigned value above the signed max for a type is
         # a negative value of that type.
         if signed_ranges[type][1] <= num < unsigned_ranges[type][1]:
@@ -717,18 +717,18 @@ class Nbt(UserDict):
         return num
 
     @classmethod
-    def to_float(cls, string) -> float:
-        lc_string = string.lower()
-        m = re.fullmatch(r'([-+]?(?:[0-9_]+)?\.?(?:[0-9_]+)?(?:e-?[0-9]+)?)([df]?)', lc_string)
+    def to_float(cls, name) -> float:
+        lc_name = name.lower()
+        m = re.fullmatch(r'([-+]?(?:[0-9_]+)?\.?(?:[0-9_]+)?(?:e-?[0-9]+)?)([df]?)', lc_name)
         if not m:
-            raise ValueError(f'{string}: Not a float')
+            raise ValueError(f'{name}: Not a float')
         num, type = m.groups()
         if not num or num == '-':
-            raise ValueError(f'{string}: Not a float')
+            raise ValueError(f'{name}: Not a float')
         num = float(num)
         ranges = {'f': (Nbt.MIN_FLOAT_VALUE, Nbt.MAX_FLOAT_VALUE), 'd': (Nbt.MIN_DOUBLE_VALUE, Nbt.MAX_DOUBLE_VALUE)}
         if type and abs(num) not in range(*ranges[type]):
-            raise ValueError(f'{string}: Outside range of type "{type}"')
+            raise ValueError(f'{name}: Outside range of type "{type}"')
         return num
 
     @classmethod
@@ -884,7 +884,7 @@ class Nbt(UserDict):
                     result[k] = v
         return result
 
-    def get_list(self, key: str) -> [object, ...]:
+    def get_list(self, key: str) -> List:
         """Returns the list for the given key, creating an empty list for it if needed.
 
         :param key: The key for the list.
@@ -1054,20 +1054,20 @@ class RelCoord:
 
     # The specific tuple sizes help type checking since some things that will consume the output expect specifics
     @classmethod
-    def add(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | tuple[
+    def add(cls, v1: Sequence[Coord] | None, v2: Sequence[Coord] | None) -> tuple[Coord] | tuple[
         Coord, Coord] | tuple[Coord, Coord, Coord] | None:
         """Returns ``v1 + v2``. If either is None, the result is the other."""
         return cls.merge(lambda v1, v2: v1 + v2, v1, v2)
 
     @classmethod
-    def sub(cls, v1: Sequence[Coord, ...] | None, v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | tuple[
+    def sub(cls, v1: Sequence[Coord] | None, v2: Sequence[Coord] | None) -> tuple[Coord] | tuple[
         Coord, Coord] | tuple[Coord, Coord, Coord] | None:
         """Returns ``v1 - v2``. If either is None, the result is the other."""
         return cls.merge(lambda v1, v2: v1 - v2, v1, v2)
 
     @staticmethod
-    def merge(op: Callable[[Coord, Coord], Coord], v1: Sequence[Coord, ...] | None,
-              v2: Sequence[Coord, ...] | None) -> tuple[Coord, ...] | tuple[Coord, Coord] | tuple[
+    def merge(op: Callable[[Coord, Coord], Coord], v1: Sequence[Coord] | None,
+              v2: Sequence[Coord] | None) -> tuple[Coord] | tuple[Coord, Coord] | tuple[
         Coord, Coord, Coord] | None:
         """
         Returns the result of invoking op on each element of the vectors. If either vector is None, the result is the
@@ -1076,9 +1076,11 @@ class RelCoord:
         if v1 is None:
             return v2
         elif v2 is None:
+            # noinspection PyTypeChecker
             return v1
         if len(v1) != len(v2):
             raise ValueError('Not the same length')
+        # noinspection PyTypeChecker
         return tuple(op(v1[i], v2[i]) for i in range(len(v1)))
 
     @staticmethod
@@ -1336,7 +1338,7 @@ class Facing:
         return as_facing(rotation_aid[rotation_aid.index(self.name) + rot])
 
 
-_facing = {
+_facing: dict[str | int, Facing] = {
     NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2, 0, 2),
     EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5, 1, 3),
     SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3, 2, 0),
@@ -1420,7 +1422,7 @@ def as_duration(duration: DurationDef | None) -> TimeSpec | str | None:
     return TimeSpec(duration)
 
 
-def is_number(v: any) -> bool:
+def is_number(v: Any) -> bool:
     return isinstance(v, (float, int)) and not isinstance(v, bool)
 
 
