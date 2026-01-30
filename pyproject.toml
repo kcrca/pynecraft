@@ -1,20 +1,14 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "pynecraft"
-authors = [{name = "Ken Arnold", email = "arnold@peak.im"}]
-description = "A library for creating minecraft datapacks."
-readme = "README.rst"
-license = {text = "MIT"}
-requires-python = ">=3.11"
-version = "0.7.1"
-dependencies = [ "requests", "bs4", ]
+version = "1.0.0"
+dependencies = [
+  "titlecase",
+]
 
-[project.urls]
-Homepage = "https://pynecraft.readthedocs.io/en/latest/"
-Issues = "https://github.com/kcrca/pynecraft/issues"
-
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["pynecraft"]
