@@ -1940,13 +1940,13 @@ class _ItemTarget(Command):
         self.allow_modifier = allow_modifier
 
     @_fluent
-    def block(self, pos: Position, slot: StrOrArg, modifier: StrOrArg = None) -> T:
+    def block(self, pos: Position, slot: StrOrArg, modifier: StrOrArg = None) -> _ItemReplace:
         self._add('block', *pos, as_slot(slot))
         self._modifier(modifier)
         return self._start(self.follow)
 
     @_fluent
-    def entity(self, target: Target, slot: StrOrArg, modifier: StrOrArg = None) -> T:
+    def entity(self, target: Target, slot: StrOrArg, modifier: StrOrArg = None) -> _ItemReplace:
         self._add('entity', as_target(target), as_slot(slot))
         self._modifier(modifier)
         return self._start(self.follow)
