@@ -404,7 +404,7 @@ class Loop(Function):
             return _to_tuple(Loop._setup_override())
         setup = [
             execute().unless().score(self.score).matches((0, None)).run(str(function(
-                f'{self.score.target}_init'))),
+                    f'{self.score.target}_init'))),
             self.max_score.set(loop_size),
             execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1)))]
         setup.extend(self.adjuster)
@@ -464,9 +464,9 @@ class Loop(Function):
     def cur(self) -> Commands:
         """Return commands for a "cur" function that will run the function without incrementing the score."""
         return lines(
-            self.to_incr.set(0),
-            function(self.full_name),
-            self.to_incr.set(1),
+                self.to_incr.set(0),
+                function(self.full_name),
+                self.to_incr.set(1),
         )
 
     def adjust(self, *adjuster: Command | str) -> Loop:
@@ -479,7 +479,7 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = "94.1"
+LATEST_PACK_VERSION = 94.1
 
 
 class DataPack:
@@ -488,12 +488,16 @@ class DataPack:
     location therein.
     """
 
-    def __init__(self, name: str, format_version: str = LATEST_PACK_VERSION, /,
-                 mcmeta: Mapping = None):
+    def __init__(self, name: str, format_version: str = LATEST_PACK_VERSION, /, min_format: str = None,
+                 max_format: str = None, mcmeta: Mapping = None):
         self._name = name
         self.function_set = FunctionSet('function', self)
         self._json = {}
-        self._mcmeta = {'pack': {'pack_format': format_version, 'description': Text.text(name)}}
+        min_format = min_format if min_format else format_version
+        max_format = min_format if max_format else format_version
+        self._mcmeta = {
+            'pack': {'pack_format': format_version, 'min_format': min_format, 'max_format': max_format,
+                     'description': Text.text(name)}}
         self._description = None
         if mcmeta:
             self._mcmeta.update(mcmeta)
