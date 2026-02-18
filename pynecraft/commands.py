@@ -7,11 +7,11 @@ Mechanisms for writing Minecraft commands in python. The idea is twofold:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any, TYPE_CHECKING
 from urllib.parse import urlparse
 
-from .values import DUMMY, SCORE_CRITERIA_GROUP, as_advancement, as_enchantment, as_gamerule, as_particle, \
-    as_teamoption, enchantments, game_rules, team_options
+from .values import as_advancement, as_enchantment, as_gamerule, as_particle, as_teamoption, DUMMY, enchantments, \
+    game_rules, SCORE_CRITERIA_GROUP, team_options
 
 if TYPE_CHECKING:
     pass
@@ -1831,6 +1831,11 @@ class _FetchProfileMod(Command):
         else:
             id = id.hex_str
         self._add('id', id)
+        return str(self)
+
+    @_fluent
+    def entity(self, target: Target) -> str:
+        self._add('entity', as_single(target))
         return str(self)
 
 

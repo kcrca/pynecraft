@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import unittest
 
-from pynecraft.base import DARK_GREEN, LT, NORTH, THE_NETHER, WEST, d, days, r, seconds, ticks
+from pynecraft.base import d, DARK_GREEN, days, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
 from pynecraft.commands import *
-from pynecraft.commands import AdvancementCriteria, _AttributeMod, _DataMod, _ExecuteMod, _IfClause, \
-    _ScoreboardObjectivesMod, _ScoreboardPlayersMod, _StoreClause
+from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, _ScoreboardObjectivesMod, \
+    _ScoreboardPlayersMod, _StoreClause, AdvancementCriteria
 from pynecraft.function import Function
 from pynecraft.simpler import DESERT
 from pynecraft.values import *
@@ -825,6 +825,9 @@ class TestCommands(unittest.TestCase):
     def test_fetchprofile(self):
         self.assertEqual('fetchprofile name fred', fetchprofile().name('fred'))
         self.assertEqual('fetchprofile id 00000001-ffff-fffe-0000-0003fffffffc', fetchprofile().id(Uuid(1, -2, 3, -4)))
+        self.assertEqual('fetchprofile entity @s', fetchprofile().entity(s()))
+        with self.assertRaises(ValueError):
+            fetchprofile().entity(e())
 
     def test_forceload(self):
         self.assertEqual('forceload add 1 ~2', forceload().add((1, r(2))))
