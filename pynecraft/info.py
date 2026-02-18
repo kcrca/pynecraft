@@ -9,9 +9,9 @@ from importlib.resources import files
 from titlecase import titlecase
 
 from .base import AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE, DARK_RED, GOLD, \
-    GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, WHITE, YELLOW, to_id, to_name
+    GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, to_id, to_name, WHITE, YELLOW
 from .commands import Block, Entity
-from .simpler import Item, as_color_num
+from .simpler import as_color_num, Item
 from .values import POTTERY_SHERD_GROUP, pottery_sherds
 
 blocks: dict[str, Block] = {}
@@ -151,37 +151,40 @@ colors = (
 class Instrument:
     """Data about a note block instrument."""
 
-    def __init__(self, id, name, exemplar):
+    def __init__(self, id, exemplar, name=None):
         """
         Creates a new instrument.
 
         :param id: The ID used in the note block's NBT
-        :param name: The human-friendly name for the instrument.
         :param exemplar: One block you can put under the note block to get this instrument. Some instruments have
             several.
         """
         self.id = id
-        self.name = name
+        self.name = name if name else to_name(id)
         self.exemplar = exemplar
 
 
 instruments = (
-    Instrument('hat', 'High Hat', Block('Glass')),
-    Instrument('basedrum', 'Base Drum', Block('Stone')),
-    Instrument('snare', 'Snare Drum', Block('Sand')),
-    Instrument('xylophone', 'Xylophone', Block('Bone Block')),
-    Instrument('chime', 'Chime', Block('Packed Ice')),
-    Instrument('harp', 'Harp', Block('grass_block', name='Other')),
-    Instrument('guitar', 'Guitar', Block('white_wool', name='Wool')),
-    Instrument('bass', 'Bass', Block('oak_planks', name='Wood')),
-    Instrument('flute', 'Flute', Block('Clay')),
-    Instrument('bell', 'Bell', Block('Gold Block')),
-    Instrument('iron_xylophone', 'Iron Xylophone', Block('Iron Block')),
-    Instrument('cow_bell', 'Cow Bell', Block('Soul Sand')),
-    Instrument('didgeridoo', 'Didgeridoo', Block('Pumpkin')),
-    Instrument('bit', 'Bit', Block('Emerald Block')),
-    Instrument('banjo', 'Banjo', Block('Hay Block')),
-    Instrument('pling', 'Pling', Block('Glowstone')),
+    Instrument('hat', Block('Glass')),
+    Instrument('basedrum', Block('Stone'), name='Base Drum'),
+    Instrument('snare', Block('Sand')),
+    Instrument('xylophone', Block('Bone Block')),
+    Instrument('chime', Block('Packed Ice')),
+    Instrument('harp', Block('grass_block', name='Other')),
+    Instrument('guitar', Block('white_wool', name='Wool')),
+    Instrument('bass', Block('oak_planks', name='Wood')),
+    Instrument('flute', Block('Clay')),
+    Instrument('bell', Block('Gold Block')),
+    Instrument('iron_xylophone', Block('Iron Block')),
+    Instrument('cow_bell', Block('Soul Sand')),
+    Instrument('didgeridoo', Block('Pumpkin')),
+    Instrument('bit', Block('Emerald Block')),
+    Instrument('banjo', Block('Hay Block')),
+    Instrument('pling', Block('Glowstone')),
+    Instrument('trumpet', Block('waxed_copper_block', name='Copper Block')),
+    Instrument('horn', Block('waxed_exposed_copper', name='Exposed Copper')),
+    Instrument('trombone', Block('waxed_weathered_copper', name='Weathered|Copper')),
+    Instrument('tuba', Block('waxed_oxidized_copper', name='Oxidized Copper')),
 )
 """The instruments note blocks can play."""
 
