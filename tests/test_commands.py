@@ -1217,10 +1217,11 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tp @r @s', str(teleport(rand(), s())))
         self.assertEqual('tp 1 ~2 ^3', str(teleport((1, r(2), d(3)))))
         self.assertEqual('tp @r 1 ~2 ^3', str(teleport(rand(), (1, r(2), d(3)))))
-        self.assertEqual('tp @r 1 ~2 ^3 3.4', teleport(rand(), (1, r(2), d(3)), 3.4))
         self.assertEqual('tp @r @s facing 1 ~2 ^3', teleport(rand(), s()).facing((1, r(2), d(3))))
         self.assertEqual('tp @r @s facing entity @a', teleport(rand(), s()).facing(a()))
         self.assertEqual('tp @r @s facing entity @a eyes', teleport(rand(), s()).facing(a(), EYES))
+        self.assertEqual('tp @s ~0 ~0 ~0 15 17.5', teleport(s(), r(0, 0, 0), (15, 17.5)))
+        self.assertEqual('tp @s ~0 ~0 ~0 90.0 0.0', teleport(s(), r(0, 0, 0), WEST))
         with self.assertRaises(ValueError):
             teleport((1, 2, 3), None, 2.4)
         with self.assertRaises(ValueError):

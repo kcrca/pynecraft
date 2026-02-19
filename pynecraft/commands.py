@@ -28,7 +28,8 @@ from functools import wraps
 from pathlib import Path
 from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
-from .base import Angle, BLUE, CLOCKWISE_90, COLORS, COUNTERCLOCKWISE_90, Column, DIMENSION, DurationDef, EQ, GREEN, \
+from .base import Angle, BLUE, CLOCKWISE_90, COLORS, COUNTERCLOCKWISE_90, Column, DIMENSION, DurationDef, EQ, \
+    GREEN, \
     IntColumn, IntRelCoord, NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TEXT_COLORS, \
     TIME_SPEC, TextHolder, WHITE, YELLOW, _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, \
     _to_list, as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, \
@@ -3475,7 +3476,7 @@ tm = teammsg
 
 
 def teleport(who_or_to: Target | Position, to: Target | Position = None,
-             rotation: float = None) -> str | _TeleportMod:
+             rotation: FacingDef | tuple[FloatOrArg, FloatOrArg] = None) -> str | _TeleportMod:
     """An alias of ``/tp``. Teleports entities."""
     cmd = Command()
     cmd._add('$tp')
@@ -3495,7 +3496,11 @@ def teleport(who_or_to: Target | Position, to: Target | Position = None,
         except ValueError:
             cmd._add(*as_position(to))
         if rotation is not None:
-            cmd._add(_float(rotation))
+            try:
+                rotation = as_facing(rotation).rotation
+            except KeyError:
+                pass
+            cmd._add(_float(rotation[0]), _float(rotation[1]))
             return str(cmd)
     return cmd._start(_TeleportMod())
 
