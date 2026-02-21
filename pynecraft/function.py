@@ -8,7 +8,7 @@ import shutil
 from collections import UserDict
 from json import JSONEncoder
 from re import Pattern
-from typing import MutableMapping
+from typing import MutableMapping, Self
 
 import math
 
@@ -60,7 +60,7 @@ def as_function_name(name: str):
     :param name: The (probable) function name.
     :return: the input value.
     """
-    m = re.fullmatch(r'(\w+:)?(\w+/)?(\w+)', name)
+    m = re.fullmatch(r'(\w+:)?(\w+/)*(\w+)', name)
     if not m:
         raise ValueError(f'{name}: Invalid function name')
     return name
@@ -129,23 +129,23 @@ class Function:
                 raise ValueError(f'{path}: Invalid function suffix')
             path = path.with_suffix(Function.SUFFIX)
         with open(path) as fp:
-            lines = fp.readlines()
-            if len(lines) == 0 or not lines[-1].startswith(Function._LOAD_INFO):
-                return Function._load(lines, path, {})
-            spec = lines.pop()
+            txt = fp.readlines()
+            if len(txt) == 0 or not txt[-1].startswith(Function._LOAD_INFO):
+                return Function._load(txt, path, {})
+            spec = txt.pop()
             load_info = json.loads(spec[len(Function._LOAD_INFO):])
             if load_info['type'] == 'Function':
-                return Function._load(lines, path, load_info)
+                return Function._load(txt, path, load_info)
             elif load_info['type'] == 'Loop':
                 # noinspection PyProtectedMember
-                return Loop._load(lines, path, load_info)
+                return Loop._load(txt, path, load_info)
             else:
                 raise SyntaxError(f'{load_info["type"]}: Invalid LOAD_INFO type')
 
     @classmethod
-    def _load(cls, lines, path, load_info):
+    def _load(cls, txt, path, load_info):
         func = Function(load_info.get('name', path.stem), load_info.get('base_name', None))
-        func.add(lines)
+        func.add(txt)
         return func
 
     def _load_info(self) -> dict:
@@ -181,7 +181,7 @@ class Function:
             path = path.with_suffix(Function.SUFFIX)
         return path
 
-    def add(self: T, *cmds: Command | str | Commands) -> T:
+    def add(self: Self, *cmds: Command | str | Commands) -> Self:
         """Adds commands to the function.
 
         You can provide a list of strings or Command objects, or any un-flat iterables of them. They will be flattened
@@ -241,7 +241,6 @@ class Loop(Function):
     depending on whether you call add() before or after loop().
     """
 
-    iterate_at = 10
     """The threshold for breaking the loop out into iterations. A negative value disables this feature. 
     
     It is easy to see that there is one comparison per line of the iterations. When iterations have a lot of lines, 
@@ -271,8 +270,8 @@ class Loop(Function):
             Loop._prefix_override = func
 
         @staticmethod
-        def set_setup_override(lines: tuple[str]):
-            Loop._setup_override = lines
+        def set_setup_override(txt: tuple[str]):
+            Loop._setup_override = txt
 
     _prefix_override = None
     _setup_override = None
@@ -281,7 +280,7 @@ class Loop(Function):
     def test_controls(cls):
         return Loop.TestControls()
 
-    def __init__(self, score: ScoreName, name=None, base_name=None):
+    def __init__(self, score: ScoreName, name=None, base_name=None, iterate_at: int = 10):
         """
         Creates a Loop function that uses the specified score for its iteration counter.
 
@@ -289,6 +288,8 @@ class Loop(Function):
         :param name: The loop name, if not give, it will be the 'target' part of the score.
         :param base_name: The base name for the function. It can be useful to name the function 'foo_main' to run the
         function on the "main" clock, for example. If so, the base name would typically be 'foo'.
+        :param iterate_at: When the number of lines in an iteration is >= this value, each iteration is split into a
+        separate file.
         """
         score = as_score(score)
         if not name:
@@ -298,6 +299,7 @@ class Loop(Function):
                 raise ValueError(f'{score.target}: Not a valid name, and no name specified')
         super().__init__(name, base_name)
         self.score = score
+        self.iterate_at = iterate_at
         self.looped = False
         self.to_incr = Score('_to_incr', score.objective)
         self.max_score = Score(self.score.target, f'{self.score.objective}_max')
@@ -310,12 +312,12 @@ class Loop(Function):
         self._add_to = self.before
 
     @classmethod
-    def _load(cls, lines, path, load_info):
+    def _load(cls, txt, path, load_info):
         loop = Loop(load_info['score'], load_info.get('name', None), load_info.get('base_name', None))
         loop.looped = load_info['looped']
 
-        lines = [x.rstrip() for x in lines]
-        loop.setup = tuple(cls._pop_lines(lines, load_info['setup_len']))
+        txt = [x.rstrip() for x in txt]
+        loop.setup = tuple(cls._pop_lines(txt, load_info['setup_len']))
         adjuster_len = load_info['adjuster_len']
         if not adjuster_len:
             loop.adjuster = ()
@@ -323,9 +325,9 @@ class Loop(Function):
             adjuster_pos = -1 - adjuster_len
             loop.adjuster = loop.setup[adjuster_pos:-1]
             loop.setup = loop.setup[0:adjuster_pos] + loop.setup[-1:-1]
-        loop.before = cls._pop_lines(lines, load_info['before_len'])
-        loop.body = tuple(cls._pop_lines(lines, load_info['body_len']))
-        loop.after = lines
+        loop.before = cls._pop_lines(txt, load_info['before_len'])
+        loop.body = tuple(cls._pop_lines(txt, load_info['body_len']))
+        loop.after = txt
         loop._iterations = load_info['iterations']
 
         if load_info.get('as_iterations', True) and loop.body:
@@ -335,9 +337,9 @@ class Loop(Function):
                 prefix = str(loop._prefix_for(i)) + ' '
                 name = loop.name + iter_suffix
                 func = Function.load(path.parent / name)
-                lines = func.commands()
-                assert len(lines) == it
-                for line in lines:
+                txt = func.commands()
+                assert len(txt) == it
+                for line in txt:
                     new_body.append(prefix + line)
             loop.body = tuple(new_body)
 
@@ -345,8 +347,8 @@ class Loop(Function):
         return loop
 
     @classmethod
-    def _pop_lines(cls, lines, pos):
-        return [lines.pop(0) for _ in range(pos)]
+    def _pop_lines(cls, txt, pos):
+        return [txt.pop(0) for _ in range(pos)]
 
     def _load_info(self):
         info = super()._load_info()
@@ -390,7 +392,7 @@ class Loop(Function):
                 self.body = orig_body
 
     def _as_iteration(self):
-        return len(self._iterations) > 0 and 0 <= Loop.iterate_at <= max(self._iterations)
+        return len(self._iterations) > 0 and 0 <= self.iterate_at <= max(self._iterations)
 
     def _iter_suffix(self, i):
         width = int(math.log(len(self._iterations), 10)) + 1
@@ -404,7 +406,7 @@ class Loop(Function):
             return _to_tuple(Loop._setup_override())
         setup = [
             execute().unless().score(self.score).matches((0, None)).run(str(function(
-                    f'{self.score.target}_init'))),
+                f'{self.score.target}_init'))),
             self.max_score.set(loop_size),
             execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1)))]
         setup.extend(self.adjuster)
@@ -464,9 +466,9 @@ class Loop(Function):
     def cur(self) -> Commands:
         """Return commands for a "cur" function that will run the function without incrementing the score."""
         return lines(
-                self.to_incr.set(0),
-                function(self.full_name),
-                self.to_incr.set(1),
+            self.to_incr.set(0),
+            function(self.full_name),
+            self.to_incr.set(1),
         )
 
     def adjust(self, *adjuster: Command | str) -> Loop:
@@ -601,7 +603,7 @@ class DataPack:
         self._mcmeta['pack']['description'] = text
 
     @property
-    def filter(self) -> list[Mapping[str, str]] | None:
+    def filter(self) -> Mapping[str, str] | None:
         """The filter listing, stored in the ``pack.mcmeta`` file."""
         try:
             return self._mcmeta['pack']['filter']
@@ -839,12 +841,12 @@ class FunctionSet:
             return Path(self.parent.name) / self.name
         return Path(self.name)
 
-    def add(self, function: Function) -> Function:
+    def add(self, func: Function) -> Function:
         """Adds a function to this set."""
-        if function.name in self._functions:
-            raise ValueError(f'{function.name}: duplicate function in {self.name}')
-        self._functions[function.name] = function
-        return function
+        if func.name in self._functions:
+            raise ValueError(f'{func.name}: duplicate function in {self.name}')
+        self._functions[func.name] = func
+        return func
 
     def child(self, name: str) -> FunctionSet | None:
         """Returns the named child FunctionSet of this function set."""

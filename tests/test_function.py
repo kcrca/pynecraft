@@ -122,32 +122,25 @@ class TestFunctions(unittest.TestCase):
         self.check_save(dir, 'flip', dir / 'flip.mcfunction')
 
     def test_loop_iteration_save(self):
-        orig = Loop.iterate_at
-        try:
-            Loop.iterate_at = 2
+        def loop_func(step):
+            return (
+                say(f'Step {step.i}'),
+                say(f'Color: {step.elem}'),
+            )
 
-            def loop_func(step):
-                return (
-                    say(f'Step {step.i}'),
-                    say(f'Color: {step.elem}'),
-                )
+        os.chdir(self.tmp_path)
+        loop = Loop(('foo', 'obj'), iterate_at=2).add('before').loop(loop_func, COLORS).add('after')
+        loop.save(self.tmp_path)
+        foo = (self.tmp_path / 'foo.mcfunction').read_text().rstrip().split('\n')
+        self.assertEqual(len(COLORS),
+                         len([x for x in filter(lambda x: x.find('if score foo obj matches') > 0, foo)]))
+        for i, c in enumerate(COLORS):
+            iter = (self.tmp_path / f'foo__{i:02d}.mcfunction').read_text().rstrip().split('\n')
+            self.assertEqual(2 + 1, len(iter))  # The +1 is for the trailing info
+            self.assertGreater(iter[1].find(c), 0)
 
-            os.chdir(self.tmp_path)
-            loop = Loop(('foo', 'obj')).add('before').loop(loop_func, COLORS).add('after')
-            loop.save(self.tmp_path)
-            foo = (self.tmp_path / 'foo.mcfunction').read_text().rstrip().split('\n')
-            self.assertEqual(len(COLORS),
-                             len([x for x in filter(lambda x: x.find('if score foo obj matches') > 0, foo)]))
-            for i, c in enumerate(COLORS):
-                iter = (self.tmp_path / f'foo__{i:02d}.mcfunction').read_text().rstrip().split('\n')
-                self.assertEqual(2 + 1, len(iter))  # The +1 is for the trailing info
-                self.assertGreater(iter[1].find(c), 0)
-
-            loaded = Function.load('foo')
-            self.assertEqual(loop.commands(), loaded.commands())
-
-        finally:
-            Loop.iterate_at = orig
+        loaded = Function.load('foo')
+        self.assertEqual(loop.commands(), loaded.commands())
 
     def test_function_load(self):
         os.chdir(self.tmp_path)

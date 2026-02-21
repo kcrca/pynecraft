@@ -725,9 +725,10 @@ class TestCommands(unittest.TestCase):
 
     def test_return(self):
         self.assertEqual('return 17', return_(17))
-        self.assertEqual('return 0', str(return_()))
         self.assertEqual('return run say hi', return_().run(say('hi')))
         self.assertEqual('return run say hi', return_().run('say hi'))
+        with self.assertRaises(ValueError):
+            str(return_())
 
     def test_say(self):
         self.assertEqual('say test', say('test'))
@@ -1497,6 +1498,75 @@ class TestCommands(unittest.TestCase):
                               'scoreboard players operation x score *= t00 __foo'], x.set(-y))
         finally:
             Expression.set_scratch_objective(orig)
+
+    def test_score_expression(self):
+        x = Score('x', 'obj')
+        y = Score('y', 'obj')
+        z = Score('z', 'obj')
+
+        # Score.set() with a BinaryOp returns a list of commands
+        self.assertIsInstance(x.set(y + 1), list)
+
+        # x = x + 3: x is leftmost, no scratch needed, resolves to a simple add
+        self.assertEqual(['scoreboard players add x obj 3'], x.set(x + 3))
+
+        # x = x - 3: x is leftmost, resolves to a simple remove
+        self.assertEqual(['scoreboard players remove x obj 3'], x.set(x - 3))
+
+        # x = y + 3: requires setting x to y first, then adding
+        self.assertEqual([
+            'scoreboard players operation x obj = y obj',
+            'scoreboard players add x obj 3',
+        ], x.set(y + 3))
+
+        # x = y - 3: requires setting x to y first, then removing
+        self.assertEqual([
+            'scoreboard players operation x obj = y obj',
+            'scoreboard players remove x obj 3',
+        ], x.set(y - 3))
+
+        # x = y * z: requires a scratch variable and an operation
+        cmds = x.set(y * z)
+        self.assertEqual('scoreboard players operation x obj = y obj', cmds[0])
+        self.assertEqual('scoreboard players operation x obj *= z obj', cmds[1])
+
+        # x = 3 + x: x is on the right, its value must be saved before overwriting
+        cmds = x.set(3 + x)
+        self.assertIn('scoreboard players set x obj 3', cmds)
+        self.assertTrue(any('__scratch' in c for c in cmds))
+
+        # Scratch objective is added exactly once when scratch is needed
+        cmds = x.set(y * 3)
+        self.assertEqual(1, sum(1 for c in cmds if 'objectives add __scratch dummy' in c))
+
+        # No scratch objective added when not needed (simple add/remove)
+        cmds = x.set(y + 3)
+        self.assertFalse(any('__scratch' in c for c in cmds))
+
+    def test_score_expression_constants(self):
+        x = Score('x', 'obj')
+
+        # Pure constant folding: all ops on two ints should collapse to a single set
+        self.assertEqual(['scoreboard players set x obj 5'], x.set(BinaryOp(2, PLUS, 3)))
+        self.assertEqual(['scoreboard players set x obj 2'], x.set(BinaryOp(5, MINUS, 3)))
+        self.assertEqual(['scoreboard players set x obj 3'], x.set(BinaryOp(7, DIV, 2)))  # floor div
+        self.assertEqual(['scoreboard players set x obj 1'], x.set(BinaryOp(7, MOD, 3)))
+        # This is the bug: MULT missing from _constant_ops raises KeyError before the fix
+        self.assertEqual(['scoreboard players set x obj 12'], x.set(BinaryOp(3, MULT, 4)))
+
+        # Nested constant folding: (2 + 3) * 4 should also collapse entirely
+        self.assertEqual(
+            ['scoreboard players set x obj 20'],
+            x.set(BinaryOp(BinaryOp(2, PLUS, 3), MULT, 4))
+        )
+        # ((1 + 2) + (3 + 4)) -- both branches constant
+        self.assertEqual(
+            ['scoreboard players set x obj 10'],
+            x.set(BinaryOp(BinaryOp(1, PLUS, 2), PLUS, BinaryOp(3, PLUS, 4)))
+        )
+        # No scratch objective should be added for pure-constant expressions
+        cmds = x.set(BinaryOp(2, PLUS, 3))
+        self.assertFalse(any('__scratch' in c for c in cmds))
 
     def test_execute_if_scores(self):
         self.assertEqual('execute if entity @e[scores={}]', str(execute().if_().entity(e().scores({}))))

@@ -1223,11 +1223,12 @@ class _ReturnMod(Command):
     @_fluent
     def fail(self) -> str:
         self._add('fail')
+        self._used = True
         return str(self)
 
     def __str__(self):
         if not self._used:
-            return 'return 0'
+            raise ValueError('return_() must be followed by .run() or .fail()')
         return super().__str__()
 
 
@@ -2613,6 +2614,7 @@ class _TickStopMod(Command):
     def __str__(self):
         if not self._used:
             self._add('1')
+            self._used = True
             return super().__str__()
         return super().__str__()
 
@@ -3050,7 +3052,7 @@ xp = experience
 
 def fetchprofile() -> _FetchProfileMod:
     cmd = Command()
-    cmd._add('fetchprofile')
+    cmd._add('$fetchprofile')
     return cmd._start(_FetchProfileMod())
 
 
@@ -3957,8 +3959,11 @@ class _Evaluate:
     _constant_ops = {
         PLUS: lambda x, y: x + y,
         MINUS: lambda x, y: x - y,
+        MULT: lambda x, y: x * y,
         DIV: lambda x, y: x // y,  # This is how the "/=" operator works with scores, so we keep it for the constants.
         MOD: lambda x, y: x % y,
+        MIN: lambda x, y: min(x, y),
+        MAX: lambda x, y: max(x, y),
     }
 
     def __init__(self, score: Score, top: BinaryOp):
@@ -3969,7 +3974,11 @@ class _Evaluate:
         self.scratches_used = False
         self.score_scratch = None
         self.at_left = True
-        self._generate(score, top)
+        result = self._generate(score, top)
+        if self.score_scratch is not None:
+            self._free_scratch(self.score_scratch)
+        if isinstance(result, (int, float)):
+            self.commands.append(score.set(result))
 
     def _generate(self, score, node) -> ScoreValue:
         """Generates the commands needed by this node. Evaluates lhs and rhs recursively."""
@@ -3979,7 +3988,7 @@ class _Evaluate:
             self.at_left = False
             rhs = self._resolve(scratch, node.rhs)
             if isinstance(lhs, (int, float)) and isinstance(rhs, (int, float)):
-                return self._as_constant(node)
+                return self._constant_ops[node.op](lhs, rhs)
             if isinstance(lhs, (int, float)) or score is not lhs:
                 self.append(score.set(lhs))
             if isinstance(rhs, (int, float)):
@@ -4015,8 +4024,12 @@ class _Evaluate:
             node = str(node)
             self.append(score.set(node))
             return score
-        return self._generate(score, node)
-
+        saved_at_left = self.at_left
+        try:
+            result = self._generate(score, node)
+        finally:
+            self.at_left = saved_at_left
+        return result
     def append(self, command):
         if re.search(fr'\bt[0-9]{{2}} {self._scratch_objective}', command):
             if not self.scratches_used:
@@ -4024,10 +4037,6 @@ class _Evaluate:
                 self.append(scoreboard().objectives().add(self._scratch_objective, DUMMY))
                 self.scratches_used = True
         self.commands.append(command)
-
-    def _as_constant(self, node) -> int | float:
-        """Turns an operation on a pair of values into a value."""
-        return self._constant_ops[node.op](node.lhs, node.rhs)
 
     def _next_scratch(self) -> Score:
         """Returns the next unused scratch value."""
@@ -4165,12 +4174,14 @@ class Score(Command, Expression):
         """Return a 'get' command for the score."""
         return self._cmd().get(self)
 
-    def set(self, value: IntOrArg | Command | Score | Expression) -> str | list[Command]:
+    def set(self, value: IntOrArg | bool | Command | Score | Expression) -> str | list[Command]:
         """
         Returns a 'set' command for the score. If the value is a command, returns a command that sets the value to
         the result of that command. If the value is an expression, returns the commands required to set this score to
         the value of that expression.
         """
+        if isinstance(value, bool):
+            value = int(value)
         if isinstance(value, int) or is_int_arg(value):
             return self._cmd().set(self, de_int_arg(value))
         elif isinstance(value, Score):
