@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from collections import UserDict, UserList
 from html.parser import HTMLParser
 from io import StringIO
-from typing import Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union, Any
+from typing import Any, Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
 import math
 import numpy as np
@@ -798,7 +798,7 @@ class Nbt(UserDict):
 
     @classmethod
     def _to_str(cls, elem, sout, force_type=None, components_child=False):
-        if isinstance(elem, (Nbt, dict)):
+        if isinstance(elem, Mapping):
             sout.write('{')
             keys = elem.keys()
             if Nbt.sort_keys:
