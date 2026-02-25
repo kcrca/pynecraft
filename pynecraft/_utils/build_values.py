@@ -255,7 +255,7 @@ class TeamOptions(PageValuesDesc):
     def fetch(self):
         tab = '<table>'
         html_time, real = super().fetch()
-        arg = real.find('span', id='Arguments')
+        arg = real.find('h2', id='Arguments')
         for p in arg.find_all_next('p'):
             if p.text == '<option>\n':
                 dl = p.find_next('dl')
@@ -304,8 +304,8 @@ class Advancement(PageValuesDesc):
             elif t.name == 'h2':
                 if in_adv:
                     return s
-                in_adv = len(t.select('#List_of_advancements'))
-        # return soup.find_all('table', attrs={'data-description': self.data_desc})
+                in_adv = t['id'] == 'List_of_advancements'
+        return s
 
     def header(self, col: int, text: str):
         if text == 'Advancement':
@@ -390,7 +390,7 @@ class Enchantment(PageValuesDesc):
 
     def extract(self, cols):
         name = clean(cols[self.name_col])
-        name = re.sub(r'\s{2,}', ' ', name)
+        name = re.sub(r'\[.*', '', re.sub(r'\s{2,}', ' ', name)).strip()
         value = name.lower().replace(' ', '_')
         desc = clean(cols[self.desc_col])
         self.maxes[value] = roman_to_int(clean(cols[self.max_col].text))
@@ -417,8 +417,8 @@ class GameRule(PageValuesDesc):
     def find_tables(self, soup):
         tables = []
         for t in soup.select('table'):
-            caption = t.find('caption')
-            if caption and 'List of game rules' in caption.text:
+            th = t.find('th')
+            if th and 'Rule name' in th.text:
                 tables.append(t)
         return tables
 
@@ -429,9 +429,6 @@ class GameRule(PageValuesDesc):
             self.desc_col = col
         elif text == 'Type':
             self.type_col = col
-        elif text == 'Availability':
-            # Filter out unavailable game rules.
-            self.filter_col = col
         elif text == 'Java':
             # Yes this is weird. This is in a nested table, which is the original filter_cal
             self.filter_col += col
@@ -439,9 +436,8 @@ class GameRule(PageValuesDesc):
             pass
 
     def extract(self, cols):
-        if cols[self.filter_col].text.lower().strip() not in ('yes', 'upcoming'):
-            raise SkipEntry
         value = clean(cols[self.value_col].text)
+        value = re.sub(r'JE: (.*)\s*BE:.*', r'\1', value).strip()
         name = camel_to_name(value)
         self.types[value] = 'int' if clean(cols[self.type_col]).lower() == 'int' else 'bool'
         return name, value, clean(cols[self.desc_col])
@@ -573,7 +569,7 @@ class Pattern(PageValuesDesc):
     def extract(self, cols):
         name = titlecase(clean(cols[self.value_col].text).lower().replace('_', ' '))
         desc = cols[self.desc_col].text
-        desc = re.sub('(?s)\[JE\s+only.*', '', desc)
+        desc = re.sub(r'(?s)\[JE\s+only.*', '', desc)
         value = cols[self.value_col].next.text
         return name, clean(value), clean(desc)
 
@@ -715,7 +711,7 @@ if __name__ == '__main__':
                 dups = f'__{tab.name.lower()}_dups'
                 print(f'{dups} = {{}}')
                 group = []
-                for key in fields:
+                for key in sorted(fields.keys()):
                     value, _, name = fields[key]
                     k = key
                     if key not in known:
