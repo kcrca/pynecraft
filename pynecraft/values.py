@@ -23,7 +23,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 
 # TeamOptions
-# Derived from https://minecraft.wiki/Commands/team, 2026-02-24T15:38:24-08:00
+# Derived from https://minecraft.wiki/Commands/team, 2026-02-24T19:27:22-08:00
 __teamoption_dups = {}
 COLLISION_RULE = "collisionRule"
 COLOR = "color"
@@ -77,7 +77,7 @@ def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Patterns
-# Derived from https://minecraft.wiki/Banner/Patterns, 2026-02-24T16:41:48-08:00
+# Derived from https://minecraft.wiki/Banner/Patterns, 2026-02-24T19:27:22-08:00
 __pattern_dups = {}
 BASE = "base"
 BORDER = "border"
@@ -190,7 +190,7 @@ def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Advancements
-# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2026-02-24T16:41:48-08:00
+# Derived from https://minecraft.wiki/Advancement#List_of_advancements, 2026-02-24T19:27:23-08:00
 __advancement_dups = {}
 ACQUIRE_HARDWARE = "story/smelt_iron"
 __advancement_dups["adventure"] = "adventure/root"
@@ -576,7 +576,7 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Biomes
-# Derived from https://minecraft.wiki/Biome/ID, 2026-02-24T17:07:14-08:00
+# Derived from https://minecraft.wiki/Biome/ID, 2026-02-24T19:27:23-08:00
 __biome_dups = {}
 BADLANDS = "badlands"
 BAMBOO_JUNGLE = "bamboo_jungle"
@@ -739,7 +739,7 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Effects
-# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2026-02-24T17:07:14-08:00
+# Derived from https://minecraft.wiki/Effect?so=search#Effect_list, 2026-02-24T19:27:23-08:00
 __effect_dups = {}
 ABSORPTION = "absorption"
 BAD_LUCK = "unluck"
@@ -874,7 +874,7 @@ def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Enchantments
-# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2026-02-24T17:07:14-08:00
+# Derived from https://minecraft.wiki/Enchanting#Summary_of_enchantments, 2026-02-24T19:27:23-08:00
 __enchantment_dups = {}
 AQUA_AFFINITY = "aqua_affinity"
 BANE_OF_ARTHROPODS = "bane_of_arthropods"
@@ -1030,7 +1030,7 @@ def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # GameRules
-# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2026-02-24T17:07:15-08:00
+# Derived from https://minecraft.wiki/Game_rule?so=search#List_of_game_rules, 2026-02-24T19:27:24-08:00
 __gamerule_dups = {}
 ADVANCE_TIME = "advance_time"
 ADVANCE_WEATHER = "advance_weather"
@@ -1303,7 +1303,7 @@ def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # ScoreCriteria
-# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2026-02-24T17:21:15-08:00
+# Derived from https://minecraft.wiki/Scoreboard#Criteria, 2026-02-24T19:27:24-08:00
 __scorecriteria_dups = {}
 AIR = "air"
 ARMOR = "armor"
@@ -1356,7 +1356,7 @@ def as_scorecriteria(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Particles
-# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2026-02-24T17:21:16-08:00
+# Derived from https://minecraft.wiki/Particles_(Java_Edition)#Types_of_particles, 2026-02-24T19:27:24-08:00
 __particle_dups = {}
 ANGRY_VILLAGER = "angry_villager"
 ASH = "ash"
@@ -1434,10 +1434,12 @@ NAUTILUS = "nautilus"
 NOTE = "note"
 OMINOUS_SPAWNING = "ominous_spawning"
 PALE_OAK_LEAVES = "pale_oak_leaves"
+PAUSE_MOB_GROWTH = "pause_mob_growth"
 POOF = "poof"
 PORTAL = "portal"
 __particle_dups["raid_omen"] = "raid_omen"
 __particle_dups["rain"] = "rain"
+RESET_MOB_GROWTH = "reset_mob_growth"
 REVERSE_PORTAL = "reverse_portal"
 SCRAPE = "scrape"
 SCULK_CHARGE = "sculk_charge"
@@ -1482,11 +1484,12 @@ PARTICLE_GROUP = [
     FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREFLY, FIREWORK,
     FISHING, "flame", FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, "infested",
     INSTANT_EFFECT, "item", ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR,
-    LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, POOF, PORTAL, "raid_omen", "rain",
-    REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE,
-    SNOWFLAKE, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK,
-    TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS,
-    UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
+    LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, PAUSE_MOB_GROWTH, POOF, PORTAL,
+    "raid_omen", "rain", RESET_MOB_GROWTH, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK,
+    SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH,
+    SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, "trial_omen",
+    TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE,
+    "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
 ]
 
 ParticleInfo = namedtuple("Particle", ['name', 'value', 'desc'])
@@ -1621,12 +1624,16 @@ particles = {
                                      """Appears when an ominous item spawner spawns a item during an ominous event."""),
     "PALE_OAK_LEAVES": ParticleInfo("""Pale Oak Leaves""", "pale_oak_leaves",
                                     """Falls off the bottom of pale oak leaves."""),
+    "PAUSE_MOB_GROWTH": ParticleInfo("""Pause Mob Growth""", "pause_mob_growth",
+                                     """Shown when a golden dandelion is used on a mob to stop its growth."""),
     "POOF": ParticleInfo("""Poof""", "poof",
                          """Appears when mobs die, shown when ravagers roar after being stunned, produced when silverfish enter stone, appear around mobs spawned by spawners, shown when zombies trample turtle eggs, created when fireworks crafted without stars expire."""),
     "PORTAL": ParticleInfo("""Portal""", "portal",
                            """Trails behind eyes of ender, shown when eyes of ender break, floats toward where ender pearls break, points toward where dragon eggs teleport, floats toward where players teleport with chorus fruit, appears and floats toward nether portals, appears and floats toward end gateway portals, appears and floats toward ender chests, emitted by endermen, appears and floats toward endermites."""),
     "RAID_OMEN": ParticleInfo("""Raid Omen""", "raid_omen",
                               """Produced by players and mobs with the Raid Omen effect."""),
+    "RESET_MOB_GROWTH": ParticleInfo("""Reset Mob Growth""", "reset_mob_growth",
+                                     """Shown when a golden dandelion is used on a mob to resume its growth."""),
     "RAIN": ParticleInfo("""Rain""", "rain", """Appears on the ground during rain."""),
     "REVERSE_PORTAL": ParticleInfo("""Reverse Portal""", "reverse_portal",
                                    """Floats off the top of respawn anchors that have some level of charge."""),
@@ -1694,7 +1701,7 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # PotterySherds
-# Derived from https://minecraft.wiki/Pottery_Sherd, 2026-02-24T17:21:16-08:00
+# Derived from https://minecraft.wiki/Pottery_Sherd, 2026-02-24T19:27:24-08:00
 __potterysherd_dups = {}
 ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
 ARMS_UP_POTTERY_SHERD = "arms_up_pottery_sherd"
@@ -1758,7 +1765,7 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Discs
-# Derived from https://minecraft.wiki/Music_Disc#Discs, 2026-02-24T17:21:16-08:00
+# Derived from https://minecraft.wiki/Music_Disc#Discs, 2026-02-24T19:27:25-08:00
 __disc_dups = {}
 BLOCKS = "music_disc_blocks"
 CAT = "music_disc_cat"
@@ -1822,7 +1829,7 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 
 
 # Paintings
-# Derived from https://minecraft.wiki/Painting#Canvases, 2026-02-24T17:21:16-08:00
+# Derived from https://minecraft.wiki/Painting#Canvases, 2026-02-24T19:27:25-08:00
 __painting_dups = {}
 ALBAN = "Albanian"
 AZTEC = "de_aztec"
