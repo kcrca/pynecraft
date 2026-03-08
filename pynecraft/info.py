@@ -255,8 +255,11 @@ corals = ('Horn', 'Tube', 'Fire', 'Bubble', 'Brain')
 """The kinds of coral."""
 tulips = ('Red', 'Orange', 'Pink', 'White')
 """The colors of tulips."""
-small_flowers = ('Allium', 'Azure Bluet', 'Blue Orchid', 'Dandelion', 'Oxeye Daisy', 'Poppy')
+small_flowers = ('Allium', 'Azure Bluet', 'Blue Orchid', 'Dandelion', 'Oxeye Daisy', 'Poppy', 'Wither Rose',
+                 'Cornflower')
 """The small flowers."""
+tall_flowers = ('Lilac', 'Peony', 'Pitcher Plant', 'Rose Bush', 'Sunflower', 'Torchflower')
+"""The tall flowers."""
 
 moon_phases = (
     (206000, 'Full'),
