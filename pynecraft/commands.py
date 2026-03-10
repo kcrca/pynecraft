@@ -1769,7 +1769,7 @@ class _EffectAction(Command):
         if amplifier is not None and seconds is None:
             raise ValueError('must give seconds to use amplifier')
         if hide_particles is not None and amplifier is None:
-            amplifier = 1
+            amplifier = 0
         if isinstance(seconds, str) and not is_int_arg(seconds):
             if seconds != INFINITE:
                 raise ValueError(f'{seconds}: Invalid duration')

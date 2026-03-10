@@ -678,6 +678,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('effect give @s speed 100', effect().give(s(), SPEED, 100))
         self.assertEqual('effect give @s speed 100 2', effect().give(s(), SPEED, 100, 2))
         self.assertEqual('effect give @s speed 100 2 true', effect().give(s(), SPEED, 100, 2, True))
+        self.assertEqual('effect give @s speed 100 0 true', effect().give(s(), SPEED, 100, hide_particles=True))
         self.assertEqual('effect give @s speed infinite', effect().give(s(), SPEED, INFINITE))
         self.assertEqual('effect clear', effect().clear())
         self.assertEqual('effect clear @s', effect().clear(s()))
