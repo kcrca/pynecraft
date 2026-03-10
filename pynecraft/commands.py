@@ -2003,7 +2003,7 @@ class _LootSource(Command):
     def mine(self, pos: Position, tool: EntityDef = None) -> str:
         # the 'hand' keywords are also valid resource names, so no separate test is meaningful
         self._add('mine', *pos)
-        self._add_opt(as_entity(as_entity(tool)))
+        self._add_opt(as_entity(tool))
         return str(self)
 
 
