@@ -1138,8 +1138,10 @@ class TestCommands(unittest.TestCase):
 
     def test_stopsound_command(self):
         self.assertEqual('stopsound @a', stopsound(a()))
-        self.assertEqual('stopsound @a m:/a/b', stopsound(a(), 'm:/a/b'))
-        self.assertEqual('stopsound @a m:/a/b m:c', stopsound(a(), 'm:/a/b', 'm:c'))
+        self.assertEqual('stopsound @a player', stopsound(a(), PLAYER))
+        self.assertEqual('stopsound @a record m:c', stopsound(a(), RECORD, 'm:c'))
+        self.assertEqual('stopsound @a *', stopsound(a(), '*'))
+        self.assertEqual('stopsound @a * m:/a/b', stopsound(a(), '*', 'm:/a/b'))
 
     def test_stopwatch_command(self):
         self.assertEqual('stopwatch create sw', stopwatch().create('sw'))

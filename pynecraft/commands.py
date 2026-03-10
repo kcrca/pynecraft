@@ -529,6 +529,18 @@ FRONT_BACK = 'front_back'
 LEFT_RIGHT = 'left_right'
 MIRROR_GROUP = [NONE, FRONT_BACK, LEFT_RIGHT]
 
+MASTER = 'master'
+MUSIC = 'music'
+RECORD = 'record'
+WEATHER = 'weather'
+BLOCK = 'block'
+HOSTILE = 'hostile'
+NEUTRAL = 'neutral'
+PLAYER = 'player'
+AMBIENT = 'ambient'
+VOICE = 'voice'
+SOURCE = [MASTER, MUSIC, RECORD, WEATHER, BLOCK, HOSTILE, NEUTRAL, PLAYER, AMBIENT, VOICE]
+
 GIVE = 'give'
 GIVE_CLEAR = [GIVE, CLEAR]
 
@@ -3391,7 +3403,9 @@ def stopsound(target: Target, /, source: StrOrArg = None, sound: StrOrArg = None
     """Stops a sound."""
     cmd = Command()
     cmd._add('$stopsound', as_target(target))
-    cmd._add_opt(as_resource_path(source), as_resource_path(sound))
+    if source != '*':
+        source = _in_group(SOURCE, source)
+    cmd._add_opt(source, sound)
     return str(cmd)
 
 
