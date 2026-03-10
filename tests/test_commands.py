@@ -1116,11 +1116,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('setworldspawn', setworldspawn())
         self.assertEqual('setworldspawn 1 ~2 ^3', setworldspawn((1, r(2), d(3))))
         self.assertEqual('setworldspawn 1 ~2 ^3', setworldspawn((1, r(2), d(3))))
-        self.assertEqual('setworldspawn 1 ~2 ^3 9.3 17', setworldspawn((1, r(2), d(3)), 9.3, 17))
-        self.assertEqual('setworldspawn 1 ~2 ^3 180.0 17', setworldspawn((1, r(2), d(3)), NORTH, 17))
         self.assertEqual('setworldspawn 1 ~2 ^3 180.0', setworldspawn((1, r(2), d(3)), NORTH))
-        self.assertEqual('$setworldspawn $(x) $(y) $(z) $(yaw) $(pitch)',
-                         setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('yaw'), Arg('pitch')))
         self.assertEqual('$setworldspawn $(x) $(y) $(z) $(yaw)',
                          setworldspawn((Arg('x'), Arg('y'), Arg('z')), Arg('yaw')))
 
@@ -1185,7 +1181,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('team empty foo', team().empty('foo'))
         self.assertEqual('team join foo', team().join('foo'))
         self.assertEqual('team join foo @r', team().join('foo', rand()))
-        self.assertEqual('team leave foo @r', team().leave('foo', rand()))
+        self.assertEqual('team leave @r', team().leave(rand()))
         self.assertEqual('team modify foo displayName bar', team().modify('foo', DISPLAY_NAME, 'bar'))
         self.assertEqual('team modify foo friendlyFire true', team().modify('foo', FRIENDLY_FIRE, True))
         self.assertEqual('team modify foo nametagVisibility hideForOwnTeam',

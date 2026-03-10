@@ -1351,10 +1351,9 @@ class _ExecuteMod(Command):
 
 class _AttributeBaseAct(Command):
     @_fluent
-    def get(self, scale: float = None) -> str:
+    def get(self, scale: FloatOrArg = None) -> str:
         self._add('get')
-        if scale:
-            self._add(scale)
+        self._add_opt(de_float_arg(scale))
         return str(self)
 
     @_fluent
@@ -2343,8 +2342,8 @@ class _TeamMod(Command):
         return str(self)
 
     @_fluent
-    def leave(self, team: StrOrArg, target: Target = None) -> str:
-        self._add('leave', as_team(team), as_target(target))
+    def leave(self, target: Target = None) -> str:
+        self._add('leave', as_target(target))
         return str(self)
 
     @_fluent
@@ -3022,7 +3021,7 @@ def enchant(target: Target, enchantment: StrOrArg | IntOrArg, level: IntOrArg = 
         max_level = enchantments[enchantment].max_level
         if level not in range(max_level + 1):
             raise ValueError(f'Level not in range [0..{max_level}]')
-        cmd._add_opt(level)
+    cmd._add_opt(level)
     return str(cmd)
 
 
@@ -3348,13 +3347,12 @@ def setidletimeout(minutes: int) -> str:
     return str(cmd)
 
 
-def setworldspawn(pos: Position = None, yaw: FloatOrArg = None, pitch: FloatOrArg = None) -> str:
+def setworldspawn(pos: Position = None, yaw: FloatOrArg = None) -> str:
     """Sets the dir spawn."""
     cmd = Command()
     cmd._add('$setworldspawn')
     cmd._add_opt_pos(pos)
     cmd._add_opt(as_yaw(yaw))
-    cmd._add_opt(pitch)
     return str(cmd)
 
 
