@@ -1509,15 +1509,6 @@ class _BossbarMod(Command):
         return self._start(_BossbarSet())
 
 
-class _ClearClause(Command):
-    @_fluent
-    def item(self, item: StrOrArg, max_count: int = None) -> str:
-        self._add(item)
-        if max_count:
-            self._add(max_count)
-        return str(self)
-
-
 class _CloneClause(Command):
     def _flag(self, flag):
         if flag:
@@ -1766,8 +1757,9 @@ class _DialogPart(Command):
         return str(self)
 
     @_fluent
-    def clear(self, target: TargetSpec):
-        self._add('clear', as_target(target))
+    def clear(self, target: TargetSpec = None):
+        self._add('clear')
+        self._add_opt(as_target(target))
         return str(self)
 
 
@@ -2913,11 +2905,12 @@ def bossbar() -> _BossbarMod:
     return cmd._start(_BossbarMod())
 
 
-def clear(target: Target) -> _ClearClause:
+def clear(target: Target = None, item: StrOrArg = None, max_count: int = None) -> str:
     """Clears items from player inventory."""
     cmd = Command()
-    cmd._add('$clear', as_target(target))
-    return cmd._start(_ClearClause())
+    cmd._add('$clear')
+    cmd._add_opt(as_target(target), de_arg(item), de_int_arg(max_count))
+    return str(cmd)
 
 
 def clone(start_pos: Position = None, end_pos: Position = None,
@@ -4030,6 +4023,7 @@ class _Evaluate:
         finally:
             self.at_left = saved_at_left
         return result
+
     def append(self, command):
         if re.search(fr'\bt[0-9]{{2}} {self._scratch_objective}', command):
             if not self.scratches_used:

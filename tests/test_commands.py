@@ -626,8 +626,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$bossbar set foo max +$(v).1', bossbar().set('foo').max('+$(v).1'))
 
     def test_clear(self):
-        self.assertEqual('clear @s foo{bar}', clear(s()).item('foo{bar}'))
-        self.assertEqual('clear @s foo{bar} 4', clear(s()).item('foo{bar}', 4))
+        self.assertEqual('clear @s foo{bar}', clear(s(), 'foo{bar}'))
+        self.assertEqual('clear @s foo{bar} 4', clear(s(), 'foo{bar}', 4))
 
     def test_clone(self):
         self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9', str(clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9))))
