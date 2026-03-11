@@ -667,12 +667,6 @@ class AdvancementCriteria(Command):
             self._add(f'{adv}={{{as_resource_path(criteria[0])}={_bool(criteria[1])}}}')
 
 
-class _TextMod(Nbt):
-    def __init__(self, parent: Text):
-        super().__init__()
-        self.parent = parent
-
-
 class HoverEvent(Nbt):
     @classmethod
     def show_text(cls, txt: Text | str) -> HoverEvent:
@@ -1403,10 +1397,9 @@ class _AttributeModifierAct(Command):
 
 class _AttributeMod(Command):
     @_fluent
-    def get(self, scale: float = None) -> str:
+    def get(self, scale: FloatOrArg = None) -> str:
         self._add('get')
-        if scale:
-            self._add(scale)
+        self._add_opt(de_float_arg(scale))
         return str(self)
 
     @_fluent
@@ -1579,10 +1572,6 @@ class _CloneToDimMod(Command):
             config = self._from_.config
         self._add_opt(config)
         return self._start(_CloneClause())
-
-
-class _End(Command):
-    pass
 
 
 class _DataSource(Command):
@@ -1964,12 +1953,12 @@ class _ItemMod(Command):
     def modify(self, target: ItemTarget, slot: StrOrArg, modifier: StrOrArg | NbtDef) -> str:
         if isinstance(modifier, NbtDef):
             modifier = Nbt.as_nbt(modifier)
-        self._add('modify', as_data_target(target), slot, modifier)
+        self._add('modify', as_data_target(target), as_slot(slot), modifier)
         return str(self)
 
     @_fluent
     def replace(self, target: ItemTarget, slot: StrOrArg) -> _ItemReplace:
-        self._add('replace', as_data_target(target), slot)
+        self._add('replace', as_data_target(target), as_slot(slot))
         return self._start(_ItemReplace())
 
 
@@ -1998,20 +1987,6 @@ class _LootSource(Command):
         return str(self)
 
 
-class _LootReplaceTarget(Command):
-    @_fluent
-    def block(self, pos: Position, slot: IntOrArg | StrOrArg, count: IntOrArg = None) -> _LootSource:
-        self._add('block', *pos, de_arg(slot))
-        self._add_opt(de_int_arg(count))
-        return self._start(_LootSource())
-
-    @_fluent
-    def entity(self, target: Target, slot: IntOrArg | StrOrArg, count: IntOrArg = None) -> _LootSource:
-        self._add('entity', as_target(target), slot)
-        self._add_opt(de_int_arg(count))
-        return self._start(_LootSource())
-
-
 class _LootTarget(Command):
     @_fluent
     def give(self, target: Target) -> _LootSource:
@@ -2031,7 +2006,7 @@ class _LootTarget(Command):
     @_fluent
     def replace(self, target: ItemTarget, slot: IntOrArg | StrOrArg, count: IntOrArg = None) -> _LootSource:
         self._add('replace')
-        self._add(as_data_target(target), de_arg(slot))
+        self._add(as_data_target(target), de_arg(as_slot(slot)))
         self._add_opt(de_int_arg(count))
         return self._start(_LootSource())
 
@@ -2362,22 +2337,16 @@ class _TeamMod(Command):
 
 class _TeleportMod(Command):
     @_fluent
-    def facing(self, facing: Target | Position, anchor: StrOrArg = None) -> str:
+    def facing(self, facing: Position) -> str:
         self._add('facing')
-        is_entity = False
-        try:
-            facing = as_target(facing)
-            is_entity = True
-            self._add('entity', facing)
-            if anchor:
-                self._add(_in_group(ENTITY_ANCHOR, anchor))
-        except ValueError:
-            # Check if the error was from the entity or the anchor
-            if is_entity:
-                raise
-            self._add(*as_position(facing))
-            if anchor is not None:
-                raise ValueError('anchor not allowed when facing coordinates')
+        self._add(*as_position(facing))
+        return str(self)
+
+    @_fluent
+    def facing_entity(self, facing: Target, anchor: StrOrArg = None) -> str:
+        self._add('facing')
+        self._add('entity', as_target(facing))
+        self._add_opt(_in_group(ENTITY_ANCHOR, anchor))
         return str(self)
 
 
@@ -3380,7 +3349,7 @@ def spreadplayers(center: Column, distance: float, max_range: float, respect_tea
     return str(cmd)
 
 
-def stopsound(target: Target, /, source: StrOrArg = None, sound: StrOrArg = None) -> str:
+def stopsound(target: Target, source: StrOrArg = None, sound: StrOrArg = None) -> str:
     """Stops a sound."""
     cmd = Command()
     cmd._add('$stopsound', as_target(target))
@@ -3418,9 +3387,9 @@ def summon(entity: EntityDef, /, pos: Position = None, nbt: NbtDef | StrOrArg = 
     return str(cmd)
 
 
-def swing(target: TargetSpec = None, which: str = None) -> str:
+def swing(target: Target = None, which: str = None) -> str:
     cmd = Command()
-    cmd._add('swing')
+    cmd._add('$swing')
     # Allow "swing('offhand')" or "swing('mainhand')"
     if isinstance(target, str):
         bad_cmd = False
