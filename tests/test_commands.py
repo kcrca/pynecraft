@@ -223,6 +223,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('v$(k)', str(Entity('v$(k)')))
         self.assertEqual('$(k)', str(Entity(Arg('k'))))
         self.assertEqual('$(k){b: foo}', str(Entity(Arg('k'), nbt={'b': 'foo'})))
+        self.assertEqual('bat{Passengers: [{Happy: true, id: cow}]}',
+                         str(Entity('bat').passenger(('cow', {'Happy': True}))))
 
     def test_text(self):
         sort_keys = Nbt.sort_keys
@@ -866,7 +868,7 @@ class TestCommands(unittest.TestCase):
     def test_give(self):
         self.assertEqual('give @s foo', give(s(), 'foo'))
         self.assertEqual('give @s foo 17', give(s(), 'foo', 17))
-        self.assertEqual('give @s foo[a=b] 17', give(s(), ('foo', {'a':'b'}), 17))
+        self.assertEqual('give @s foo[a=b] 17', give(s(), ('foo', {'a': 'b'}), 17))
 
     def test_help(self):
         self.assertEqual('help', help())

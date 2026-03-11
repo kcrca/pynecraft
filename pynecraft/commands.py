@@ -3804,6 +3804,7 @@ class Entity(Block):
     def passenger(self, entity: EntityDef) -> Entity:
         """Adds a passenger."""
         passengers = self.nbt.get_list('Passengers')
+        entity = as_entity(entity)
         e_nbt = entity.nbt
         e_nbt['id'] = entity.id
         passengers.append(e_nbt)
