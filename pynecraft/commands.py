@@ -1873,7 +1873,7 @@ class _FilterClause(_FilterModifier):
     @_fluent
     def replace(self, block: BlockDef = None) -> _FilterModifier:
         self._add('replace')
-        self._add_opt(block)
+        self._add_opt(as_block(block))
         return self._start(_FilterModifier())
 
     @_fluent

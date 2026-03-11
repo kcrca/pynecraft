@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from pynecraft.base import d, DARK_GREEN, days, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
+from pynecraft.base import d, DARK_GREEN, days, EAST, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
 from pynecraft.commands import *
 from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, _ScoreboardObjectivesMod, \
     _ScoreboardPlayersMod, _StoreClause, AdvancementCriteria
@@ -754,8 +754,11 @@ class TestCommands(unittest.TestCase):
     def test_fill(self):
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone')))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace()))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace', str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace()))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace air',
                          str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace('air')))
+        self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace oak_log[axis=east]',
+                         str(fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace(('oak_log', {'axis': EAST}))))
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace air destroy',
                          fill((1, r(2), d(3)), (4, 5, 6), 'stone').replace('air').destroy())
         self.assertEqual('fill 1 ~2 ^3 4 5 6 stone replace oak_log[axis=y]',
