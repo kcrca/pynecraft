@@ -869,7 +869,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('help', help())
         self.assertEqual('help foo', help('foo'))
 
-
     def test_item(self):
         self.assertEqual('item modify block 1 ~2 ^3 a.17 m:a', str(item().modify((1, r(2), d(3)), 'a.17', 'm:a')))
         self.assertEqual('item modify entity @s a.17 m:a', str(item().modify(s(), 'a.17', 'm:a')))
@@ -914,13 +913,13 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('loot spawn 1 ~2 ^3 kill @p', loot().spawn((1, r(2), d(3))).kill(p()))
         self.assertEqual((
             'loot replace block 1 ~2 ^3 13 mine 4 ~5 ^6 mainhand'),
-            loot().replace().block((1, r(2), d(3)), 13).mine((4, r(5), d(6)), MAINHAND))
+            loot().replace((1, r(2), d(3)), 13).mine((4, r(5), d(6)), MAINHAND))
+        self.assertEqual('loot replace block 1 ~2 ^3 13 2 kill @p', loot().replace((1, r(2), d(3)), 13, 2).kill(p()))
+        self.assertEqual('loot replace entity @a 12 kill @p', loot().replace(a(), 12).kill(p()))
+        self.assertEqual('loot replace entity @a 12 3 kill @p', loot().replace(a(), 12, 3).kill(p()))
         self.assertEqual('loot replace block 1 ~2 ^3 13 2 kill @p',
-                         loot().replace().block((1, r(2), d(3)), 13, 2).kill(p()))
-        self.assertEqual('loot replace entity @a 12 kill @p',
-                         loot().replace().entity(a(), 12).kill(p()))
-        self.assertEqual('loot replace entity @a 12 3 kill @p',
-                         loot().replace().entity(a(), 12, 3).kill(p()))
+                         loot().replace(block((1, r(2), d(3))), 13, 2).kill(p()))
+        self.assertEqual('loot replace entity @a 12 kill @p', loot().replace(entity(a()), 12).kill(p()))
 
     def test_particle(self):
         self.assertEqual('block', str(Particle('block')))

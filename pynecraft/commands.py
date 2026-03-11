@@ -2029,9 +2029,11 @@ class _LootTarget(Command):
         return self._start(_LootSource())
 
     @_fluent
-    def replace(self) -> _LootReplaceTarget:
+    def replace(self, target: ItemTarget, slot: IntOrArg | StrOrArg, count: IntOrArg = None) -> _LootSource:
         self._add('replace')
-        return self._start(_LootReplaceTarget())
+        self._add(as_data_target(target), de_arg(slot))
+        self._add_opt(de_int_arg(count))
+        return self._start(_LootSource())
 
 
 class _ScoreboardObjectivesMod(Command):
