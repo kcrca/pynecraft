@@ -3115,7 +3115,7 @@ def gamerule(rule: StrOrArg | IntOrArg, value: BoolOrArg | IntOrArg = None) -> s
 def give(target: Target, item: BlockDef, count: int = None) -> str:
     """Gives an item to a player."""
     cmd = Command()
-    cmd._add('$give', as_target(target), item)
+    cmd._add('$give', as_target(target), as_block(item))
     cmd._add_opt(count)
     return str(cmd)
 
