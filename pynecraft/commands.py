@@ -3186,7 +3186,7 @@ def op(target: Target) -> str:
 
 def particle(
         particle: ParticleDef, pos: Position = None, delta: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] = None,
-        speed: FloatOrArg = None, count: IntOrArg = None, mode: StrOrArg = None, *viewers: EntityDef) -> str:
+        speed: FloatOrArg = None, count: IntOrArg = None, mode: StrOrArg = None, *viewers: Target) -> str:
     """Creates particles."""
     cmd = Command()
     cmd._add('$particle')
@@ -3206,7 +3206,7 @@ def particle(
         mode = _in_group(PARTICLE_MODES, mode)
     cmd._add_opt(speed, count, mode)
     for v in viewers:
-        cmd._add(as_entity(v))
+        cmd._add(as_target(v))
     return str(cmd)
 
 
