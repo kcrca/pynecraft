@@ -3418,24 +3418,24 @@ def summon(entity: EntityDef, /, pos: Position = None, nbt: NbtDef | StrOrArg = 
     return str(cmd)
 
 
-def swing(entity: EntityDef = None, which: str = None) -> str:
+def swing(target: TargetSpec = None, which: str = None) -> str:
     cmd = Command()
     cmd._add('swing')
     # Allow "swing('offhand')" or "swing('mainhand')"
-    if isinstance(entity, str):
+    if isinstance(target, str):
         bad_cmd = False
         try:
-            _in_group(HANDS, entity)
+            _in_group(HANDS, target)
             if which is not None:
                 bad_cmd = True
         except ValueError:
             pass
         if bad_cmd:
-            raise ValueError(f'swing("{entity}") cannot be also have another hand')
-        which = entity
-        entity = None
+            raise ValueError(f'swing("{target}") cannot be also have another hand')
+        which = target
+        target = None
 
-    cmd._add_opt(entity, _in_group(HANDS, which))
+    cmd._add_opt(as_target(target), _in_group(HANDS, which))
     return str(cmd)
 
 
