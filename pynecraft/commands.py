@@ -292,10 +292,10 @@ def as_score(score: ScoreName | None) -> Score | None:
 
 
 _single_slot_re = r'[a-z]+(\.([a-z]+))*(\.[0-9]+|\.\*)?'
-_SLOT_RE = re.compile(_single_slot_re + rf'(-{_single_slot_re})?')
+_SLOT_RE = re.compile(_single_slot_re + rf'(-{_single_slot_re})?|[0-9]+')
 
 
-def as_slot(slot: StrOrArg | None) -> str | None:
+def as_slot(slot: StrOrArg | int | None) -> str | None:
     """Checks if the argument is a valid slot specification, or None.
 
     "Valid" means valid for the ``item`` command.
@@ -309,6 +309,8 @@ def as_slot(slot: StrOrArg | None) -> str | None:
         return str(slot)
     if slot is None:
         return None
+    if isinstance(slot, int):
+        return str(slot)
     if not _SLOT_RE.fullmatch(slot):
         raise ValueError(f'{slot}: Bad slot specification')
     return slot
@@ -1943,32 +1945,6 @@ class _FunctionMod(Command):
         return self._start(_FunctionWith())
 
 
-class _ItemTarget(Command):
-    def __init__(self, follow: T, allow_modifier=False):
-        super().__init__()
-        self.follow = follow
-        self.allow_modifier = allow_modifier
-
-    @_fluent
-    def block(self, pos: Position, slot: StrOrArg, modifier: StrOrArg = None) -> _ItemReplace:
-        self._add('block', *pos, as_slot(slot))
-        self._modifier(modifier)
-        return self._start(self.follow)
-
-    @_fluent
-    def entity(self, target: Target, slot: StrOrArg, modifier: StrOrArg = None) -> _ItemReplace:
-        self._add('entity', as_target(target), as_slot(slot))
-        self._modifier(modifier)
-        return self._start(self.follow)
-
-    def _modifier(self, modifier: StrOrArg):
-        if modifier and not self.allow_modifier:
-            raise ValueError('Modifier not allowed here')
-        if isinstance(modifier, Arg):
-            modifier = str(modifier)
-        self._add_opt(modifier)
-
-
 class _ItemReplace(Command):
     @_fluent
     def with_(self, item: EntityDef, count: int = None) -> str:
@@ -1977,21 +1953,24 @@ class _ItemReplace(Command):
         return str(self)
 
     @_fluent
-    def from_(self) -> _ItemTarget:
-        self._add('from')
-        return self._start(_ItemTarget(_End(), True))
+    def from_(self, source_target: ItemTarget, source_slot: StrOrArg, modifier: StrOrArg = None) -> str:
+        self._add('from', as_data_target(source_target), as_slot(source_slot))
+        self._add_opt(modifier)
+        return str(self)
 
 
 class _ItemMod(Command):
     @_fluent
-    def modify(self) -> _ItemTarget:
-        self._add('modify')
-        return self._start(_ItemTarget(_End(), True))
+    def modify(self, target: ItemTarget, slot: StrOrArg, modifier: StrOrArg | NbtDef) -> str:
+        if isinstance(modifier, NbtDef):
+            modifier = Nbt.as_nbt(modifier)
+        self._add('modify', as_data_target(target), slot, modifier)
+        return str(self)
 
     @_fluent
-    def replace(self) -> _ItemTarget:
-        self._add('replace')
-        return self._start(_ItemTarget(_ItemReplace()))
+    def replace(self, target: ItemTarget, slot: StrOrArg) -> _ItemReplace:
+        self._add('replace', as_data_target(target), slot)
+        return self._start(_ItemReplace())
 
 
 class _LootSource(Command):
@@ -2860,7 +2839,7 @@ class _AdvancementMod(Command):
         return str(self)
 
 
-def block(pos: Position | StrOrArg) -> BlockDataTarget:
+def block(pos: Position | StrOrArg) -> BlockDataTarget | ItemTarget:
     """
     Convenience function to be explicit about using a block as a data target. This allows you to put in the `block`
     keyword in your code, such as `data().modify(block(r(1, 1, 0), ...)`. Syntactically this is unnecessary, as (most)
@@ -2870,7 +2849,7 @@ def block(pos: Position | StrOrArg) -> BlockDataTarget:
     return BlockDataTarget(pos)
 
 
-def entity(target: TargetSpec | StrOrArg, single=False) -> EntityDataTarget:
+def entity(target: TargetSpec | StrOrArg, single=False) -> EntityDataTarget | ItemTarget:
     """
     Convenience function to be explicit about using an entity as a data target. This allows you to put in the `entity`
     keyword in your code, such as `data().modify(entity(p()), ...)`. Syntactically this is unnecessary, as (most)

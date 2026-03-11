@@ -869,34 +869,30 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('help', help())
         self.assertEqual('help foo', help('foo'))
 
+
     def test_item(self):
-        self.assertEqual('item modify block 1 ~2 ^3 a.17', str(item().modify().block((1, r(2), d(3)), 'a.17')))
+        self.assertEqual('item modify block 1 ~2 ^3 a.17 m:a', str(item().modify((1, r(2), d(3)), 'a.17', 'm:a')))
+        self.assertEqual('item modify entity @s a.17 m:a', str(item().modify(s(), 'a.17', 'm:a')))
         self.assertEqual('item modify block 1 ~2 ^3 a.17 m:a',
-                         str(item().modify().block((1, r(2), d(3)), 'a.17', 'm:a')))
-        self.assertEqual('item modify entity @s a.17', str(item().modify().entity(s(), 'a.17')))
-        self.assertEqual('item modify entity @s a.17 m:a', str(item().modify().entity(s(), 'a.17', 'm:a')))
-        self.assertEqual('item replace entity @s a.17 with a{b}',
-                         str(item().replace().entity(s(), 'a.17').with_('a{b}')))
-        self.assertEqual('item replace entity @s a.17 with a{b} 2',
-                         str(item().replace().entity(s(), 'a.17').with_('a{b}', 2)))
+                         str(item().modify(block((1, r(2), d(3))), 'a.17', 'm:a')))
+        self.assertEqual('item modify entity @s a.17 m:a', str(item().modify(entity(s()), 'a.17', 'm:a')))
+        self.assertEqual('item modify block 1 ~2 ^3 a.17 {foo: 12}',
+                         str(item().modify((1, r(2), d(3)), 'a.17', {'foo': 12})))
+        self.assertEqual('item replace entity @s a.17 with a{b}', str(item().replace(s(), 'a.17').with_('a{b}')))
+        self.assertEqual('item replace entity @s a.17 with a{b} 2', str(item().replace(s(), 'a.17').with_('a{b}', 2)))
         self.assertEqual('item replace entity @s a.17 from block 1 ~2 ^3 a.17',
-                         str(item().replace().entity(s(), 'a.17').from_().block((1, r(2), d(3)), 'a.17')))
+                         str(item().replace(s(), 'a.17').from_((1, r(2), d(3)), 'a.17')))
         self.assertEqual('item replace entity @s a.17 from block 1 ~2 ^3 a.17 m:a',
-                         str(item().replace().entity(s(), 'a.17').from_().block((1, r(2), d(3)), 'a.17', 'm:a')))
+                         str(item().replace(s(), 'a.17').from_((1, r(2), d(3)), 'a.17', 'm:a')))
         self.assertEqual('item replace entity @s a.17 from entity @p a.17',
-                         str(item().replace().entity(s(), 'a.17').from_().entity(p(), 'a.17')))
+                         str(item().replace(s(), 'a.17').from_(p(), 'a.17')))
         self.assertEqual('item replace entity @s a.17 from entity @p a.17 m:a',
-                         str(item().replace().entity(s(), 'a.17').from_().entity(p(), 'a.17', 'm:a')))
+                         str(item().replace(s(), 'a.17').from_(p(), 'a.17', 'm:a')))
         self.assertEqual('item replace block 1 ~2 ^3 hotbar.0 with air',
-                         str(item().replace().block((1, r(2), d(3)), 'hotbar.0').with_('air')))
+                         str(item().replace((1, r(2), d(3)), 'hotbar.0').with_('air')))
         self.assertEqual('item replace block 1 ~2 ^3 hotbar.0 from entity @s b',
-                         str(item().replace().block((1, r(2), d(3)), 'hotbar.0').from_().entity(s(), 'b')))
-        self.assertEqual('$item modify entity @s $(slot) $(mod)',
-                         str(item().modify().entity(s(), Arg('slot'), Arg('mod'))))
-        with self.assertRaises(ValueError):
-            item().replace().block((1, r(2), d(3)), 'a.17', 'm:a')
-        with self.assertRaises(ValueError):
-            item().replace().entity(s(), 'a.17', 'm:a')
+                         str(item().replace((1, r(2), d(3)), 'hotbar.0').from_(s(), 'b')))
+        self.assertEqual('$item modify entity @s $(slot) $(mod)', str(item().modify(s(), Arg('slot'), Arg('mod'))))
 
     def test_kill_command(self):
         self.assertEqual('kill', kill())
@@ -1316,6 +1312,8 @@ class TestCommands(unittest.TestCase):
 
     def test_as_slot(self):
         self.assertIsNone(as_slot(None))
+        self.assertEqual('17', as_slot(17))
+        self.assertEqual('17', as_slot('17'))
         self.assertEqual('foo.1', as_slot('foo.1'))
         self.assertEqual('foo.*', as_slot('foo.*'))
         self.assertEqual('player.crafting.0', as_slot('player.crafting.0'))
