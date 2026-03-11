@@ -3367,7 +3367,7 @@ def spectate(target: Target = None, watched: Target = None) -> str:
     return str(cmd)
 
 
-def spreadplayers(center: Position, distance: float, max_range: float, respect_teams: bool, target: Target,
+def spreadplayers(center: Column, distance: float, max_range: float, respect_teams: bool, target: Target,
                   max_height: int = None) -> str:
     """Teleports entities to random locations. This doesn't quite follow the minecraft command syntax because that
     has a weird optional ``under <num>`` parameter in the middle, which is hard to model and, well, weird. As an

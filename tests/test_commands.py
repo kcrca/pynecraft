@@ -1127,9 +1127,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('spectate @s @r', spectate(s(), rand()))
 
     def test_spreadplayers_command(self):
-        self.assertEqual('spreadplayers 1 ~2 ^3 1.7 15.3 true @a', spreadplayers((1, r(2), d(3)), 1.7, 15.3, True, a()))
-        self.assertEqual('spreadplayers 1 ~2 ^3 1.7 15.3 under 150 true @a',
-                         spreadplayers((1, r(2), d(3)), 1.7, 15.3, True, a(), 150))
+        self.assertEqual('spreadplayers 1 ^3 1.7 15.3 true @a', spreadplayers((1, d(3)), 1.7, 15.3, True, a()))
+        self.assertEqual('spreadplayers 1 ^3 1.7 15.3 under 150 true @a',
+                         spreadplayers((1, d(3)), 1.7, 15.3, True, a(), 150))
 
     def test_stopsound_command(self):
         self.assertEqual('stopsound @a', stopsound(a()))
