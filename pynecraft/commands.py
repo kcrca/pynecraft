@@ -2974,10 +2974,10 @@ def defaultgamemode(gamemode: StrOrArg) -> str:
     return str(cmd)
 
 
-def deop(*targets: Target) -> str:
-    """Revokes operator status from a player."""
+def deop(target: Target) -> str:
+    """Revokes operator status from a player target."""
     cmd = Command()
-    cmd._add('$deop', *targets)
+    cmd._add('$deop', as_target(target))
     return str(cmd)
 
 

@@ -1380,7 +1380,7 @@ class TestCommands(unittest.TestCase):
 
     def test_simple_commands(self):
         self.assertEqual('defaultgamemode survival', defaultgamemode(SURVIVAL))
-        self.assertEqual('deop @s @a', deop(s(), a()))
+        self.assertEqual('deop @a', deop(a()))
         self.assertEqual('difficulty peaceful', difficulty(PEACEFUL))
         self.assertEqual('me howdy', me('howdy'))
         self.assertEqual('op @s', op(s()))
