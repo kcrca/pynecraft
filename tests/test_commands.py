@@ -962,8 +962,8 @@ class TestCommands(unittest.TestCase):
                          particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE))
         self.assertEqual('particle ash 1 ~2 ^3 4 5 6.7 2.1 15 force @a',
                          particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE, a()))
-        self.assertEqual('particle ash 1 ~2 ^3 4 5 6.7 2.1 15 force @a @e[tag=foo]',
-                         particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE, a(), e().tag('foo')))
+        self.assertEqual('particle ash 1 ~2 ^3 4 5 6.7 2.1 15 force @a foo',
+                         particle(ASH, (1, r(2), d(3)), (4, 5, 6.7), 2.1, 15, FORCE, a(), 'foo'))
         self.assertEqual('particle falling_dust{block_state: sand} 1 ~2 ^3',
                          particle((FALLING_DUST, {'block_state': 'sand'}), (1, r(2), d(3))))
 

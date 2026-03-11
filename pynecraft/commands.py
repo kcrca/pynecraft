@@ -3206,7 +3206,7 @@ def particle(
         mode = _in_group(PARTICLE_MODES, mode)
     cmd._add_opt(speed, count, mode)
     for v in viewers:
-        cmd._add(v)
+        cmd._add(as_entity(v))
     return str(cmd)
 
 
