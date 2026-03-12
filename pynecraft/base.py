@@ -166,6 +166,7 @@ class Arg:
 
 
 def de_arg(v: Any) -> Any:
+    """Returns the value as an Arg if it is one, otherwise as a str."""
     if not isinstance(v, str) and isinstance(v, Sequence):
         c = v.__class__
         # noinspection PyArgumentList
@@ -185,8 +186,7 @@ def is_int_arg(v: Any) -> bool:
 
 
 def de_int_arg(v: Any) -> Any:
-    """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
-    that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
+    """Returns the value as an Arg if it is one, otherwise as an int."""
     if is_int_arg(v) and not isinstance(v, int):
         return str(v)
     return v
@@ -210,8 +210,7 @@ def is_float_arg(v: Any) -> bool:
 
 
 def de_float_arg(v: Any) -> Any:
-    """Returns True if the value can be used where a number is needed; that is, either a number, an Arg object, or a string
-    that contains a macro expansion that can be used as a number, such as '$(foo)' or ``17.($foo)``."""
+    """Returns the value as an Arg if it is one, otherwise as a float."""
     if is_float_arg(v) and not isinstance(v, float):
         return str(v)
     return v
@@ -238,7 +237,7 @@ def _quote(value):
             pass
 
         # If we don't quote these, the string "true" will become a boolean "true", etc.
-        if re.fullmatch(r'true|false|\d+\.?\d*|\d*\.?\d+', value):
+        if value in {'true', 'false'}:
             return f'"{value}"'
         # $(foo) doesn't need to be quoted either.
         if not re.fullmatch(r'(\w+|\$\(\w+\))', value) or re.match(r'^\d', value):
@@ -573,7 +572,7 @@ def _as_array_type(elem_type):
 class Nbt(UserDict):
     MAX_LONG = 0x7fff_ffff_ffff_ffff
     MIN_LONG = -MAX_LONG - 1
-    MAX_INT = 0x7fff_fff
+    MAX_INT = 0x7fff_ffff
     MIN_INT = -MAX_INT - 1
     MAX_SHORT = 0x7fff
     MIN_SHORT = -MAX_SHORT - 1
@@ -581,7 +580,7 @@ class Nbt(UserDict):
     MIN_BYTE = -MAX_BYTE - 1
     MAX_ULONG = 0xffff_ffff_ffff_ffff
     MIN_ULONG = 0
-    MAX_UINT = 0xffff_fff
+    MAX_UINT = 0xffff_ffff
     MIN_UINT = 0
     MAX_USHORT = 0xffff
     MIN_USHORT = 0
@@ -591,13 +590,13 @@ class Nbt(UserDict):
     MAX_FLOAT_VALUE = +3.4e+38
     MIN_FLOAT_VALUE = 1.401298e-45
     MIN_FLOAT_NORMAL = 1.175494e-38
-    MAX_FLOAT_EXPONENT = -126
-    MIN_FLOAT_EXPONENT = 127
+    MIN_FLOAT_EXPONENT = 126
+    MAX_FLOAT_EXPONENT = 127
     MAX_DOUBLE_VALUE = 1.797693e+308
     MIN_DOUBLE_VALUE = 4.900000e-324
     MIN_DOUBLE_NORMAL = 2.225074e-308
-    MAX_DOUBLE_EXPONENT = -1022
-    MIN_DOUBLE_EXPONENT = 1023
+    MIN_DOUBLE_EXPONENT = -1022
+    MAX_DOUBLE_EXPONENT = 1023
 
     """A simple NBT handling class, that models NBT values as a python dictionary.
 
@@ -727,7 +726,9 @@ class Nbt(UserDict):
             raise ValueError(f'{name}: Not a float')
         num = float(num)
         ranges = {'f': (Nbt.MIN_FLOAT_VALUE, Nbt.MAX_FLOAT_VALUE), 'd': (Nbt.MIN_DOUBLE_VALUE, Nbt.MAX_DOUBLE_VALUE)}
-        if type and abs(num) not in range(*ranges[type]):
+        lo, hi = ranges[type]
+        a = abs(num)
+        if a != 0 and (a < lo or a > hi):
             raise ValueError(f'{name}: Outside range of type "{type}"')
         return num
 

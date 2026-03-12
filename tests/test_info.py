@@ -1,12 +1,12 @@
 import unittest
 
-from pynecraft.info import Fish, block_items, blocks, blocks_by_id, items, items_by_id, mobs, mobs_by_id, \
+from pynecraft.info import block_items, blocks, blocks_by_id, Fish, items, items_by_id, mobs, mobs_by_id, \
     must_give_items, must_give_items_by_id
 
 
 class TestInfo(unittest.TestCase):
     def test_fish(self):
-        var1 = Fish.variant('Spotty', 'Blue', 'RED')
+        var1 = Fish.variant_for('Spotty', 'Blue', 'RED')
         self.assertEqual(0x0e_0b_00_01, var1)
         fish = Fish(var1, 'foo')
         self.assertTrue(fish.is_small())
@@ -15,7 +15,7 @@ class TestInfo(unittest.TestCase):
         self.assertEqual('blue', fish.body_color())
         self.assertEqual('red', fish.pattern_color())
         self.assertEqual('Blue-Red Spotty', fish.desc())
-        var2 = Fish.variant('Glitter', 'GREEN', 'light blue')
+        var2 = Fish.variant_for('Glitter', 'GREEN', 'light blue')
         self.assertEqual(0x03_0d_03_00, var2)
         fish = Fish(var2, 'foo')
         self.assertFalse(fish.is_small())

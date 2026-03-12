@@ -86,7 +86,7 @@ class _ItemForBlockDict(UserDict):
     def __getitem__(self, item):
         if item not in self and item in blocks:
             return Item(item)
-        return None
+        return super().__getitem__(item)
 
 
 block_items = _ItemForBlockDict({
@@ -285,7 +285,7 @@ text_colors = {
     DARK_PURPLE: 0xaa00aa,
     GOLD: 0xffaa00,
     GRAY: 0xaaaaaa,
-    DARK_GRAY: 555555,
+    DARK_GRAY: 0x555555,
     BLUE: 0x5555ff,
     GREEN: 0x55ff55,
     AQUA: 0x55ffff,
@@ -316,7 +316,7 @@ class Fish(Entity):
         return cls._kinds
 
     @classmethod
-    def variant(cls, kind: int | str, body_color: int | str, pattern_color: int | str) -> int:
+    def variant_for(cls, kind: int | str, body_color: int | str, pattern_color: int | str) -> int:
         """
         Returns a variant for the described fish, to be used as a parameter to the Fish constructor.
         :param kind: The kind of fish, as either a name of a key in the ``tropical_fish`` dict, or an index of a key.

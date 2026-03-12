@@ -19,7 +19,8 @@ FLUID = 'fluid'
 ITEM = 'item'
 ENTITY = 'entity_type'
 EVENT = 'game_event'
-TAG_SETS = [BLOCK, FLUID, ITEM, ENTITY, EVENT]
+FUNCTION = 'function'
+TAG_SETS = [BLOCK, FLUID, ITEM, ENTITY, EVENT, FUNCTION]
 
 ADVENTURE = 'adventure'
 END = 'end'
@@ -577,17 +578,17 @@ class DataPack:
     def _load_dict(self, path: Path) -> dict:
         contents = {}
         for entry in path.glob('*'):
-            path = Path(entry)
-            if path.is_file():
-                if path.suffix != '.json':
-                    print(f'Warning: {path} ignored: not a .json file')
+            fpath = Path(entry)
+            if fpath.is_file():
+                if fpath.suffix != '.json':
+                    print(f'Warning: {fpath} ignored: not a .json file')
                     continue
-                with open(path) as fp:
-                    contents[path.stem] = json.load(fp)
+                with open(fpath) as fp:
+                    contents[fpath.stem] = json.load(fp)
             else:
-                if entry.stem == 'function' and path.stem == self.name:
+                if entry.stem == 'function' and fpath.stem == self.name:
                     continue
-                contents[path.stem + '/'] = self._load_dict(path)
+                contents[fpath.stem + '/'] = self._load_dict(fpath)
         return contents
 
     def save(self, path: Path | str):
@@ -772,9 +773,9 @@ class FunctionSet:
             self.functions = functions
 
         def __setitem__(self, key: str, value: Function):
-            ret = super().__setitem__(key, value)
             if not isinstance(value, Function):
                 raise ValueError(f'{value.name}: Not a Function')
+            ret = super().__setitem__(key, value)
             value.parent = self.functions
             return ret
 
