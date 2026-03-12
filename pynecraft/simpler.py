@@ -3,13 +3,12 @@ from __future__ import annotations
 import dataclasses
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
-from .base import Arg, FacingDef, IntOrArg, IntRelCoord, NORTH, Nbt, NbtDef, Position, RelCoord, StrOrArg, \
-    Transform, _ensure_size, _in_group, _to_list, as_facing, d, de_arg, is_arg, r, to_id
-from .commands import Block, BlockDef, COLORS, ClickEvent, Command, Commands, Entity, EntityDef, SignCommand, \
-    SignCommands, SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList, a, as_biome, as_block, \
-    as_entity, \
-    as_text, data, e, execute, fill, fillbiome, n, return_, scoreboard, setblock
-from .values import PaintingInfo, as_pattern, paintings
+from .base import _ensure_size, _in_group, _to_list, Arg, as_facing, d, de_arg, FacingDef, IntOrArg, IntRelCoord, \
+    is_arg, Nbt, NbtDef, NORTH, Position, r, RelCoord, StrOrArg, to_id, Transform
+from .commands import a, as_biome, as_block, as_entity, as_text, Block, BlockDef, ClickEvent, COLORS, Command, Commands, \
+    data, e, Entity, EntityDef, execute, fill, fillbiome, n, return_, scoreboard, setblock, SignCommand, SignCommands, \
+    SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList
+from .values import as_pattern, PaintingInfo, paintings
 
 ARMORER = 'armorer'
 BUTCHER = 'butcher'
@@ -551,14 +550,14 @@ class Region:
         """
         f = fill(self.start, self.end, as_block(new))
         if replace:
-            f = f.replace(replace)
-        yield f
+            f = str(f.replace(replace))
+        return f
 
     def fillbiome(self, biome: StrOrArg, replace: StrOrArg = None) -> Command:
         f = fillbiome(self.start, self.end, as_biome(biome))
         if replace:
             f = f.replace(as_biome(replace))
-        yield f
+        return f
 
     def replace(self, new: BlockDef, old: BlockDef, states: SomeMappings = None,
                 new_states: SomeMappings = None, shared_states: SomeMappings = None) -> Commands:
@@ -574,13 +573,15 @@ class Region:
         old = as_block(old)
 
         if not states and not new_states and not shared_states:
-            yield from self.fill(new, old)
+            return self.fill(new, old)
         else:
+            cmds = []
             for new_added in new_states:
                 n = new.clone().merge_state(new_added).merge_state(shared_states)
                 o = old.clone().merge_state(shared_states)
                 for s in states:
-                    yield from self.fill(n.clone().merge_state(s), o.clone().merge_state(s))
+                    cmds.append(self.fill(n.clone().merge_state(s), o.clone().merge_state(s)))
+            return cmds
 
     def replace_slabs(self, new: BlockDef, old: BlockDef = '#slabs', new_state: Mapping = None,
                       shared_states: SomeMappings = None) -> Commands:

@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from pynecraft.commands import Commands, DataTarget, SUCCESS, Score, data, execute, scoreboard
+from pynecraft.commands import Commands, data, DataTarget, execute, Score, scoreboard, SUCCESS
 from pynecraft.values import DUMMY
 
 PYNECRAFT = 'pynecraft'
@@ -11,7 +11,7 @@ def utils_init() -> Commands:
 
 
 class Scores:
-    strcmp = Score('strcmp_differ', PYNECRAFT)
+    strcmp_score = Score('strcmp_differ', PYNECRAFT)
 
 
 def strcmp(v1: str | Tuple[DataTarget, str], v2: str | Tuple[DataTarget, str]) -> Commands:
@@ -31,5 +31,5 @@ def strcmp(v1: str | Tuple[DataTarget, str], v2: str | Tuple[DataTarget, str]) -
 
     c1 = complete(v1)
     r1 = complete(v2)
-    c2 = execute().store(SUCCESS).score(Scores.strcmp).run(r1)
+    c2 = execute().store(SUCCESS).score(Scores.strcmp_score).run(r1)
     return c1, c2

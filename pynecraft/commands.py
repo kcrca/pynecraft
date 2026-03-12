@@ -809,7 +809,7 @@ class Uuid(TargetSpec):
 
     @property
     def most_least(self) -> Tuple[int, int]:
-        """The most/least values for the UUID."""
+        """The most and least values for the UUID."""
         return self._ints[0] << 32 | (0xffffffff & self._ints[1]), self._ints[2] << 32 | (0xffffffff & self._ints[3])
 
     @classmethod
@@ -828,12 +828,12 @@ class Uuid(TargetSpec):
 
     @classmethod
     def from_most_least_dict(cls, most_least: dict[str, int]) -> Uuid:
-        """Returns a UUID from the most/least pair."""
+        """Returns a UUID from the most and least pair."""
         return Uuid.from_most_least(most_least['UUIDMost'], most_least['UUIDLeast'])
 
     @classmethod
     def from_most_least(cls, most: int, least: int) -> Uuid:
-        """Returns a UUID from the most/least pair."""
+        """Returns a UUID from the most and least pair."""
         return Uuid(most >> 32, most & 0xffffffff, least >> 32, least & 0xffffffff)
 
 
@@ -1038,7 +1038,7 @@ class Selector(TargetSpec):
 
     @_fluent
     def not_gamemode(self, mode: StrOrArg, *modes: StrOrArg) -> Selector:
-        """Add one or more 'not' gamemodes to the selector. You need to specify the '!' in the string."""
+        """Add one or more 'not' gamemode to the selector. You need to specify the '!' in the string."""
         _in_group(GAMEMODE, mode)
         for g in modes:
             _in_group(GAMEMODE, g)
@@ -3654,8 +3654,12 @@ class Block(Command):
             messages.append(Text.text(self.full_text[i]))
         msgs = {'messages': messages}
         nbt = Nbt()
+        # noinspection PySimplifyBooleanCheck
+        # can also be None
         if front is not False:
             nbt = nbt.merge({'front_text': msgs})
+        # noinspection PySimplifyBooleanCheck
+        # can also be None
         if front is not True:
             nbt = nbt.merge({'back_text': msgs})
         return nbt

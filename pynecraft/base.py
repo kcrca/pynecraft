@@ -1338,7 +1338,7 @@ class Facing:
         return as_facing(rotation_aid[rotation_aid.index(self.name) + rot])
 
 
-_facing: dict[str | int, Facing] = {
+_facing: dict[str | int | float, Facing] = {
     NORTH: Facing(NORTH, (0, 0, -1), (180.0, 0.0), 2, 0, 2),
     EAST: Facing(EAST, (1, 0, 0), (270.0, 0.0), 5, 1, 3),
     SOUTH: Facing(SOUTH, (0, 0, 1), (0.0, 0.0), 3, 2, 0),
@@ -1470,7 +1470,8 @@ class Transform:
             self.value = value
 
         def nbt(self) -> tuple[
-            float, float, float, float, float, float, float, float, float, float, float, float, float, float, float, float]:
+            float, float, float, float, float, float, float, float,
+            float, float, float, float, float, float, float, float]:
             return self.value
 
     class Quaternion:

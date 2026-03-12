@@ -8,7 +8,7 @@ import re
 
 from PIL import ImageFont
 
-from pynecraft.commands import TextDef, as_text
+from pynecraft.commands import as_text, TextDef
 
 
 def _hash(d: dict):

@@ -4,8 +4,8 @@ from typing import Callable, Iterable, Tuple
 
 from titlecase import titlecase
 
-from .base import DOWN, Facing, FacingDef, Position, ROTATION_270, UP, as_facing, r
-from .commands import BlockDef, Selector, e, execute, fill, function
+from .base import as_facing, DOWN, Facing, FacingDef, Position, r, ROTATION_270, UP
+from .commands import BlockDef, e, execute, fill, function, Selector
 from .function import Function
 from .simpler import WallSign
 
@@ -183,7 +183,7 @@ class _Placement:
             after = self.run_at(close_menu)
         else:
             after = sel_sign.place(r(0, 0, 0), self.facing)
-        commands = tuple(self.run_at(str(function(self.menu.func('init'))), action)) + (after,)
+        commands = tuple(self.run_at(str(function(self.menu.func('init'))), action)) + tuple(after)
         return commands
 
 
