@@ -47,7 +47,7 @@ def text_lines(*orig: Any) -> Iterable[str]:
     result = []
     for cmd in lines(orig):
         text = str(cmd)
-        if len(text) > 0 or not text.endswith('\n'):
+        if len(text) > 0 and not text.endswith('\n'):
             text += '\n'
         result.append(text)
     return result
