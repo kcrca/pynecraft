@@ -726,10 +726,11 @@ class Nbt(UserDict):
             raise ValueError(f'{name}: Not a float')
         num = float(num)
         ranges = {'f': (Nbt.MIN_FLOAT_VALUE, Nbt.MAX_FLOAT_VALUE), 'd': (Nbt.MIN_DOUBLE_VALUE, Nbt.MAX_DOUBLE_VALUE)}
-        lo, hi = ranges[type]
-        a = abs(num)
-        if a != 0 and (a < lo or a > hi):
-            raise ValueError(f'{name}: Outside range of type "{type}"')
+        if type:
+            lo, hi = ranges[type]
+            a = abs(num)
+            if a != 0 and (a < lo or a > hi):
+                raise ValueError(f'{name}: Outside range of type "{type}"')
         return num
 
     @classmethod
