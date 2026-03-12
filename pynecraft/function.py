@@ -481,7 +481,47 @@ class Loop(Function):
         return self
 
 
-LATEST_PACK_VERSION = 100
+Format = Union[str, float, int, Iterable[int]]
+
+
+# noinspection PyShadowingBuiltins
+def as_format(format: Format | None, default=None) -> str | None:
+    """Return a version as a dot-separated sequence of ints."""
+    if format is None:
+        if default is None:
+            return None
+        format = default
+    if isinstance(format, Iterable) and not isinstance(format, str):
+        format = '.'.join(str(f) for f in format)
+    elif isinstance(format, (float, int)):
+        format = str(format)
+    if not re.fullmatch(r'\d+(\.\d+)*', format):
+        raise ValueError('Only numbers and "." are allowed in versions')
+
+    # Strip off any trailing zeros (1.0 is equivalent to 0, ergo the canonical form)
+    format = re.sub(r'(\.0)*$', '', format)
+    if format == '':
+        raise ValueError('Empty version')
+    return format
+
+
+def compare_format(fmt1: Format | None, fmt2: Format | None) -> int:
+    if fmt1 is None or fmt2 is None:
+        if fmt1 == fmt2:
+            return 0
+        return -1 if fmt2 is None else 1
+    fmt1 = as_format(fmt1).split('.')
+    fmt2 = as_format(fmt2).split('.')
+    min_len = min(len(fmt1), len(fmt2))
+    for i in range(min_len):
+        f1 = int(fmt1[i])
+        f2 = int(fmt2[i])
+        if f1 != f2:
+            return f2 - f1
+    return len(fmt2) - len(fmt1)
+
+
+LATEST_PACK_VERSION = as_format(101.0)
 
 
 class DataPack:
@@ -490,15 +530,16 @@ class DataPack:
     location therein.
     """
 
-    def __init__(self, name: str, format_version: str = LATEST_PACK_VERSION, /, min_format: str = None,
-                 max_format: str = None, mcmeta: Mapping = None):
+    def __init__(self, name: str, pack_format: Format = LATEST_PACK_VERSION, /, min_format: Format = None,
+                 max_format: Format = None, mcmeta: Mapping = None):
         self._name = name
         self.function_set = FunctionSet('function', self)
         self._json = {}
-        min_format = min_format if min_format else format_version
-        max_format = min_format if max_format else format_version
+        pack_format = as_format(pack_format)
+        min_format = as_format(min_format, pack_format)
+        max_format = as_format(max_format, pack_format)
         self._mcmeta = {
-            'pack': {'pack_format': format_version, 'min_format': min_format, 'max_format': max_format,
+            'pack': {'pack_format': pack_format, 'min_format': min_format, 'max_format': max_format,
                      'description': Text.text(name)}}
         self._description = None
         if mcmeta:

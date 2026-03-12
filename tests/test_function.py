@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import tempfile
 import unittest
 
@@ -104,11 +102,34 @@ class TestFunctions(unittest.TestCase):
             as_function_name('++')
 
     def test_function(self):
-        pack = DataPack('pack')
         self.assertEqual(('say hi',), tuple(Function('foo').add(say('hi')).commands()))
         self.assertEqual('foo', Function('foo').full_name)
         with self.assertRaises(ValueError):
             function('++')
+
+    def test_as_format(self):
+        self.assertEqual(None, as_format(None))
+        self.assertEqual('13', as_format(13))
+        self.assertEqual('13', as_format(13.0))
+        self.assertEqual('13.2', as_format(13.2))
+        self.assertEqual('13.2', as_format((13, 2)))
+        self.assertEqual('13.2.17', as_format([13, 2, 17]))
+        self.assertEqual('13.2', as_format('13.2.0.0.0'))
+        with self.assertRaises(ValueError):
+            as_format(())
+        with self.assertRaises(ValueError):
+            as_format('.0.0.0')
+        with self.assertRaises(ValueError):
+            as_format('A.0')
+
+    def test_compare_format(self):
+        self.assertTrue(compare_format(None, None) == 0)
+        self.assertTrue(compare_format(1, None) < 0)
+        self.assertTrue(compare_format(None, 1) > 0)
+        self.assertTrue(compare_format('1.2.3', '1.2.3') == 0)
+        self.assertTrue(compare_format('1.2.3', '1.2.3.4') > 0)
+        self.assertTrue(compare_format('1.22', '1.1') < 0)
+        self.assertTrue(compare_format('1.22.9.9', '1.23') > 0)
 
     def test_function_save(self):
         os.chdir(self.tmp_path)
@@ -122,14 +143,14 @@ class TestFunctions(unittest.TestCase):
         self.check_save(dir, 'flip', dir / 'flip.mcfunction')
 
     def test_loop_iteration_save(self):
-        def loop_func(step):
+        def loop_func2(step):
             return (
                 say(f'Step {step.i}'),
                 say(f'Color: {step.elem}'),
             )
 
         os.chdir(self.tmp_path)
-        loop = Loop(('foo', 'obj'), iterate_at=2).add('before').loop(loop_func, COLORS).add('after')
+        loop = Loop(('foo', 'obj'), iterate_at=2).add('before').loop(loop_func2, COLORS).add('after')
         loop.save(self.tmp_path)
         foo = (self.tmp_path / 'foo.mcfunction').read_text().rstrip().split('\n')
         self.assertEqual(len(COLORS),
@@ -254,7 +275,7 @@ class TestFunctions(unittest.TestCase):
         self.assertTrue((expected / 'f1.mcfunction').exists())
         self.assertTrue((expected / 'f2.mcfunction').exists())
 
-    def test_function_heirarchy(self):
+    def test_function_hierarchy(self):
         pack = DataPack('packer')
         fset = pack.function_set
         func = Function('func')
