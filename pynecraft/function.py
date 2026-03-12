@@ -529,6 +529,10 @@ class DataPack:
     """
     A datapack. This maintains a datapack directory. If it is being stored in a world save, it knows how to find its
     location therein.
+
+    You can put functions you want to add to the `minecraft:tick` tag by adding them to this pack's `tick_functions`
+    set, and similarly for `load_functions`. You can add the Function itself, or a function name. (A name without a
+    namespace will have this pack's namespace prepended.)
     """
 
     def __init__(self, name: str, pack_format: Format = LATEST_PACK_VERSION, /, min_format: Format = None,
@@ -545,6 +549,8 @@ class DataPack:
         self._description = None
         if mcmeta:
             self._mcmeta.update(mcmeta)
+        self.tick_functions = set()
+        self.load_functions = set()
 
     @classmethod
     def path_for(cls, path: Path | str, name: str = None) -> tuple[Path, str]:
@@ -605,6 +611,21 @@ class DataPack:
         _write_json(self._mcmeta, path / 'pack.mcmeta')
         with open(path / 'README', 'w') as fp:
             fp.write("Files in this tree were auto-generated using pynecraft. Hand modifications will be lost!")
+
+        # The tick and load functions are in the minecraft namespace
+        if self.tick_functions or self.load_functions:
+            def func_for(v):
+                if isinstance(v, Function):
+                    return v.full_name
+                name = str(v)
+                if ':' not in v:
+                    name = f'{self.name}:{name}'
+                return name
+
+            mc_tags = path / 'data' / 'minecraft' / 'tags'
+            mc_tags.mkdir(parents=True)
+            _write_json({'values': sorted([func_for(f) for f in self.tick_functions])}, mc_tags / 'tick.json')
+            _write_json({'values': sorted([func_for(f) for f in self.load_functions])}, mc_tags / 'load.json')
 
     def _cleanup(self) -> None:
         if 'tags/' in self._json:

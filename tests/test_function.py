@@ -312,6 +312,24 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual('packer:dir/sub_func', sub_func.full_name)
         self.assertEqual('sub_func', sub_func.name)
 
+    def test_function_tags(self):
+        pack = DataPack('packer')
+        pack.tick_functions.add('tick1')
+        pack.tick_functions.add(pack.function_set.add(Function('tick2')))
+        pack.load_functions.add('load1')
+        pack.load_functions.add(pack.function_set.add(Function('load2')))
+        (self.tmp_path / 'datapacks').mkdir()
+        pack.save(self.tmp_path)
+
+        expected = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'minecraft' / 'tags'
+        self.assertTrue(expected.is_dir())
+        with open(expected / 'tick.json') as fp:
+            ticks = json.load(fp)
+            self.assertEqual({'values': sorted(['packer:tick1', 'packer:tick2'])}, ticks)
+        with open(expected / 'load.json') as fp:
+            loads = json.load(fp)
+            self.assertEqual({'values': sorted(['packer:load1', 'packer:load2'])}, loads)
+
     def test_function_datapack_save_and_load(self):
         pack = DataPack('packer')
         top = pack.function_set
