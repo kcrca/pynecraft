@@ -52,7 +52,7 @@ def __read_lists():
     global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id
 
     blocks, blocks_by_id = __read_things('blocks', Block)
-    items, items_by_id = __read_things('items', Block)
+    items, items_by_id = __read_things('items', Item)
     mobs, mobs_by_id = __read_things('mobs', Entity)
 
     must_give_items = {'Knowledge Book': 'Knowledge Book'}
