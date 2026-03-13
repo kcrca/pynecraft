@@ -158,3 +158,69 @@ class TestSimpler(unittest.TestCase):
             {'label': 'Sub', 'id': 'sub', 'on_submit': {'type': 'custom_form', 'id': 'ns'}, 'tooltip': 'tp',
              'width': 5},
             submit_action('Sub', on_submit=custom_form('ns'), tooltip='tp', width=5))
+
+    def test_dialog_error_paths(self):
+        """Error paths for dialog components — currently has zero assertRaises."""
+        # Element.from_nbt with invalid type
+        with self.assertRaises(ValueError):
+            Element.from_nbt(Nbt({'type': 'bogus'}), allow_none=False)
+
+        # Input.from_nbt with invalid type
+        with self.assertRaises(ValueError):
+            Input.from_nbt(Nbt({'type': 'bogus', 'label': 'x', 'key': 'x'}), allow_none=False)
+
+        # single_option with no options
+        with self.assertRaises(ValueError):
+            single_option('Pick one', [])
+
+        # single_option with duplicate display values
+        with self.assertRaises(ValueError):
+            single_option('Pick one', ['a', 'a'])
+
+        # single_option with two initials
+        with self.assertRaises(ValueError):
+            single_option('Pick one', [
+                Nbt({'display': 'a', 'id': 'a', 'initial': True}),
+                Nbt({'display': 'b', 'id': 'b', 'initial': True}),
+            ])
+
+        # number_range — start/end are required (basic sanity)
+        nr = number_range('Level', 1, 10)
+        self.assertEqual(1, nr['start'])
+        self.assertEqual(10, nr['end'])
+
+    def test_dialog_exit_action(self):
+        """Test exit_action with ClickEvent and NbtDef."""
+        d = Dialog(NOTICE, 'Test')
+
+        # ClickEvent passthrough
+        click = ClickEvent.run_command('/say hi')
+        d.exit_action(click)
+        self.assertEqual(click, d['exit_action'])
+
+        # NbtDef gets converted
+        d.exit_action({'action': 'run_command', 'command': '/say hi'})
+        self.assertIsInstance(d['exit_action'], ClickEvent)
+
+        # None removes it
+        d.exit_action(None)
+        self.assertNotIn('exit_action', d)
+
+    def test_dialog_after_action_validation(self):
+        """after_action should only accept AFTER_ACTIONS values."""
+        d = Dialog(NOTICE, 'Test')
+        d.after_action(CLOSE)
+        self.assertEqual(CLOSE, d['after_action'])
+        d.after_action(WAIT_FOR_RESPONSE)
+        self.assertEqual(WAIT_FOR_RESPONSE, d['after_action'])
+        with self.assertRaises(ValueError):
+            d.after_action('bogus')
+
+    def test_submit_action_default_id(self):
+        """submit_action should derive id from label when id is not given."""
+        sa = submit_action('Click Here!')
+        self.assertEqual('click_here', sa['id'])
+
+        # With explicit id, label doesn't matter
+        sa = submit_action('Click Here!', id='my_id')
+        self.assertEqual('my_id', sa['id'])

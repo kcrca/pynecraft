@@ -32,6 +32,19 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(['a', 'b', 'c'], (list(lines(('a', 'b'), 'c'))))
         self.assertEqual(['a', 'b', 'c'], (list(lines(([['a', 'b']]), 'c'))))
 
+    def test_text_lines(self):
+        """Test text_lines, especially the or->and fix."""
+        # Normal text gets newline
+        self.assertEqual(['hello\n'], text_lines('hello'))
+        # Already has newline — should NOT double it
+        self.assertEqual(['hello\n'], text_lines('hello\n'))
+        # Empty string — len==0 so no newline appended, stays empty
+        self.assertEqual([''], text_lines(''))
+        # Multiple lines
+        self.assertEqual(['a\n', 'b\n'], text_lines('a', 'b'))
+        # Mix of with/without trailing newlines
+        self.assertEqual(['a\n', 'b\n'], text_lines('a\n', 'b'))
+
     def test_loop(self):
         try:
             # Reduces the length of matching strings
@@ -329,6 +342,41 @@ class TestFunctions(unittest.TestCase):
         with open(expected / 'load.json') as fp:
             loads = json.load(fp)
             self.assertEqual({'values': sorted(['packer:load1', 'packer:load2'])}, loads)
+
+    def test_function_tags_tick_only(self):
+        """When only tick_functions is populated, load.json should not be written."""
+        pack = DataPack('packer')
+        pack.tick_functions.add('my_tick')
+        (self.tmp_path / 'datapacks').mkdir()
+        pack.save(self.tmp_path)
+
+        tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'minecraft' / 'tags' / 'function'
+        self.assertTrue((tags_dir / 'tick.json').exists())
+        self.assertFalse((tags_dir / 'load.json').exists())
+
+    def test_function_tags_load_only(self):
+        """When only load_functions is populated, tick.json should not be written."""
+        pack = DataPack('packer')
+        pack.load_functions.add('my_load')
+        (self.tmp_path / 'datapacks').mkdir()
+        pack.save(self.tmp_path)
+
+        tags_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'minecraft' / 'tags' / 'function'
+        self.assertTrue((tags_dir / 'load.json').exists())
+        self.assertFalse((tags_dir / 'tick.json').exists())
+
+    def test_function_tags_neither(self):
+        """When neither tick nor load is populated, no minecraft tags dir should be created."""
+        pack = DataPack('packer')
+        pack.function_set.add(Function('f1').add('say hi'))
+        (self.tmp_path / 'datapacks').mkdir()
+        pack.save(self.tmp_path)
+
+        mc_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'minecraft'
+        self.assertFalse(mc_dir.exists())
+
+
+# ============================================================
 
     def test_function_datapack_save_and_load(self):
         pack = DataPack('packer')

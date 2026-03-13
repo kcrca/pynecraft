@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 
+from pynecraft import values
 from pynecraft.base import d, DARK_GREEN, days, EAST, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
 from pynecraft.commands import *
 from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, _ScoreboardObjectivesMod, \
@@ -607,6 +608,10 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('modifier remove 1-2-3-f', str(_AttributeMod().modifier().remove('1-2-3-f')))
         self.assertEqual('modifier value get 1-2-3-f', str(_AttributeMod().modifier().value('1-2-3-f')))
         self.assertEqual('modifier value get 1-2-3-f 1.3', str(_AttributeMod().modifier().value('1-2-3-f', 1.3)))
+        # scale=0 should appear (not be dropped as falsy)
+        self.assertEqual('get 0', str(_AttributeMod().get(0)))
+        self.assertEqual('base get 0', str(_AttributeMod().base().get(0)))
+        self.assertEqual('get 0.0', str(_AttributeMod().get(0.0)))
 
     def test_bossbar(self):
         self.assertEqual('bossbar add foo stud', bossbar().add('foo', 'stud'))
@@ -635,6 +640,8 @@ class TestCommands(unittest.TestCase):
     def test_clear(self):
         self.assertEqual('clear @s foo{bar}', clear(s(), 'foo{bar}'))
         self.assertEqual('clear @s foo{bar} 4', clear(s(), 'foo{bar}', 4))
+        # max_count=0 is valid (clears zero items, used for testing)
+        self.assertEqual('clear @s foo 0', clear(s(), 'foo', 0))
 
     def test_clone(self):
         self.assertEqual('clone 1 ~2 ^3 4 5 6 7 8 9', str(clone((1, r(2), d(3)), (4, 5, 6), (7, 8, 9))))
@@ -710,6 +717,15 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('enchant @s lure', enchant(s(), LURE))
         self.assertEqual('enchant @s lure', enchant(s(), 'lure'))
         self.assertEqual('enchant @s lure 2', enchant(s(), LURE, 2))
+        ench = values.ENCHANTMENT_GROUP.copy()
+        try:
+            values.ENCHANTMENT_GROUP += ['custom:my_enchant']
+            # Custom enchantment with level should not drop level
+            self.assertEqual('enchant @s custom:my_enchant 3', enchant(s(), 'custom:my_enchant', 3))
+            # Custom enchantment with no level
+            self.assertEqual('enchant @s custom:my_enchant', enchant(s(), 'custom:my_enchant'))
+        finally:
+            values.ENCHANTMENT_GROUP = ench
         with self.assertRaises(ValueError):
             enchant(s(), LURE, 17)
 
@@ -1237,6 +1253,12 @@ class TestCommands(unittest.TestCase):
             teleport(s(), e())
         with self.assertRaises(ValueError):
             tp(e().type(Arg('t')))
+        # facing with wrong type
+        with self.assertRaises((ValueError, TypeError)):
+            teleport(rand(), s()).facing(a())  # entity not valid for facing()
+        # facing_entity with position
+        with self.assertRaises((ValueError, TypeError)):
+            teleport(rand(), s()).facing_entity((1, 2, 3))  # pos not valid for facing_entity()
 
     def test_as_single(self):
         self.assertTrue(as_single(p()))
@@ -1349,8 +1371,14 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('time pause', time().pause())
         self.assertEqual('time resume', time().resume())
         self.assertEqual('time set 9', time().set(9))
-        self.assertEqual('time rate 17.3', time().rate(17.3))
         self.assertEqual('time of foo add 9', time().of('foo').add(9))
+        self.assertEqual('time rate 17.3', time().rate(17.3))
+        with self.assertRaises(ValueError):
+            time().rate(-1)  # negative
+        with self.assertRaises(ValueError):
+            time().rate(0)  # zero (already tested)
+        with self.assertRaises(ValueError):
+            time().rate(1000.01)  # above max (already tested)
         with self.assertRaises(ValueError):
             time().of('foo').of('bar')
         with self.assertRaises(ValueError):

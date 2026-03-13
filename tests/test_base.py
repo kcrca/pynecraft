@@ -316,6 +316,35 @@ class TestBase(unittest.TestCase):
         nbt.merge_into({'key2': 2})
         self.assertEqual({'key': 1, 'key2': 2}, nbt)
 
+    def test_merge_into_mutation(self):
+        """Verify merge_into modifies in place and merge returns a copy."""
+        # merge_into modifies original
+        original = Nbt({'a': 1, 'nested': Nbt({'x': 10})})
+        original.merge_into({'b': 2, 'nested': {'y': 20}})
+        self.assertEqual(1, original['a'])
+        self.assertEqual(2, original['b'])
+        self.assertEqual(10, original['nested']['x'])
+        self.assertEqual(20, original['nested']['y'])
+
+        # merge returns new copy, original untouched
+        src = Nbt({'a': 1, 'nested': Nbt({'x': 10})})
+        result = src.merge({'b': 2, 'nested': {'y': 20}})
+        self.assertNotIn('b', src)
+        self.assertNotIn('y', src['nested'])
+        self.assertEqual(2, result['b'])
+        self.assertEqual(20, result['nested']['y'])
+
+        # merge_into overwrites existing keys
+        nbt = Nbt({'a': 1})
+        nbt.merge_into({'a': 99})
+        self.assertEqual(99, nbt['a'])
+
+        # merge_into with None is no-op
+        nbt = Nbt({'a': 1})
+        nbt.merge_into(None)
+        self.assertEqual({'a': 1}, nbt)
+
+
     def test_set_or_clear(self):
         self.assertEqual({'key': 12}, Nbt().set_or_clear('key', 12))
         self.assertEqual({'key': 0}, Nbt().set_or_clear('key', 0))
@@ -520,7 +549,7 @@ class TestBase(unittest.TestCase):
         self.assertEqual(0x10, Nbt.to_int('0x10sb'))
         self.assertEqual(-16, Nbt.to_int('-16'))
         self.assertEqual(-16, Nbt.to_int('-16sb'))
-        self.assertEqual(-16, Nbt.to_int('240uB'))
+        self.assertEqual(240, Nbt.to_int('240uB'))
         self.assertEqual(15, Nbt.to_int('15s'))
         self.assertEqual(15, Nbt.to_int('15sS'))
         self.assertEqual(15, Nbt.to_int('15Us'))
@@ -551,3 +580,21 @@ class TestBase(unittest.TestCase):
         self.assertEqual(0.0, Nbt.to_float('0.'))
         self.assertEqual(2.e5, Nbt.to_float('2.e5'))
         self.assertEqual(2e5, Nbt.to_float('2e5'))
+
+        """Test the f/d suffix path (exercises the fixed range check)."""
+        self.assertEqual(1.5, Nbt.to_float('1.5f'))
+        self.assertEqual(1.5, Nbt.to_float('1.5d'))
+        self.assertEqual(0.0, Nbt.to_float('0f'))
+        self.assertEqual(0.0, Nbt.to_float('0.0f'))
+        self.assertEqual(0.0, Nbt.to_float('0d'))
+        self.assertEqual(-1.5, Nbt.to_float('-1.5f'))
+        self.assertEqual(Nbt.MAX_FLOAT_VALUE, Nbt.to_float(f'{Nbt.MAX_FLOAT_VALUE}f'))
+        self.assertEqual(Nbt.MIN_FLOAT_VALUE, Nbt.to_float(f'{Nbt.MIN_FLOAT_VALUE}f'))
+        with self.assertRaises(ValueError):
+            Nbt.to_float('3.5e38f')  # exceeds MAX_FLOAT_VALUE
+        with self.assertRaises(ValueError):
+            Nbt.to_float('1.0e-46f')  # below MIN_FLOAT_VALUE (nonzero)
+        # d suffix
+        self.assertEqual(1.7e+308, Nbt.to_float('1.7e308d'))
+        with self.assertRaises(ValueError):
+            Nbt.to_float('2.0e308d')  # exceeds MAX_DOUBLE_VALUE
