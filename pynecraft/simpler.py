@@ -446,7 +446,7 @@ class Item(Entity):
         try:
             block_state = item.state
             if block_state:
-                retval['components'] = {'block_entity_data': block_state}
+                retval['components']['block_entity_data'].merge_into(block_state)
         except AttributeError:
             pass
         if nbt:

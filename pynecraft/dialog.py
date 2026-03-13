@@ -1,5 +1,5 @@
 import string
-from typing import Iterable, Self
+from typing import Iterable, Mapping, Self
 
 from .base import _in_group, Nbt, NbtDef, to_id
 from .commands import as_text, ClickEvent, TextDef
@@ -235,7 +235,7 @@ def custom_form(namespace_id: str) -> SubmitType:
     return action
 
 
-def submit_action(label: str, on_submit: SubmitType = None, *, id: str = None, tooltip: str = None,
+def submit_action(label: TextDef, on_submit: SubmitType = None, *, id: str = None, tooltip: str = None,
                   width: int = None) -> Nbt:
     """Factory method for a submit action"""
     id = _default_from_label(id, label)
@@ -327,8 +327,8 @@ class Dialog(Nbt):
     def after_action(self, val: str | None) -> Self:
         return self._prim('after_action', _in_group(AFTER_ACTIONS, val))
 
-    def exit_action(self, val: bool | None) -> Self:
-        return self._prim('exit_action', val)
+    def exit_action(self, val: ClickEvent | NbtDef | None) -> Self:
+        return self._prim('exit_action', ClickEvent.from_nbt(val) if isinstance(val, Mapping) else val)
 
     def can_close_with_escape(self, val: bool | None) -> Self:
         return self._prim('can_close_with_escape', val)

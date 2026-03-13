@@ -2,12 +2,11 @@ import unittest
 
 from parameterized import parameterized
 
-from pynecraft.base import Arg, COLORS, Coord, EAST, IntRelCoord, NE, NORTH, NW, Nbt, RED, ROTATION_0, ROTATION_180, \
-    ROTATION_270, ROTATION_90, RelCoord, SE, SOUTH, SW, TimeSpec, Transform, WEST, _bool, _ensure_size, _float, \
-    _in_group, \
-    _int_or_float, _not_ify, _quote, _strip_namespace, _strip_not, _to_list, _to_tuple, as_angle, as_column, \
-    as_duration, as_facing, as_name, as_names, as_nbt_key, as_nbt_path, as_pitch, as_range, as_resource, \
-    as_resource_path, as_resources, as_yaw, d, days, de_arg, r, rotate_facing, seconds, settings, string, ticks, to_id
+from pynecraft.base import _bool, _ensure_size, _float, _in_group, _int_or_float, _not_ify, _quote, _strip_namespace, \
+    _strip_not, _to_list, _to_tuple, Arg, as_angle, as_column, as_duration, as_facing, as_name, as_names, as_nbt_key, \
+    as_nbt_path, as_pitch, as_range, as_resource, as_resource_path, as_resources, as_yaw, COLORS, Coord, d, days, \
+    de_arg, EAST, IntRelCoord, Nbt, NE, NORTH, NW, r, RED, RelCoord, rotate_facing, ROTATION_0, ROTATION_180, \
+    ROTATION_270, ROTATION_90, SE, seconds, settings, SOUTH, string, SW, ticks, TimeSpec, to_id, Transform, WEST
 from pynecraft.commands import setblock
 
 
@@ -313,6 +312,9 @@ class TestBase(unittest.TestCase):
         self.assertEqual(simple_nbt, simple_nbt.clone())
         self.assertEqual(Nbt(), Nbt()['One'])
         self.assertEqual('{Command: "$(foo) bar"}', str(Nbt({'Command': '$(foo) bar'})))
+        nbt = Nbt({'key': 1})
+        nbt.merge_into({'key2': 2})
+        self.assertEqual({'key': 1, 'key2': 2}, nbt)
 
     def test_set_or_clear(self):
         self.assertEqual({'key': 12}, Nbt().set_or_clear('key', 12))

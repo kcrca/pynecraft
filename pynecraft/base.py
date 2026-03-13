@@ -872,19 +872,23 @@ class Nbt(UserDict):
         """
         return self._merge(self, nbt)
 
-    def _merge(self, dst, src):
-        if src is None:
-            src = {}
-        result = Nbt(dst)
-        for k, v in src.items():
-            if k not in result:
-                result[k] = v
+    def merge_into(self, nbt: NbtDef | None) -> Nbt:
+        return self._merge(self, nbt, self)
+
+    def _merge(self, src1, src2, dst=None):
+        if src2 is None:
+            src2 = {}
+        if dst is None:
+            dst = Nbt(src1)
+        for k, v in src2.items():
+            if k not in dst:
+                dst[k] = v
             else:
                 if isinstance(v, Mapping):
-                    result[k] = self._merge(result[k], v)
+                    dst[k] = self._merge(dst[k], v)
                 else:
-                    result[k] = v
-        return result
+                    dst[k] = v
+        return dst
 
     def get_list(self, key: str) -> List:
         """Returns the list for the given key, creating an empty list for it if needed.
