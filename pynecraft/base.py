@@ -192,7 +192,7 @@ def de_int_arg(v: Any) -> Any:
     return v
 
 
-def check_int_arg(v: Any) -> None:
+def check_int_arg(v: Any) -> Any:
     """Validates that ``is_num_arg(v)`` returns True, or if v is a collection, applies this test recursively."""
     if not isinstance(v, str) and isinstance(v, Iterable):
         for x in v:
@@ -216,7 +216,7 @@ def de_float_arg(v: Any) -> Any:
     return v
 
 
-def check_float_arg(v: Any) -> None:
+def check_float_arg(v: Any) -> Any:
     """Validates that ``is_num_arg(v)`` returns True, or if v is a collection, applies this test recursively."""
     if not isinstance(v, str) and isinstance(v, Iterable):
         for x in v:
