@@ -69,10 +69,13 @@ def item(item: NbtDef | Item | str, *, description: TextDef = None, show_decorat
     return elem
 
 
-def _default_from_label(key, label):
+def _default_from_label(key: str | None, label: TextDef) -> str:
     if key:
         return key
-    return to_id(label.translate(str.maketrans('', '', string.punctuation)))
+    result = to_id(as_text(label).plain_text().translate(str.maketrans('', '', string.punctuation)))
+    if not result:
+        raise ValueError(f'No label found for from {id}, {label}')
+    return result
 
 
 class Input(Nbt):

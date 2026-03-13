@@ -329,6 +329,11 @@ class TestCommands(unittest.TestCase):
             self.assertEqual({"text": "boo", "underlined": "$(u)"}, Text.text('boo').underlined(Arg('u')))
             self.assertEqual({"text": "boo", "insertion": "$(i)"}, Text.text('boo').insertion(Arg('i')))
 
+            self.assertEqual('Hello, world!', Text.text('Hello, world!').plain_text())
+            self.assertEqual('Hello, world!', Text.text('Hello,').extra(' world!').plain_text())
+            self.assertEqual('Hello, world! Yowsa!', Text.text('Hello,').extra(' world!').extra(' Yowsa!').plain_text())
+            self.assertEqual('Hello, world!', Text.text('Hello,').color(RED).extra(' world!').bold().plain_text())
+
         finally:
             Nbt.sort_keys = sort_keys
 

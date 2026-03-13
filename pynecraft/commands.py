@@ -4216,6 +4216,17 @@ class Text(Nbt, TextHolder):
             return to_str
         return super().__str__()
 
+    def plain_text(self) -> str:
+        """Returns the plain text content of this Text, ignoring formatting, concatenating any extras.
+        Only 'text' components contribute; other types (translate, score, etc.) are skipped."""
+        result = self.get('text', '')
+        for extra in self.get('extra', ()):
+            if isinstance(extra, Text):
+                result += extra.plain_text()
+            elif isinstance(extra, str):
+                result += extra
+        return result
+
     @classmethod
     def text(cls, txt: StrOrArg) -> Text:
         """Returns a TextHolder node."""
