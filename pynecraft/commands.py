@@ -2409,6 +2409,13 @@ class _TimeMod(Command):
         self._add('set', new_time)
         return str(self)
 
+    @_fluent
+    def rate(self, rate: float) -> str:
+        if rate <= 0 or rate > 1000:
+            raise ValueError('Rate out of range (0, 1000]')
+        self._add('rate', rate)
+        return str(self)
+
 
 class _TestMod(Command):
     _seg_re = r'[a-zA-Z0-9*?]+'

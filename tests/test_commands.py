@@ -1344,9 +1344,14 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('time pause', time().pause())
         self.assertEqual('time resume', time().resume())
         self.assertEqual('time set 9', time().set(9))
+        self.assertEqual('time rate 17.3', time().rate(17.3))
         self.assertEqual('time of foo add 9', time().of('foo').add(9))
         with self.assertRaises(ValueError):
             time().of('foo').of('bar')
+        with self.assertRaises(ValueError):
+            time().rate(0)
+        with self.assertRaises(ValueError):
+            time().rate(1000.01)
 
     def test_title_command(self):
         self.assertEqual('title @s clear', title(s()).clear())
