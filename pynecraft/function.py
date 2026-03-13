@@ -622,10 +622,12 @@ class DataPack:
                     name = f'{self.name}:{name}'
                 return name
 
-            mc_tags = path / 'data' / 'minecraft' / 'tags'
+            mc_tags = path / 'data' / 'minecraft' / 'tags' / 'functions'
             mc_tags.mkdir(parents=True)
-            _write_json({'values': sorted([func_for(f) for f in self.tick_functions])}, mc_tags / 'tick.json')
-            _write_json({'values': sorted([func_for(f) for f in self.load_functions])}, mc_tags / 'load.json')
+            if self.tick_functions:
+                _write_json({'values': sorted([func_for(f) for f in self.tick_functions])}, mc_tags / 'tick.json')
+            if self.load_functions:
+                _write_json({'values': sorted([func_for(f) for f in self.load_functions])}, mc_tags / 'load.json')
 
     def _cleanup(self) -> None:
         if 'tags/' in self._json:

@@ -43,7 +43,7 @@ class Element(Nbt):
     def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self | None:
         if isinstance(nbt, Element) or (allow_none and nbt is None):
             return nbt
-        elem = Element(_in_group(SUBMIT_TYPES, nbt.pop('type'), nbt.pop('width', None)))
+        elem = Element(_in_group(ELEMENT_TYPES, nbt.pop('type'), nbt.pop('width', None)))
         elem.update(nbt)
         return elem
 
@@ -86,7 +86,7 @@ class Input(Nbt):
     def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self | None:
         if isinstance(nbt, Input) or (allow_none and nbt is None):
             return nbt
-        input = Input(_in_group(ELEMENT_TYPES, nbt.pop('type')), nbt.pop('label'), nbt.pop('key', None))
+        input = Input(_in_group(INPUT_TYPES, nbt.pop('type')), nbt.pop('label'), nbt.pop('key', None))
         input.update(nbt)
         return input
 
@@ -329,7 +329,7 @@ class Dialog(Nbt):
 
     def exit_action(self, val: ClickEvent | NbtDef | None) -> Self:
         return self._prim('exit_action', ClickEvent.from_nbt(val) if isinstance(val, Mapping) else val)
-
+    
     def can_close_with_escape(self, val: bool | None) -> Self:
         return self._prim('can_close_with_escape', val)
 

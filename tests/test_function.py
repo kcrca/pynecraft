@@ -321,7 +321,7 @@ class TestFunctions(unittest.TestCase):
         (self.tmp_path / 'datapacks').mkdir()
         pack.save(self.tmp_path)
 
-        expected = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'minecraft' / 'tags'
+        expected = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'minecraft' / 'tags' / 'functions'
         self.assertTrue(expected.is_dir())
         with open(expected / 'tick.json') as fp:
             ticks = json.load(fp)
