@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import dataclasses
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
 from .base import _ensure_size, _in_group, _to_list, Arg, as_facing, d, de_arg, FacingDef, IntOrArg, IntRelCoord, \
@@ -133,8 +132,6 @@ class Sign(Block):
         max_count = max(len(messages), len(commands))
         if max_count > 4:
             raise ValueError(f'{max_count}: Too many values for text and/or commands')
-        messages = _ensure_size(messages, 4)
-        commands = _ensure_size(commands, 4)
 
         lines = []
         for i in range(4):
@@ -543,7 +540,7 @@ class Region:
         self.start = start
         self.end = end
 
-    def fill(self, new: BlockDef, replace: BlockDef = None) -> Command:
+    def fill(self, new: BlockDef, replace: BlockDef = None) -> Commands:
         """
         Returns a command that will fill the region with a block. If a second block is given, it will be the filter;
         only this kind of block will be replaced. This can, of course, be a tag.
@@ -553,7 +550,7 @@ class Region:
             f = str(f.replace(replace))
         return f
 
-    def fillbiome(self, biome: StrOrArg, replace: StrOrArg = None) -> Command:
+    def fillbiome(self, biome: StrOrArg, replace: StrOrArg = None) -> Commands:
         f = fillbiome(self.start, self.end, as_biome(biome))
         if replace:
             f = f.replace(as_biome(replace))
@@ -734,7 +731,6 @@ class ItemFrame(Entity):
         return self
 
 
-@dataclasses.dataclass
 class Trade:
     """Represents a single trade a villager can make."""
     max_uses = 12
@@ -766,12 +762,14 @@ class Trade:
         values = Nbt({
             'buy': {'id': self.buy[0][0], 'Count': self.buy[0][1]},
             'sell': {'id': self.sell[0], 'Count': self.sell[1]},
-            'rewardExp': self.reward_exp
+            'rewardExp': self.reward_exp,
+            'uses': self.uses,
+            'xp': self.xp
         })
         if len(self.buy) > 1:
             values['buyB'] = {'id': self.buy[1][0], 'Count': self.buy[1][1]}
         for k, v in values.items():
-            if k != 'rewardExp' and v['Count'] == 1:
+            if isinstance(v, Mapping) and 'Count' in v and v['Count'] == 1:
                 del v['Count']
         values.set_or_clear('maxUses', self.max_uses)
         return values

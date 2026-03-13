@@ -1,9 +1,9 @@
 import string
 from typing import Iterable, Self
 
-from .base import Nbt, NbtDef, _in_group, to_id
-from .commands import ClickEvent, TextDef, as_text
-from .simpler import Item, _as_tuple
+from .base import _in_group, Nbt, NbtDef, to_id
+from .commands import as_text, ClickEvent, TextDef
+from .simpler import _as_tuple, Item
 
 PLAIN_MESSAGE = 'plain_message'
 ITEM = 'item'
@@ -52,7 +52,6 @@ def plain_message(contents: TextDef, *, width: int = None) -> Element:
     """Factory method for a plain_message body element."""
     elem = Element(PLAIN_MESSAGE, width)
     elem['contents'] = as_text(contents)
-    elem.set_if('width', width)
     return elem
 
 
@@ -87,7 +86,7 @@ class Input(Nbt):
     def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self | None:
         if isinstance(nbt, Input) or (allow_none and nbt is None):
             return nbt
-        input = Input(_in_group(INPUT_TYPES, nbt.pop('type')), nbt.pop('label'), nbt.pop('key', None))
+        input = Input(_in_group(ELEMENT_TYPES, nbt.pop('type')), nbt.pop('label'), nbt.pop('key', None))
         input.update(nbt)
         return input
 
@@ -236,7 +235,7 @@ def custom_form(namespace_id: str) -> SubmitType:
     return action
 
 
-def submit_action(label: TextDef, on_submit: SubmitType = None, *, id: str = None, tooltip: str = None,
+def submit_action(label: str, on_submit: SubmitType = None, *, id: str = None, tooltip: str = None,
                   width: int = None) -> Nbt:
     """Factory method for a submit action"""
     id = _default_from_label(id, label)
@@ -325,7 +324,7 @@ class Dialog(Nbt):
     def pause(self, val: bool | None) -> Self:
         return self._prim('pause', val)
 
-    def after_action(self, val: bool | None) -> Self:
+    def after_action(self, val: str | None) -> Self:
         return self._prim('after_action', _in_group(AFTER_ACTIONS, val))
 
     def exit_action(self, val: bool | None) -> Self:

@@ -125,51 +125,58 @@ class TestSimpler(unittest.TestCase):
             Sign.change((0, 0, 0), ('one', 'two'), start=2, blanks=True))
 
     def test_sign(self):
-        self.assertEqual(
-            {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']}},
-            Sign((None, 'hi')).nbt)
-        self.assertEqual({'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']},
-                          'is_waxed': True}, Sign((None, 'hi'), nbt={'is_waxed': True}).nbt)
-        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
-                          'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                         Sign().messages((None, None, 'Both Sides')).nbt)
-        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
-                          'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                         Sign().messages((None, None, 'Both Sides'), front=None).nbt)
-        self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                         Sign().messages((None, None, 'Both Sides'), front=True).nbt)
-        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
-                         Sign().messages((None, None, 'Both Sides'), front=False).nbt)
-        self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                         Sign().front((None, None, 'Both Sides')).nbt)
-        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
-                         Sign().back((None, None, 'Both Sides')).nbt)
+        orig_waxed = Sign.waxed
+        Sign.waxed = False
+        try:
+            self.assertEqual(
+                {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']}},
+                Sign((None, 'hi')).nbt)
+            self.assertEqual(
+                {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']},
+                 'is_waxed': True}, Sign((None, 'hi'), nbt={'is_waxed': True}).nbt)
+            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
+                              'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                             Sign().messages((None, None, 'Both Sides')).nbt)
+            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
+                              'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                             Sign().messages((None, None, 'Both Sides'), front=None).nbt)
+            self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                             Sign().messages((None, None, 'Both Sides'), front=True).nbt)
+            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
+                             Sign().messages((None, None, 'Both Sides'), front=False).nbt)
+            self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                             Sign().front((None, None, 'Both Sides')).nbt)
+            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
+                             Sign().back((None, None, 'Both Sides')).nbt)
 
-        self.assertEqual({'front_text': {'color': 'blue'}, 'back_text': {'color': 'blue'}}, Sign(()).color(BLUE).nbt)
-        self.assertEqual({'front_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=True).nbt)
-        self.assertEqual({'back_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=False).nbt)
-        self.assertEqual({}, Sign(()).color(None).nbt)
-        self.assertEqual({'front_text': {'has_glowing_text': True}, 'back_text': {'has_glowing_text': True}},
-                         Sign().glowing(True).nbt)
-        self.assertEqual({}, Sign(()).glowing(False).nbt)
-        self.assertEqual(
-            {'front_text': {'messages': ['hi', '', '', ''], 'color': 'blue'},
-             'back_text': {'messages': ['hi', '', '', ''], 'color': 'blue'}},
-            Sign(('hi',)).color(BLUE, front=True).nbt)
-        self.assertEqual(
-            {'front_text': {'messages': ['hi', '', '', '']},
-             'back_text': {'messages': ['hi', '', '', '']}},
-            Sign(('hi',)).color(BLUE, front=True).color(None, front=True).nbt)
-        self.assertEqual(
-            {'front_text': {'messages': ['hi', '', '', ''],
-                            'has_glowing_text': True},
-             'back_text': {'messages': ['hi', '', '', ''],
-                           'has_glowing_text': True}},
-            Sign(('hi',)).glowing(True, front=True).nbt)
-        self.assertEqual(
-            {'front_text': {'messages': ['hi', '', '', '']},
-             'back_text': {'messages': ['hi', '', '', '']}},
-            Sign(('hi',)).glowing(True, front=True).glowing(False, front=True).nbt)
+            self.assertEqual({'front_text': {'color': 'blue'}, 'back_text': {'color': 'blue'}},
+                             Sign(()).color(BLUE).nbt)
+            self.assertEqual({'front_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=True).nbt)
+            self.assertEqual({'back_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=False).nbt)
+            self.assertEqual({}, Sign(()).color(None).nbt)
+            self.assertEqual({'front_text': {'has_glowing_text': True}, 'back_text': {'has_glowing_text': True}},
+                             Sign().glowing(True).nbt)
+            self.assertEqual({}, Sign(()).glowing(False).nbt)
+            self.assertEqual(
+                {'front_text': {'messages': ['hi', '', '', ''], 'color': 'blue'},
+                 'back_text': {'messages': ['hi', '', '', ''], 'color': 'blue'}},
+                Sign(('hi',)).color(BLUE, front=True).nbt)
+            self.assertEqual(
+                {'front_text': {'messages': ['hi', '', '', '']},
+                 'back_text': {'messages': ['hi', '', '', '']}},
+                Sign(('hi',)).color(BLUE, front=True).color(None, front=True).nbt)
+            self.assertEqual(
+                {'front_text': {'messages': ['hi', '', '', ''],
+                                'has_glowing_text': True},
+                 'back_text': {'messages': ['hi', '', '', ''],
+                               'has_glowing_text': True}},
+                Sign(('hi',)).glowing(True, front=True).nbt)
+            self.assertEqual(
+                {'front_text': {'messages': ['hi', '', '', '']},
+                 'back_text': {'messages': ['hi', '', '', '']}},
+                Sign(('hi',)).glowing(True, front=True).glowing(False, front=True).nbt)
+        finally:
+            Sign.waxed = orig_waxed
 
     def test_wall_sign(self):
         self.assertEqual([
@@ -384,24 +391,25 @@ class TestSimpler(unittest.TestCase):
             Villager(CHILD, 'plains').nbt)
         self.assertEqual(Nbt({
             'Offers': {'Recipes': [
-                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}},
+                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}, 'uses': 0, 'xp': 1},
             ]},
             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon')).nbt)
         self.assertEqual(Nbt({
             'Offers': {'Recipes': [{'buy': {'id': 'stone'}, 'buyB': {'id': 'melon'},
-                                    'rewardExp': True, 'sell': {'id': 'torch'}}]},
+                                    'rewardExp': True, 'sell': {'id': 'torch'}, 'uses': 0, 'xp': 1}]},
             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon', 'torch')).nbt)
         self.assertEqual(Nbt(
             {'Offers': {'Recipes': [{'buy': {'id': 'stone'},
-                                     'rewardExp': True, 'sell': {'id': 'iron_axe', 'Count': {'damage': 12}}}]},
+                                     'rewardExp': True, 'sell': {'id': 'iron_axe', 'Count': {'damage': 12}}, 'uses': 0,
+                                     'xp': 1}]},
              'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', ('iron_axe', {'damage': 12}))).nbt)
         self.assertEqual(Nbt({
             'Offers': {'Recipes': [
-                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}},
-                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}},
+                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}, 'uses': 0, 'xp': 1},
+                {'buy': {'id': 'stone'}, 'rewardExp': True, 'sell': {'id': 'melon'}, 'uses': 0, 'xp': 1},
             ]},
             'VillagerData': {'profession': 'mason', 'type': 'jungle', 'xp': 0, 'level': 0}}),
             Villager(MASON, JUNGLE).add_trade(Trade('stone', 'melon'), Trade('stone', 'melon').nbt()).nbt)
