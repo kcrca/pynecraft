@@ -622,7 +622,7 @@ class DataPack:
                     name = f'{self.name}:{name}'
                 return name
 
-            mc_tags = path / 'data' / 'minecraft' / 'tags' / 'functions'
+            mc_tags = path / 'data' / 'minecraft' / 'tags' / 'function'
             mc_tags.mkdir(parents=True)
             if self.tick_functions:
                 _write_json({'values': sorted([func_for(f) for f in self.tick_functions])}, mc_tags / 'tick.json')
