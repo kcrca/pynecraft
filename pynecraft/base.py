@@ -711,14 +711,17 @@ class Nbt(UserDict):
             raise ValueError(f'{name}: Outside range of type "{type}"')
         # This is just getting the twos-complement stuff right: An unsigned value above the signed max for a type is
         # a negative value of that type.
-        if signed_ranges[type][1] <= num < unsigned_ranges[type][1]:
-            num -= unsigned_ranges[type][1]
+        if signed == 's':
+            if signed_ranges[type][1] <= num < unsigned_ranges[type][1]:
+                num -= unsigned_ranges[type][1]
+        else:
+            num &= (unsigned_ranges[type][1] - 1)
         return num
 
     @classmethod
     def to_float(cls, name) -> float:
         lc_name = name.lower()
-        m = re.fullmatch(r'([-+]?(?:[0-9_]+)?\.?(?:[0-9_]+)?(?:e-?[0-9]+)?)([df]?)', lc_name)
+        m = re.fullmatch(r'([-+]?(?:[0-9_]+)?\.?(?:[0-9_]+)?(?:e[-+]?[0-9]+)?)([df]?)', lc_name)
         if not m:
             raise ValueError(f'{name}: Not a float')
         num, type = m.groups()
