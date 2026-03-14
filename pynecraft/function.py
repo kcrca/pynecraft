@@ -482,49 +482,48 @@ class Loop(Function):
         return self
 
 
-Format = Union[str, float, int, Iterable[int]]
+Version = Union[str, float, int, Iterable[int]]
 
 
 # noinspection PyShadowingBuiltins
-def as_format(format: Format | None, default: Format = None) -> List[int] | None:
-    """Return a version as a dot-separated list of ints. List is used because that works best in json, where the
-    value is most commonly used."""
-    if format is None:
+def as_version(version: Version | None, default: Version = None) -> List[int] | None:
+    """Return a version as a dot-separated list of ints. List is used because it is always valid."""
+    if version is None:
         if default is None:
             return None
-        format = default
-    # normalize format version into a tuple of values
-    if isinstance(format, (float, str)):
-        format = [int(x) for x in re.split(r'\.', str(format))]
+        version = default
+    # normalize version into a tuple of values
+    if isinstance(version, (float, str)):
+        version = [int(x) for x in re.split(r'\.', str(version))]
     else:
-        format = _to_list(format)
+        version = _to_list(version)
     # now normalize it into a dot-separated string for ease of some tests
-    format = '.'.join(str(x) for x in format)
-    if not re.fullmatch(r'\d+(\.\d+)*', format):
+    version = '.'.join(str(x) for x in version)
+    if not re.fullmatch(r'\d+(\.\d+)*', version):
         raise ValueError('Only numbers and "." are allowed in versions')
-    format = re.sub(r'(\.0)*$', '', format)
-    if not format:
+    version = re.sub(r'(\.0)*$', '', version)
+    if not version:
         raise ValueError('Empty version')
-    return list(int(x) for x in format.split('.'))
+    return list(int(x) for x in version.split('.'))
 
 
-def compare_format(fmt1: Format | None, fmt2: Format | None) -> int:
-    if fmt1 is None or fmt2 is None:
-        if fmt1 == fmt2:
+def version_cmp(ver1: Version | None, ver2: Version | None) -> int:
+    if ver1 is None or ver2 is None:
+        if ver1 == ver2:
             return 0
-        return -1 if fmt2 is None else 1
-    fmt1 = as_format(fmt1)
-    fmt2 = as_format(fmt2)
-    min_len = min(len(fmt1), len(fmt2))
+        return -1 if ver2 is None else 1
+    ver1 = as_version(ver1)
+    ver2 = as_version(ver2)
+    min_len = min(len(ver1), len(ver2))
     for i in range(min_len):
-        f1 = int(fmt1[i])
-        f2 = int(fmt2[i])
-        if f1 != f2:
-            return f2 - f1
-    return len(fmt2) - len(fmt1)
+        v1 = int(ver1[i])
+        v2 = int(ver2[i])
+        if v1 != v2:
+            return v2 - v1
+    return len(ver2) - len(ver1)
 
 
-LATEST_PACK_VERSION = as_format(101.0)
+LATEST_PACK_VERSION = as_version(101)
 
 
 class DataPack:
@@ -537,13 +536,13 @@ class DataPack:
     namespace will have this pack's namespace prepended.)
     """
 
-    def __init__(self, name: str, desc: TextDef = None, max_format: Format = None, min_format: Format = None,
+    def __init__(self, name: str, desc: TextDef = None, max_format: Version = None, min_format: Version = None,
                  mcmeta: Mapping = None):
         self._name = name
         self.function_set = FunctionSet('function', self)
         self._json = {}
-        max_format = as_format(max_format, LATEST_PACK_VERSION)
-        min_format = as_format(min_format, max_format)
+        max_format = as_version(max_format, LATEST_PACK_VERSION)
+        min_format = as_version(min_format, max_format)
         self._mcmeta = {'pack': {'max_format': max_format, 'min_format': min_format, 'description': Text.text(name)}}
         if desc:
             self._mcmeta['description'] = desc
