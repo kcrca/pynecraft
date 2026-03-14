@@ -122,18 +122,26 @@ class TestFunctions(unittest.TestCase):
 
     def test_as_format(self):
         self.assertEqual(None, as_format(None))
-        self.assertEqual('13', as_format(13))
-        self.assertEqual('13', as_format(13.0))
-        self.assertEqual('13.2', as_format(13.2))
-        self.assertEqual('13.2', as_format((13, 2)))
-        self.assertEqual('13.2.17', as_format([13, 2, 17]))
-        self.assertEqual('13.2', as_format('13.2.0.0.0'))
+        self.assertEqual([13], as_format([13]))
+        self.assertEqual([13], as_format(13))
+        self.assertEqual([13], as_format(13.0))
+        self.assertEqual([13], as_format('13'))
+        self.assertEqual([13], as_format((13,)))
+        self.assertEqual([13, 5], as_format([13, 5]))
+        self.assertEqual([13, 5], as_format((13, 5)))
+        self.assertEqual([13, 5], as_format(13.5))
+        self.assertEqual([13, 5], as_format('13.5'))
+        self.assertEqual([13, 5], as_format([13, 5, 0]))
+        self.assertEqual([13, 5], as_format([13, 5, 0, 0, 0]))
+        self.assertEqual([13, 5], as_format("13.5.0"))
         with self.assertRaises(ValueError):
             as_format(())
         with self.assertRaises(ValueError):
             as_format('.0.0.0')
         with self.assertRaises(ValueError):
             as_format('A.0')
+        with self.assertRaises(ValueError):
+            as_format(-1)
 
     def test_compare_format(self):
         self.assertTrue(compare_format(None, None) == 0)
@@ -375,8 +383,7 @@ class TestFunctions(unittest.TestCase):
         mc_dir = self.tmp_path / 'datapacks' / 'packer' / 'data' / 'minecraft'
         self.assertFalse(mc_dir.exists())
 
-
-# ============================================================
+    # ============================================================
 
     def test_function_datapack_save_and_load(self):
         pack = DataPack('packer')

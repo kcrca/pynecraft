@@ -8,7 +8,7 @@ import shutil
 from collections import UserDict
 from json import JSONEncoder
 from re import Pattern
-from typing import MutableMapping, Self
+from typing import List, MutableMapping, Self
 
 import math
 
@@ -486,24 +486,26 @@ Format = Union[str, float, int, Iterable[int]]
 
 
 # noinspection PyShadowingBuiltins
-def as_format(format: Format | None, default=None) -> str | None:
-    """Return a version as a dot-separated sequence of ints."""
+def as_format(format: Format | None, default: Format = None) -> List[int] | None:
+    """Return a version as a dot-separated list of ints. List is used because that works best in json, where the
+    value is most commonly used."""
     if format is None:
         if default is None:
             return None
         format = default
-    if isinstance(format, Iterable) and not isinstance(format, str):
-        format = '.'.join(str(f) for f in format)
-    elif isinstance(format, (float, int)):
-        format = str(format)
+    # normalize format version into a tuple of values
+    if isinstance(format, (float, str)):
+        format = [int(x) for x in re.split(r'\.', str(format))]
+    else:
+        format = _to_list(format)
+    # now normalize it into a dot-separated string for ease of some tests
+    format = '.'.join(str(x) for x in format)
     if not re.fullmatch(r'\d+(\.\d+)*', format):
         raise ValueError('Only numbers and "." are allowed in versions')
-
-    # Strip off any trailing zeros (1.0 is equivalent to 0, ergo the canonical form)
     format = re.sub(r'(\.0)*$', '', format)
-    if format == '':
+    if not format:
         raise ValueError('Empty version')
-    return format
+    return list(int(x) for x in format.split('.'))
 
 
 def compare_format(fmt1: Format | None, fmt2: Format | None) -> int:
@@ -511,8 +513,8 @@ def compare_format(fmt1: Format | None, fmt2: Format | None) -> int:
         if fmt1 == fmt2:
             return 0
         return -1 if fmt2 is None else 1
-    fmt1 = as_format(fmt1).split('.')
-    fmt2 = as_format(fmt2).split('.')
+    fmt1 = as_format(fmt1)
+    fmt2 = as_format(fmt2)
     min_len = min(len(fmt1), len(fmt2))
     for i in range(min_len):
         f1 = int(fmt1[i])
@@ -535,18 +537,16 @@ class DataPack:
     namespace will have this pack's namespace prepended.)
     """
 
-    def __init__(self, name: str, pack_format: Format = LATEST_PACK_VERSION, /, min_format: Format = None,
-                 max_format: Format = None, mcmeta: Mapping = None):
+    def __init__(self, name: str, desc: TextDef = None, max_format: Format = None, min_format: Format = None,
+                 mcmeta: Mapping = None):
         self._name = name
         self.function_set = FunctionSet('function', self)
         self._json = {}
-        pack_format = as_format(pack_format)
-        min_format = as_format(min_format, pack_format)
-        max_format = as_format(max_format, pack_format)
-        self._mcmeta = {
-            'pack': {'pack_format': pack_format, 'min_format': min_format, 'max_format': max_format,
-                     'description': Text.text(name)}}
-        self._description = None
+        max_format = as_format(max_format, LATEST_PACK_VERSION)
+        min_format = as_format(min_format, max_format)
+        self._mcmeta = {'pack': {'max_format': max_format, 'min_format': min_format, 'description': Text.text(name)}}
+        if desc:
+            self._mcmeta['description'] = desc
         if mcmeta:
             self._mcmeta.update(mcmeta)
         self.tick_functions = set()
