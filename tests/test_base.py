@@ -567,6 +567,21 @@ class TestBase(unittest.TestCase):
         with self.assertRaises(ValueError):
             Nbt.to_int('253sb')
 
+    def test_to_int_unsigned(self):
+        """Test unsigned byte/short/int/long boundaries."""
+        self.assertEqual(255, Nbt.to_int('255ub'))
+        self.assertEqual(255, Nbt.to_int('0xffub'))
+        self.assertEqual(127, Nbt.to_int('127ub'))
+        self.assertEqual(128, Nbt.to_int('128ub'))
+        with self.assertRaises(ValueError):
+            Nbt.to_int('256ub')
+        with self.assertRaises(ValueError):
+            Nbt.to_int('-1ub')
+        # unsigned short
+        self.assertEqual(65535, Nbt.to_int('0xffffus'))
+        self.assertEqual(32767, Nbt.to_int('32767us'))
+        self.assertEqual(32768, Nbt.to_int('32768us'))
+
     def test_to_float(self):
         self.assertEqual(0.0, Nbt.to_float('0'))
         self.assertEqual(10.0, Nbt.to_float('10'))
