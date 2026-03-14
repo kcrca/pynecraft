@@ -597,8 +597,9 @@ class DataPack:
         return contents
 
     def save(self, path: Path | str):
-        """Saves all the files in the datapack. This first removes the path, if it exists, to clean out any old
-        files. It then writes all the new files, as well as the ``pack.mcmeta`` file and a warning ``README`` file.
+        """Saves all the files in the datapack. First this recursively removes existing files at the path,
+        to start with a clean slate. It then writes all the new files, as well as the ``pack.mcmeta`` file and a
+        warning ``README`` file.
         """
         path, _ = self.path_for(path, self._name)
         if path.exists():
