@@ -548,13 +548,13 @@ class Region:
         f = fill(self.start, self.end, as_block(new))
         if replace:
             f = str(f.replace(replace))
-        return f
+        yield f
 
     def fillbiome(self, biome: StrOrArg, replace: StrOrArg = None) -> Commands:
         f = fillbiome(self.start, self.end, as_biome(biome))
         if replace:
             f = f.replace(as_biome(replace))
-        return f
+        yield f
 
     def replace(self, new: BlockDef, old: BlockDef, states: SomeMappings = None,
                 new_states: SomeMappings = None, shared_states: SomeMappings = None) -> Commands:
