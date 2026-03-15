@@ -74,7 +74,7 @@ def as_target(target: Target) -> TargetSpec | str | None:
     Valid targets are subclasses of TargetSpec, a '*', or a username.
 
     :param target: The (probable) target.
-    :return: a TargetSpec object, created if need be, or None.
+    :return: A TargetSpec object, created if need be, or None.
     """
     if target is None:
         return None
@@ -194,7 +194,7 @@ def as_uuid(uuid: StrOrArg) -> str:
     """Checks if the string is a valid UUID as four numbers separated by dashes.
 
     :param uuid: The (probable) uuid.
-    :return: the input value.
+    :return: The input value.
     """
     if is_arg(uuid):
         return str(uuid)
@@ -1462,8 +1462,8 @@ class _BossbarSet(Command):
         return str(self)
 
     @_fluent
-    def name(self, name: StrOrArg) -> str:
-        self._add('name', _quote(name))
+    def name(self, name: Text) -> str:
+        self._add('name', as_text(name))
         return str(self)
 
     @_fluent
@@ -1490,8 +1490,8 @@ class _BossbarSet(Command):
 
 class _BossbarMod(Command):
     @_fluent
-    def add(self, id: StrOrArg, name: StrOrArg) -> str:
-        self._add('add', as_resource(id), _quote(name))
+    def add(self, id: StrOrArg, name: TextDef) -> str:
+        self._add('add', as_resource(id), as_text(name))
         return str(self)
 
     @_fluent
@@ -1906,32 +1906,13 @@ class _ForceloadMod(Command):
         return str(self)
 
 
-class _FunctionWith(Command):
-    @_fluent
-    def block(self, pos: Position) -> str:
-        self._add('block', *pos)
-        return str(self)
-
-    @_fluent
-    def entity(self, target: Target) -> str:
-        self._add('entity', as_target(target))
-        return str(self)
-
-    @_fluent
-    def storage(self, source: StrOrArg, nbt_path: StrOrArg = None) -> str:
-        self._add('storage', source)
-        self._add_opt(as_resource_path(nbt_path))
-        return str(self)
-
-
 class _FunctionMod(Command):
     @_fluent
-    def with_(self, data_target: DataTarget = None) -> _FunctionWith | str:
+    def with_(self, data_target: DataTarget, nbt_path: StrOrArg = None) -> str:
         self._add('with')
-        if data_target:
-            self._add(as_data_target(data_target))
-            return str(self)
-        return self._start(_FunctionWith())
+        self._add(as_data_target(data_target))
+        self._add_opt(as_nbt_path(nbt_path))
+        return str(self)
 
 
 class _ItemReplace(Command):
@@ -1990,7 +1971,7 @@ class _LootSource(Command):
 class _LootTarget(Command):
     @_fluent
     def give(self, target: Target) -> _LootSource:
-        self._add('give', as_single(target))
+        self._add('give', as_target(target))
         return self._start(_LootSource())
 
     @_fluent
@@ -2021,7 +2002,7 @@ class _ScoreboardObjectivesMod(Command):
     def add(self, objective: str, score_criteria: StrOrArg, display_name: str = None) -> str:
         score_criteria = as_criteria(score_criteria)
         self._add('add', as_name(objective), as_criteria(score_criteria))
-        self._add_opt(as_name(display_name))
+        self._add_opt(as_text(display_name))
         return str(self)
 
     @_fluent
@@ -2288,9 +2269,9 @@ class _TeamMod(Command):
         return str(self)
 
     @_fluent
-    def add(self, team: StrOrArg, display_name: StrOrArg = None) -> str:
+    def add(self, team: StrOrArg, display_name: TextDef = None) -> str:
         self._add('add', as_team(team))
-        self._add_opt(as_name(display_name))
+        self._add_opt(as_text(display_name))
         return str(self)
 
     @_fluent
@@ -2589,16 +2570,16 @@ class _TitleMod(Command):
         return self._add_str('reset')
 
     @_fluent
-    def title(self, msg: StrOrArg) -> str:
-        return self._add_str('title', _quote(msg))
+    def title(self, txt: TextDef) -> str:
+        return self._add_str('title', as_text(txt))
 
     @_fluent
-    def subtitle(self, msg: StrOrArg) -> str:
-        return self._add_str('subtitle', _quote(msg))
+    def subtitle(self, txt: TextDef) -> str:
+        return self._add_str('subtitle', as_text(txt))
 
     @_fluent
-    def actionbar(self, msg: StrOrArg) -> str:
-        return self._add_str('actionbar', _quote(msg))
+    def actionbar(self, txt: TextDef) -> str:
+        return self._add_str('actionbar', as_text(txt))
 
     @_fluent
     def times(self, fade_in: DurationDef, stay: DurationDef, fade_out: DurationDef) -> str:

@@ -629,6 +629,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('bossbar set foo color blue', bossbar().set('foo').color(BLUE))
         self.assertEqual('bossbar set foo max 17', bossbar().set('foo').max(17))
         self.assertEqual('bossbar set foo name "Libby the Kid"', bossbar().set('foo').name('Libby the Kid'))
+        self.assertEqual('bossbar set foo name {bold: true, text: Hi}',
+                         bossbar().set('foo').name(Text.text('Hi').bold()))
         self.assertEqual('bossbar set foo players @s', bossbar().set('foo').players(s()))
         self.assertEqual('bossbar set foo style notched_12', bossbar().set('foo').style(NOTCHED_12))
         self.assertEqual('bossbar set foo value 17', bossbar().set('foo').value(17))
@@ -933,7 +935,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('locate poi foo', locate(POI, 'foo'))
 
     def test_loot_command(self):
-        self.assertEqual('loot give @s fish m:/a/b 1 ~2 ^3 stone', loot().give(s()).fish('m:/a/b', (1, r(2), d(3)),
+        self.assertEqual('loot give @a fish m:/a/b 1 ~2 ^3 stone', loot().give(a()).fish('m:/a/b', (1, r(2), d(3)),
                                                                                          'stone'))
         self.assertEqual('loot insert 1 ~2 ^3 loot m:/a/b', loot().insert((1, r(2), d(3))).loot('m:/a/b'))
         self.assertEqual('loot spawn 1 ~2 ^3 kill @p', loot().spawn((1, r(2), d(3))).kill(p()))
@@ -1060,6 +1062,8 @@ class TestCommands(unittest.TestCase):
                          _ScoreboardObjectivesMod().modify('obj').numberformat().fixed('bubble'))
         self.assertEqual('modify obj numberformat blank',
                          _ScoreboardObjectivesMod().modify('obj').numberformat().blank())
+        self.assertEqual('scoreboard objectives add obj food "Hello There"',
+                         scoreboard().objectives().add('obj', FOOD, 'Hello There'))
         with self.assertRaises(ValueError):
             scoreboard().objectives().add('obj', 'drink')
 
@@ -1200,6 +1204,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('team list foo', team().list('foo'))
         self.assertEqual('team add foo bar', team().add('foo', 'bar'))
         self.assertEqual('team add foo bar', team().add('foo', 'bar'))
+        self.assertEqual('team add foo "Hello There"', team().add('foo', 'Hello There'))
         self.assertEqual('team remove foo', team().remove('foo'))
         self.assertEqual('team remove foo', team().remove('foo'))
         self.assertEqual('team empty foo', team().empty('foo'))
@@ -1394,6 +1399,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('title @s actionbar foo', title(s()).actionbar('foo'))
         self.assertEqual('title @s times 1 2 3', title(s()).times(1, 2, 3))
         self.assertEqual('$title $(tgt) title $(t)', title(Arg('tgt')).title(Arg('t')))
+        self.assertEqual('title @s title {bold: true, text: Hi}',
+                         title(s()).title(Text.text('Hi').bold()))
+        self.assertEqual('title @s subtitle {italic: true, text: Hi}',
+                         title(s()).subtitle(Text.text('Hi').italic()))
+        self.assertEqual('title @s actionbar {color: red, text: Hi}',
+                         title(s()).actionbar(Text.text('Hi').color(RED)))
 
     def test_trigger_command(self):
         self.assertEqual('trigger foo', str(trigger('foo')))
@@ -1438,9 +1449,28 @@ class TestCommands(unittest.TestCase):
     def test_function(self):
         self.assertEqual('function m:b/c', str(function('m:b/c')))
         self.assertEqual('function foo {foo: bar}', str(function('foo', {'foo': 'bar'})))
-        self.assertEqual('function foo with block 1 ~2 ^3', str(function('foo').with_().block((1, r(2), d(3)))))
-        self.assertEqual('function foo with entity @e', str(function('foo').with_().entity(e())))
-        self.assertEqual('function foo with storage m:b', str(function('foo').with_().storage('m:b')))
+
+        self.assertEqual('function foo with block 1 ~2 ^3', str(function('foo').with_((1, r(2), d(3)))))
+        self.assertEqual('function foo with entity @e', str(function('foo').with_(e())))
+        self.assertEqual('function foo with storage m:b', str(function('foo').with_('m:b')))
+
+        self.assertEqual('function foo with block 1 ~2 ^3', str(function('foo').with_(block((1, r(2), d(3))))))
+        self.assertEqual('function foo with entity @e', str(function('foo').with_(entity(e()))))
+        self.assertEqual('function foo with storage m:b', str(function('foo').with_(storage('m:b'))))
+
+        self.assertEqual('function foo with block 1 ~2 ^3 Items[0]',
+                         str(function('foo').with_((1, r(2), d(3)), 'Items[0]')))
+        self.assertEqual('function foo with entity @e Items[0]',
+                         str(function('foo').with_(e(), 'Items[0]')))
+        self.assertEqual('function foo with storage m:b Items[0]',
+                         str(function('foo').with_('m:b', 'Items[0]')))
+
+        self.assertEqual('function foo with block 1 ~2 ^3 Items[0]',
+                         str(function('foo').with_(block((1, r(2), d(3))), 'Items[0]')))
+        self.assertEqual('function foo with entity @e Items[0]',
+                         str(function('foo').with_(entity(e()), 'Items[0]')))
+        self.assertEqual('function foo with storage m:b Items[0]',
+                         str(function('foo').with_(storage('m:b'), 'Items[0]')))
 
     def test_resource_checks(self):
         self.assertEqual('xyzzy', as_resource('xyzzy'))
