@@ -523,7 +523,7 @@ def version_cmp(ver1: Version | None, ver2: Version | None) -> int:
     return len(ver2) - len(ver1)
 
 
-LATEST_PACK_VERSION = as_version(101)
+LATEST_PACK_VERSION = as_version(101.1)
 
 
 class DataPack:
@@ -543,7 +543,8 @@ class DataPack:
         self._json = {}
         max_format = as_version(max_format, LATEST_PACK_VERSION)
         min_format = as_version(min_format, max_format)
-        self._mcmeta = {'pack': {'max_format': max_format, 'min_format': min_format, 'description': Text.text(name)}}
+        desc = as_text(desc if desc else name)
+        self._mcmeta = {'pack': {'max_format': max_format, 'min_format': min_format, 'description': desc}}
         if desc:
             self._mcmeta['description'] = desc
         if mcmeta:
