@@ -412,6 +412,8 @@ class TestCommands(unittest.TestCase):
 
     def test_target_team(self):
         self.assertEqual('@a[team=foo]', str(a().team('foo')))
+        self.assertEqual('@a[team=]', str(a().team('')))
+        self.assertEqual('@a[team=!]', str(a().team('!')))
         self.assertEqual('@a[team=v$(k)]', str(a().team('v$(k)')))
         self.assertEqual('@a[team=$(f)]', str(a().team(Arg('f'))))
         with self.assertRaises(KeyError):
@@ -1312,11 +1314,18 @@ class TestCommands(unittest.TestCase):
             as_uuid(',17')
 
     def test_as_team(self):
+        self.assertIsNone(as_team(None))
         self.assertEqual('foo1', as_team('foo1'))
         with self.assertRaises(ValueError):
             as_uuid(',17')
         self.assertEqual('v$(t)', as_team('v$(t)'))
         self.assertEqual('$(t)', as_team(Arg('t')))
+        with self.assertRaises(ValueError):
+            self.assertEqual('', as_team(''))
+        with self.assertRaises(ValueError):
+            self.assertEqual('!', as_team('!'))
+        with self.assertRaises(ValueError):
+            self.assertEqual('!foo1', as_team('!foo1'))
 
     def test_as_block(self):
         self.assertIsNone(as_block(None))

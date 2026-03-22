@@ -203,7 +203,7 @@ def as_uuid(uuid: StrOrArg) -> str:
     return uuid
 
 
-def as_team(team: StrOrArg) -> str | None:
+def as_team(team: StrOrArg|None) -> str | None:
     """Checks if the argument is a valid team name, or None.
 
     :param team: The (probable) team name.
@@ -1008,7 +1008,9 @@ class Selector(TargetSpec):
     @_fluent
     def team(self, team: StrOrArg) -> Selector:
         """Add a team to the selector."""
-        return self._unique_arg('team', as_name(team, allow_not=True))
+        if team not in ('', '!'):
+            team = as_name(team, allow_not=True)
+        return self._unique_arg('team', team)
 
     @_fluent
     def not_team(self, team: StrOrArg, *teams) -> Selector:
