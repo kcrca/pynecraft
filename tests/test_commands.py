@@ -360,6 +360,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$scoreboard players add $(x) $(obj) $(v)', Score(Arg('x'), Arg('obj')).add(Arg('v')))
         self.assertEqual('$scoreboard players operation $(x) $(obj) += $(y) $(obj)',
                          Score(Arg('x'), Arg('obj')).operation(PLUS, Score(Arg('y'), Arg('obj'))))
+        self.assertIsInstance(Score(a(), 'foo').name, str)
 
     def test_as_score(self):
         self.assertIsNone(as_score(None))
@@ -1450,6 +1451,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tell @s hi', tell(s(), 'hi'))
         self.assertEqual('tell @s hi', msg(s(), 'hi'))
         self.assertEqual('tell @s hi', w(s(), 'hi'))
+
+    def test_tellraw_command(self):
         self.assertEqual('tellraw @s howdy', tellraw(s(), Text.text('howdy')))
         self.assertEqual('tellraw @s howdy', tellraw(s(), {'text': 'howdy'}))
         self.assertEqual('tellraw @s howdy', tellraw(s(), 'howdy'))

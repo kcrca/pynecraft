@@ -4105,6 +4105,7 @@ class Score(Command, Expression):
         if target is None or objective is None:
             raise ValueError('Must give both target and objective')
         self.target = as_target(target)
+        self.name = str(target)
         self.objective = as_name(objective)
         self._add(target, objective)
 
