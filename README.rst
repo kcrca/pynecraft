@@ -113,7 +113,7 @@ quoting issues alone can be daunting, and they won't do the syntax
 and run-time validation of commands.
 
 I wrote pynecraft because I was working on my `RestWorld resource
-pack test world <https://claritypack.com/restworld>`_.  It makes
+pack test world <https://cleanpack.art/restworld>`_.  It makes
 extensive use of functions. After using a macro system to generate
 things for a while, it was clear that this was ugly and difficult.
 Pynecraft made a big difference. The "saying what I mean to say"
@@ -158,4 +158,4 @@ Here are some useful resources:
 * `The RestWorld project
   <https://github.com/kcrca/restworld/tree/main/restworld>`_, a
   very complex use that is the original target, whose `very own
-  website is here <https://claritypack.com/restworld>`_.
+  website is here <https://cleanpack.art/restworld>`_.
