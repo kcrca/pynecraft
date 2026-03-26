@@ -51,13 +51,13 @@ method will create::
 
     minecraft_world
     |-- datapacks
-	|-- hello_world
-	    |-- README                 # A generated warning not to edit this by hand
-	    |-- pack.mcmeta
-	    |-- data
-		|-- functions
-		    |-- hello.mcfunction
-			"say Hello, World!"
+        |-- hello_world
+            |-- README                 # A generated warning not to edit this by hand
+            |-- pack.mcmeta
+            |-- data
+                |-- functions
+                    |-- hello.mcfunction
+                        "say Hello, World!"
 
 
 Pynecraft also has simple calls for obscure or complex minecraft
