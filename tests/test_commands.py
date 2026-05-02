@@ -1457,6 +1457,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('tellraw @s howdy', tellraw(s(), {'text': 'howdy'}))
         self.assertEqual('tellraw @s howdy', tellraw(s(), 'howdy'))
         self.assertEqual('tellraw @s [howdy, " ", there]', tellraw(s(), 'howdy', 'there'))
+        self.assertEqual('tellraw @s {score: {name: x, objective: y}}', tellraw(s(), Score('x', 'y')))
+        self.assertEqual('tellraw @s {selector: "@n[tag=foo]"}', tellraw(s(), n().tag('foo')))
 
     def test_function(self):
         self.assertEqual('function m:b/c', str(function('m:b/c')))

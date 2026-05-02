@@ -203,7 +203,7 @@ def as_uuid(uuid: StrOrArg) -> str:
     return uuid
 
 
-def as_team(team: StrOrArg|None) -> str | None:
+def as_team(team: StrOrArg | None) -> str | None:
     """Checks if the argument is a valid team name, or None.
 
     :param team: The (probable) team name.
@@ -3466,7 +3466,7 @@ msg = tell
 w = tell
 
 
-def tellraw(target: Target, *message: NbtDef | StrOrArg) -> str:
+def tellraw(target: Target, *message: NbtDef | StrOrArg | Score | Selector) -> str:
     """Displays a text message to players."""
     cmd = Command()
     cmd._add('$tellraw', target)
@@ -3477,7 +3477,12 @@ def tellraw(target: Target, *message: NbtDef | StrOrArg) -> str:
             first = False
         else:
             jl.append(as_text(' '))
-        jl.append(as_text(m))
+        if isinstance(m, Score):
+            jl.append(Text.score(m))
+        elif isinstance(m, Selector):
+            jl.append(Text.selector(m))
+        else:
+            jl.append(as_text(m))
     if len(jl) == 1:
         jl = jl[0]
     cmd._add(jl)
