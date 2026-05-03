@@ -3467,7 +3467,8 @@ w = tell
 
 
 def tellraw(target: Target, *message: NbtDef | StrOrArg | Score | Selector) -> str:
-    """Displays a text message to players."""
+    """Displays a text message to players. `Score`, `Selector`, `str`, and `dict`/`Nbt` objects are passed their
+    respective `Text`methods. All other objects are treated as Text objects."""
     cmd = Command()
     cmd._add('$tellraw', target)
     jl = TextList()
