@@ -9,6 +9,7 @@ from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, 
     _ScoreboardPlayersMod, _StoreClause, AdvancementCriteria
 from pynecraft.function import Function
 from pynecraft.simpler import DESERT
+from pynecraft.info import *
 from pynecraft.values import *
 
 

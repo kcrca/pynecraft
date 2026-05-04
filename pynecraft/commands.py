@@ -10,8 +10,8 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 from urllib.parse import urlparse
 
-from .values import as_advancement, as_enchantment, as_gamerule, as_particle, as_teamoption, DUMMY, enchantments, \
-    game_rules, SCORE_CRITERIA_GROUP, team_options
+from .values import as_advancement, as_enchantment, as_gamerule, as_particle, as_teamoption, enchantments, \
+    game_rules, team_options
 
 if TYPE_CHECKING:
     pass
@@ -319,6 +319,7 @@ def as_slot(slot: StrOrArg | int | None) -> str | None:
 def as_criteria(criteria):
     if re.fullmatch(r'(teamkill|killedByTeam)\.[a-z_]+', criteria):
         return criteria
+    from .info import SCORE_CRITERIA_GROUP
     return _in_group(SCORE_CRITERIA_GROUP, criteria)
 
 
@@ -3991,6 +3992,7 @@ class _Evaluate:
         if re.search(fr'\bt[0-9]{{2}} {self._scratch_objective}', command):
             if not self.scratches_used:
                 # noinspection PyArgumentList
+                from .info import DUMMY
                 self.append(scoreboard().objectives().add(self._scratch_objective, DUMMY))
                 self.scratches_used = True
         self.commands.append(command)
@@ -4126,6 +4128,7 @@ class Score(Command, Expression):
     def init(self, value: IntOrArg = 0) -> Iterable[str]:
         """Initializes the score by ensuring the objective exists, and setting its value to the provided value."""
         # noinspection PyArgumentList
+        from .info import DUMMY
         return (scoreboard().objectives().add(self.objective, DUMMY)), (self.set(de_int_arg(value)))
 
     def get(self) -> str:

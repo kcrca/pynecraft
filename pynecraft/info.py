@@ -2,14 +2,14 @@
 from __future__ import annotations
 
 import re
-from collections import UserDict
+from collections import UserDict, namedtuple
 from enum import Enum
 from importlib.resources import files
 
 from titlecase import titlecase
 
 from .base import AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE, DARK_RED, GOLD, \
-    GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, to_id, to_name, WHITE, YELLOW
+    GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, StrOrArg, _in_group, to_id, to_name, WHITE, YELLOW
 from .commands import Block, Entity
 from .simpler import as_color_num, Item
 from .values import POTTERY_SHERD_GROUP, pottery_sherds
@@ -470,3 +470,71 @@ mannequin_poses = ('standing', 'crouching', 'swimming', 'fall_flying', 'sleeping
 
 default_skins = ("alex", "ari", "efe", "kai", "makena", "noor", "steve", "sunny", "zuri")
 """The names of the default skins"""
+
+AIR = 'air'
+ARMOR = 'armor'
+DEATH_COUNT = 'deathCount'
+DUMMY = 'dummy'
+FOOD = 'food'
+HEALTH = 'health'
+LEVEL = 'level'
+PLAYER_KILL_COUNT = 'playerKillCount'
+TOTAL_KILL_COUNT = 'totalKillCount'
+TRIGGER = 'trigger'
+XP = 'xp'
+SCORE_CRITERIA_GROUP = [
+    AIR, ARMOR, DEATH_COUNT, DUMMY, FOOD, HEALTH, LEVEL, PLAYER_KILL_COUNT, TOTAL_KILL_COUNT, TRIGGER, XP
+]
+
+ScoreCriteriaInfo = namedtuple('ScoreCriteria', ['name', 'value', 'desc'])
+score_criteria = {
+    'DUMMY': ScoreCriteriaInfo('dummy', 'dummy',
+                               'A score that can be changed only by commands and not automatically by the game.'
+                               " This can be used for storing integer states and variables, which can then be used"
+                               " with the scoreboard's operations to perform arithmetic calculations."),
+    'TRIGGER': ScoreCriteriaInfo('trigger', 'trigger',
+                                 'A score that can be changed by commands and not automatically by the game.'
+                                 ' The /trigger command allows players to set, increment, or decrement their own'
+                                 ' score. The command fails if the objective has not been "enabled" for the player'
+                                 ' using it. After a player uses it, the objective is automatically disabled for'
+                                 ' them. By default, all trigger objectives are disabled for players. Ordinary'
+                                 ' players can use the /trigger command, even if cheats are disabled or they are'
+                                 ' not server operators, making it useful for safely taking input from non-operator'
+                                 ' players.'),
+    'DEATH_COUNT': ScoreCriteriaInfo('death Count', 'deathCount',
+                                     'The score increments automatically when a player dies.'),
+    'PLAYER_KILL_COUNT': ScoreCriteriaInfo('player Kill Count', 'playerKillCount',
+                                           'The score increments automatically when a player kills another player.'),
+    'TOTAL_KILL_COUNT': ScoreCriteriaInfo('total Kill Count', 'totalKillCount',
+                                          'The score increments automatically when a player kills another player or'
+                                          ' a mob.'),
+    'HEALTH': ScoreCriteriaInfo('health', 'health',
+                                'Ranges from 0 to 20 (and greater) for a normal player; represents the amount of'
+                                ' half-hearts a player has. It may appear as 0 for players before their health has'
+                                ' changed for the first time. The health score can surpass 20 points with extra'
+                                ' hearts from attributes, Health Boost or Absorption effects.'),
+    'XP': ScoreCriteriaInfo('xp', 'xp',
+                            'Matches the total amount of experience the player has collected since their last'
+                            ' death.'),
+    'LEVEL': ScoreCriteriaInfo('level', 'level', 'Matches the current experience level of the player.'),
+    'FOOD': ScoreCriteriaInfo('food', 'food',
+                              'Ranges from 0 to 20; represents the amount of hunger points a player has. It may'
+                              ' appear as 0 for players before their food level has changed for the first time.'),
+    'AIR': ScoreCriteriaInfo('air', 'air',
+                             'Ranges from 0 to 300; represents the amount of air a player has left while swimming'
+                             ' underwater. It matches the air NBT tag of the player.'),
+    'ARMOR': ScoreCriteriaInfo('armor', 'armor',
+                               'Ranges from 0 to 20; represents the amount of armor points a player has. It may'
+                               ' appear as 0 for players before their armor level has changed for the first time.'),
+}
+
+for __k in tuple(score_criteria.keys()):
+    __v = score_criteria[__k]
+    score_criteria[__v.name] = __v
+    score_criteria[__v.value] = __v
+
+
+def as_scorecriteria(*values: StrOrArg) -> str | tuple[str, ...]:
+    if len(values) == 1:
+        return _in_group(SCORE_CRITERIA_GROUP, values[0])
+    return tuple(_in_group(SCORE_CRITERIA_GROUP, v) for v in values)

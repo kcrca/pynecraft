@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from pynecraft.commands import Commands, data, DataTarget, execute, Score, scoreboard, SUCCESS
-from pynecraft.values import DUMMY
+from pynecraft.info import DUMMY
 
 PYNECRAFT = 'pynecraft'
 
