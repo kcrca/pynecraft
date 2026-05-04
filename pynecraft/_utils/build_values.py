@@ -344,17 +344,22 @@ def _discs():
 def _paintings():
     lang = _lang()
     fields = {}
+    seen_titles = {}
     for f in _get_data().glob('painting_variant/*.json'):
         stem = f.stem
         d = _load(f)
         tk_title = d.get('title', {}).get('translate', '')
         tk_author = d.get('author', {}).get('translate', '')
-        title = lang.get(tk_title, _titlecase(stem.replace('_', ' ')))
+        base_title = lang.get(tk_title, _titlecase(stem.replace('_', ' ')))
         artist = lang.get(tk_author, '')
         size = (d.get('width', 1), d.get('height', 1))
+        if base_title in seen_titles:
+            seen_titles[base_title] += 1
+            title = f'{base_title} {seen_titles[base_title]}'
+        else:
+            seen_titles[base_title] = 1
+            title = base_title
         key = _key_from_name(title)
-        if key in fields:
-            key = f'{_key_from_name(stem)}'
         fields[key] = (stem, None, title, artist, size)
     return fields
 
