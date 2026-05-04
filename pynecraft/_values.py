@@ -1,3 +1,6 @@
+# This internal file contains the data that is imported automatically from the minecraft jar file and reports.
+# They are all imported into info.py, and you should import them from there.
+
 from collections import namedtuple
 from typing import Tuple
 
