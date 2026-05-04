@@ -189,7 +189,6 @@ instruments = (
 )
 """The instruments note blocks can play."""
 
-wolves = ('ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods')
 """Wolf variants."""
 
 
@@ -431,13 +430,6 @@ tropical_fish = {
         Fish(67108865, 'Threadfin')),
 }
 """The data for the predefined naturally-occurring tropical fish."""
-
-trim_materials = sorted((
-    'emerald', 'redstone', 'lapis', 'amethyst', 'quartz', 'netherite', 'diamond', 'gold', 'iron', 'copper', 'resin'))
-
-trim_patterns = sorted((
-    'bolt', 'coast', 'dune', 'eye', 'flow', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire',
-    'tide', 'vex', 'ward', 'wayfinder', 'wild'))
 
 armors = ('leather', 'chainmail', 'copper', 'iron', 'golden', 'diamond', 'netherite')
 

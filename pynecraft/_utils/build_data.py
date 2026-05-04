@@ -178,7 +178,24 @@ def _key_from_name(name, value=None, suffix=None):
     return k
 
 
+def _emit_simple_tuple(var_name, items):
+    items_str = ', '.join(f"'{i}'" for i in items)
+    print(f'{var_name} = ({items_str})')
+
+
 # ---- per-category data builders ----
+
+
+def _wolves():
+    return sorted(f.stem for f in _get_data().glob('wolf_variant/*.json'))
+
+
+def _trim_materials():
+    return sorted(f.stem for f in _get_data().glob('trim_material/*.json'))
+
+
+def _trim_patterns():
+    return sorted(f.stem for f in _get_data().glob('trim_pattern/*.json'))
 
 def _team_options():
     d = _commands()
@@ -553,6 +570,10 @@ if __name__ == '__main__':
         with redirect_stdout(out):
             print()
             print(f'# Generated from Minecraft {_version} jar data, {timestamp}')
+            print()
+            _emit_simple_tuple('wolves', _wolves())
+            _emit_simple_tuple('trim_materials', _trim_materials())
+            _emit_simple_tuple('trim_patterns', _trim_patterns())
 
             _section('TeamOption', 's', ['type'], _team_options, known,
                      added_values_fn=lambda v, extras: f', {_type_str(extras[0])}')

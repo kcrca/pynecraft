@@ -25,7 +25,11 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.2-snapshot-5 jar data, 2026-05-04T11:32:08-07:00
+# Generated from Minecraft 26.2-snapshot-5 jar data, 2026-05-04T14:23:00-07:00
+
+wolves = ('ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods')
+trim_materials = ('amethyst', 'copper', 'diamond', 'emerald', 'gold', 'iron', 'lapis', 'netherite', 'quartz', 'redstone', 'resin')
+trim_patterns = ('bolt', 'coast', 'dune', 'eye', 'flow', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire', 'tide', 'vex', 'ward', 'wayfinder', 'wild')
 
 
 # TeamOptions
