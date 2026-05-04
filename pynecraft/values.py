@@ -22,7 +22,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.2-snapshot-5 jar data, 2026-05-03T19:03:46-07:00
+# Generated from Minecraft 26.2-snapshot-5 jar data, 2026-05-03T19:11:12-07:00
 
 
 # TeamOptions
@@ -1338,7 +1338,7 @@ BOUQUET = "bouquet"
 BUST = "bust"
 CAVEBIRD = "cavebird"
 CHANGING = "changing"
-COTÁN = "cotan"
+COTAN = "cotan"
 CREEBET = "creebet"
 DENNIS = "dennis"
 DE_AZTEC = "aztec"
@@ -1359,7 +1359,7 @@ MEDITATIVE = "meditative"
 MORTAL_COIL = "skeleton"
 ORB = "orb"
 OWLEMONS = "owlemons"
-PARADISTRÄD = "plant"
+PARADISTRAD = "plant"
 PASSAGE = "passage"
 PIGSCENE = "pigscene"
 POINTER = "pointer"
@@ -1381,7 +1381,7 @@ WASTELAND = "wasteland"
 WATER = "water"
 WIND = "wind"
 PAINTING_GROUP = [
-    ALBANIAN, BACKYARD, BAROQUE, BONJOUR_MONSIEUR_COURBET, BOUQUET, BUST, CAVEBIRD, CHANGING, COTÁN, CREEBET, DENNIS, DE_AZTEC, DE_AZTEC_2, EARTH, ENDBOSS, FERN, FIGHTERS, FINDING, FIRE, GRAHAM, HUMBLE, KEBAB_MED_TRE_PEPPERONI, KONG, LOWMIST, MATCH, MEDITATIVE, MORTAL_COIL, ORB, OWLEMONS, PARADISTRÄD, PASSAGE, PIGSCENE, POINTER, POND, PRAIRIE_RIDE, SEASIDE, SKULL_AND_ROSES, SKULL_ON_FIRE, SUNFLOWERS, SUNSET_DENSE, TARGET_SUCCESSFULLY_BOMBED, THE_POOL, THE_STAGE_IS_SET, "void", TIDES, UNPACKED, WANDERER, WASTELAND, WATER, WIND, "wither"
+    ALBANIAN, BACKYARD, BAROQUE, BONJOUR_MONSIEUR_COURBET, BOUQUET, BUST, CAVEBIRD, CHANGING, COTAN, CREEBET, DENNIS, DE_AZTEC, DE_AZTEC_2, EARTH, ENDBOSS, FERN, FIGHTERS, FINDING, FIRE, GRAHAM, HUMBLE, KEBAB_MED_TRE_PEPPERONI, KONG, LOWMIST, MATCH, MEDITATIVE, MORTAL_COIL, ORB, OWLEMONS, PARADISTRAD, PASSAGE, PIGSCENE, POINTER, POND, PRAIRIE_RIDE, SEASIDE, SKULL_AND_ROSES, SKULL_ON_FIRE, SUNFLOWERS, SUNSET_DENSE, TARGET_SUCCESSFULLY_BOMBED, THE_POOL, THE_STAGE_IS_SET, "void", TIDES, UNPACKED, WANDERER, WASTELAND, WATER, WIND, "wither"
 ]
 
 PaintingInfo = namedtuple("Painting", ['name', 'value', 'desc', 'artist', 'size'])
@@ -1394,7 +1394,7 @@ paintings = {
     "BUST": PaintingInfo("""Bust""", "bust", None, "Kristoffer Zetterstrand", (2, 2)),
     "CAVEBIRD": PaintingInfo("""Cavebird""", "cavebird", None, "Kristoffer Zetterstrand", (3, 3)),
     "CHANGING": PaintingInfo("""Changing""", "changing", None, "Kristoffer Zetterstrand", (4, 2)),
-    "COTÁN": PaintingInfo("""Cotán""", "cotan", None, "Kristoffer Zetterstrand", (3, 3)),
+    "COTAN": PaintingInfo("""Cotán""", "cotan", None, "Kristoffer Zetterstrand", (3, 3)),
     "CREEBET": PaintingInfo("""Creebet""", "creebet", None, "Kristoffer Zetterstrand", (2, 1)),
     "DENNIS": PaintingInfo("""Dennis""", "dennis", None, "Sarah Boeving", (3, 3)),
     "DE_AZTEC": PaintingInfo("""de_aztec""", "aztec", None, "Kristoffer Zetterstrand", (1, 1)),
@@ -1415,7 +1415,7 @@ paintings = {
     "MORTAL_COIL": PaintingInfo("""Mortal Coil""", "skeleton", None, "Kristoffer Zetterstrand", (4, 3)),
     "ORB": PaintingInfo("""Orb""", "orb", None, "Kristoffer Zetterstrand", (4, 4)),
     "OWLEMONS": PaintingInfo("""Owlemons""", "owlemons", None, "Kristoffer Zetterstrand", (3, 3)),
-    "PARADISTRÄD": PaintingInfo("""Paradisträd""", "plant", None, "Kristoffer Zetterstrand", (1, 1)),
+    "PARADISTRAD": PaintingInfo("""Paradisträd""", "plant", None, "Kristoffer Zetterstrand", (1, 1)),
     "PASSAGE": PaintingInfo("""Passage""", "passage", None, "Kristoffer Zetterstrand", (4, 2)),
     "PIGSCENE": PaintingInfo("""Pigscene""", "pigscene", None, "Kristoffer Zetterstrand", (4, 4)),
     "POINTER": PaintingInfo("""Pointer""", "pointer", None, "Kristoffer Zetterstrand", (4, 4)),

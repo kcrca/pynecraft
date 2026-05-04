@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import datetime
 import glob
+import unicodedata
 import hashlib
 import json
 import re
@@ -165,7 +166,8 @@ def _registry_stems(reg, key):
 
 
 def _key_from_name(name, value=None, suffix=None):
-    k = re.sub(r'[^\w\s]', '', name).upper().replace(' ', '_')
+    normalized = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode()
+    k = re.sub(r'[^\w\s]', '', normalized).upper().replace(' ', '_')
     return k
 
 
