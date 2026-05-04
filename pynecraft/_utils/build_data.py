@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 """
-Rebuilds pynecraft/values.py from Minecraft client jar data reports.
+Rebuilds pynecraft/_values.py and all_*.txt files from Minecraft jar data.
 
-Usage: python build_values.py [version]
+Usage: python build_data.py [version]
 
 If version is omitted, reads it from ~/clean/home/../mmc-pack.json.
 The client jar is expected at:
@@ -27,6 +27,8 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 import requests
+
+from pynecraft.base import to_name
 
 _utils_dir = Path(__file__).parent
 _HOME_LINK = Path.home() / 'clean/home'
@@ -66,8 +68,13 @@ class _McData:
             print(f'Failed to generate data: {e.stderr}')
             raise e
 
+        _entity_loot_base = 'data/minecraft/loot_table/entities/'
         with zipfile.ZipFile(client_jar) as zf:
             lang_bytes = zf.read('assets/minecraft/lang/en_us.json')
+            self.entity_loot_stems = {
+                Path(n).stem for n in zf.namelist()
+                if n.startswith(_entity_loot_base) and n.endswith('.json') and n.count('/') == 4
+            }
         self.lang: dict = json.loads(lang_bytes)
 
         self._generated = tmp
@@ -384,7 +391,7 @@ def _section(out_name, plural, extra_fields, builder, known, added_values_fn=Non
 
 
 def _emit_section(out_name, plural, extra_fields, fields, known, added_values_fn=None):
-    """Emit one section of values.py for the given category."""
+    """Emit one section of _values.py for the given category."""
     dups_name = f'__{out_name.lower()}_dups'
     group_name = f'{_camel_to_name(out_name, "_").upper()}_GROUP'
     map_name = _camel_to_name(out_name, '_').lower() + plural
@@ -447,6 +454,77 @@ def _add_to_known(known, k, value, suffix=None):
     return k
 
 
+_MOB_EXCLUDES = {'player', 'armor_stand', 'mannequin'}
+
+_UNHOLDABLE_ITEMS_RE = re.compile('|'.join((
+    r'Filled Map',
+    r'Lodestone Compass',
+    r'Brewing Stand',
+    r'Cauldron',
+    r'Flower Pot',
+    r'Pitcher Plant',
+    r'^Sign$',
+    r'^Scute',
+    r'^Smithing Template',
+    r'^Harness$',
+    r'Pottery Shard',
+)))
+
+_UNHOLDABLE_BLOCKS_RE = re.compile('|'.join((
+    r' Wall ',
+    r' Cake$',
+    r'(Melon|Pumpkin|Dripleaf) Stem',
+    r'Bubble Column',
+    r'Cave Vine',
+    r'\bAir\b',
+    r'Gateway',
+    r'Portal$',
+    '^Moving ',
+    r'Piston Head',
+    r'Frosted Ice',
+    r'(?<!Pitcher) Plant',
+    r' Cauldron',
+    r'^Grass$',
+    r'^Potted',
+    r'Ominous Banner',
+    r' Crop$',
+    'Wall Torch',
+    r'^Chain$',
+    'Set Spawn',
+)))
+
+
+def _mobs():
+    lang = _lang()
+    names = []
+    for stem in _get_data().entity_loot_stems - _MOB_EXCLUDES:
+        name = lang.get(f'entity.minecraft.{stem}', _titlecase(stem.replace('_', ' ')))
+        names.append(name)
+    return sorted(names)
+
+
+def _things(which, unholdable_re):
+    lang = _lang()
+    full_prefix = f'{which}.minecraft.'
+    holdable = set()
+    things = {}
+    for k, v in lang.items():
+        if not k.startswith(full_prefix):
+            continue
+        parts = k.split('.')
+        if len(parts) == 3 or (len(parts) > 3 and parts[3] == 'new'):
+            id_ = parts[2]
+            name = to_name(id_)
+            if not unholdable_re.search(name):
+                holdable.add(id_)
+            things[id_] = name if id_.startswith('music_disc_') else v
+    lines = []
+    for k, v in filter(lambda x: x[0] in holdable, sorted(things.items(), key=lambda x: x[1])):
+        name = to_name(k)
+        lines.append(f'{v} / {name}' if name != v else v)
+    return lines
+
+
 if __name__ == '__main__':
     _version = sys.argv[1] if len(sys.argv) > 1 else _mc_version()
     _data = _McData(_version)
@@ -462,7 +540,7 @@ if __name__ == '__main__':
 
     timestamp = datetime.datetime.now().astimezone().isoformat(timespec='seconds')
 
-    with open(_utils_dir / '..' / 'values.py', 'r+') as out:
+    with open(_utils_dir / '..' / '_values.py', 'r+') as out:
         top = []
         for line in out:
             top.append(line)
@@ -492,3 +570,8 @@ if __name__ == '__main__':
                      added_values_fn=lambda v, extras: f', "{extras[0]}"')
             _section('Painting', 's', ['artist', 'size'], _paintings, known,
                      added_values_fn=lambda v, extras: f', "{extras[0]}", {extras[1]}')
+
+    pynecraft_dir = _utils_dir.parent
+    pynecraft_dir.joinpath('all_mobs.txt').write_text('\n'.join(_mobs()) + '\n')
+    for which, excl in (('item', _UNHOLDABLE_ITEMS_RE), ('block', _UNHOLDABLE_BLOCKS_RE)):
+        pynecraft_dir.joinpath(f'all_{which}s.txt').write_text('\n'.join(_things(which, excl)) + '\n')

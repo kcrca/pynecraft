@@ -57,6 +57,7 @@ Bucket of Axolotl / Axolotl Bucket
 Bucket of Cod / Cod Bucket
 Bucket of Pufferfish / Pufferfish Bucket
 Bucket of Salmon / Salmon Bucket
+Bucket of Sulfur Cube / Sulfur Cube Bucket
 Bucket of Tadpole / Tadpole Bucket
 Bucket of Tropical Fish / Tropical Fish Bucket
 Bundle
@@ -314,6 +315,7 @@ Netherite Boots
 Netherite Chestplate
 Netherite Helmet
 Netherite Hoe
+Netherite Horse Armor
 Netherite Ingot
 Netherite Leggings
 Netherite Nautilus Armor
@@ -437,6 +439,7 @@ Stray Spawn Egg
 Strider Spawn Egg
 String
 Sugar
+Sulfur Cube Spawn Egg
 Suspicious Stew
 Sweet Berries
 Tadpole Spawn Egg

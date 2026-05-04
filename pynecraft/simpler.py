@@ -7,7 +7,7 @@ from .base import _ensure_size, _in_group, _to_list, Arg, as_facing, d, de_arg, 
 from .commands import a, as_biome, as_block, as_entity, as_text, Block, BlockDef, ClickEvent, COLORS, Command, Commands, \
     data, e, Entity, EntityDef, execute, fill, fillbiome, n, return_, scoreboard, setblock, SignCommand, SignCommands, \
     SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList
-from .values import as_pattern, PaintingInfo, paintings
+from ._values import as_pattern, PaintingInfo, paintings
 
 ARMORER = 'armorer'
 BUTCHER = 'butcher'

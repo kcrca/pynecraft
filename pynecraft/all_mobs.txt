@@ -7,7 +7,7 @@ Blaze
 Bogged
 Breeze
 Camel
-Camel Husk[upcoming]
+Camel Husk
 Cat
 Cave Spider
 Chicken
@@ -27,6 +27,7 @@ Evoker
 Fox
 Frog
 Ghast
+Giant
 Glow Squid
 Goat
 Guardian
@@ -34,15 +35,16 @@ Happy Ghast
 Hoglin
 Horse
 Husk
+Illusioner
 Iron Golem
 Llama
 Magma Cube
 Mooshroom
 Mule
-Nautilus[upcoming]
+Nautilus
 Ocelot
 Panda
-Parched[upcoming]
+Parched
 Parrot
 Phantom
 Pig
@@ -66,6 +68,7 @@ Spider
 Squid
 Stray
 Strider
+Sulfur Cube
 Tadpole
 Trader Llama
 Tropical Fish
@@ -81,7 +84,7 @@ Wither Skeleton
 Wolf
 Zoglin
 Zombie
-Zombie Horse[upcoming]
-Zombie Nautilus[upcoming]
+Zombie Horse
+Zombie Nautilus
 Zombie Villager
 Zombified Piglin

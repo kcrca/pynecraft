@@ -7,7 +7,7 @@ from pynecraft.commands import *
 from pynecraft.function import text_lines
 from pynecraft.simpler import *
 from pynecraft.simpler import _str_values
-from pynecraft.values import BRICKS
+from pynecraft.info import BRICKS
 
 
 class TestSimpler(unittest.TestCase):

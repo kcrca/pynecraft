@@ -12,7 +12,8 @@ from .base import AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DA
     GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, StrOrArg, _in_group, to_id, to_name, WHITE, YELLOW
 from .commands import Block, Entity
 from .simpler import as_color_num, Item
-from .values import POTTERY_SHERD_GROUP, pottery_sherds
+from ._values import *
+from ._values import POTTERY_SHERD_GROUP, pottery_sherds
 
 blocks: dict[str, Block] = {}
 """All blocks by name. See ``block_items`` if you want an item for a block."""

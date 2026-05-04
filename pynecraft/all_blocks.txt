@@ -177,6 +177,7 @@ Cherry Wood
 Chest
 Chipped Anvil
 Chiseled Bookshelf
+Chiseled Cinnabar
 Chiseled Copper
 Chiseled Deepslate
 Chiseled Nether Bricks
@@ -186,9 +187,18 @@ Chiseled Red Sandstone
 Chiseled Resin Bricks
 Chiseled Sandstone
 Chiseled Stone Bricks
+Chiseled Sulfur
 Chiseled Tuff
 Chiseled Tuff Bricks
 Chorus Flower
+Cinnabar
+Cinnabar Brick Slab
+Cinnabar Brick Stairs
+Cinnabar Brick Wall
+Cinnabar Bricks
+Cinnabar Slab
+Cinnabar Stairs
+Cinnabar Wall
 Clay
 Closed Eyeblossom
 Coal Ore
@@ -379,6 +389,7 @@ Glass Pane
 Glow Lichen
 Glowstone
 Gold Ore
+Golden Dandelion
 Granite
 Granite Slab
 Granite Stairs
@@ -676,6 +687,10 @@ Polished Blackstone Pressure Plate
 Polished Blackstone Slab
 Polished Blackstone Stairs
 Polished Blackstone Wall
+Polished Cinnabar
+Polished Cinnabar Slab
+Polished Cinnabar Stairs
+Polished Cinnabar Wall
 Polished Deepslate
 Polished Deepslate Slab
 Polished Deepslate Stairs
@@ -686,12 +701,17 @@ Polished Diorite Stairs
 Polished Granite
 Polished Granite Slab
 Polished Granite Stairs
+Polished Sulfur
+Polished Sulfur Slab
+Polished Sulfur Stairs
+Polished Sulfur Wall
 Polished Tuff
 Polished Tuff Slab
 Polished Tuff Stairs
 Polished Tuff Wall
 Poppy
 Potatoes
+Potent Sulfur
 Powder Snow
 Powered Rail
 Prismarine
@@ -862,6 +882,15 @@ Stripped Warped Stem
 Structure Block
 Structure Void
 Sugar Cane
+Sulfur
+Sulfur Brick Slab
+Sulfur Brick Stairs
+Sulfur Brick Wall
+Sulfur Bricks
+Sulfur Slab
+Sulfur Spike
+Sulfur Stairs
+Sulfur Wall
 Sunflower
 Suspicious Gravel
 Suspicious Sand

@@ -22,7 +22,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.2-snapshot-5 jar data, 2026-05-03T19:11:12-07:00
+# Generated from Minecraft 26.2-snapshot-5 jar data, 2026-05-04T11:32:08-07:00
 
 
 # TeamOptions

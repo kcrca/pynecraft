@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 from urllib.parse import urlparse
 
-from .values import as_advancement, as_enchantment, as_gamerule, as_particle, as_teamoption, enchantments, \
+from ._values import as_advancement, as_enchantment, as_gamerule, as_particle, as_teamoption, enchantments, \
     game_rules, team_options
 
 if TYPE_CHECKING:

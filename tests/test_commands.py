@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from pynecraft import values
+from pynecraft import info
 from pynecraft.base import d, DARK_GREEN, days, EAST, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
 from pynecraft.commands import *
 from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, _ScoreboardObjectivesMod, \
@@ -10,7 +10,6 @@ from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, 
 from pynecraft.function import Function
 from pynecraft.simpler import DESERT
 from pynecraft.info import *
-from pynecraft.values import *
 
 
 def commands(*cmds: str | Command) -> str:
@@ -723,15 +722,15 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('enchant @s lure', enchant(s(), LURE))
         self.assertEqual('enchant @s lure', enchant(s(), 'lure'))
         self.assertEqual('enchant @s lure 2', enchant(s(), LURE, 2))
-        ench = values.ENCHANTMENT_GROUP.copy()
+        ench = info.ENCHANTMENT_GROUP.copy()
         try:
-            values.ENCHANTMENT_GROUP += ['custom:my_enchant']
+            info.ENCHANTMENT_GROUP += ['custom:my_enchant']
             # Custom enchantment with level should not drop level
             self.assertEqual('enchant @s custom:my_enchant 3', enchant(s(), 'custom:my_enchant', 3))
             # Custom enchantment with no level
             self.assertEqual('enchant @s custom:my_enchant', enchant(s(), 'custom:my_enchant'))
         finally:
-            values.ENCHANTMENT_GROUP = ench
+            info.ENCHANTMENT_GROUP = ench
         with self.assertRaises(ValueError):
             enchant(s(), LURE, 17)
 
