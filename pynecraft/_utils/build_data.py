@@ -178,9 +178,9 @@ def _key_from_name(name, value=None, suffix=None):
     return k
 
 
-def _emit_simple_tuple(var_name, items):
+def _emit_simple_list(var_name, items):
     items_str = ', '.join(f"'{i}'" for i in items)
-    print(f'{var_name} = ({items_str})')
+    print(f'{var_name} = [{items_str}]')
 
 
 # ---- per-category data builders ----
@@ -542,6 +542,47 @@ def _things(which, unholdable_re):
     return lines
 
 
+def _build_tags() -> dict:
+    tag_root = _get_data()._generated / 'data/minecraft/tags'
+    if not tag_root.exists():
+        return {}
+
+    raw = {}
+    for cat_dir in sorted(tag_root.iterdir()):
+        cat = cat_dir.name
+        raw[cat] = {}
+        for f in sorted(cat_dir.rglob('*.json')):
+            name = f.relative_to(cat_dir).with_suffix('').as_posix()
+            raw[cat][name] = json.loads(f.read_text()).get('values', [])
+
+    resolved = {}
+    resolving = set()
+
+    def resolve(cat, name):
+        key = (cat, name)
+        if key in resolved:
+            return resolved[key]
+        if key in resolving:
+            return set()
+        resolving.add(key)
+        result = set()
+        for v in raw.get(cat, {}).get(name, []):
+            if v.startswith('#'):
+                ref = v[1:].split(':')[-1]
+                result |= resolve(cat, ref)
+            else:
+                result.add(v.split(':')[-1])
+        resolved[key] = result
+        resolving.discard(key)
+        return result
+
+    for cat in raw:
+        for name in raw[cat]:
+            resolve(cat, name)
+
+    return {cat: {name: sorted(resolved[(cat, name)]) for name in raw[cat]} for cat in raw}
+
+
 if __name__ == '__main__':
     _version = sys.argv[1] if len(sys.argv) > 1 else _mc_version()
     _data = _McData(_version)
@@ -571,9 +612,9 @@ if __name__ == '__main__':
             print()
             print(f'# Generated from Minecraft {_version} jar data, {timestamp}')
             print()
-            _emit_simple_tuple('wolves', _wolves())
-            _emit_simple_tuple('trim_materials', _trim_materials())
-            _emit_simple_tuple('trim_patterns', _trim_patterns())
+            _emit_simple_list('wolves', _wolves())
+            _emit_simple_list('trim_materials', _trim_materials())
+            _emit_simple_list('trim_patterns', _trim_patterns())
 
             _section('TeamOption', 's', ['type'], _team_options, known,
                      added_values_fn=lambda v, extras: f', {_type_str(extras[0])}')
@@ -596,3 +637,4 @@ if __name__ == '__main__':
     pynecraft_dir.joinpath('all_mobs.txt').write_text('\n'.join(_mobs()) + '\n')
     for which, excl in (('item', _UNHOLDABLE_ITEMS_RE), ('block', _UNHOLDABLE_BLOCKS_RE)):
         pynecraft_dir.joinpath(f'all_{which}s.txt').write_text('\n'.join(_things(which, excl)) + '\n')
+    pynecraft_dir.joinpath('_tags.json').write_text(json.dumps(_build_tags(), indent=2) + '\n')

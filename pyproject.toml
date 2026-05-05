@@ -12,3 +12,6 @@ dependencies = [
 
 [tool.setuptools]
 packages = ["pynecraft"]
+
+[tool.setuptools.package-data]
+pynecraft = ["*.txt", "*.json"]

@@ -1,6 +1,7 @@
 """Contains various data about vanilla Minecraft."""
 from __future__ import annotations
 
+import json
 import re
 from collections import UserDict
 from enum import Enum
@@ -14,6 +15,9 @@ from .base import _in_group, AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DA
     DARK_RED, GOLD, GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, to_id, to_name, WHITE, YELLOW
 from .commands import Block, Entity
 from .simpler import as_color_num, Item
+
+tags: dict[str, dict[str, set[str]]] = {}
+"""All Minecraft tags by category and name, each as a set of IDs (without 'minecraft:' prefix)."""
 
 blocks: dict[str, Block] = {}
 """All blocks by name. See ``block_items`` if you want an item for a block."""
@@ -50,7 +54,10 @@ def __read_things(which: str, ctor):
 
 
 def __read_lists():
-    global blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id
+    global tags, blocks, blocks_by_id, items, items_by_id, must_give_items, must_give_items_by_id, mobs, mobs_by_id
+
+    raw = json.loads(files(__package__).joinpath('_tags.json').read_text())
+    tags = {cat: {name: set(ids) for name, ids in names.items()} for cat, names in raw.items()}
 
     blocks, blocks_by_id = __read_things('blocks', Block)
     items, items_by_id = __read_things('items', Item)
