@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import warnings
 from collections import UserDict
 from enum import Enum
 from importlib.resources import files
@@ -23,6 +24,20 @@ from .base import _in_group, AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DA
     DARK_RED, GOLD, GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, to_id, to_name, WHITE, YELLOW
 from .commands import Block, Entity
 from .simpler import as_color_num, Item
+
+patterns_standard_order: list[str] = [
+    BASE, STRIPE_BOTTOM, STRIPE_TOP, STRIPE_LEFT, STRIPE_RIGHT, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_DOWNRIGHT,
+    STRIPE_DOWNLEFT, SMALL_STRIPES, CROSS, STRAIGHT_CROSS, DIAGONAL_LEFT, DIAGONAL_RIGHT, DIAGONAL_UP_LEFT,
+    DIAGONAL_UP_RIGHT, HALF_VERTICAL, HALF_VERTICAL_RIGHT, HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, SQUARE_BOTTOM_LEFT,
+    SQUARE_BOTTOM_RIGHT, SQUARE_TOP_LEFT, SQUARE_TOP_RIGHT, TRIANGLE_BOTTOM, TRIANGLE_TOP, TRIANGLES_BOTTOM,
+    TRIANGLES_TOP, CIRCLE, RHOMBUS, BORDER, CURLY_BORDER, BRICKS, GRADIENT, GRADIENT_UP, CREEPER, SKULL, FLOWER, MOJANG,
+    GLOBE, PIGLIN, FLOW, GUSTER,
+]
+"""Banner pattern IDs in visual display order, grouped by type."""
+
+_missing_from_standard_order = set(PATTERN_GROUP) - set(patterns_standard_order)
+if _missing_from_standard_order:
+    warnings.warn(f'Banner patterns not in patterns_standard_order: {sorted(_missing_from_standard_order)}')
 
 tags: dict[str, dict[str, set[str]]] = {}
 """All Minecraft tags by category and name, each as a set of IDs (without 'minecraft:' prefix)."""
