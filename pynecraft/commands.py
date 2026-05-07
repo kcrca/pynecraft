@@ -1084,9 +1084,13 @@ class Selector(TargetSpec):
         return self._multi_args('nbt', Nbt.as_nbt(nbt), (Nbt.as_nbt(x) for x in nbts))
 
     @_fluent
-    def not_nbt(self, nbt: NbtDef, *nbts: NbtDef) -> Selector:
+    def not_nbt(self, nbt: NbtDef | str, *nbts: NbtDef | str) -> Selector:
         """Add NBT criteria to the selector."""
-        return self._multi_args('nbt', f'!{Nbt.as_nbt(nbt)}', (Nbt.as_nbt(x) for x in nbts))
+
+        def to_spec(n):
+            return n if isinstance(n, str) else Nbt.as_nbt(n)
+
+        return self._multi_args('nbt', f'!{to_spec(nbt)}', (to_spec(x) for x in nbts))
 
     @_fluent
     def advancements(self, advancement: AdvancementCriteria, *advancements: AdvancementCriteria) -> Selector:
