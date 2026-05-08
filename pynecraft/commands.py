@@ -30,7 +30,8 @@ from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
 from .base import Angle, BLUE, CLOCKWISE_90, COLORS, COUNTERCLOCKWISE_90, Column, DIMENSION, DurationDef, EQ, \
     GREEN, \
-    IntColumn, IntRelCoord, NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, RELATION, Range, RelCoord, TEXT_COLORS, \
+    IntColumn, IntRelCoord, MATCHES, NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, Range, RELATION, RelCoord, \
+    TEXT_COLORS, \
     TIME_SPEC, TextHolder, WHITE, YELLOW, _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, \
     _to_list, as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, \
     as_resource, as_resource_path, as_resources, as_yaw, de_arg, de_float_arg, de_int_arg, is_arg, is_int_arg, to_id, \
@@ -640,22 +641,6 @@ class Command:
 T = TypeVar('T', bound=Command)
 
 
-class _ScoreClause(Command):
-    @_fluent
-    def is_(self, relation: StrOrArg, score: ScoreName) -> _ExecuteMod:
-        self._add(_in_group(RELATION, relation), as_score(score))
-        return self._start(_ExecuteMod())
-
-    @_fluent
-    def matches(self, rng: Range | bool) -> _ExecuteMod:
-        self._add('matches')
-        if isinstance(rng, bool):
-            self._add(int(rng))
-        else:
-            self._add(as_range(rng))
-        return self._start(_ExecuteMod())
-
-
 class AdvancementCriteria(Command):
     def __init__(self, adv: StrOrArg, criteria: BoolOrArg | StrOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
@@ -1181,11 +1166,17 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def score(self, score: ScoreName) -> _ScoreClause:
-        """Both kinds of score clause. This works for `matches`, but if you want a relation check (such as `<=`), you
-        need to use the `is_` method, such as `execute().if_().score(score1).is_(LT, score2)`"""
-        self._add('score', as_score(score))
-        return self._start(_ScoreClause())
+    def score(self, score: ScoreName, relation: StrOrArg, score2: object) -> _ExecuteMod:
+        try:
+            relation = _in_group(RELATION, relation)
+            score2 = as_score(score2)
+        except TypeError, ValueError:
+            relation = _in_group([MATCHES], relation)
+            if isinstance(score2, bool):
+                score2 = int(score2)
+            score2 = as_range(score2)
+        self._add('score', as_score(score), relation, score2)
+        return self._start(_ExecuteMod())
 
     @_fluent
     def stopwatch(self, id: str, range: Range) -> _ExecuteMod:

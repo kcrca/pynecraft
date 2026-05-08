@@ -406,10 +406,10 @@ class Loop(Function):
         if Loop._setup_override:
             return _to_tuple(Loop._setup_override())
         setup = [
-            execute().unless().score(self.score).matches((0, None)).run(str(function(
+            execute().unless().score(self.score, MATCHES, (0, None)).run(str(function(
                 f'{self.score.target}_init'))),
             self.max_score.set(loop_size),
-            execute().if_().score(self.to_incr).matches((1, None)).run(literal(self.score.add(1)))]
+            execute().if_().score(self.to_incr, MATCHES, (1, None)).run(literal(self.score.add(1)))]
         setup.extend(self.adjuster)
         setup.append(self.score.operation(MOD, self.max_score))
         return tuple(setup)
@@ -417,7 +417,7 @@ class Loop(Function):
     def _prefix_for(self, i):
         if Loop._prefix_override:
             return Loop._prefix_override(i)
-        return execute().if_().score(self.score).matches(i).run('')
+        return execute().if_().score(self.score, MATCHES, i).run('')
 
     def loop(self,
              body_func: Callable[[Step], Union[Commands, Command, str, Iterable[Union[Commands, Command, str]]]] | None,

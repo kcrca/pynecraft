@@ -3,13 +3,13 @@ from __future__ import annotations
 import unittest
 
 from pynecraft import info
-from pynecraft.base import d, DARK_GREEN, days, EAST, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
+from pynecraft.base import d, days, EAST, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
 from pynecraft.commands import *
 from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, _ScoreboardObjectivesMod, \
     _ScoreboardPlayersMod, _StoreClause, AdvancementCriteria
 from pynecraft.function import Function
-from pynecraft.simpler import DESERT
 from pynecraft.info import *
+from pynecraft.simpler import DESERT
 
 
 def commands(*cmds: str | Command) -> str:
@@ -123,19 +123,19 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('data entity @a {}', str(_IfClause().data(a(), '{}')))
         self.assertEqual('data storage stone {}', str(_IfClause().data('stone', '{}')))
         self.assertEqual('predicate foo', str(_IfClause().predicate('foo')))
-        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, ('up', 'down'))))
-        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar')).is_(LT, Score('up', 'down'))))
-        self.assertEqual('score * bar matches ..10', str(_IfClause().score(('*', 'bar')).matches((None, 10))))
-        self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar')).matches((1, None))))
-        self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar')).matches(3)))
-        self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar')).matches(3)))
+        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar'), LT, ('up', 'down'))))
+        self.assertEqual('score * bar < up down', str(_IfClause().score(('*', 'bar'), LT, Score('up', 'down'))))
+        self.assertEqual('score * bar matches ..10', str(_IfClause().score(('*', 'bar'), MATCHES, (None, 10))))
+        self.assertEqual('score * bar matches 1..', str(_IfClause().score(('*', 'bar'), MATCHES, (1, None))))
+        self.assertEqual('score * bar matches 3', str(_IfClause().score(('*', 'bar'), MATCHES, 3)))
+        self.assertEqual('score * bar matches 3', str(_IfClause().score(Score('*', 'bar'), MATCHES, 3)))
         self.assertEqual('biome 1 ~2 ^3 desert', str(_IfClause().biome((1, r(2), d(3)), DESERT)))
         self.assertEqual('entity @e[tag=foo]', str(_IfClause().entity(e().tag('foo'))))
         self.assertEqual('loaded 1 ~2 ^3', str(_IfClause().loaded((1, r(2), d(3)))))
         self.assertEqual('stopwatch foo 1', str(_IfClause().stopwatch('foo', 1)))
         self.assertEqual('stopwatch foo 1.3..', str(_IfClause().stopwatch('foo', (1.3, None))))
         with self.assertRaises(ValueError):
-            _IfClause().score(('*', 'bar')).is_('foo', ('up', 'down'))
+            _IfClause().score(('*', 'bar'), 'foo', ('up', 'down'))
         with self.assertRaises(ValueError):
             _IfClause().blocks((1, 2, 3), (4, 5, 6), (7, 8, 9), 'foo')
 

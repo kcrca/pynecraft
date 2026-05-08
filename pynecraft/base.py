@@ -139,6 +139,9 @@ GE = '>='
 GT = '>'
 RELATION = [LT, LE, EQ, GE, GT]
 
+MATCHES = 'matches'
+SCORE_RELATIONS = RELATION + [MATCHES]
+
 
 class Arg:
     """
