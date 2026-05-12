@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 import zipfile
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -178,9 +179,21 @@ def _key_from_name(name, value=None, suffix=None):
     return k
 
 
+def _print_bracketed(prefix, content, close, inner_indent=4, wrap=True):
+    single = f'{prefix}{content}{close}'
+    if len(single) <= 120:
+        print(single)
+    else:
+        indent = ' ' * inner_indent
+        if wrap:
+            inner = textwrap.fill(content, width=120, initial_indent=indent, subsequent_indent=indent)
+        else:
+            inner = indent + content
+        print(f'{prefix}\n{inner}\n{close}')
+
+
 def _emit_simple_list(var_name, items):
-    items_str = ', '.join(f"'{i}'" for i in items)
-    print(f'{var_name} = [{items_str}]')
+    _print_bracketed(f'{var_name} = [', ', '.join(f"'{i}'" for i in items), ']')
 
 
 # ---- per-category data builders ----
@@ -430,9 +443,7 @@ def _emit_section(out_name, plural, extra_fields, fields, known, added_values_fn
                 print(f'{dups_name}["{known[k]}"] = "{value}"')
             group.append(f'"{value}"')
 
-    print(f'{group_name} = [')
-    print(f'    {", ".join(group)}')
-    print(f']')
+    _print_bracketed(f'{group_name} = [', ', '.join(group), ']')
 
     print()
     print(f'{out_name}Info = namedtuple("{out_name}", {value_fields})')
@@ -446,7 +457,8 @@ def _emit_section(out_name, plural, extra_fields, fields, known, added_values_fn
         extra_str = ''
         if added_values_fn:
             extra_str = added_values_fn(value, extras)
-        print(f'    "{key}": {out_name}Info("""{display_name}""", "{value}", {desc_str}{extra_str}),')
+        args_str = f'"""{display_name}""", "{value}", {desc_str}{extra_str}'
+        _print_bracketed(f'    "{key}": {out_name}Info(', args_str, '),', inner_indent=8, wrap=False)
     print(f'}}')
 
     print()

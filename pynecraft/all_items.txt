@@ -286,6 +286,7 @@ Music Disc 11
 Music Disc 13
 Music Disc 5
 Music Disc Blocks
+Music Disc Bounce
 Music Disc Cat
 Music Disc Chirp
 Music Disc Creator
