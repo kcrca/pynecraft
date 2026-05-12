@@ -105,7 +105,7 @@ class _McData:
                 return jar_path
 
         print(f'Downloading server JAR for {version_id}...')
-        response = requests.get(server_url, stream=True, verify=False)
+        response = requests.get(server_url, stream=True)
         response.raise_for_status()
         with open(jar_path, 'wb') as out_file:
             shutil.copyfileobj(response.raw, out_file)
