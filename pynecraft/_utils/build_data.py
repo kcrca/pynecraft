@@ -80,7 +80,8 @@ class _McData:
 
         self._generated = tmp
 
-    def _get_cached_server_jar(self, version_id):
+    @staticmethod
+    def _get_cached_server_jar(version_id):
         # 1. Use the correct Mojang API endpoint
         manifest_url = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json'
         manifest = requests.get(manifest_url).json()
@@ -109,6 +110,7 @@ class _McData:
         response = requests.get(server_url, stream=True)
         response.raise_for_status()
         with open(jar_path, 'wb') as out_file:
+            # noinspection PyTypeChecker
             shutil.copyfileobj(response.raw, out_file)
         return jar_path
 
@@ -123,6 +125,10 @@ class _McData:
 
     def glob(self, pattern: str):
         return sorted((self._generated / 'data/minecraft').glob(pattern))
+
+    @property
+    def generated(self):
+        return self._generated
 
 
 _data: _McData | None = None
@@ -173,7 +179,7 @@ def _registry_stems(reg, key):
     return sorted(k.replace('minecraft:', '') for k in reg[key]['entries'])
 
 
-def _key_from_name(name, value=None, suffix=None):
+def _key_from_name(name):
     normalized = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode()
     k = re.sub(r'[^\w\s]', '', normalized).upper().replace(' ', '_')
     return k
@@ -235,13 +241,9 @@ def _team_options():
 
 
 def _patterns():
-    lang = _lang()
     fields = {}
     for f in _get_data().glob('banner_pattern/*.json'):
         stem = f.stem
-        d = _load(f)
-        tk = d.get('translation_key', '')
-        # translation_key is like 'block.minecraft.banner.stripe_bottom'; no bare display name
         name = _titlecase(stem.replace('_', ' '))
         key = _key_from_name(name)
         fields[key] = (stem, name, name)
@@ -251,7 +253,7 @@ def _patterns():
 def _advancements():
     lang = _lang()
     fields = {}
-    adv_root = _get_data()._generated / 'data/minecraft/advancement'
+    adv_root = _get_data().generated / 'data/minecraft/advancement'
     for cat_dir in sorted(adv_root.iterdir()):
         cat = cat_dir.name
         if cat == 'recipes':
@@ -555,7 +557,7 @@ def _things(which, unholdable_re):
 
 
 def _build_tags() -> dict:
-    tag_root = _get_data()._generated / 'data/minecraft/tags'
+    tag_root = _get_data().generated / 'data/minecraft/tags'
     if not tag_root.exists():
         return {}
 
@@ -640,8 +642,7 @@ if __name__ == '__main__':
                      added_values_fn=lambda v, extras: f', {extras[0]}')
             _section('Particle', 's', [], _particles, known)
             _section('PotterySherd', 's', [], _pottery_sherds, known)
-            _section('Disc', 's', ['composer'], _discs, known,
-                     added_values_fn=lambda v, extras: f', "{extras[0]}"')
+            _section('Disc', 's', ['composer'], _discs, known, added_values_fn=lambda v, extras: f', "{extras[0]}"')
             _section('Painting', 's', ['artist', 'size'], _paintings, known,
                      added_values_fn=lambda v, extras: f', "{extras[0]}", {extras[1]}')
 
