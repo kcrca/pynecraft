@@ -16,10 +16,10 @@ def _hash(d: dict):
 
 
 fonts = {
-    (False, False): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial", 12),
-    (True, False): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold", 12),
-    (False, True): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Italic", 12),
-    (True, True): ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold Italic", 12),
+    (False, False): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial', 12),
+    (True, False): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold', 12),
+    (False, True): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Italic', 12),
+    (True, True): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold Italic', 12),
 }
 
 

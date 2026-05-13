@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
 
+from ._values import as_pattern, PaintingInfo, paintings
 from .base import _ensure_size, _in_group, _to_list, Arg, as_facing, d, de_arg, FacingDef, IntOrArg, IntRelCoord, \
     is_arg, Nbt, NbtDef, NORTH, Position, r, RelCoord, StrOrArg, to_id, Transform
 from .commands import a, as_biome, as_block, as_entity, as_text, Block, BlockDef, ClickEvent, COLORS, Command, Commands, \
     data, e, Entity, EntityDef, execute, fill, fillbiome, n, return_, scoreboard, setblock, SignCommand, SignCommands, \
     SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList
-from ._values import as_pattern, PaintingInfo, paintings
 
 ARMORER = 'armorer'
 BUTCHER = 'butcher'
@@ -285,7 +285,7 @@ class Book:
     def add(self, *txt: Text | StrOrArg):
         """Add text to the current page of the book."""
         if self.title is None:
-            raise ValueError("Cannot add text to unsigned book")
+            raise ValueError('Cannot add text to unsigned book')
         for t in txt:
             if isinstance(t, str) or is_arg(t):
                 t = Text.text(de_arg(t))

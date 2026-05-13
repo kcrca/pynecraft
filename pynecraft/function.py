@@ -141,7 +141,7 @@ class Function:
                 # noinspection PyProtectedMember
                 return Loop._load(txt, path, load_info)
             else:
-                raise SyntaxError(f'{load_info["type"]}: Invalid LOAD_INFO type')
+                raise SyntaxError(f'{load_info['type']}: Invalid LOAD_INFO type')
 
     @classmethod
     def _load(cls, txt, path, load_info):

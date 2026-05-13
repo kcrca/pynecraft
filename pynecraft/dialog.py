@@ -151,7 +151,7 @@ def single_option(label: str, options: Iterable[NbtDef | str | int | float], key
         try:
             if 'initial' in v and v['initial']:
                 if found:
-                    raise ValueError(f'only one option can be the initial one: {found, v["display"]}')
+                    raise ValueError(f'only one option can be the initial one: {found, v['display']}')
                 found = v['display']
         except KeyError:
             pass

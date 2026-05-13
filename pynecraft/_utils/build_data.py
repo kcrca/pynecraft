@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import datetime
 import glob
-import unicodedata
 import hashlib
 import json
 import re
@@ -28,6 +27,7 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 import requests
+import unicodedata
 
 from pynecraft.base import to_name
 
@@ -82,12 +82,12 @@ class _McData:
 
     def _get_cached_server_jar(self, version_id):
         # 1. Use the correct Mojang API endpoint
-        manifest_url = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
+        manifest_url = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json'
         manifest = requests.get(manifest_url).json()
 
         version_entry = next((v for v in manifest['versions'] if v['id'] == version_id), None)
         if not version_entry:
-            raise ValueError(f"Version {version_id} not found in Mojang manifest.")
+            raise ValueError(f'Version {version_id} not found in Mojang manifest.')
 
         version_meta = requests.get(version_entry['url']).json()
 
@@ -423,7 +423,7 @@ def _section(out_name, plural, extra_fields, builder, known, added_values_fn=Non
 def _emit_section(out_name, plural, extra_fields, fields, known, added_values_fn=None):
     """Emit one section of _values.py for the given category."""
     dups_name = f'__{out_name.lower()}_dups'
-    group_name = f'{_camel_to_name(out_name, "_").upper()}_GROUP'
+    group_name = f'{_camel_to_name(out_name, '_').upper()}_GROUP'
     map_name = _camel_to_name(out_name, '_').lower() + plural
     value_fields = ['name', 'value', 'desc'] + list(extra_fields)
 
