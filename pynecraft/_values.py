@@ -26,7 +26,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.2-snapshot-7 jar data, 2026-05-12T10:45:50-07:00
+# Generated from Minecraft 26.2-snapshot-7 jar data, 2026-05-13T01:14:22-07:00
 
 wolves = ['ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
 trim_materials = [
@@ -36,7 +36,6 @@ trim_patterns = [
     'bolt', 'coast', 'dune', 'eye', 'flow', 'host', 'raiser', 'rib', 'sentry', 'shaper', 'silence', 'snout', 'spire',
     'tide', 'vex', 'ward', 'wayfinder', 'wild'
 ]
-
 
 # TeamOptions
 __teamoption_dups = {}
@@ -81,7 +80,6 @@ for __k in tuple(team_options.keys()):
 
 def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(TEAM_OPTION_GROUP, __teamoption_dups, *values)
-
 
 
 # Patterns
@@ -195,7 +193,6 @@ for __k in tuple(patterns.keys()):
 
 def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(PATTERN_GROUP, __pattern_dups, *values)
-
 
 
 # Advancements
@@ -672,7 +669,6 @@ def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(ADVANCEMENT_GROUP, __advancement_dups, *values)
 
 
-
 # Biomes
 __biome_dups = {}
 BADLANDS = "badlands"
@@ -834,7 +830,6 @@ def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(BIOME_GROUP, __biome_dups, *values)
 
 
-
 # Effects
 __effect_dups = {}
 ABSORPTION = "absorption"
@@ -937,7 +932,6 @@ for __k in tuple(effects.keys()):
 
 def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(EFFECT_GROUP, __effect_dups, *values)
-
 
 
 # Enchantments
@@ -1048,7 +1042,6 @@ for __k in tuple(enchantments.keys()):
 
 def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(ENCHANTMENT_GROUP, __enchantment_dups, *values)
-
 
 
 # GameRules
@@ -1254,7 +1247,6 @@ for __k in tuple(game_rules.keys()):
 
 def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(GAME_RULE_GROUP, __gamerule_dups, *values)
-
 
 
 # Particles
@@ -1534,7 +1526,6 @@ def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(PARTICLE_GROUP, __particle_dups, *values)
 
 
-
 # PotterySherds
 __potterysherd_dups = {}
 ANGLER_POTTERY_SHERD = "angler_pottery_sherd"
@@ -1605,7 +1596,6 @@ def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(POTTERY_SHERD_GROUP, __potterysherd_dups, *values)
 
 
-
 # Discs
 __disc_dups = {}
 BLOCKS = "music_disc_blocks"
@@ -1669,7 +1659,6 @@ for __k in tuple(discs.keys()):
 
 def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
     return _as_things(DISC_GROUP, __disc_dups, *values)
-
 
 
 # Paintings

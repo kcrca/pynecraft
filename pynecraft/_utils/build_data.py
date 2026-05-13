@@ -417,7 +417,6 @@ def _type_str(t):
 
 def _section(out_name, plural, extra_fields, builder, known, added_values_fn=None):
     print()
-    print()
     print(f'# {out_name}{plural}')
     _emit_section(out_name, plural, extra_fields, builder(), known, added_values_fn=added_values_fn)
 
