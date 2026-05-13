@@ -546,6 +546,7 @@ class DataPack:
         desc = as_text(desc if desc else name)
         self._mcmeta = {'pack': {'max_format': max_format, 'min_format': min_format, 'description': desc}}
         if desc:
+            # noinspection PyTypeChecker
             self._mcmeta['description'] = desc
         if mcmeta:
             self._mcmeta.update(mcmeta)

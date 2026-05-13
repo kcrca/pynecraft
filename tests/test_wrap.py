@@ -22,7 +22,12 @@ class TestFonts(unittest.TestCase):
     def test_wrapping(self):
         # We don't yet have the right font, so the right count isn't known
         pages = BookWrap().add(Text(
-            'Lorem ipsum dolor sit amet, consecte-tur adipiscing elit. Donec condimentum aliquet nisl. Phasellus non tincidunt nibh, vel aliquam turpis. Proin sit amet libero nec nunc efficitur egestas. Phasellus sed mi dictum, mattis est eu, molestie dolor. Mauris sodales in erat iaculis molestie. Donec tempor vitae turpis et gravida. Duis et ornare orci, vitae lacinia sapien. Sed congue justo vel dapibus porta. Nulla pretium sollicitudin odio, quis eleifend metus molestie ac. Vivamus convallis augue nec ex dictum tristique. Donec porttitor magna ac purus laoreet, ac eleifend dui hendrerit.')).pages()
+            'Lorem ipsum dolor sit amet, consecte-tur adipiscing elit. Donec condimentum aliquet nisl. Phasellus non '
+            'tincidunt nibh, vel aliquam turpis. Proin sit amet libero nec nunc efficitur egestas. Phasellus sed mi '
+            'dictum, mattis est eu, molestie dolor. Mauris sodales in erat iaculis molestie. Donec tempor vitae '
+            'turpis et gravida. Duis et ornare orci, vitae lacinia sapien. Sed congue justo vel dapibus porta. Nulla '
+            'pretium sollicitudin odio, quis eleifend metus molestie ac. Vivamus convallis augue nec ex dictum '
+            'tristique. Donec porttitor magna ac purus laoreet, ac eleifend dui hendrerit.')).pages()
         self.assertLess(1, len(pages))
         # Check for breaking at hyphen
         self.assertIn('cte-\ntur', pages[0][0]['text'], 'No break at hyphen')

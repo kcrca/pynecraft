@@ -5,9 +5,10 @@ import unittest
 from pynecraft.base import CYAN, EAST, N, SOUTH, SW
 from pynecraft.commands import *
 from pynecraft.function import text_lines
-from pynecraft.simpler import *
-from pynecraft.simpler import _str_values
 from pynecraft.info import BRICKS
+from pynecraft.simpler import *
+# noinspection PyProtectedMember
+from pynecraft.simpler import _str_values
 
 
 class TestSimpler(unittest.TestCase):
@@ -186,22 +187,6 @@ class TestSimpler(unittest.TestCase):
             'setblock 1 ~2 ^3 water\n',
             """setblock 1 ~2 ^3 oak_wall_sign[facing=north, waterlogged=true]{front_text: {messages: ["", hi, there, ""]}}""" + '\n'],
             text_lines(WallSign((None, 'hi', 'there'), front=True).place((1, r(2), d(3)), NORTH, water=True)))
-
-    def test_book(self):
-        book = Book('My Title', 'Me', 'My Name')
-        # self.assertEqual((
-        #     'written_book{author: Me, display_name: {Lore: "My Name"}, pages: ["[]"], ' 'title: "My Title"}'),
-        #     str(book.as_entity()))
-        #
-        # book.add(JsonText.text('hi\n').color(DARK_AQUA))
-        # self.assertEqual((
-        #     'written_book{author: Me, display_name: {Lore: "My Name"}, pages: ' '[\'[{"text": "hi\\n", "color": "dark_aqua"}]\'], title: "My Title"}'),
-        #     str(book.as_entity()))
-        #
-        # book.add("plain")
-        # self.assertEqual((
-        #     'written_book{author: Me, display_name: {Lore: "My Name"}, pages: ' '[\'[{"text": "hi\\n", "color": "dark_aqua"}, {"text": "plain"}]\'], title: ' '"My Title"}'),
-        #     str(book.as_entity()))
 
     def test_region(self):
         v = Region(r(1, 2, 3), d(4, 5, 6))

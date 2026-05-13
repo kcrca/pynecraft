@@ -30,7 +30,8 @@ from typing import Callable, Iterable, Mapping, Tuple, TypeVar, Union
 
 from .base import Angle, BLUE, CLOCKWISE_90, COLORS, COUNTERCLOCKWISE_90, Column, DIMENSION, DurationDef, EQ, \
     GREEN, \
-    IntColumn, IntRelCoord, MATCHES, NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, Range, RELATION, RelCoord, \
+    IntColumn, IntRange, IntRelCoord, MATCHES, NONE, Nbt, NbtDef, PINK, PURPLE, Position, RED, Range, RELATION, \
+    RelCoord, \
     TEXT_COLORS, \
     TIME_SPEC, TextHolder, WHITE, YELLOW, _ToText, _bool, _ensure_size, _float, _in_group, _not_ify, _quote, \
     _to_list, as_column, as_duration, as_facing, as_item_stack, as_name, as_names, as_nbt_path, as_pitch, as_range, \
@@ -870,6 +871,7 @@ def s():
     return Selector(Selector._create_key, '@s')
 
 
+# noinspection PyProtectedMember
 def n():
     return Selector(Selector._create_key, '@n')
 
@@ -1166,7 +1168,7 @@ class _IfClause(Command):
         return self._start(_ExecuteMod())
 
     @_fluent
-    def score(self, score: ScoreName, relation: StrOrArg, score2: object) -> _ExecuteMod:
+    def score(self, score: ScoreName, relation: StrOrArg, score2: ScoreName | object) -> _ExecuteMod:
         try:
             relation = _in_group(RELATION, relation)
             score2 = as_score(score2)
@@ -1460,7 +1462,7 @@ class _BossbarSet(Command):
         return str(self)
 
     @_fluent
-    def name(self, name: Text) -> str:
+    def name(self, name: str | Text) -> str:
         self._add('name', as_text(name))
         return str(self)
 
@@ -1668,18 +1670,17 @@ class _DataMod(Command):
 
 class _RandomMod(Command):
     @_fluent
-    def roll(self, range: tuple[IntOrArg, IntOrArg] | StrOrArg, sequence: StrOrArg = None, /,
-             in_chat: bool = True) -> str:
+    def roll(self, range: IntRange, sequence: StrOrArg = None, /, in_chat: bool = True) -> str:
         self._add('roll' if in_chat else 'value')
         if is_arg(range):
             self._add(range)
         else:
-            self._add(f'{de_int_arg(range[0])}..{de_int_arg(range[1])}')
+            self._add(as_range(tuple(de_int_arg(x) for x in range)))
         self._add_opt(as_name(sequence))
         return str(self)
 
     @_fluent
-    def value(self, range: Tuple[IntOrArg, IntOrArg], sequence: StrOrArg = None, /, in_chat: bool = False) -> str:
+    def value(self, range: IntRange, sequence: StrOrArg = None, /, in_chat: bool = False) -> str:
         return self.roll(range, sequence, in_chat)
 
     @_fluent
@@ -3548,7 +3549,7 @@ def comment(text: str, wrap=False):
     :param text: The text of the comment
     :param wrap: If False, the comment will be the text with each line prepended by a '# '. Otherwise, the text will
      be broken into paragraphs by blank lines, each paragraph will be formatted by textwrap.fill() (to 78 columns),
-     and before_cmds each line is prepended by a '# '.
+     and before_cmds each line is prepended by a '#'.
     """
     text = text.strip()
     if wrap:

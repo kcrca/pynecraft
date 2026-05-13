@@ -48,6 +48,7 @@ class BookWrap:
             types = self._types
             types[0] = bool(node['bold']) if 'bold' in node else False
             types[1] = bool(node['italic']) if 'italic' in node else False
+            # noinspection PyTypeChecker
             font = fonts[tuple(types)]
             if 'text' in node:
                 txt = node['text']
@@ -97,7 +98,8 @@ class BookWrap:
                     texts = [new_node] + texts
         return self
 
-    def _get_width(self, font, token):
+    @staticmethod
+    def _get_width(font, token):
         bbox = font.getbbox(token)
         width = bbox[2] - bbox[0]
         return width

@@ -2,6 +2,7 @@ import unittest
 
 from parameterized import parameterized
 
+# noinspection PyProtectedMember
 from pynecraft.base import _bool, _ensure_size, _float, _in_group, _int_or_float, _not_ify, _quote, _strip_namespace, \
     _strip_not, _to_list, _to_tuple, Arg, as_angle, as_column, as_duration, as_facing, as_name, as_names, as_nbt_key, \
     as_nbt_path, as_pitch, as_range, as_resource, as_resource_path, as_resources, as_yaw, COLORS, Coord, d, days, \
@@ -188,8 +189,10 @@ class TestBase(unittest.TestCase):
         self.assertEqual(('v$(a)',), as_column('v$(a)'))
         self.assertEqual(('$(a)',), as_column(Arg('a')))
         with self.assertRaises(ValueError):
+            # noinspection PyTypeChecker
             as_column((1,))
         with self.assertRaises(ValueError):
+            # noinspection PyTypeChecker
             as_column((1, 2, 3))
 
     def test_as_angle(self):

@@ -5,6 +5,7 @@ import unittest
 from pynecraft import info
 from pynecraft.base import d, days, EAST, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
 from pynecraft.commands import *
+# noinspection PyProtectedMember
 from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, _ScoreboardObjectivesMod, \
     _ScoreboardPlayersMod, _StoreClause, AdvancementCriteria
 from pynecraft.function import Function
@@ -1261,11 +1262,12 @@ class TestCommands(unittest.TestCase):
             teleport(s(), e())
         with self.assertRaises(ValueError):
             tp(e().type(Arg('t')))
-        # facing with wrong type
+        # noinspection PyTypeChecker
         with self.assertRaises((ValueError, TypeError)):
             teleport(rand(), s()).facing(a())  # entity not valid for facing()
-        # facing_entity with position
+        # noinspection PyTypeChecker
         with self.assertRaises((ValueError, TypeError)):
+            # noinspection PyTypeChecker
             teleport(rand(), s()).facing_entity((1, 2, 3))  # pos not valid for facing_entity()
 
     def test_as_single(self):
@@ -1684,8 +1686,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('random roll 1..2', random().roll((1, 2)))
         self.assertEqual('random roll 1..2 fred', random().roll((1, 2), 'fred'))
         self.assertEqual('$random value $(v)..$(k)', random().value((Arg('v'), Arg('k'))))
-        self.assertEqual('$random value v$(k)', random().value('v$(k)'))
-        self.assertEqual('$random value $(k) $(s)', random().value(Arg('k'), Arg('s')))
+        self.assertEqual('$random value $(v)', random().value(Arg('v')))
+        self.assertEqual('$random value $(k)..', random().value((Arg('k'), None)))
+        self.assertEqual('$random value $(k)..$(s)', random().value((Arg('k'), Arg('s'))))
 
         self.assertEqual('random reset *', random().reset('*'))
         self.assertEqual('random reset fred', random().reset('fred'))

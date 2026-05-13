@@ -313,7 +313,7 @@ class Book:
         components = {'written_book_content': {
             'author': self.author, 'title': self.title, 'pages': [{'raw': x} for x in self._pages[:]]}}
         if self.display_name:
-            components['lore'] = self.display_name
+            components['lore'] = _to_list(self.display_name)
         self._cur_page = cur_page
         self._pages.pop()
         return components
@@ -675,6 +675,7 @@ class Offset:
 
     def p(self, *values: CoordsIn) -> CoordsOut:
         """ Returns the result of offsetting the input, with each return value added to this object's coordinates. """
+        # noinspection PyTypeChecker
         return tuple(sum(i) for i in zip(values, self.position))
 
     def _rel_coord(self, f, *values: CoordsIn) -> RelCoord | Tuple[RelCoord, ...]:
@@ -693,6 +694,7 @@ class Offset:
         vals = RelCoord.add(vec, self.position)
         if len(vals) == 1:
             return vals[0]
+        # noinspection PyTypeChecker
         return vals
 
 
@@ -770,6 +772,7 @@ class Trade:
             values['buyB'] = {'id': self.buy[1][0], 'Count': self.buy[1][1]}
         for k, v in values.items():
             if isinstance(v, Mapping) and 'Count' in v and v['Count'] == 1:
+                # noinspection PyUnresolvedReferences
                 del v['Count']
         values.set_or_clear('maxUses', self.max_uses)
         return values
