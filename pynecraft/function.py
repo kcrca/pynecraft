@@ -291,6 +291,16 @@ class Loop(Function):
         function on the "main" clock, for example. If so, the base name would typically be 'foo'.
         :param iterate_at: When the number of lines in an iteration is >= this value, each iteration is split into a
         separate file.
+
+        Beyond fields that store the parameters, there are other attributes:
+        * *pre*: Commands that are run before any loop increments are done. You set these by appending to this
+          (initially empty) list.
+        * *before*: Commands that run every time before the commands in the loop. You set these by calling `add` before
+          you call `loop`.
+        * *after*: Commands that run every time after the commands in the loop. You set these by calling `add` after
+          you call `loop`.
+        * *to_incr*: A score which, if True (the default), the loop code will increment the loop index. Is set to False
+          in the `cur` function so it can run the loop code without incrementing, and then set it back to True.
         """
         score = as_score(score)
         if not name:
@@ -301,13 +311,14 @@ class Loop(Function):
         super().__init__(name, base_name)
         self.score = score
         self.iterate_at = iterate_at
-        self.looped = False
+        self._looped = False
         self.to_incr = Score('_to_incr', score.objective)
-        self.max_score = Score(self.score.target, f'{self.score.objective}_max')
-        self.setup = ()
-        self.adjuster = ()
+        self._max_score = Score(self.score.target, f'{self.score.objective}_max')
+        self.pre =[]
+        self._setup = ()
+        self._adjuster = ()
         self.before = []
-        self.body = ()
+        self._body = ()
         self.after = []
         self._iterations = []
         self._add_to = self.before
@@ -315,23 +326,23 @@ class Loop(Function):
     @classmethod
     def _load(cls, txt, path, load_info):
         loop = Loop(load_info['score'], load_info.get('name', None), load_info.get('base_name', None))
-        loop.looped = load_info['looped']
+        loop._looped = load_info['looped']
 
         txt = [x.rstrip() for x in txt]
-        loop.setup = tuple(cls._pop_lines(txt, load_info['setup_len']))
+        loop._setup = tuple(cls._pop_lines(txt, load_info['setup_len']))
         adjuster_len = load_info['adjuster_len']
         if not adjuster_len:
-            loop.adjuster = ()
+            loop._adjuster = ()
         else:
             adjuster_pos = -1 - adjuster_len
-            loop.adjuster = loop.setup[adjuster_pos:-1]
-            loop.setup = loop.setup[0:adjuster_pos] + loop.setup[-1:-1]
+            loop._adjuster = loop._setup[adjuster_pos:-1]
+            loop._setup = loop._setup[0:adjuster_pos] + loop._setup[-1:-1]
         loop.before = cls._pop_lines(txt, load_info['before_len'])
-        loop.body = tuple(cls._pop_lines(txt, load_info['body_len']))
+        loop._body = tuple(cls._pop_lines(txt, load_info['body_len']))
         loop.after = txt
         loop._iterations = load_info['iterations']
 
-        if load_info.get('as_iterations', True) and loop.body:
+        if load_info.get('as_iterations', True) and loop._body:
             new_body = []
             for i, it in enumerate(loop._iterations):
                 iter_suffix = loop._iter_suffix(i)
@@ -342,9 +353,9 @@ class Loop(Function):
                 assert len(txt) == it
                 for line in txt:
                     new_body.append(prefix + line)
-            loop.body = tuple(new_body)
+            loop._body = tuple(new_body)
 
-        loop._add_to = loop.before if not loop.looped else loop.after
+        loop._add_to = loop.before if not loop._looped else loop.after
         return loop
 
     @classmethod
@@ -354,12 +365,12 @@ class Loop(Function):
     def _load_info(self):
         info = super()._load_info()
         info.update({
-            'looped': self.looped,
+            'looped': self._looped,
             'score': (str(self.score.target), self.score.objective),
             'before_len': len(self.before),
-            'adjuster_len': len(self.adjuster),
-            'setup_len': len(self.setup),
-            'body_len': len(self.body),
+            'adjuster_len': len(self._adjuster),
+            'setup_len': len(self._setup),
+            'body_len': len(self._body),
             'iterations': self._iterations,
             'as_iterations': self._as_iteration(),
         })
@@ -367,7 +378,7 @@ class Loop(Function):
 
     def save(self, path: Path | str = None) -> Path:
         as_iteration = self._as_iteration()
-        orig_body = self.body
+        orig_body = self._body
         try:
             # Clear out old iteration files if they exist
             full_path = self._path_for(path)
@@ -383,14 +394,14 @@ class Loop(Function):
                     new_body.append(prefix + str(function(self.full_name + iter_suffix)))
                     iter_name = self.name + iter_suffix
                     func = Function(iter_name)
-                    func.add(x[len(prefix):] for x in self.body[pos:pos + self._iterations[i]])
+                    func.add(x[len(prefix):] for x in self._body[pos:pos + self._iterations[i]])
                     pos += self._iterations[i]
                     func.save(full_path.parent / iter_name)
-                self.body = new_body
+                self._body = new_body
             return super().save(path)
         finally:
             if as_iteration:
-                self.body = orig_body
+                self._body = orig_body
 
     def _as_iteration(self):
         return len(self._iterations) > 0 and 0 <= self.iterate_at <= max(self._iterations)
@@ -400,7 +411,7 @@ class Loop(Function):
         return f'__{i:0{width}}'
 
     def commands(self) -> list[str]:
-        return list(self.setup) + self.before + list(self.body) + self.after
+        return list(self.pre) + list(self._setup) + self.before + list(self._body) + self.after
 
     def _setup_for(self, loop_size: int):
         if Loop._setup_override:
@@ -408,10 +419,10 @@ class Loop(Function):
         setup = [
             execute().unless().score(self.score, MATCHES, (0, None)).run(str(function(
                 f'{self.score.target}_init'))),
-            self.max_score.set(loop_size),
+            self._max_score.set(loop_size),
             execute().if_().score(self.to_incr, MATCHES, (1, None)).run(literal(self.score.add(1)))]
-        setup.extend(self.adjuster)
-        setup.append(self.score.operation(MOD, self.max_score))
+        setup.extend(self._adjuster)
+        setup.append(self.score.operation(MOD, self._max_score))
         return tuple(setup)
 
     def _prefix_for(self, i):
@@ -435,7 +446,7 @@ class Loop(Function):
         :return: the Loop object.
         """
         if not replace:
-            assert not self.looped, 'loop() invoked more than once'
+            assert not self._looped, 'loop() invoked more than once'
 
         items = _to_list(items)
         last = items[-1] if len(items) > 0 else None
@@ -445,7 +456,7 @@ class Loop(Function):
             items = items + list(reversed(items[1:-1]))
             stages = stages + tuple(reversed(stages[1:-1]))
 
-        self.setup = self._setup_for(len(items))
+        self._setup = self._setup_for(len(items))
         self._add_to = []
 
         self._iterations = []
@@ -458,10 +469,10 @@ class Loop(Function):
                 for line in lines(once):
                     self.add(str(prefix) + line)
 
-        self.body = tuple(self._add_to)
+        self._body = tuple(self._add_to)
         self._add_to = self.after
 
-        self.looped = True
+        self._looped = True
         return self
 
     def cur(self) -> Commands:
@@ -478,8 +489,11 @@ class Loop(Function):
         value. This can be used, for example, to skip a value in the middle if it is not compatible with another
         loop's value.
         """
-        self.adjuster = tuple(lines(adjuster))
+        self._adjuster = tuple(lines(adjuster))
         return self
+
+    def before(self, *cmds: Commands)->Loop:
+        self._setup.inser
 
 
 Version = Union[str, float, int, Iterable[int]]

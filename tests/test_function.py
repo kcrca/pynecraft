@@ -91,9 +91,9 @@ class TestFunctions(unittest.TestCase):
             Loop.test_controls().set_setup_override(None)
 
     def check_loop(self, loop, setup, before, body, after, looped=True):
-        self.assertEqual(looped, loop.looped)
+        self.assertEqual(looped, loop._looped)
         # Do this in one compare so we can see easily if a line is moved from one group to another.
-        self.assertEqual((tuple(setup), before, tuple(body), after), (loop.setup, loop.before, loop.body, loop.after))
+        self.assertEqual((tuple(setup), before, tuple(body), after), (loop._setup, loop.before, loop._body, loop.after))
         self.assertEqual(setup + before + body + after, loop.commands())
 
     def test_loop_cur(self):
@@ -235,12 +235,12 @@ class TestFunctions(unittest.TestCase):
         saved = Loop(score, 'loop').add('before').loop(loop_func, range(0, 3)).add('after')
         saved.save('foo')
         loaded = Loop.load('foo')
-        self.assertEqual(saved.adjuster, loaded.adjuster)
+        self.assertEqual(saved._adjuster, loaded._adjuster)
 
         saved = Loop(score, 'loop').adjust('adjuster').add('before').loop(loop_func, range(0, 3)).add('after')
         saved.save('foo')
         loaded = Loop.load('foo')
-        self.assertEqual(saved.adjuster, loaded.adjuster)
+        self.assertEqual(saved._adjuster, loaded._adjuster)
 
         saved = Loop(score, 'loop').adjust(
             'adj1', 'adj2', 'adj23').add(
@@ -248,7 +248,7 @@ class TestFunctions(unittest.TestCase):
             'after')
         saved.save('foo')
         loaded = Loop.load('foo')
-        self.assertEqual(saved.adjuster, loaded.adjuster)
+        self.assertEqual(saved._adjuster, loaded._adjuster)
 
     def check_save(self, save_path: str | Path | None, func_name: str, expected: str | Path):
         expected = expected if isinstance(expected, Path) else Path(expected)
