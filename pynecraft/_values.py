@@ -57,16 +57,16 @@ TeamOptionInfo = namedtuple("TeamOption", ['name', 'id', 'desc', 'type'])
 team_options = {
     "COLLISION_RULE": TeamOptionInfo(
         """collision Rule""", "collisionRule", None, ['always', 'never', 'pushOtherTeams', 'pushOwnTeam']
-),
+    ),
     "COLOR": TeamOptionInfo("""color""", "color", None, 'Nbt'),
     "DEATH_MESSAGE_VISIBILITY": TeamOptionInfo(
         """death Message Visibility""", "deathMessageVisibility", None, ['always', 'hideForOtherTeams', 'hideForOwnTeam', 'never']
-),
+    ),
     "DISPLAY_NAME": TeamOptionInfo("""display Name""", "displayName", None, 'Nbt'),
     "FRIENDLY_FIRE": TeamOptionInfo("""friendly Fire""", "friendlyFire", None, bool),
     "NAMETAG_VISIBILITY": TeamOptionInfo(
         """nametag Visibility""", "nametagVisibility", None, ['always', 'hideForOtherTeams', 'hideForOwnTeam', 'never']
-),
+    ),
     "PREFIX": TeamOptionInfo("""prefix""", "prefix", None, 'Nbt'),
     "SEE_FRIENDLY_INVISIBLES": TeamOptionInfo("""see Friendly Invisibles""", "seeFriendlyInvisibles", None, bool),
     "SUFFIX": TeamOptionInfo("""suffix""", "suffix", None, 'Nbt'),
@@ -158,7 +158,7 @@ patterns = {
     "HALF_HORIZONTAL": PatternInfo("""Half Horizontal""", "half_horizontal", """Half Horizontal"""),
     "HALF_HORIZONTAL_BOTTOM": PatternInfo(
         """Half Horizontal Bottom""", "half_horizontal_bottom", """Half Horizontal Bottom"""
-),
+    ),
     "HALF_VERTICAL": PatternInfo("""Half Vertical""", "half_vertical", """Half Vertical"""),
     "HALF_VERTICAL_RIGHT": PatternInfo("""Half Vertical Right""", "half_vertical_right", """Half Vertical Right"""),
     "MOJANG": PatternInfo("""Mojang""", "mojang", """Mojang"""),
@@ -353,310 +353,310 @@ advancements = {
     "ADVENTURE": AdvancementInfo("""Adventure""", "adventure/root", """Adventure, exploration and combat"""),
     "ADVENTURING_TIME": AdvancementInfo(
         """Adventuring Time""", "adventure/adventuring_time", """Discover every biome"""
-),
+    ),
     "ARBALISTIC": AdvancementInfo(
         """Arbalistic""", "adventure/arbalistic", """Kill five unique mobs with one crossbow shot"""
-),
+    ),
     "A_BALANCED_DIET": AdvancementInfo(
         """A Balanced Diet""", "husbandry/balanced_diet", """Eat everything that is edible, even if it's not good for you"""
-),
+    ),
     "A_COMPLETE_CATALOGUE": AdvancementInfo(
         """A Complete Catalogue""", "husbandry/complete_catalogue", """Tame all Cat variants!"""
-),
+    ),
     "A_FURIOUS_COCKTAIL": AdvancementInfo(
         """A Furious Cocktail""", "nether/all_potions", """Have every potion effect applied at the same time"""
-),
+    ),
     "A_SEEDY_PLACE": AdvancementInfo("""A Seedy Place""", "husbandry/plant_seed", """Plant a seed and watch it grow"""),
     "A_TERRIBLE_FORTRESS": AdvancementInfo(
         """A Terrible Fortress""", "nether/find_fortress", """Break your way into a Nether Fortress"""
-),
+    ),
     "A_THROWAWAY_JOKE": AdvancementInfo(
         """A Throwaway Joke""", "adventure/throw_trident", """Throw a Trident at something.
 Note: Throwing away your only weapon is not a good idea."""
-),
+    ),
     "BEACONATOR": AdvancementInfo("""Beaconator""", "nether/create_full_beacon", """Bring a Beacon to full power"""),
     "BEE_OUR_GUEST": AdvancementInfo(
         """Bee Our Guest""", "husbandry/safely_harvest_honey", """Use a Campfire to collect Honey from a Beehive using a Glass Bottle without aggravating the Bees"""
-),
+    ),
     "BEST_FRIENDS_FOREVER": AdvancementInfo(
         """Best Friends Forever""", "husbandry/tame_an_animal", """Tame an animal"""
-),
+    ),
     "BIRTHDAY_SONG": AdvancementInfo(
         """Birthday Song""", "husbandry/allay_deliver_cake_to_note_block", """Have an Allay drop a Cake at a Note Block"""
-),
+    ),
     "BLOWBACK": AdvancementInfo(
         """Blowback""", "adventure/blowback", """Kill a Breeze with a deflected Breeze-shot Wind Charge"""
-),
+    ),
     "BRING_HOME_THE_BEACON": AdvancementInfo(
         """Bring Home the Beacon""", "nether/create_beacon", """Construct and place a Beacon"""
-),
+    ),
     "BUKKIT_BUKKIT": AdvancementInfo(
         """Bukkit Bukkit""", "husbandry/tadpole_in_a_bucket", """Catch a Tadpole in a Bucket"""
-),
+    ),
     "BULLSEYE": AdvancementInfo(
         """Bullseye""", "adventure/bullseye", """Hit the bullseye of a Target block from at least 30 meters away"""
-),
+    ),
     "CAREFUL_RESTORATION": AdvancementInfo(
         """Careful Restoration""", "adventure/craft_decorated_pot_using_only_sherds", """Make a Decorated Pot out of 4 Pottery Sherds"""
-),
+    ),
     "CAVES__CLIFFS": AdvancementInfo(
         """Caves & Cliffs""", "adventure/fall_from_world_height", """Free fall from the top of the world (build limit) to the bottom of the world and survive"""
-),
+    ),
     "COUNTRY_LODE_TAKE_ME_HOME": AdvancementInfo(
         """Country Lode, Take Me Home""", "adventure/use_lodestone", """Use a Compass on a Lodestone"""
-),
+    ),
     "COVER_ME_IN_DEBRIS": AdvancementInfo(
         """Cover Me in Debris""", "nether/netherite_armor", """Get a full suit of Netherite armor"""
-),
+    ),
     "COVER_ME_WITH_DIAMONDS": AdvancementInfo(
         """Cover Me with Diamonds""", "story/shiny_gear", """Diamond armor saves lives"""
-),
+    ),
     "CRAFTERS_CRAFTING_CRAFTERS": AdvancementInfo(
         """Crafters Crafting Crafters""", "adventure/crafters_crafting_crafters", """Be near a Crafter when it crafts a Crafter"""
-),
+    ),
     "CRAFTING_A_NEW_LOOK": AdvancementInfo(
         """Crafting a New Look""", "adventure/trim_with_any_armor_pattern", """Craft trimmed armor at a Smithing Table"""
-),
+    ),
     "DIAMONDS": AdvancementInfo("""Diamonds!""", "story/mine_diamond", """Acquire diamonds"""),
     "ENCHANTER": AdvancementInfo("""Enchanter""", "story/enchant_item", """Enchant an item at an Enchanting Table"""),
     "EYE_SPY": AdvancementInfo("""Eye Spy""", "story/follow_ender_eye", """Follow an Eye of Ender"""),
     "FEELS_LIKE_HOME": AdvancementInfo(
         """Feels Like Home""", "nether/ride_strider_in_overworld_lava", """Take a Strider for a loooong ride on a lava lake in the Overworld"""
-),
+    ),
     "FISHY_BUSINESS": AdvancementInfo("""Fishy Business""", "husbandry/fishy_business", """Catch a fish"""),
     "FREE_THE_END": AdvancementInfo("""Free the End""", "end/kill_dragon", """Good luck"""),
     "GETTING_AN_UPGRADE": AdvancementInfo(
         """Getting an Upgrade""", "story/upgrade_tools", """Construct a better Pickaxe"""
-),
+    ),
     "GLOW_AND_BEHOLD": AdvancementInfo(
         """Glow and Behold!""", "husbandry/make_a_sign_glow", """Make the text of any kind of sign glow"""
-),
+    ),
     "GOOD_AS_NEW": AdvancementInfo(
         """Good as New""", "husbandry/repair_wolf_armor", """Fully repair damaged Wolf Armor using Armadillo Scutes"""
-),
+    ),
     "GREAT_VIEW_FROM_UP_HERE": AdvancementInfo(
         """Great View From Up Here""", "end/levitate", """Levitate up 50 blocks from the attacks of a Shulker"""
-),
+    ),
     "HEART_TRANSPLANTER": AdvancementInfo(
         """Heart Transplanter""", "adventure/heart_transplanter", """Place a Creaking Heart with the correct alignment between two Pale Oak Log blocks"""
-),
+    ),
     "HERO_OF_THE_VILLAGE": AdvancementInfo(
         """Hero of the Village""", "adventure/hero_of_the_village", """Successfully defend a village from a raid"""
-),
+    ),
     "HIDDEN_IN_THE_DEPTHS": AdvancementInfo(
         """Hidden in the Depths""", "nether/obtain_ancient_debris", """Obtain Ancient Debris"""
-),
+    ),
     "HIRED_HELP": AdvancementInfo(
         """Hired Help""", "adventure/summon_iron_golem", """Summon an Iron Golem to help defend a village"""
-),
+    ),
     "HOT_STUFF": AdvancementInfo("""Hot Stuff""", "story/lava_bucket", """Fill a Bucket with lava"""),
     "HOT_TOURIST_DESTINATIONS": AdvancementInfo(
         """Hot Tourist Destinations""", "nether/explore_nether", """Explore all Nether biomes"""
-),
+    ),
     "HOW_DID_WE_GET_HERE": AdvancementInfo(
         """How Did We Get Here?""", "nether/all_effects", """Have every effect applied at the same time"""
-),
+    ),
     "HUSBANDRY": AdvancementInfo("""Husbandry""", "husbandry/root", """The world is full of friends and food"""),
     "ICE_BUCKET_CHALLENGE": AdvancementInfo(
         """Ice Bucket Challenge""", "story/form_obsidian", """Obtain a block of Obsidian"""
-),
+    ),
     "INTO_FIRE": AdvancementInfo("""Into Fire""", "nether/obtain_blaze_rod", """Relieve a Blaze of its rod"""),
     "ISNT_IT_IRON_PICK": AdvancementInfo("""Isn't It Iron Pick""", "story/iron_tools", """Upgrade your Pickaxe"""),
     "ISNT_IT_SCUTE": AdvancementInfo(
         """Isn't It Scute?""", "adventure/brush_armadillo", """Get Armadillo Scutes from an Armadillo using a Brush"""
-),
+    ),
     "IS_IT_A_BALLOON": AdvancementInfo(
         """Is It a Balloon?""", "adventure/spyglass_at_ghast", """Look at a Ghast through a Spyglass"""
-),
+    ),
     "IS_IT_A_BIRD": AdvancementInfo(
         """Is It a Bird?""", "adventure/spyglass_at_parrot", """Look at a Parrot through a Spyglass"""
-),
+    ),
     "IS_IT_A_PLANE": AdvancementInfo(
         """Is It a Plane?""", "adventure/spyglass_at_dragon", """Look at the Ender Dragon through a Spyglass"""
-),
+    ),
     "IT_SPREADS": AdvancementInfo(
         """It Spreads""", "adventure/kill_mob_near_sculk_catalyst", """Kill a mob near a Sculk Catalyst"""
-),
+    ),
     "LIGHTEN_UP": AdvancementInfo(
         """Lighten Up""", "adventure/lighten_up", """Scrape a Copper Bulb with an Axe to make it brighter"""
-),
+    ),
     "LIGHT_AS_A_RABBIT": AdvancementInfo(
         """Light as a Rabbit""", "adventure/walk_on_powder_snow_with_leather_boots", """Walk on Powder Snow... without sinking in it"""
-),
+    ),
     "LITTLE_SNIFFS": AdvancementInfo("""Little Sniffs""", "husbandry/feed_snifflet", """Feed a Snifflet"""),
     "LOCAL_BREWERY": AdvancementInfo("""Local Brewery""", "nether/brew_potion", """Brew a Potion"""),
     "MINECRAFT": AdvancementInfo("""Minecraft""", "story/root", """The heart and story of the game"""),
     "MINECRAFT_TRIALS_EDITION": AdvancementInfo(
         """Minecraft: Trial(s) Edition""", "adventure/minecraft_trials_edition", """Step foot in a Trial Chamber"""
-),
+    ),
     "MOB_KABOB": AdvancementInfo(
         """Mob Kabob""", "adventure/spear_many_mobs", """Hit five mobs in the same Charge attack using the Spear"""
-),
+    ),
     "MONSTERS_HUNTED": AdvancementInfo(
         """Monsters Hunted""", "adventure/kill_all_mobs", """Kill one of every hostile monster"""
-),
+    ),
     "MONSTER_HUNTER": AdvancementInfo("""Monster Hunter""", "adventure/kill_a_mob", """Kill any hostile monster"""),
     "NETHER": AdvancementInfo("""Nether""", "nether/root", """Bring summer clothes"""),
     "NOT_QUITE_NINE_LIVES": AdvancementInfo(
         """Not Quite "Nine" Lives""", "nether/charge_respawn_anchor", """Charge a Respawn Anchor to the maximum"""
-),
+    ),
     "NOT_TODAY_THANK_YOU": AdvancementInfo(
         """Not Today, Thank You""", "story/deflect_arrow", """Deflect a projectile with a Shield"""
-),
+    ),
     "OH_SHINY": AdvancementInfo("""Oh Shiny""", "nether/distract_piglin", """Distract Piglins with gold"""),
     "OL_BETSY": AdvancementInfo("""Ol' Betsy""", "adventure/ol_betsy", """Shoot a Crossbow"""),
     "OVEROVERKILL": AdvancementInfo(
         """Over-Overkill""", "adventure/overoverkill", """Deal 50 hearts of damage in a single hit using the Mace"""
-),
+    ),
     "PLANTING_THE_PAST": AdvancementInfo(
         """Planting the Past""", "husbandry/plant_any_sniffer_seed", """Plant any Sniffer seed"""
-),
+    ),
     "POSTMORTAL": AdvancementInfo(
         """Postmortal""", "adventure/totem_of_undying", """Use a Totem of Undying to cheat death"""
-),
+    ),
     "REMOTE_GETAWAY": AdvancementInfo("""Remote Getaway""", "end/enter_end_gateway", """Escape the island"""),
     "RESPECTING_THE_REMNANTS": AdvancementInfo(
         """Respecting the Remnants""", "adventure/salvage_sherd", """Brush a Suspicious block to obtain a Pottery Sherd"""
-),
+    ),
     "RETURN_TO_SENDER": AdvancementInfo(
         """Return to Sender""", "nether/return_to_sender", """Destroy a Ghast with a fireball"""
-),
+    ),
     "REVAULTING": AdvancementInfo(
         """Revaulting""", "adventure/revaulting", """Unlock an Ominous Vault with an Ominous Trial Key"""
-),
+    ),
     "SERIOUS_DEDICATION": AdvancementInfo(
         """Serious Dedication""", "husbandry/obtain_netherite_hoe", """Use a Netherite Ingot to upgrade a Hoe, and then reevaluate your life choices"""
-),
+    ),
     "SHEAR_BRILLIANCE": AdvancementInfo(
         """Shear Brilliance""", "husbandry/remove_wolf_armor", """Remove Wolf Armor from a Wolf using Shears"""
-),
+    ),
     "SKYS_THE_LIMIT": AdvancementInfo("""Sky's the Limit""", "end/elytra", """Find Elytra"""),
     "SMELLS_INTERESTING": AdvancementInfo(
         """Smells Interesting""", "husbandry/obtain_sniffer_egg", """Obtain a Sniffer Egg"""
-),
+    ),
     "SMITHING_WITH_STYLE": AdvancementInfo(
         """Smithing with Style""", "adventure/trim_with_all_exclusive_armor_patterns", """Apply these smithing templates at least once: Spire, Snout, Rib, Ward, Silence, Vex, Tide, Wayfinder"""
-),
+    ),
     "SNEAK_100": AdvancementInfo(
         """Sneak 100""", "adventure/avoid_vibration", """Sneak near a Sculk Sensor or Warden to prevent it from detecting you"""
-),
+    ),
     "SNIPER_DUEL": AdvancementInfo(
         """Sniper Duel""", "adventure/sniper_duel", """Kill a Skeleton from at least 50 meters away"""
-),
+    ),
     "SOUND_OF_MUSIC": AdvancementInfo(
         """Sound of Music""", "adventure/play_jukebox_in_meadows", """Make the Meadows come alive with the sound of music from a Jukebox"""
-),
+    ),
     "SPOOKY_SCARY_SKELETON": AdvancementInfo(
         """Spooky Scary Skeleton""", "nether/get_wither_skull", """Obtain a Wither Skeleton's skull"""
-),
+    ),
     "STAR_TRADER": AdvancementInfo(
         """Star Trader""", "adventure/trade_at_world_height", """Trade with a Villager at the build height limit"""
-),
+    ),
     "STAY_HYDRATED": AdvancementInfo(
         """Stay Hydrated!""", "husbandry/place_dried_ghast_in_water", """Place a Dried Ghast block into water"""
-),
+    ),
     "STICKY_SITUATION": AdvancementInfo(
         """Sticky Situation""", "adventure/honey_block_slide", """Jump into a Honey Block to break your fall"""
-),
+    ),
     "STONE_AGE": AdvancementInfo("""Stone Age""", "story/mine_stone", """Mine Stone with your new Pickaxe"""),
     "SUBSPACE_BUBBLE": AdvancementInfo(
         """Subspace Bubble""", "nether/fast_travel", """Use the Nether to travel 7 km in the Overworld"""
-),
+    ),
     "SUIT_UP": AdvancementInfo("""Suit Up""", "story/obtain_armor", """Protect yourself with a piece of iron armor"""),
     "SURGE_PROTECTOR": AdvancementInfo(
         """Surge Protector""", "adventure/lightning_rod_with_villager_no_fire", """Protect a Villager from an undesired shock without starting a fire"""
-),
+    ),
     "SWEET_DREAMS": AdvancementInfo(
         """Sweet Dreams""", "adventure/sleep_in_bed", """Sleep in a Bed to change your respawn point"""
-),
+    ),
     "TACTICAL_FISHING": AdvancementInfo(
         """Tactical Fishing""", "husbandry/tactical_fishing", """Catch a Fish... without a Fishing Rod!"""
-),
+    ),
     "TAKE_AIM": AdvancementInfo("""Take Aim""", "adventure/shoot_arrow", """Shoot something with an Arrow"""),
     "THE_CITY_AT_THE_END_OF_THE_GAME": AdvancementInfo(
         """The City at the End of the Game""", "end/find_end_city", """Go on in, what could happen?"""
-),
+    ),
     "THE_CUTEST_PREDATOR": AdvancementInfo(
         """The Cutest Predator""", "husbandry/axolotl_in_a_bucket", """Catch an Axolotl in a Bucket"""
-),
+    ),
     "THE_END": AdvancementInfo("""The End""", "end/root", """Or the beginning?"""),
     "THE_END_AGAIN": AdvancementInfo("""The End... Again...""", "end/respawn_dragon", """Respawn the Ender Dragon"""),
     "THE_END_STORY": AdvancementInfo("""The End?""", "story/enter_the_end", """Enter the End Portal"""),
     "THE_HEALING_POWER_OF_FRIENDSHIP": AdvancementInfo(
         """The Healing Power of Friendship!""", "husbandry/kill_axolotl_target", """Team up with an Axolotl and win a fight"""
-),
+    ),
     "THE_NEXT_GENERATION": AdvancementInfo("""The Next Generation""", "end/dragon_egg", """Hold the Dragon Egg"""),
     "THE_PARROTS_AND_THE_BATS": AdvancementInfo(
         """The Parrots and the Bats""", "husbandry/breed_an_animal", """Breed two animals together"""
-),
+    ),
     "THE_POWER_OF_BOOKS": AdvancementInfo(
         """The Power of Books""", "adventure/read_power_of_chiseled_bookshelf", """Read the power signal of a Chiseled Bookshelf using a Comparator"""
-),
+    ),
     "THE_WHOLE_PACK": AdvancementInfo(
         """The Whole Pack""", "husbandry/whole_pack", """Tame one of each Wolf variant"""
-),
+    ),
     "THIS_BOAT_HAS_LEGS": AdvancementInfo(
         """This Boat Has Legs""", "nether/ride_strider", """Ride a Strider with a Warped Fungus on a Stick"""
-),
+    ),
     "THOSE_WERE_THE_DAYS": AdvancementInfo(
         """Those Were the Days""", "nether/find_bastion", """Enter a Bastion Remnant"""
-),
+    ),
     "TOTAL_BEELOCATION": AdvancementInfo(
         """Total Beelocation""", "husbandry/silk_touch_nest", """Move a Bee Nest or Beehive, with 3 Bees inside, using Silk Touch"""
-),
+    ),
     "TWO_BIRDS_ONE_ARROW": AdvancementInfo(
         """Two Birds, One Arrow""", "adventure/two_birds_one_arrow", """Kill two Phantoms with a piercing Arrow"""
-),
+    ),
     "TWO_BY_TWO": AdvancementInfo("""Two by Two""", "husbandry/bred_all_animals", """Breed all the animals!"""),
     "UH_OH": AdvancementInfo("""Uh Oh""", "husbandry/uh_oh", """Have a Sulfur Cube absorb a TNT block"""),
     "UNDER_LOCK_AND_KEY": AdvancementInfo(
         """Under Lock and Key""", "adventure/under_lock_and_key", """Unlock a Vault with a Trial Key"""
-),
+    ),
     "UNEASY_ALLIANCE": AdvancementInfo(
         """Uneasy Alliance""", "nether/uneasy_alliance", """Rescue a Ghast from the Nether, bring it safely home to the Overworld... and then kill it"""
-),
+    ),
     "VERY_VERY_FRIGHTENING": AdvancementInfo(
         """Very Very Frightening""", "adventure/very_very_frightening", """Strike a Villager with lightning"""
-),
+    ),
     "VOLUNTARY_EXILE": AdvancementInfo(
         """Voluntary Exile""", "adventure/voluntary_exile", """Kill a raid captain.
 Maybe consider staying away from villages for the time being..."""
-),
+    ),
     "WAR_PIGS": AdvancementInfo("""War Pigs""", "nether/loot_bastion", """Loot a Chest in a Bastion Remnant"""),
     "WAX_OFF": AdvancementInfo("""Wax Off""", "husbandry/wax_off", """Scrape Wax off of a Copper block!"""),
     "WAX_ON": AdvancementInfo("""Wax On""", "husbandry/wax_on", """Apply Honeycomb to a Copper block!"""),
     "WE_NEED_TO_GO_DEEPER": AdvancementInfo(
         """We Need to Go Deeper""", "story/enter_the_nether", """Build, light, and enter a Nether Portal"""
-),
+    ),
     "WHATEVER_FLOATS_YOUR_GOAT": AdvancementInfo(
         """Whatever Floats Your Goat!""", "husbandry/ride_a_boat_with_a_goat", """Get in a Boat and float with a Goat"""
-),
+    ),
     "WHAT_A_DEAL": AdvancementInfo("""What a Deal!""", "adventure/trade", """Successfully trade with a Villager"""),
     "WHEN_THE_SQUAD_HOPS_INTO_TOWN": AdvancementInfo(
         """When the Squad Hops into Town""", "husbandry/leash_all_frog_variants", """Get each Frog variant on a Lead"""
-),
+    ),
     "WHOS_THE_PILLAGER_NOW": AdvancementInfo(
         """Who's the Pillager Now?""", "adventure/whos_the_pillager_now", """Give a Pillager a taste of their own medicine"""
-),
+    ),
     "WHO_IS_CUTTING_ONIONS": AdvancementInfo(
         """Who is Cutting Onions?""", "nether/obtain_crying_obsidian", """Obtain Crying Obsidian"""
-),
+    ),
     "WHO_NEEDS_ROCKETS": AdvancementInfo(
         """Who Needs Rockets?""", "adventure/who_needs_rockets", """Use a Wind Charge to launch yourself upward 8 blocks"""
-),
+    ),
     "WITHERING_HEIGHTS": AdvancementInfo("""Withering Heights""", "nether/summon_wither", """Summon the Wither"""),
     "WITH_OUR_POWERS_COMBINED": AdvancementInfo(
         """With Our Powers Combined!""", "husbandry/froglights", """Have all Froglights in your inventory"""
-),
+    ),
     "YOUVE_GOT_A_FRIEND_IN_ME": AdvancementInfo(
         """You've Got a Friend in Me""", "husbandry/allay_deliver_item_to_player", """Have an Allay deliver items to you"""
-),
+    ),
     "YOU_NEED_A_MINT": AdvancementInfo(
         """You Need a Mint""", "end/dragon_breath", """Collect Dragon's Breath in a Glass Bottle"""
-),
+    ),
     "ZOMBIE_DOCTOR": AdvancementInfo(
         """Zombie Doctor""", "story/cure_zombie_villager", """Weaken and then cure a Zombie Villager"""
-),
+    ),
 }
 
 for __k in tuple(advancements.keys()):
@@ -782,13 +782,13 @@ biomes = {
     "OCEAN": BiomeInfo("""Ocean""", "ocean", """Ocean"""),
     "OLD_GROWTH_BIRCH_FOREST": BiomeInfo(
         """Old Growth Birch Forest""", "old_growth_birch_forest", """Old Growth Birch Forest"""
-),
+    ),
     "OLD_GROWTH_PINE_TAIGA": BiomeInfo(
         """Old Growth Pine Taiga""", "old_growth_pine_taiga", """Old Growth Pine Taiga"""
-),
+    ),
     "OLD_GROWTH_SPRUCE_TAIGA": BiomeInfo(
         """Old Growth Spruce Taiga""", "old_growth_spruce_taiga", """Old Growth Spruce Taiga"""
-),
+    ),
     "PALE_GARDEN": BiomeInfo("""Pale Garden""", "pale_garden", """Pale Garden"""),
     "PLAINS": BiomeInfo("""Plains""", "plains", """Plains"""),
     "RIVER": BiomeInfo("""River""", "river", """River"""),
@@ -814,7 +814,7 @@ biomes = {
     "WINDSWEPT_FOREST": BiomeInfo("""Windswept Forest""", "windswept_forest", """Windswept Forest"""),
     "WINDSWEPT_GRAVELLY_HILLS": BiomeInfo(
         """Windswept Gravelly Hills""", "windswept_gravelly_hills", """Windswept Gravelly Hills"""
-),
+    ),
     "WINDSWEPT_HILLS": BiomeInfo("""Windswept Hills""", "windswept_hills", """Windswept Hills"""),
     "WINDSWEPT_SAVANNA": BiomeInfo("""Windswept Savanna""", "windswept_savanna", """Windswept Savanna"""),
     "WOODED_BADLANDS": BiomeInfo("""Wooded Badlands""", "wooded_badlands", """Wooded Badlands"""),
@@ -1126,117 +1126,117 @@ game_rules = {
     "ADVANCE_WEATHER": GameRuleInfo("""advance Weather""", "advance_weather", None, bool),
     "ALLOW_ENTERING_NETHER_USING_PORTALS": GameRuleInfo(
         """allow Entering Nether Using Portals""", "allow_entering_nether_using_portals", """Controls whether players are allowed to enter the Nether.""", bool
-),
+    ),
     "BLOCK_DROPS": GameRuleInfo("""block Drops""", "block_drops", None, bool),
     "BLOCK_EXPLOSION_DROP_DECAY": GameRuleInfo(
         """block Explosion Drop Decay""", "block_explosion_drop_decay", """Some of the drops from blocks destroyed by explosions caused by block interactions are lost in the explosion.""", bool
-),
+    ),
     "COMMAND_BLOCKS_WORK": GameRuleInfo("""command Blocks Work""", "command_blocks_work", None, bool),
     "COMMAND_BLOCK_OUTPUT": GameRuleInfo(
         """command Block Output""", "command_block_output", """Broadcast command block output""", bool
-),
+    ),
     "DROWNING_DAMAGE": GameRuleInfo("""drowning Damage""", "drowning_damage", """Deal drowning damage""", bool),
     "ELYTRA_MOVEMENT_CHECK": GameRuleInfo("""elytra Movement Check""", "elytra_movement_check", None, bool),
     "ENDER_PEARLS_VANISH_ON_DEATH": GameRuleInfo(
         """ender Pearls Vanish On Death""", "ender_pearls_vanish_on_death", """Whether Ender Pearls thrown by a player vanish when that player dies.""", bool
-),
+    ),
     "ENTITY_DROPS": GameRuleInfo("""entity Drops""", "entity_drops", None, bool),
     "FALL_DAMAGE": GameRuleInfo("""fall Damage""", "fall_damage", """Deal fall damage""", bool),
     "FIRE_DAMAGE": GameRuleInfo("""fire Damage""", "fire_damage", """Deal fire damage""", bool),
     "FIRE_SPREAD_RADIUS_AROUND_PLAYER": GameRuleInfo(
         """fire Spread Radius Around Player""", "fire_spread_radius_around_player", None, int
-),
+    ),
     "FORGIVE_DEAD_PLAYERS": GameRuleInfo(
         """forgive Dead Players""", "forgive_dead_players", """Angered neutral mobs stop being angry when the targeted player dies nearby.""", bool
-),
+    ),
     "FREEZE_DAMAGE": GameRuleInfo("""freeze Damage""", "freeze_damage", """Deal freeze damage""", bool),
     "GLOBAL_SOUND_EVENTS": GameRuleInfo(
         """global Sound Events""", "global_sound_events", """When certain game events happen, like a boss spawning, the sound is heard everywhere.""", bool
-),
+    ),
     "IMMEDIATE_RESPAWN": GameRuleInfo("""immediate Respawn""", "immediate_respawn", None, bool),
     "KEEP_INVENTORY": GameRuleInfo("""keep Inventory""", "keep_inventory", """Keep inventory after death""", bool),
     "LAVA_SOURCE_CONVERSION": GameRuleInfo(
         """lava Source Conversion""", "lava_source_conversion", """When flowing lava is surrounded on two sides by lava sources, it converts into a source.""", bool
-),
+    ),
     "LIMITED_CRAFTING": GameRuleInfo("""limited Crafting""", "limited_crafting", None, bool),
     "LOCATOR_BAR": GameRuleInfo(
         """locator Bar""", "locator_bar", """When enabled, a bar is shown on the screen to indicate the direction of players.""", bool
-),
+    ),
     "LOG_ADMIN_COMMANDS": GameRuleInfo(
         """log Admin Commands""", "log_admin_commands", """Broadcast admin commands""", bool
-),
+    ),
     "MAX_BLOCK_MODIFICATIONS": GameRuleInfo("""max Block Modifications""", "max_block_modifications", None, int),
     "MAX_COMMAND_FORKS": GameRuleInfo("""max Command Forks""", "max_command_forks", None, int),
     "MAX_COMMAND_SEQUENCE_LENGTH": GameRuleInfo(
         """max Command Sequence Length""", "max_command_sequence_length", None, int
-),
+    ),
     "MAX_ENTITY_CRAMMING": GameRuleInfo(
         """max Entity Cramming""", "max_entity_cramming", """Entity cramming threshold""", int
-),
+    ),
     "MAX_MINECART_SPEED": GameRuleInfo("""max Minecart Speed""", "max_minecart_speed", None, int),
     "MAX_SNOW_ACCUMULATION_HEIGHT": GameRuleInfo(
         """max Snow Accumulation Height""", "max_snow_accumulation_height", None, int
-),
+    ),
     "MOB_DROPS": GameRuleInfo("""mob Drops""", "mob_drops", None, bool),
     "MOB_EXPLOSION_DROP_DECAY": GameRuleInfo(
         """mob Explosion Drop Decay""", "mob_explosion_drop_decay", """Some of the drops from blocks destroyed by explosions caused by mobs are lost in the explosion.""", bool
-),
+    ),
     "MOB_GRIEFING": GameRuleInfo("""mob Griefing""", "mob_griefing", """Allow destructive mob actions""", bool),
     "NATURAL_HEALTH_REGENERATION": GameRuleInfo(
         """natural Health Regeneration""", "natural_health_regeneration", None, bool
-),
+    ),
     "PLAYERS_NETHER_PORTAL_CREATIVE_DELAY": GameRuleInfo(
         """players Nether Portal Creative Delay""", "players_nether_portal_creative_delay", """Time (in ticks) that a creative mode player needs to stand in a Nether Portal before changing dimensions.""", int
-),
+    ),
     "PLAYERS_NETHER_PORTAL_DEFAULT_DELAY": GameRuleInfo(
         """players Nether Portal Default Delay""", "players_nether_portal_default_delay", """Time (in ticks) that a non-creative mode player needs to stand in a Nether Portal before changing dimensions.""", int
-),
+    ),
     "PLAYERS_SLEEPING_PERCENTAGE": GameRuleInfo(
         """players Sleeping Percentage""", "players_sleeping_percentage", """The percentage of players who must be sleeping to skip the night.""", int
-),
+    ),
     "PLAYER_MOVEMENT_CHECK": GameRuleInfo("""player Movement Check""", "player_movement_check", None, bool),
     "PROJECTILES_CAN_BREAK_BLOCKS": GameRuleInfo(
         """projectiles Can Break Blocks""", "projectiles_can_break_blocks", """Controls whether impact projectiles will destroy blocks that are destructible by them.""", bool
-),
+    ),
     "PVP": GameRuleInfo("""pvp""", "pvp", """Controls whether players are allowed to damage other players.""", bool),
     "RAIDS": GameRuleInfo("""raids""", "raids", None, bool),
     "RANDOM_TICK_SPEED": GameRuleInfo("""random Tick Speed""", "random_tick_speed", """Random tick speed rate""", int),
     "REDUCED_DEBUG_INFO": GameRuleInfo(
         """reduced Debug Info""", "reduced_debug_info", """Limits contents of debug screen.""", bool
-),
+    ),
     "RESPAWN_RADIUS": GameRuleInfo("""respawn Radius""", "respawn_radius", None, int),
     "SEND_COMMAND_FEEDBACK": GameRuleInfo(
         """send Command Feedback""", "send_command_feedback", """Send command feedback""", bool
-),
+    ),
     "SHOW_ADVANCEMENT_MESSAGES": GameRuleInfo("""show Advancement Messages""", "show_advancement_messages", None, bool),
     "SHOW_DEATH_MESSAGES": GameRuleInfo(
         """show Death Messages""", "show_death_messages", """Show death messages""", bool
-),
+    ),
     "SPAWNER_BLOCKS_WORK": GameRuleInfo("""spawner Blocks Work""", "spawner_blocks_work", None, bool),
     "SPAWN_MOBS": GameRuleInfo("""spawn Mobs""", "spawn_mobs", None, bool),
     "SPAWN_MONSTERS": GameRuleInfo(
         """spawn Monsters""", "spawn_monsters", """Controls whether monsters naturally spawn.""", bool
-),
+    ),
     "SPAWN_PATROLS": GameRuleInfo("""spawn Patrols""", "spawn_patrols", None, bool),
     "SPAWN_PHANTOMS": GameRuleInfo("""spawn Phantoms""", "spawn_phantoms", None, bool),
     "SPAWN_WANDERING_TRADERS": GameRuleInfo("""spawn Wandering Traders""", "spawn_wandering_traders", None, bool),
     "SPAWN_WARDENS": GameRuleInfo("""spawn Wardens""", "spawn_wardens", None, bool),
     "SPECTATORS_GENERATE_CHUNKS": GameRuleInfo(
         """spectators Generate Chunks""", "spectators_generate_chunks", """Allow spectators to generate terrain""", bool
-),
+    ),
     "SPREAD_VINES": GameRuleInfo("""spread Vines""", "spread_vines", None, bool),
     "TNT_EXPLODES": GameRuleInfo(
         """tnt Explodes""", "tnt_explodes", """Allow TNT to be activated and to explode""", bool
-),
+    ),
     "TNT_EXPLOSION_DROP_DECAY": GameRuleInfo(
         """tnt Explosion Drop Decay""", "tnt_explosion_drop_decay", """Some of the drops from blocks destroyed by explosions caused by TNT are lost in the explosion.""", bool
-),
+    ),
     "UNIVERSAL_ANGER": GameRuleInfo(
         """universal Anger""", "universal_anger", """Angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled.""", bool
-),
+    ),
     "WATER_SOURCE_CONVERSION": GameRuleInfo(
         """water Source Conversion""", "water_source_conversion", """When flowing water is surrounded on two sides by water sources, it converts into a source.""", bool
-),
+    ),
 }
 
 for __k in tuple(game_rules.keys()):
@@ -1498,13 +1498,13 @@ particles = {
     "SULFUR_CUBE_GOO": ParticleInfo("""Sulfur Cube Goo""", "sulfur_cube_goo", None),
     "SWEEP_ATTACK": ParticleInfo("""Sweep Attack""", "sweep_attack", None),
     "TINTED_LEAVES": ParticleInfo("""Tinted Leaves""", "tinted_leaves", None),
-    "TOTEM_OF_UNDYING": ParticleInfo("""Totem Of Undying""", "totem_of_undying", None),
+    "TOTEM_OF_UNDYING": ParticleInfo("""Totem of Undying""", "totem_of_undying", None),
     "TRAIL": ParticleInfo("""Trail""", "trail", None),
     "TRIAL_OMEN": ParticleInfo("""Trial Omen""", "trial_omen", None),
     "TRIAL_SPAWNER_DETECTION": ParticleInfo("""Trial Spawner Detection""", "trial_spawner_detection", None),
     "TRIAL_SPAWNER_DETECTION_OMINOUS": ParticleInfo(
         """Trial Spawner Detection Ominous""", "trial_spawner_detection_ominous", None
-),
+    ),
     "UNDERWATER": ParticleInfo("""Underwater""", "underwater", None),
     "VAULT_CONNECTION": ParticleInfo("""Vault Connection""", "vault_connection", None),
     "VIBRATION": ParticleInfo("""Vibration""", "vibration", None),
@@ -1702,7 +1702,6 @@ SEASIDE = "sea"
 SKULL_AND_ROSES = "skull_and_roses"
 SKULL_ON_FIRE = "burning_skull"
 SUNFLOWERS = "sunflowers"
-SUNSET = "sunset"
 TARGET_SUCCESSFULLY_BOMBED = "bomb"
 THE_POOL = "pool"
 THE_STAGE_IS_SET = "stage"
@@ -1717,7 +1716,7 @@ PAINTING_GROUP = [
     ALBANIAN, AZTEC, AZTEC2, BACKYARD, BAROQUE, BONJOUR_MONSIEUR_COURBET, BOUQUET, BUST, CAVEBIRD, CHANGING, COTAN,
     CREEBET, DENNIS, EARTH, ENDBOSS, FERN, FIGHTERS, FINDING, FIRE, GRAHAM, HUMBLE, KEBAB_MED_TRE_PEPPERONI, KONG,
     LOWMIST, MATCH, MEDITATIVE, MORTAL_COIL, ORB, OWLEMONS, PARADISTRAD, PASSAGE, PIGSCENE, POINTER, POND, PRAIRIE_RIDE,
-    SEASIDE, SKULL_AND_ROSES, SKULL_ON_FIRE, SUNFLOWERS, SUNSET, TARGET_SUCCESSFULLY_BOMBED, THE_POOL,
+    SEASIDE, SKULL_AND_ROSES, SKULL_ON_FIRE, SUNFLOWERS, "sunset", TARGET_SUCCESSFULLY_BOMBED, THE_POOL,
     THE_STAGE_IS_SET, "void", TIDES, UNPACKED, WANDERER, WASTELAND, WATER, WIND, "wither"
 ]
 
@@ -1730,7 +1729,7 @@ paintings = {
     "BAROQUE": PaintingInfo("""Baroque""", "baroque", None, "Sarah Boeving", (2, 2)),
     "BONJOUR_MONSIEUR_COURBET": PaintingInfo(
         """Bonjour Monsieur Courbet""", "courbet", None, "Kristoffer Zetterstrand", (2, 1)
-),
+    ),
     "BOUQUET": PaintingInfo("""Bouquet""", "bouquet", None, "Kristoffer Zetterstrand", (3, 3)),
     "BUST": PaintingInfo("""Bust""", "bust", None, "Kristoffer Zetterstrand", (2, 2)),
     "CAVEBIRD": PaintingInfo("""Cavebird""", "cavebird", None, "Kristoffer Zetterstrand", (3, 3)),
@@ -1748,7 +1747,7 @@ paintings = {
     "HUMBLE": PaintingInfo("""Humble""", "humble", None, "Sarah Boeving", (2, 2)),
     "KEBAB_MED_TRE_PEPPERONI": PaintingInfo(
         """Kebab med tre pepperoni""", "kebab", None, "Kristoffer Zetterstrand", (1, 1)
-),
+    ),
     "KONG": PaintingInfo("""Kong""", "donkey_kong", None, "Kristoffer Zetterstrand", (4, 3)),
     "LOWMIST": PaintingInfo("""Lowmist""", "lowmist", None, "Kristoffer Zetterstrand", (4, 2)),
     "MATCH": PaintingInfo("""Match""", "match", None, "Kristoffer Zetterstrand", (2, 2)),
@@ -1769,7 +1768,7 @@ paintings = {
     "SUNSET": PaintingInfo("""Sunset""", "sunset", None, "Kristoffer Zetterstrand", (2, 1)),
     "TARGET_SUCCESSFULLY_BOMBED": PaintingInfo(
         """Target Successfully Bombed""", "bomb", None, "Kristoffer Zetterstrand", (1, 1)
-),
+    ),
     "THE_POOL": PaintingInfo("""The Pool""", "pool", None, "Kristoffer Zetterstrand", (2, 1)),
     "THE_STAGE_IS_SET": PaintingInfo("""The Stage Is Set""", "stage", None, "Kristoffer Zetterstrand", (2, 2)),
     "THE_VOID": PaintingInfo("""The void""", "void", None, "Kristoffer Zetterstrand", (2, 2)),

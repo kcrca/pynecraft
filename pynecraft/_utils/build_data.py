@@ -188,11 +188,12 @@ def _print_bracketed(prefix, content, close, inner_indent=4, wrap=True):
         print(single)
     else:
         indent = ' ' * inner_indent
+        prefix_indent = ' ' * (len(prefix) - len(prefix.lstrip()))
         if wrap:
             inner = textwrap.fill(content, width=120, initial_indent=indent, subsequent_indent=indent)
         else:
             inner = indent + content
-        print(f'{prefix}\n{inner}\n{close}')
+        print(f'{prefix}\n{inner}\n{prefix_indent}{close}')
 
 
 def _emit_simple_list(var_name, items):
@@ -386,11 +387,10 @@ def _paintings():
     for f in _get_data().glob('painting_variant/*.json'):
         stem = f.stem
         d = _load(f)
-        asset_id = d.get('asset_id', stem)
         tk_title = d.get('title', {}).get('translate', '')
         tk_author = d.get('author', {}).get('translate', '')
         raw_title = lang.get(tk_title, '')
-        base_title = raw_title if (raw_title and re.search(r'[ A-Z]', raw_title)) else to_name(asset_id)
+        base_title = raw_title if (raw_title and re.search(r'[ A-Z]', raw_title)) else to_name(stem)
         artist = lang.get(tk_author, '')
         size = (d.get('width', 1), d.get('height', 1))
         if base_title in seen_titles:
@@ -400,7 +400,7 @@ def _paintings():
             seen_titles[base_title] = 1
             title = base_title
         key = _key_from_name(title)
-        fields[key] = (asset_id, None, title, artist, size)
+        fields[key] = (stem, None, title, artist, size)
     return fields
 
 
