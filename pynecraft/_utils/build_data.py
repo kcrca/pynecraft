@@ -167,9 +167,6 @@ def _snake_to_camel(s):
     return parts[0] + ''.join(p.capitalize() for p in parts[1:])
 
 
-def _titlecase(s):
-    return ' '.join(w.capitalize() for w in s.split())
-
 
 def _load(path: Path) -> dict:
     return json.loads(path.read_text())
@@ -244,7 +241,7 @@ def _patterns():
     fields = {}
     for f in _get_data().glob('banner_pattern/*.json'):
         stem = f.stem
-        name = _titlecase(stem.replace('_', ' '))
+        name = to_name(stem)
         key = _key_from_name(name)
         fields[key] = (stem, name, name)
     return fields
@@ -281,7 +278,7 @@ def _biomes():
     fields = {}
     for f in _get_data().glob('worldgen/biome/*.json'):
         stem = f.stem
-        name = lang.get(f'biome.minecraft.{stem}', _titlecase(stem.replace('_', ' ')))
+        name = lang.get(f'biome.minecraft.{stem}', to_name(stem))
         key = _key_from_name(name)
         fields[key] = (stem, name, name)
     return fields
@@ -292,7 +289,7 @@ def _effects():
     reg = _registries()
     fields = {}
     for stem in _registry_stems(reg, 'minecraft:mob_effect'):
-        name = lang.get(f'effect.minecraft.{stem}', _titlecase(stem.replace('_', ' ')))
+        name = lang.get(f'effect.minecraft.{stem}', to_name(stem))
         key = _key_from_name(name)
         fields[key] = (stem, '', name)
     return fields
@@ -305,7 +302,7 @@ def _enchantments():
         stem = f.stem
         d = _load(f)
         tk = d.get('description', {}).get('translate', '')
-        name = lang.get(tk, _titlecase(stem.replace('_', ' ')))
+        name = lang.get(tk, to_name(stem))
         max_level = d.get('max_level', 1)
         key = _key_from_name(name)
         fields[key] = (stem, '', name, max_level)
@@ -335,7 +332,7 @@ def _particles():
     reg = _registries()
     fields = {}
     for stem in _registry_stems(reg, 'minecraft:particle_type'):
-        name = _titlecase(stem.replace('_', ' '))
+        name = to_name(stem)
         key = _key_from_name(name)
         fields[key] = (stem, '', name)
     return fields
@@ -389,9 +386,11 @@ def _paintings():
     for f in _get_data().glob('painting_variant/*.json'):
         stem = f.stem
         d = _load(f)
+        asset_id = d.get('asset_id', stem)
         tk_title = d.get('title', {}).get('translate', '')
         tk_author = d.get('author', {}).get('translate', '')
-        base_title = lang.get(tk_title, _titlecase(stem.replace('_', ' ')))
+        raw_title = lang.get(tk_title, '')
+        base_title = raw_title if (raw_title and re.search(r'[ A-Z]', raw_title)) else to_name(asset_id)
         artist = lang.get(tk_author, '')
         size = (d.get('width', 1), d.get('height', 1))
         if base_title in seen_titles:
@@ -401,7 +400,7 @@ def _paintings():
             seen_titles[base_title] = 1
             title = base_title
         key = _key_from_name(title)
-        fields[key] = (stem, None, title, artist, size)
+        fields[key] = (asset_id, None, title, artist, size)
     return fields
 
 
@@ -426,7 +425,7 @@ def _emit_section(out_name, plural, extra_fields, fields, known, added_values_fn
     dups_name = f'__{out_name.lower()}_dups'
     group_name = f'{_camel_to_name(out_name, '_').upper()}_GROUP'
     map_name = _camel_to_name(out_name, '_').lower() + plural
-    value_fields = ['name', 'value', 'desc'] + list(extra_fields)
+    value_fields = ['name', 'id', 'desc'] + list(extra_fields)
 
     print(f'{dups_name} = {{}}')
 
@@ -466,7 +465,7 @@ def _emit_section(out_name, plural, extra_fields, fields, known, added_values_fn
     print(f'for __k in tuple({map_name}.keys()):')
     print(f'    v = {map_name}[__k]')
     print(f'    {map_name}[v.name] = v')
-    print(f'    {map_name}[v.value] = v')
+    print(f'    {map_name}[v.id] = v')
 
     print()
     print()
@@ -528,7 +527,7 @@ def _mobs():
     lang = _lang()
     names = []
     for stem in _get_data().entity_loot_stems - _MOB_EXCLUDES:
-        name = lang.get(f'entity.minecraft.{stem}', _titlecase(stem.replace('_', ' ')))
+        name = lang.get(f'entity.minecraft.{stem}', to_name(stem))
         names.append(name)
     return sorted(names)
 
@@ -623,7 +622,7 @@ if __name__ == '__main__':
 
         with redirect_stdout(out):
             print()
-            print(f'# Generated from Minecraft {_version} jar data, {timestamp}')
+            print(f'# Generated from Minecraft {_version} jar data')
             print()
             _emit_simple_list('wolves', _wolves())
             _emit_simple_list('trim_materials', _trim_materials())

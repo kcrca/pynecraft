@@ -463,7 +463,7 @@ tropical_fish = {
 
 armors = ('leather', 'chainmail', 'copper', 'iron', 'golden', 'diamond', 'netherite')
 
-sherds = tuple(pottery_sherds[x].value for x in POTTERY_SHERD_GROUP)
+sherds = tuple(pottery_sherds[x].id for x in POTTERY_SHERD_GROUP)
 
 armor_equipment = {'feet': 'boots', 'legs': 'leggings', 'chest': 'chestplate', 'head': 'helmet'}
 

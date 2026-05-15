@@ -26,7 +26,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.2-snapshot-7 jar data, 2026-05-13T01:14:22-07:00
+# Generated from Minecraft 26.2-snapshot-7 jar data
 
 wolves = ['ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
 trim_materials = [
@@ -53,7 +53,7 @@ TEAM_OPTION_GROUP = [
     SEE_FRIENDLY_INVISIBLES, SUFFIX
 ]
 
-TeamOptionInfo = namedtuple("TeamOption", ['name', 'value', 'desc', 'type'])
+TeamOptionInfo = namedtuple("TeamOption", ['name', 'id', 'desc', 'type'])
 team_options = {
     "COLLISION_RULE": TeamOptionInfo(
         """collision Rule""", "collisionRule", None, ['always', 'never', 'pushOtherTeams', 'pushOwnTeam']
@@ -75,7 +75,7 @@ team_options = {
 for __k in tuple(team_options.keys()):
     v = team_options[__k]
     team_options[v.name] = v
-    team_options[v.value] = v
+    team_options[v.id] = v
 
 
 def as_teamoption(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -136,7 +136,7 @@ PATTERN_GROUP = [
     TRIANGLES_TOP, TRIANGLE_BOTTOM, TRIANGLE_TOP
 ]
 
-PatternInfo = namedtuple("Pattern", ['name', 'value', 'desc'])
+PatternInfo = namedtuple("Pattern", ['name', 'id', 'desc'])
 patterns = {
     "BASE": PatternInfo("""Base""", "base", """Base"""),
     "BORDER": PatternInfo("""Border""", "border", """Border"""),
@@ -188,7 +188,7 @@ patterns = {
 for __k in tuple(patterns.keys()):
     v = patterns[__k]
     patterns[v.name] = v
-    patterns[v.value] = v
+    patterns[v.id] = v
 
 
 def as_pattern(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -347,7 +347,7 @@ ADVANCEMENT_GROUP = [
     YOU_NEED_A_MINT, ZOMBIE_DOCTOR
 ]
 
-AdvancementInfo = namedtuple("Advancement", ['name', 'value', 'desc'])
+AdvancementInfo = namedtuple("Advancement", ['name', 'id', 'desc'])
 advancements = {
     "ACQUIRE_HARDWARE": AdvancementInfo("""Acquire Hardware""", "story/smelt_iron", """Smelt an Iron Ingot"""),
     "ADVENTURE": AdvancementInfo("""Adventure""", "adventure/root", """Adventure, exploration and combat"""),
@@ -662,7 +662,7 @@ Maybe consider staying away from villages for the time being..."""
 for __k in tuple(advancements.keys()):
     v = advancements[__k]
     advancements[v.name] = v
-    advancements[v.value] = v
+    advancements[v.id] = v
 
 
 def as_advancement(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -742,7 +742,7 @@ BIOME_GROUP = [
     WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_HILLS, WINDSWEPT_SAVANNA, WOODED_BADLANDS
 ]
 
-BiomeInfo = namedtuple("Biome", ['name', 'value', 'desc'])
+BiomeInfo = namedtuple("Biome", ['name', 'id', 'desc'])
 biomes = {
     "BADLANDS": BiomeInfo("""Badlands""", "badlands", """Badlands"""),
     "BAMBOO_JUNGLE": BiomeInfo("""Bamboo Jungle""", "bamboo_jungle", """Bamboo Jungle"""),
@@ -823,7 +823,7 @@ biomes = {
 for __k in tuple(biomes.keys()):
     v = biomes[__k]
     biomes[v.name] = v
-    biomes[v.value] = v
+    biomes[v.id] = v
 
 
 def as_biome(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -880,7 +880,7 @@ EFFECT_GROUP = [
     WATER_BREATHING, WEAKNESS, WEAVING, WIND_CHARGED, WITHER
 ]
 
-EffectInfo = namedtuple("Effect", ['name', 'value', 'desc'])
+EffectInfo = namedtuple("Effect", ['name', 'id', 'desc'])
 effects = {
     "ABSORPTION": EffectInfo("""Absorption""", "absorption", None),
     "BAD_LUCK": EffectInfo("""Bad Luck""", "unluck", None),
@@ -927,7 +927,7 @@ effects = {
 for __k in tuple(effects.keys()):
     v = effects[__k]
     effects[v.name] = v
-    effects[v.value] = v
+    effects[v.id] = v
 
 
 def as_effect(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -987,7 +987,7 @@ ENCHANTMENT_GROUP = [
     SOUL_SPEED, SWEEPING_EDGE, SWIFT_SNEAK, THORNS, UNBREAKING, WIND_BURST
 ]
 
-EnchantmentInfo = namedtuple("Enchantment", ['name', 'value', 'desc', 'max_level'])
+EnchantmentInfo = namedtuple("Enchantment", ['name', 'id', 'desc', 'max_level'])
 enchantments = {
     "AQUA_AFFINITY": EnchantmentInfo("""Aqua Affinity""", "aqua_affinity", None, 1),
     "BANE_OF_ARTHROPODS": EnchantmentInfo("""Bane of Arthropods""", "bane_of_arthropods", None, 5),
@@ -1037,7 +1037,7 @@ enchantments = {
 for __k in tuple(enchantments.keys()):
     v = enchantments[__k]
     enchantments[v.name] = v
-    enchantments[v.value] = v
+    enchantments[v.id] = v
 
 
 def as_enchantment(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -1120,7 +1120,7 @@ GAME_RULE_GROUP = [
     WATER_SOURCE_CONVERSION
 ]
 
-GameRuleInfo = namedtuple("GameRule", ['name', 'value', 'desc', 'rule_type'])
+GameRuleInfo = namedtuple("GameRule", ['name', 'id', 'desc', 'rule_type'])
 game_rules = {
     "ADVANCE_TIME": GameRuleInfo("""advance Time""", "advance_time", None, bool),
     "ADVANCE_WEATHER": GameRuleInfo("""advance Weather""", "advance_weather", None, bool),
@@ -1242,7 +1242,7 @@ game_rules = {
 for __k in tuple(game_rules.keys()):
     v = game_rules[__k]
     game_rules[v.name] = v
-    game_rules[v.value] = v
+    game_rules[v.id] = v
 
 
 def as_gamerule(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -1385,7 +1385,7 @@ PARTICLE_GROUP = [
     WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
 ]
 
-ParticleInfo = namedtuple("Particle", ['name', 'value', 'desc'])
+ParticleInfo = namedtuple("Particle", ['name', 'id', 'desc'])
 particles = {
     "ANGRY_VILLAGER": ParticleInfo("""Angry Villager""", "angry_villager", None),
     "ASH": ParticleInfo("""Ash""", "ash", None),
@@ -1519,7 +1519,7 @@ particles = {
 for __k in tuple(particles.keys()):
     v = particles[__k]
     particles[v.name] = v
-    particles[v.value] = v
+    particles[v.id] = v
 
 
 def as_particle(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -1559,7 +1559,7 @@ POTTERY_SHERD_GROUP = [
     SHELTER_POTTERY_SHERD, SKULL_POTTERY_SHERD, SNORT_POTTERY_SHERD
 ]
 
-PotterySherdInfo = namedtuple("PotterySherd", ['name', 'value', 'desc'])
+PotterySherdInfo = namedtuple("PotterySherd", ['name', 'id', 'desc'])
 pottery_sherds = {
     "ANGLER_POTTERY_SHERD": PotterySherdInfo("""Angler Pottery Sherd""", "angler_pottery_sherd", None),
     "ARCHER_POTTERY_SHERD": PotterySherdInfo("""Archer Pottery Sherd""", "archer_pottery_sherd", None),
@@ -1589,7 +1589,7 @@ pottery_sherds = {
 for __k in tuple(pottery_sherds.keys()):
     v = pottery_sherds[__k]
     pottery_sherds[v.name] = v
-    pottery_sherds[v.value] = v
+    pottery_sherds[v.id] = v
 
 
 def as_potterysherd(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -1625,7 +1625,7 @@ DISC_GROUP = [
     PIGSTEP, PRECIPICE, RELIC, STAL, STRAD, TEARS, THIRTEEN, WAIT, WARD
 ]
 
-DiscInfo = namedtuple("Disc", ['name', 'value', 'desc', 'composer'])
+DiscInfo = namedtuple("Disc", ['name', 'id', 'desc', 'composer'])
 discs = {
     "BLOCKS": DiscInfo("""blocks""", "music_disc_blocks", None, "C418"),
     "BOUNCE": DiscInfo("""Bounce""", "music_disc_bounce", None, "fingerspit"),
@@ -1654,7 +1654,7 @@ discs = {
 for __k in tuple(discs.keys()):
     v = discs[__k]
     discs[v.name] = v
-    discs[v.value] = v
+    discs[v.id] = v
 
 
 def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
@@ -1664,6 +1664,8 @@ def as_disc(*values: StrOrArg) -> str | Tuple[str, ...]:
 # Paintings
 __painting_dups = {}
 ALBANIAN = "alban"
+AZTEC = "aztec"
+AZTEC2 = "aztec2"
 BACKYARD = "backyard"
 BAROQUE = "baroque"
 BONJOUR_MONSIEUR_COURBET = "courbet"
@@ -1674,8 +1676,6 @@ CHANGING = "changing"
 COTAN = "cotan"
 CREEBET = "creebet"
 DENNIS = "dennis"
-DE_AZTEC = "aztec"
-DE_AZTEC_2 = "aztec2"
 EARTH = "earth"
 ENDBOSS = "endboss"
 FERN = "fern"
@@ -1702,7 +1702,7 @@ SEASIDE = "sea"
 SKULL_AND_ROSES = "skull_and_roses"
 SKULL_ON_FIRE = "burning_skull"
 SUNFLOWERS = "sunflowers"
-SUNSET_DENSE = "sunset"
+SUNSET = "sunset"
 TARGET_SUCCESSFULLY_BOMBED = "bomb"
 THE_POOL = "pool"
 THE_STAGE_IS_SET = "stage"
@@ -1714,16 +1714,18 @@ WASTELAND = "wasteland"
 WATER = "water"
 WIND = "wind"
 PAINTING_GROUP = [
-    ALBANIAN, BACKYARD, BAROQUE, BONJOUR_MONSIEUR_COURBET, BOUQUET, BUST, CAVEBIRD, CHANGING, COTAN, CREEBET, DENNIS,
-    DE_AZTEC, DE_AZTEC_2, EARTH, ENDBOSS, FERN, FIGHTERS, FINDING, FIRE, GRAHAM, HUMBLE, KEBAB_MED_TRE_PEPPERONI, KONG,
+    ALBANIAN, AZTEC, AZTEC2, BACKYARD, BAROQUE, BONJOUR_MONSIEUR_COURBET, BOUQUET, BUST, CAVEBIRD, CHANGING, COTAN,
+    CREEBET, DENNIS, EARTH, ENDBOSS, FERN, FIGHTERS, FINDING, FIRE, GRAHAM, HUMBLE, KEBAB_MED_TRE_PEPPERONI, KONG,
     LOWMIST, MATCH, MEDITATIVE, MORTAL_COIL, ORB, OWLEMONS, PARADISTRAD, PASSAGE, PIGSCENE, POINTER, POND, PRAIRIE_RIDE,
-    SEASIDE, SKULL_AND_ROSES, SKULL_ON_FIRE, SUNFLOWERS, SUNSET_DENSE, TARGET_SUCCESSFULLY_BOMBED, THE_POOL,
+    SEASIDE, SKULL_AND_ROSES, SKULL_ON_FIRE, SUNFLOWERS, SUNSET, TARGET_SUCCESSFULLY_BOMBED, THE_POOL,
     THE_STAGE_IS_SET, "void", TIDES, UNPACKED, WANDERER, WASTELAND, WATER, WIND, "wither"
 ]
 
-PaintingInfo = namedtuple("Painting", ['name', 'value', 'desc', 'artist', 'size'])
+PaintingInfo = namedtuple("Painting", ['name', 'id', 'desc', 'artist', 'size'])
 paintings = {
     "ALBANIAN": PaintingInfo("""Albanian""", "alban", None, "Kristoffer Zetterstrand", (1, 1)),
+    "AZTEC": PaintingInfo("""Aztec""", "aztec", None, "Kristoffer Zetterstrand", (1, 1)),
+    "AZTEC2": PaintingInfo("""Aztec2""", "aztec2", None, "Kristoffer Zetterstrand", (1, 1)),
     "BACKYARD": PaintingInfo("""Backyard""", "backyard", None, "Kristoffer Zetterstrand", (3, 4)),
     "BAROQUE": PaintingInfo("""Baroque""", "baroque", None, "Sarah Boeving", (2, 2)),
     "BONJOUR_MONSIEUR_COURBET": PaintingInfo(
@@ -1736,8 +1738,6 @@ paintings = {
     "COTAN": PaintingInfo("""Cotán""", "cotan", None, "Kristoffer Zetterstrand", (3, 3)),
     "CREEBET": PaintingInfo("""Creebet""", "creebet", None, "Kristoffer Zetterstrand", (2, 1)),
     "DENNIS": PaintingInfo("""Dennis""", "dennis", None, "Sarah Boeving", (3, 3)),
-    "DE_AZTEC": PaintingInfo("""de_aztec""", "aztec", None, "Kristoffer Zetterstrand", (1, 1)),
-    "DE_AZTEC_2": PaintingInfo("""de_aztec 2""", "aztec2", None, "Kristoffer Zetterstrand", (1, 1)),
     "EARTH": PaintingInfo("""Earth""", "earth", None, "", (2, 2)),
     "ENDBOSS": PaintingInfo("""Endboss""", "endboss", None, "Kristoffer Zetterstrand", (3, 3)),
     "FERN": PaintingInfo("""Fern""", "fern", None, "Kristoffer Zetterstrand", (3, 3)),
@@ -1766,7 +1766,7 @@ paintings = {
     "SKULL_AND_ROSES": PaintingInfo("""Skull and Roses""", "skull_and_roses", None, "Kristoffer Zetterstrand", (2, 2)),
     "SKULL_ON_FIRE": PaintingInfo("""Skull On Fire""", "burning_skull", None, "Kristoffer Zetterstrand", (4, 4)),
     "SUNFLOWERS": PaintingInfo("""Sunflowers""", "sunflowers", None, "Kristoffer Zetterstrand", (3, 3)),
-    "SUNSET_DENSE": PaintingInfo("""sunset_dense""", "sunset", None, "Kristoffer Zetterstrand", (2, 1)),
+    "SUNSET": PaintingInfo("""Sunset""", "sunset", None, "Kristoffer Zetterstrand", (2, 1)),
     "TARGET_SUCCESSFULLY_BOMBED": PaintingInfo(
         """Target Successfully Bombed""", "bomb", None, "Kristoffer Zetterstrand", (1, 1)
 ),
@@ -1785,7 +1785,7 @@ paintings = {
 for __k in tuple(paintings.keys()):
     v = paintings[__k]
     paintings[v.name] = v
-    paintings[v.value] = v
+    paintings[v.id] = v
 
 
 def as_painting(*values: StrOrArg) -> str | Tuple[str, ...]:
