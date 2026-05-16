@@ -3133,22 +3133,6 @@ def me(msg: StrOrArg, *msgs: StrOrArg) -> str:
     return str(cmd)
 
 
-def noop() -> str:
-    """
-    A pseudo-command that returns the least-impactful command that has no side effects, to use as a no-op command.
-    This can be useful when, for example, you want a `success` result in an `execute` command, as in the following,
-    which sets the score to be 0 or 1 depending on whether a player is within 20 blocks.
-
-    ```
-    execute().store(SUCCESS).score(Score('nearby', 'stuff').entity(p().distance((None, 20)).run(noop())))
-    ```
-
-    This function exists so you can use a no-op command, which we will keep up to date as the command set and
-    performance profile changes. The command probably will have output, but the user won't see it unless you simply
-    put the command `noop` alone, which you have no obvious reason to do.
-    """
-    return 'time query gametime'
-
 def op(target: Target) -> str:
     """Grants operator status to a player."""
     cmd = Command()
