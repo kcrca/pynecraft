@@ -299,8 +299,8 @@ class Loop(Function):
           you call `loop`.
         * *after*: Commands that run every time after the commands in the loop. You set these by calling `add` after
           you call `loop`.
-        * *to_incr*: A score which, if True (the default), the loop code will increment the loop index. Is set to False
-          in the `cur` function so it can run the loop code without incrementing, and then set it back to True.
+        * *to_incr*: A score which, if True (the default), the loop code will increment the loop index. It is set to
+          False in the `cur` function so it can run the loop code without incrementing, and then set it back to True.
         """
         score = as_score(score)
         if not name:
