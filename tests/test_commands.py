@@ -1104,11 +1104,6 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('reset @a', _ScoreboardPlayersMod().reset(a()))
         self.assertEqual('reset fred', _ScoreboardPlayersMod().reset('fred'))
 
-    def test_publish_command(self):
-        self.assertEqual('publish', publish())
-        self.assertEqual('publish true', publish(True))
-        self.assertEqual('publish false spectator', publish(False, SPECTATOR))
-        self.assertEqual('publish false spectator 106', publish(False, SPECTATOR, 106))
 
     def test_schedule_command(self):
         self.assertEqual('schedule function m:b/c 1.3d append', schedule().function('m:b/c', days(1.3), APPEND))

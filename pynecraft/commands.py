@@ -3191,11 +3191,6 @@ def playsound(sound: str, source: str, target: Target = None, pos: Position = No
     return str(cmd)
 
 
-def publish(allow_commands: BoolOrArg = None, gamemode: StrOrArg = None, port: StrOrArg | IntOrArg = None) -> str:
-    cmd = Command()
-    cmd._add('$publish')
-    cmd._add_opt(_bool(allow_commands), _in_group(GAMEMODE, gamemode, allow_none=True), port)
-    return str(cmd)
 
 
 def random() -> _RandomMod:
