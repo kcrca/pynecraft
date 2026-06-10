@@ -537,7 +537,7 @@ def version_cmp(ver1: Version | None, ver2: Version | None) -> int:
     return len(ver2) - len(ver1)
 
 
-LATEST_PACK_VERSION = as_version(106.0)
+LATEST_PACK_VERSION = as_version(107.1)
 
 
 class DataPack:
