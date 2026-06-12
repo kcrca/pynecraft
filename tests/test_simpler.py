@@ -183,26 +183,26 @@ class TestSimpler(unittest.TestCase):
         orig_waxed = Sign.waxed
         Sign.waxed = False
         try:
-            signs = Sign.from_text('hello')
+            signs = Sign.wrap_text('hello')
             self.assertEqual(1, len(signs))
             self.assertIsInstance(signs[0], Sign)
             self.assertEqual({'front_text': {'messages': ['hello', '', '', '']}}, signs[0].nbt)
 
-            signs = Sign.from_text('**bold**')
+            signs = Sign.wrap_text('**bold**')
             self.assertEqual({'text': 'bold', 'bold': True}, signs[0].nbt['front_text']['messages'][0])
 
-            signs = Sign.from_text('[hi]{red}')
+            signs = Sign.wrap_text('[hi]{red}')
             self.assertEqual({'text': 'hi', 'color': 'red'}, signs[0].nbt['front_text']['messages'][0])
 
-            signs = Sign.from_text('a\nb\nc\nd\ne')
+            signs = Sign.wrap_text('a\nb\nc\nd\ne')
             self.assertEqual(2, len(signs))
             self.assertEqual('a', signs[0].nbt['front_text']['messages'][0])
             self.assertEqual('e', signs[1].nbt['front_text']['messages'][0])
 
-            ws = WallSign.from_text('hello')
+            ws = WallSign.wrap_text('hello')
             self.assertIsInstance(ws[0], WallSign)
 
-            hanging = Sign.from_text('hello', hanging=True)
+            hanging = Sign.wrap_text('hello', hanging=True)
             self.assertIn('hanging', hanging[0].name.lower())
         finally:
             Sign.waxed = orig_waxed

@@ -121,7 +121,7 @@ class Sign(Block):
         return self
 
     @classmethod
-    def from_text(cls, *items: str | Text, wood=None, hanging=False) -> list[Sign]:
+    def wrap_text(cls, *items: str | Text, wood=None, hanging=False) -> list[Sign]:
         """Create signs from text, wrapping across multiple signs as needed.
 
         Strings support markdown: **bold**, *italic*, ***both***, # heading, [text]{color}.
