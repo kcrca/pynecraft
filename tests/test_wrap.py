@@ -1,7 +1,87 @@
 import unittest
 
+from pynecraft._font_data import MISSING
 from pynecraft.commands import Text
-from pynecraft.wrap import *
+from pynecraft.wrap import _char_advance, _parse_markdown, _Span, _str_advance, BookWrap, wrap
+
+
+class TestStrAdvance(unittest.TestCase):
+    def test_hello_normal(self):
+        self.assertEqual(24.0, _str_advance('hello', False))
+
+    def test_hello_bold(self):
+        self.assertEqual(29.0, _str_advance('hello', True))
+
+    def test_space(self):
+        self.assertEqual(4.0, _str_advance(' ', False))
+
+    def test_empty(self):
+        self.assertEqual(0.0, _str_advance('', False))
+
+    def test_missing_char(self):
+        self.assertEqual(MISSING[0], _char_advance('', False))
+        self.assertEqual(MISSING[1], _char_advance('', True))
+
+
+class TestParseMarkdown(unittest.TestCase):
+    def test_plain(self):
+        self.assertEqual([_Span('hello')], _parse_markdown('hello'))
+
+    def test_bold(self):
+        self.assertEqual([_Span('bold', bold=True)], _parse_markdown('**bold**'))
+
+    def test_italic(self):
+        self.assertEqual([_Span('italic', italic=True)], _parse_markdown('*italic*'))
+
+    def test_bold_italic(self):
+        self.assertEqual([_Span('both', bold=True, italic=True)], _parse_markdown('***both***'))
+
+    def test_heading(self):
+        self.assertEqual([_Span('hi\n', bold=True)], _parse_markdown('# hi\n'))
+
+    def test_mixed(self):
+        self.assertEqual(
+            [_Span('plain '), _Span('bold', bold=True), _Span(' end')],
+            _parse_markdown('plain **bold** end'),
+        )
+
+
+class TestWrap(unittest.TestCase):
+    def test_fits_single_line(self):
+        # 'hello world' = 24 + 4 + 27 = 55px exactly
+        self.assertEqual([[Text.text('hello world')]], wrap(55, 1, 'hello world'))
+
+    def test_wraps_to_next_line(self):
+        # width 54: 'hello'(24) + ' '(4) + 'world'(27) = 55 > 54 → wrap
+        self.assertEqual([[Text.text('hello')], [Text.text('world')]], wrap(54, 1, 'hello world'))
+
+    def test_explicit_newline(self):
+        self.assertEqual([[Text.text('hello'), Text.text('world')]], wrap(100, 3, 'hello\nworld'))
+
+    def test_page_overflow(self):
+        result = wrap(100, 2, 'line1\nline2\nline3')
+        self.assertEqual([[Text.text('line1'), Text.text('line2')], [Text.text('line3')]], result)
+
+    def test_bold_markdown(self):
+        self.assertEqual([[Text.text('hello').bold()]], wrap(100, 2, '**hello**'))
+
+    def test_italic_markdown(self):
+        self.assertEqual([[Text.text('hi').italic()]], wrap(100, 2, '*hi*'))
+
+    def test_text_object_passthrough(self):
+        t = Text.text('pass').bold()
+        self.assertEqual([[t]], wrap(100, 2, t))
+
+    def test_empty_items(self):
+        self.assertEqual([], wrap(100, 2))
+
+    def test_trailing_space_stripped(self):
+        # leading/trailing spaces on a wrapped line are dropped
+        pages = wrap(30, 2, 'hi there')
+        for page in pages:
+            for line in page:
+                self.assertFalse(line['text'].startswith(' '))
+                self.assertFalse(line['text'].endswith(' '))
 
 
 class TestFonts(unittest.TestCase):

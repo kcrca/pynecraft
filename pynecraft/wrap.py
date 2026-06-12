@@ -1,18 +1,12 @@
-# import mcfonts
-#
-# font = mcfonts.from_java_font_file(Path('/Users/arnold/clarity/default_resourcepack/assets/minecraft/font/default.json'))
-# print('hi')
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
 from PIL import ImageFont
 
-from pynecraft.commands import as_text, TextDef
-
-
-def _hash(d: dict):
-    return tuple(d.items())
+from pynecraft._font_data import CHAR_WIDTHS, MISSING
+from pynecraft.commands import as_text, Text, TextDef
 
 
 fonts = {
@@ -21,6 +15,139 @@ fonts = {
     (False, True): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Italic', 12),
     (True, True): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold Italic', 12),
 }
+
+
+@dataclass
+class _Span:
+    text: str
+    bold: bool = False
+    italic: bool = False
+
+
+def _char_advance(ch: str, bold: bool) -> float:
+    normal, bold_adv = CHAR_WIDTHS.get(ch, MISSING)
+    return bold_adv if bold else normal
+
+
+def _str_advance(s: str, bold: bool) -> float:
+    return sum(_char_advance(ch, bold) for ch in s)
+
+
+def _parse_markdown(text: str) -> list[_Span]:
+    spans = []
+    for line in text.splitlines(keepends=True):
+        m = re.match(r'^#{1,6}\s+', line)
+        if m:
+            spans.append(_Span(line[m.end():], bold=True))
+            continue
+        for m in re.finditer(r'\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|([^*]+|\*)', line):
+            if m.group(1) is not None:
+                spans.append(_Span(m.group(1), bold=True, italic=True))
+            elif m.group(2) is not None:
+                spans.append(_Span(m.group(2), bold=True))
+            elif m.group(3) is not None:
+                spans.append(_Span(m.group(3), italic=True))
+            elif m.group(4) is not None:
+                spans.append(_Span(m.group(4)))
+    return spans
+
+
+def _spans_from_item(item: str | Text) -> list[_Span]:
+    if isinstance(item, str):
+        return _parse_markdown(item)
+    text = item.get('text', '')
+    if not isinstance(text, str):
+        text = str(text)
+    bold = bool(item.get('bold', False))
+    italic = bool(item.get('italic', False))
+    return [_Span(text, bold, italic)] if text else []
+
+
+def _line_to_text(spans: list[_Span]) -> Text:
+    if not spans:
+        return Text.text('')
+    merged = [_Span(spans[0].text, spans[0].bold, spans[0].italic)]
+    for span in spans[1:]:
+        last = merged[-1]
+        if span.bold == last.bold and span.italic == last.italic:
+            last.text += span.text
+        else:
+            merged.append(_Span(span.text, span.bold, span.italic))
+
+    def _to_text(s: _Span) -> Text:
+        t = Text.text(s.text)
+        if s.bold:
+            t = t.bold()
+        if s.italic:
+            t = t.italic()
+        return t
+
+    texts = [_to_text(s) for s in merged]
+    if len(texts) == 1:
+        return texts[0]
+    result = texts[0]
+    result.extra(*texts[1:])
+    return result
+
+
+def wrap(width: int, lines: int, *items: str | Text) -> list[list[Text]]:
+    """Wrap items into pages of lines fit to width pixels.
+
+    Strings are parsed as markdown (**bold**, *italic*, # heading).
+    Text objects are used as-is with their bold/italic fields.
+    Returns a list of pages; each page is a list of Text objects, one per line.
+    Characters not in the Minecraft font use the missing-glyph advance width.
+    """
+    all_spans: list[_Span] = []
+    for item in items:
+        all_spans.extend(_spans_from_item(item))
+
+    pages: list[list[Text]] = []
+    cur_page: list[Text] = []
+    cur_line: list[_Span] = []
+    cur_width = 0.0
+
+    def _flush_page():
+        nonlocal cur_page
+        pages.append(cur_page)
+        cur_page = []
+
+    def _flush_line():
+        nonlocal cur_line, cur_width
+        while cur_line and not cur_line[-1].text.strip():
+            cur_line.pop()
+        cur_page.append(_line_to_text(cur_line))
+        cur_line = []
+        cur_width = 0.0
+        if len(cur_page) >= lines:
+            _flush_page()
+
+    for span in all_spans:
+        for token in re.split(r'(\n|\s)', span.text):
+            if not token:
+                continue
+            if token == '\n':
+                _flush_line()
+                continue
+            token_advance = _str_advance(token, span.bold)
+            if cur_width == 0.0 and not token.strip():
+                continue
+            if cur_width + token_advance <= width:
+                cur_line.append(_Span(token, span.bold, span.italic))
+                cur_width += token_advance
+            else:
+                if cur_line:
+                    _flush_line()
+                if token.strip():
+                    cur_line.append(_Span(token, span.bold, span.italic))
+                    cur_width = token_advance
+
+    if cur_line:
+        _flush_line()
+    if cur_page:
+        _flush_page()
+
+    return pages
 
 
 class BookWrap:
