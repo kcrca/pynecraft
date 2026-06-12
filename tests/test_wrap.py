@@ -45,6 +45,13 @@ class TestParseMarkdown(unittest.TestCase):
             _parse_markdown('plain **bold** end'),
         )
 
+    def test_color(self):
+        self.assertEqual([_Span('hello', color='red')], _parse_markdown('[hello]{red}'))
+
+    def test_color_stray_bracket(self):
+        # stray '[' not followed by ']{color}' is treated as plain text (split at '[')
+        self.assertEqual([_Span('['), _Span('hello')], _parse_markdown('[hello'))
+
 
 class TestWrap(unittest.TestCase):
     def test_fits_single_line(self):
@@ -74,6 +81,9 @@ class TestWrap(unittest.TestCase):
 
     def test_empty_items(self):
         self.assertEqual([], wrap(100, 2))
+
+    def test_color_markdown(self):
+        self.assertEqual([[Text.text('hello').color('red')]], wrap(100, 2, '[hello]{red}'))
 
     def test_trailing_space_stripped(self):
         # leading/trailing spaces on a wrapped line are dropped

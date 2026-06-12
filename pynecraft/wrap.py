@@ -16,12 +16,22 @@ fonts = {
     (True, True): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold Italic', 12),
 }
 
+# Regex for markdown: [text]{color}, ***both***, **bold**, *italic*, plain
+_MD_RE = re.compile(
+    r'\[([^\]]+)\]\{([a-z_#][a-z_0-9]*)\}'
+    r'|\*\*\*(.+?)\*\*\*'
+    r'|\*\*(.+?)\*\*'
+    r'|\*(.+?)\*'
+    r'|([^*\[]+|\*|\[)'
+)
+
 
 @dataclass
 class _Span:
     text: str
     bold: bool = False
     italic: bool = False
+    color: str | None = None
 
 
 def _char_advance(ch: str, bold: bool) -> float:
@@ -40,15 +50,17 @@ def _parse_markdown(text: str) -> list[_Span]:
         if m:
             spans.append(_Span(line[m.end():], bold=True))
             continue
-        for m in re.finditer(r'\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|([^*]+|\*)', line):
+        for m in _MD_RE.finditer(line):
             if m.group(1) is not None:
-                spans.append(_Span(m.group(1), bold=True, italic=True))
-            elif m.group(2) is not None:
-                spans.append(_Span(m.group(2), bold=True))
+                spans.append(_Span(m.group(1), color=m.group(2)))
             elif m.group(3) is not None:
-                spans.append(_Span(m.group(3), italic=True))
+                spans.append(_Span(m.group(3), bold=True, italic=True))
             elif m.group(4) is not None:
-                spans.append(_Span(m.group(4)))
+                spans.append(_Span(m.group(4), bold=True))
+            elif m.group(5) is not None:
+                spans.append(_Span(m.group(5), italic=True))
+            elif m.group(6) is not None:
+                spans.append(_Span(m.group(6)))
     return spans
 
 
@@ -60,19 +72,20 @@ def _spans_from_item(item: str | Text) -> list[_Span]:
         text = str(text)
     bold = bool(item.get('bold', False))
     italic = bool(item.get('italic', False))
-    return [_Span(text, bold, italic)] if text else []
+    color = item.get('color') or None
+    return [_Span(text, bold, italic, color)] if text else []
 
 
 def _line_to_text(spans: list[_Span]) -> Text:
     if not spans:
         return Text.text('')
-    merged = [_Span(spans[0].text, spans[0].bold, spans[0].italic)]
+    merged = [_Span(spans[0].text, spans[0].bold, spans[0].italic, spans[0].color)]
     for span in spans[1:]:
         last = merged[-1]
-        if span.bold == last.bold and span.italic == last.italic:
+        if span.bold == last.bold and span.italic == last.italic and span.color == last.color:
             last.text += span.text
         else:
-            merged.append(_Span(span.text, span.bold, span.italic))
+            merged.append(_Span(span.text, span.bold, span.italic, span.color))
 
     def _to_text(s: _Span) -> Text:
         t = Text.text(s.text)
@@ -80,6 +93,8 @@ def _line_to_text(spans: list[_Span]) -> Text:
             t = t.bold()
         if s.italic:
             t = t.italic()
+        if s.color:
+            t = t.color(s.color)
         return t
 
     texts = [_to_text(s) for s in merged]
@@ -93,10 +108,19 @@ def _line_to_text(spans: list[_Span]) -> Text:
 def wrap(width: int, lines: int, *items: str | Text) -> list[list[Text]]:
     """Wrap items into pages of lines fit to width pixels.
 
-    Strings are parsed as markdown (**bold**, *italic*, # heading).
-    Text objects are used as-is with their bold/italic fields.
+    Strings are parsed as a markdown subset:
+    - ``**text**`` → bold
+    - ``*text*`` → italic
+    - ``***text***`` → bold + italic
+    - ``# text`` (at start of line) → bold heading
+    - ``[text]{color}`` → MC text color (black, dark_green, red, etc.; see TEXT_COLORS)
+
+    Text objects pass through as-is, using their bold/italic/color fields.
+    Inline color overrides any dye color set on a sign face.
+
     Returns a list of pages; each page is a list of Text objects, one per line.
-    Characters not in the Minecraft font use the missing-glyph advance width.
+    Words wider than width are placed on their own line rather than split.
+    Characters not in the Minecraft font fall back to the missing-glyph advance width.
     """
     all_spans: list[_Span] = []
     for item in items:
@@ -133,13 +157,13 @@ def wrap(width: int, lines: int, *items: str | Text) -> list[list[Text]]:
             if cur_width == 0.0 and not token.strip():
                 continue
             if cur_width + token_advance <= width:
-                cur_line.append(_Span(token, span.bold, span.italic))
+                cur_line.append(_Span(token, span.bold, span.italic, span.color))
                 cur_width += token_advance
             else:
                 if cur_line:
                     _flush_line()
                 if token.strip():
-                    cur_line.append(_Span(token, span.bold, span.italic))
+                    cur_line.append(_Span(token, span.bold, span.italic, span.color))
                     cur_width = token_advance
 
     if cur_line:

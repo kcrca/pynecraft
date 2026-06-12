@@ -8,6 +8,7 @@ from .base import _ensure_size, _in_group, _to_list, Arg, as_facing, d, de_arg, 
 from .commands import a, as_biome, as_block, as_entity, as_text, Block, BlockDef, ClickEvent, COLORS, Command, Commands, \
     data, e, Entity, EntityDef, execute, fill, fillbiome, n, return_, scoreboard, setblock, SignCommand, SignCommands, \
     SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList
+from .wrap import wrap
 
 ARMORER = 'armorer'
 BUTCHER = 'butcher'
@@ -118,6 +119,21 @@ class Sign(Block):
         """Sets the sign to be waxed or not. The default is True (ignores ``Sign.waxed``)"""
         self.nbt.set_or_clear('is_waxed', on)
         return self
+
+    @classmethod
+    def from_text(cls, *items: str | Text, wood=None, hanging=False) -> list[Sign]:
+        """Create signs from text, wrapping across multiple signs as needed.
+
+        Strings support markdown: **bold**, *italic*, ***both***, # heading, [text]{color}.
+        Returns one sign per page of wrapped text; each sign has at most 4 lines.
+        """
+        width = 60 if hanging else 90
+        pages = wrap(width, 4, *items)
+        result = []
+        for page in pages:
+            lines = page + [Text.text('') for _ in range(4 - len(page))]
+            result.append(cls(tuple(lines), wood=wood, hanging=hanging, front=True))
+        return result
 
     @classmethod
     def lines_nbt(cls, messages: SignMessages, commands: SignCommands = ()) -> Nbt:
