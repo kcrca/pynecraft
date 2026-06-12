@@ -207,6 +207,36 @@ class TestSimpler(unittest.TestCase):
         finally:
             Sign.waxed = orig_waxed
 
+    def test_book_wrap_text(self):
+        b = Book('T', 'A')
+        b.wrap_text('hello\nworld')
+        b.next_page()
+        pages = b._pages
+        self.assertEqual(1, len(pages))
+        self.assertEqual({'text': 'hello'}, pages[0][0])
+        self.assertEqual({'text': '\n'}, pages[0][1])
+        self.assertEqual({'text': 'world'}, pages[0][2])
+
+        b2 = Book('T', 'A')
+        b2.wrap_text('**bold**')
+        b2.next_page()
+        self.assertTrue(b2._pages[0][0].get('bold', False))
+
+        b3 = Book('T', 'A')
+        b3.wrap_text('\n'.join(f'Line {i}' for i in range(15)))
+        b3.next_page()
+        self.assertEqual(2, len(b3._pages))
+        self.assertEqual(14 * 2 - 1, len(b3._pages[0]))  # 14 lines + 13 newlines
+
+        b4 = Book('T', 'A')
+        b4.wrap_text('first\nsecond')
+        b4.wrap_text('\nthird')
+        b4.next_page()
+        texts = [t['text'] for t in b4._pages[0]]
+        self.assertIn('first', texts)
+        self.assertIn('second', texts)
+        self.assertIn('third', texts)
+
     def test_wall_sign(self):
         self.assertEqual([
             """setblock 1 ~2 ^3 oak_wall_sign[facing=north]{back_text: {messages: ["", hi, there, ""]}, front_text: {messages: ["", hi, there, ""]}}""" + '\n'],

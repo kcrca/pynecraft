@@ -298,6 +298,25 @@ class Book:
         self.author = author
         self.display_name = display_name
 
+    def wrap_text(self, *items: str | Text) -> Book:
+        """Wrap items into the book, adding pages as needed.
+
+        Strings support markdown: **bold**, *italic*, ***both***, # heading, [text]{color}.
+        Requires a signed book. Any text already on the current page is re-wrapped together
+        with the new items so the page boundaries are recalculated correctly.
+        """
+        existing = list(self._cur_page)
+        self._cur_page = TextList()
+        pages = wrap(114, 14, *existing, *items)
+        for i, page in enumerate(pages):
+            if i > 0:
+                self.next_page()
+            for j, line in enumerate(page):
+                if j > 0:
+                    self.add(Text.text('\n'))
+                self.add(line)
+        return self
+
     def add(self, *txt: Text | StrOrArg):
         """Add text to the current page of the book."""
         if self.title is None:
