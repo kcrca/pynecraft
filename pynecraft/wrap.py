@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import textwrap
+import unicodedata
 from dataclasses import dataclass
 
 from PIL import ImageFont
@@ -34,6 +35,9 @@ class _Span:
 
 
 def _char_advance(ch: str, bold: bool) -> float:
+    if not ch.isascii():
+        # Non-ASCII: wide (CJK etc.) = 8px, narrow = 4px, bold adds nothing.
+        return 8.0 if unicodedata.east_asian_width(ch) in ('W', 'F') else 4.0
     normal, bold_adv = CHAR_WIDTHS.get(ch, MISSING)
     return bold_adv if bold else normal
 

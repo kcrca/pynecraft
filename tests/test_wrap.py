@@ -22,6 +22,21 @@ class TestStrAdvance(unittest.TestCase):
         self.assertEqual(MISSING[0], _char_advance('', False))
         self.assertEqual(MISSING[1], _char_advance('', True))
 
+    def test_cyrillic_narrow_4px(self):
+        # Cyrillic: east_asian_width Ambiguous → 4px, bold unchanged
+        self.assertEqual(4.0, _char_advance('Я', False))
+        self.assertEqual(4.0, _char_advance('Я', True))
+
+    def test_cjk_wide_8px(self):
+        # CJK: east_asian_width Wide → 8px, bold unchanged
+        self.assertEqual(8.0, _char_advance('中', False))
+        self.assertEqual(8.0, _char_advance('中', True))
+
+    def test_latin_extension_narrow_4px(self):
+        # Latin extensions (é): east_asian_width Ambiguous → 4px, bold unchanged
+        self.assertEqual(4.0, _char_advance('é', False))
+        self.assertEqual(4.0, _char_advance('é', True))
+
 
 class TestWrap(unittest.TestCase):
     def test_fits_single_line(self):
