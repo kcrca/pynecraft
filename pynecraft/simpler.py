@@ -121,7 +121,7 @@ class Sign(Block):
         return self
 
     @classmethod
-    def wrap_text(cls, *items: str | Text, wood=None, hanging=False) -> list[Sign]:
+    def wrap(cls, *items: str | Text, wood=None, hanging=False) -> list[Sign]:
         """Create signs from text, wrapping across multiple signs as needed.
 
         Strings are plain text. Use Text.from_html() for formatted input.
@@ -298,7 +298,7 @@ class Book:
         self.author = author
         self.display_name = display_name
 
-    def wrap_text(self, *items: str | Text) -> Book:
+    def wrap(self, *items: str | Text) -> Book:
         """Wrap items into the book, adding pages as needed.
 
         Strings support markdown: **bold**, *italic*, ***both***, # heading, [text]{color}.
