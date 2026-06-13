@@ -188,13 +188,13 @@ class TestSimpler(unittest.TestCase):
             self.assertIsInstance(signs[0], Sign)
             self.assertEqual({'front_text': {'messages': ['hello', '', '', '']}}, signs[0].nbt)
 
-            signs = Sign.wrap_text('**bold**')
+            signs = Sign.wrap_text(*Text.from_html('<b>bold</b>'))
             self.assertEqual({'text': 'bold', 'bold': True}, signs[0].nbt['front_text']['messages'][0])
 
-            signs = Sign.wrap_text('[hi]{red}')
+            signs = Sign.wrap_text(*Text.from_html('<font color="red">hi</font>'))
             self.assertEqual({'text': 'hi', 'color': 'red'}, signs[0].nbt['front_text']['messages'][0])
 
-            signs = Sign.wrap_text('a\nb\nc\nd\ne')
+            signs = Sign.wrap_text('a\n\nb\n\nc\n\nd\n\ne')
             self.assertEqual(2, len(signs))
             self.assertEqual('a', signs[0].nbt['front_text']['messages'][0])
             self.assertEqual('e', signs[1].nbt['front_text']['messages'][0])
@@ -207,9 +207,22 @@ class TestSimpler(unittest.TestCase):
         finally:
             Sign.waxed = orig_waxed
 
+    def test_book_page_non_bold_root(self):
+        # MC treats raw:[A,B,...] as A being root, so bold A makes B inherit bold.
+        # Fix: serialize as {text:"",extra:[A,B,...]} so root is non-bold.
+        b = Book('T', 'A')
+        b.add(Text.text('bold').bold())
+        b.add(Text.text('\n'))
+        b.add(Text.text('plain'))
+        b.next_page()
+        raw = b.nbt()['written_book_content']['pages'][0]['raw']
+        self.assertIsInstance(raw, Text)
+        self.assertFalse(raw.get('bold', False))
+        self.assertEqual('', raw.get('text', ''))
+
     def test_book_wrap_text(self):
         b = Book('T', 'A')
-        b.wrap_text('hello\nworld')
+        b.wrap_text('hello\n\nworld')
         b.next_page()
         pages = b._pages
         self.assertEqual(1, len(pages))
@@ -218,19 +231,20 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual({'text': 'world'}, pages[0][2])
 
         b2 = Book('T', 'A')
-        b2.wrap_text('**bold**')
+        b2.wrap_text(*Text.from_html('<b>bold</b>'))
         b2.next_page()
         self.assertTrue(b2._pages[0][0].get('bold', False))
 
         b3 = Book('T', 'A')
-        b3.wrap_text('\n'.join(f'Line {i}' for i in range(15)))
+        b3.wrap_text('\n\n'.join(f'Line {i}' for i in range(15)))
         b3.next_page()
         self.assertEqual(2, len(b3._pages))
         self.assertEqual(14 * 2 - 1, len(b3._pages[0]))  # 14 lines + 13 newlines
 
         b4 = Book('T', 'A')
-        b4.wrap_text('first\nsecond')
-        b4.wrap_text('\nthird')
+        b4.wrap_text('first\n\nsecond')
+        b4.add(Text.text('\n'))
+        b4.wrap_text('third')
         b4.next_page()
         texts = [t['text'] for t in b4._pages[0]]
         self.assertIn('first', texts)
@@ -507,11 +521,11 @@ class TestSimpler(unittest.TestCase):
         self.assertEqual(
             """summon text_display ~0 ~0 ~0 {Facing: 2, Rotation: [180.0f, 0.0f], text: {text: bar}, transformation: {left_rotation: [0, 0, 0, 1], right_rotation: [0, 0, 0, 1], scale: [1, 1, 1], translation: [0, 0, 0]}}""",
             str(TextDisplay('foo').text('bar').summon(r(0, 0, 0), facing=NORTH)))
-        self.assertEqual({'text': [{"text": "foo", "italic": "true"}],
+        self.assertEqual({'text': [{"text": "foo", "italic": True}],
                           'transformation': {'left_rotation': [0.0, 0.0, 0.0, 1.0],
                                              'right_rotation': [0.0, 0.0, 0.0, 1.0],
                                              'scale': [1.0, 1.0, 1.0], 'translation': [0.0, 0.0, 0.0]}},
-                         TextDisplay(Text.html_text('<i>foo</i>')).nbt)
+                         TextDisplay(Text.from_html('<i>foo</i>')).nbt)
         self.assertEqual(
             'text_display{text: $(f), transformation: {left_rotation: [0, 0, 0, 1], right_rotation: [0, 0, 0, 1], scale: [1, 1, 1], translation: [0, 0, 0]}}',
             str(TextDisplay(Arg('f'))))

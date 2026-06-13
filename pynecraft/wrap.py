@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import textwrap
 from dataclasses import dataclass
 
 from PIL import ImageFont
@@ -16,22 +17,20 @@ fonts = {
     (True, True): ImageFont.truetype('/System/Library/Fonts/Supplemental/Arial Bold Italic', 12),
 }
 
-# Regex for markdown: [text]{color}, ***both***, **bold**, *italic*, plain
-_MD_RE = re.compile(
-    r'\[([^\]]+)\]\{([a-z_#][a-z_0-9]*)\}'
-    r'|\*\*\*(.+?)\*\*\*'
-    r'|\*\*(.+?)\*\*'
-    r'|\*(.+?)\*'
-    r'|([^*\[]+|\*|\[)'
-)
-
-
 @dataclass
 class _Span:
     text: str
     bold: bool = False
     italic: bool = False
     color: str | None = None
+    underlined: bool = False
+    strikethrough: bool = False
+    click_event: dict | None = None
+
+    def same_fmt(self, other: '_Span') -> bool:
+        return (self.bold == other.bold and self.italic == other.italic and self.color == other.color
+                and self.underlined == other.underlined and self.strikethrough == other.strikethrough
+                and self.click_event == other.click_event)
 
 
 def _char_advance(ch: str, bold: bool) -> float:
@@ -43,49 +42,47 @@ def _str_advance(s: str, bold: bool) -> float:
     return sum(_char_advance(ch, bold) for ch in s)
 
 
-def _parse_markdown(text: str) -> list[_Span]:
-    spans = []
-    for line in text.splitlines(keepends=True):
-        m = re.match(r'^#{1,6}\s+', line)
-        if m:
-            spans.append(_Span(line[m.end():], bold=True))
-            continue
-        for m in _MD_RE.finditer(line):
-            if m.group(1) is not None:
-                spans.append(_Span(m.group(1), color=m.group(2)))
-            elif m.group(3) is not None:
-                spans.append(_Span(m.group(3), bold=True, italic=True))
-            elif m.group(4) is not None:
-                spans.append(_Span(m.group(4), bold=True))
-            elif m.group(5) is not None:
-                spans.append(_Span(m.group(5), italic=True))
-            elif m.group(6) is not None:
-                spans.append(_Span(m.group(6)))
-    return spans
-
-
-def _spans_from_item(item: str | Text) -> list[_Span]:
+def _spans_from_item(item: str | Text, *, _bold: bool = False, _italic: bool = False, _color: str | None = None,
+                     _underlined: bool = False, _strikethrough: bool = False, _click_event: dict | None = None) -> list[_Span]:
     if isinstance(item, str):
-        return _parse_markdown(item)
+        s = textwrap.dedent(item)
+        s = re.sub(r'\n\n+', '\x00', s)
+        s = s.replace('\n', ' ')
+        s = s.replace('\x00', '\n')
+        return [_Span(s, _bold, _italic, _color, _underlined, _strikethrough, _click_event)]
     text = item.get('text', '')
     if not isinstance(text, str):
         text = str(text)
-    bold = bool(item.get('bold', False))
-    italic = bool(item.get('italic', False))
-    color = item.get('color') or None
-    return [_Span(text, bold, italic, color)] if text else []
+    item_bold = item['bold'] if 'bold' in item else _bold
+    item_italic = item['italic'] if 'italic' in item else _italic
+    item_color = item.get('color') or _color
+    item_underlined = item['underlined'] if 'underlined' in item else _underlined
+    item_strikethrough = item['strikethrough'] if 'strikethrough' in item else _strikethrough
+    item_click_event = item.get('click_event') or _click_event
+    spans = [_Span(text, item_bold, item_italic, item_color, item_underlined, item_strikethrough, item_click_event)] if text else []
+    for child in item.get('extra', []):
+        if isinstance(child, str):
+            if child:
+                spans.append(_Span(child, item_bold, item_italic, item_color, item_underlined, item_strikethrough, item_click_event))
+        else:
+            spans.extend(_spans_from_item(child, _bold=item_bold, _italic=item_italic, _color=item_color,
+                                          _underlined=item_underlined, _strikethrough=item_strikethrough,
+                                          _click_event=item_click_event))
+    return spans
 
 
 def _line_to_text(spans: list[_Span]) -> Text:
     if not spans:
         return Text.text('')
-    merged = [_Span(spans[0].text, spans[0].bold, spans[0].italic, spans[0].color)]
+    merged = [_Span(spans[0].text, spans[0].bold, spans[0].italic, spans[0].color,
+                    spans[0].underlined, spans[0].strikethrough, spans[0].click_event)]
     for span in spans[1:]:
         last = merged[-1]
-        if span.bold == last.bold and span.italic == last.italic and span.color == last.color:
+        if span.same_fmt(last):
             last.text += span.text
         else:
-            merged.append(_Span(span.text, span.bold, span.italic, span.color))
+            merged.append(_Span(span.text, span.bold, span.italic, span.color,
+                                span.underlined, span.strikethrough, span.click_event))
 
     def _to_text(s: _Span) -> Text:
         t = Text.text(s.text)
@@ -93,30 +90,31 @@ def _line_to_text(spans: list[_Span]) -> Text:
             t = t.bold()
         if s.italic:
             t = t.italic()
+        if s.underlined:
+            t = t.underlined()
+        if s.strikethrough:
+            t = t.strikethrough()
         if s.color:
             t = t.color(s.color)
+        if s.click_event:
+            t['click_event'] = s.click_event
         return t
 
     texts = [_to_text(s) for s in merged]
     if len(texts) == 1:
         return texts[0]
-    result = texts[0]
-    result.extra(*texts[1:])
+    result = Text.text('')
+    result.extra(*texts)
     return result
 
 
 def wrap(width: int, lines: int, *items: str | Text) -> list[list[Text]]:
     """Wrap items into pages of lines fit to width pixels.
 
-    Strings are parsed as a markdown subset:
-    - ``**text**`` → bold
-    - ``*text*`` → italic
-    - ``***text***`` → bold + italic
-    - ``# text`` (at start of line) → bold heading
-    - ``[text]{color}`` → MC text color (black, dark_green, red, etc.; see TEXT_COLORS)
-
-    Text objects pass through as-is, using their bold/italic/color fields.
-    Inline color overrides any dye color set on a sign face.
+    Strings are plain text (like Text.text(s)). Use Text.from_html() for formatted input.
+    Single newlines are soft breaks (spaces); blank lines (\\n\\n) are hard breaks.
+    Common leading whitespace is stripped (triple-quoted strings work naturally).
+    Text objects pass through using their bold/italic/color/extra fields.
 
     Returns a list of pages; each page is a list of Text objects, one per line.
     Words wider than width are placed on their own line rather than split.
@@ -146,24 +144,32 @@ def wrap(width: int, lines: int, *items: str | Text) -> list[list[Text]]:
         if len(cur_page) >= lines:
             _flush_page()
 
+    pending_newlines = 0
+
     for span in all_spans:
         for token in re.split(r'(\n|\s)', span.text):
             if not token:
                 continue
             if token == '\n':
-                _flush_line()
+                pending_newlines += 1
                 continue
-            token_advance = _str_advance(token, span.bold)
+            if pending_newlines:
+                if cur_line:
+                    _flush_line()
+                for _ in range(pending_newlines - 1):
+                    _flush_line()
+                pending_newlines = 0
             if cur_width == 0.0 and not token.strip():
                 continue
+            token_advance = _str_advance(token, span.bold)
             if cur_width + token_advance <= width:
-                cur_line.append(_Span(token, span.bold, span.italic, span.color))
+                cur_line.append(_Span(token, span.bold, span.italic, span.color, span.underlined, span.strikethrough, span.click_event))
                 cur_width += token_advance
             else:
                 if cur_line:
                     _flush_line()
                 if token.strip():
-                    cur_line.append(_Span(token, span.bold, span.italic, span.color))
+                    cur_line.append(_Span(token, span.bold, span.italic, span.color, span.underlined, span.strikethrough, span.click_event))
                     cur_width = token_advance
 
     if cur_line:

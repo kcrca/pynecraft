@@ -923,20 +923,44 @@ class Nbt(UserDict):
 class _ToText(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.attr_for = {'b': 'bold', 'i': 'italic', 'u': 'underlined', 'strike': 'strikethrough'}
+        self.attr_for = {'b': 'bold', 'i': 'italic', 'u': 'underlined', 's': 'strikethrough', 'strike': 'strikethrough'}
         self.attrs = []
+        self._color_stack = []
+        self._href_stack = []
         self.out = []
 
     def handle_starttag(self, tag, attrs):
-        self.attrs.append(self.attr_for[tag])
+        if tag == 'font':
+            self._color_stack.append(dict(attrs).get('color'))
+        elif tag == 'a':
+            self._href_stack.append(dict(attrs).get('href'))
+        elif tag == 'br':
+            self.out.append({'text': '\n'})
+        elif tag == 'p':
+            self.out.append({'text': '\n\n'})
+        elif tag in self.attr_for:
+            self.attrs.append(self.attr_for[tag])
 
     def handle_endtag(self, tag):
-        self.attrs.remove(self.attr_for[tag])
+        if tag == 'font':
+            self._color_stack.pop()
+        elif tag == 'a':
+            self._href_stack.pop()
+        elif tag in self.attr_for:
+            self.attrs.remove(self.attr_for[tag])
 
     def handle_data(self, data):
-        node = {'text': str(data)}
+        data = re.sub(r'\s+', ' ', data)
+        if not data:
+            return
+        node = {'text': data}
         for a in self.attrs:
-            node[a] = 'true'
+            node[a] = True
+        if self._color_stack and self._color_stack[-1] is not None:
+            node['color'] = self._color_stack[-1]
+        if self._href_stack and self._href_stack[-1] is not None:
+            node['underlined'] = True
+            node['click_event'] = {'action': 'open_url', 'url': self._href_stack[-1]}
         self.out.append(node)
 
     def text(self) -> list:

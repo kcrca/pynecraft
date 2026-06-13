@@ -234,8 +234,11 @@ class TestCommands(unittest.TestCase):
             Nbt.sort_keys = False
             self.assertEqual({"text": "hi"}, Text.text('hi'))
             self.assertEqual({"text": "hi\n"}, Text.text('hi\n'))
-            self.assertEqual([{'text': 'hi', 'bold': 'true', 'italic': 'true'}, {'text': ' there', 'bold': 'true'},
-                              {'text': ' friend'}], Text.html_text('<b><i>hi</i> there</b> friend'))
+            self.assertEqual([{'text': 'hi', 'bold': True, 'italic': True}, {'text': ' there', 'bold': True},
+                              {'text': ' friend'}], Text.from_html('<b><i>hi</i> there</b> friend'))
+            self.assertEqual(
+                [{'text': 'click', 'underlined': True, 'click_event': {'action': 'open_url', 'url': 'https://example.com'}}],
+                Text.from_html('<a href="https://example.com">click</a>'))
             self.assertEqual({"translate": "m.id", "with": ["t1", "t2"]}, Text.translate('m.id', 't1', 't2'))
             self.assertEqual({"translate": "m.id", "with": ["t1"], "fallback": "t2"},
                              Text.translate('m.id', 't1', fallback='t2'))

@@ -4217,7 +4217,7 @@ class Text(Nbt, TextHolder):
         return cls({'text': de_arg(txt)})
 
     @classmethod
-    def html_text(cls, html: str) -> list:
+    def from_html(cls, html: str) -> list[Text]:
         """Returns a TextHolder node populated from some HTML."""
         parser = _ToText()
         parser.feed(html)

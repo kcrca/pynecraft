@@ -9,26 +9,26 @@ class TestPynecraftMarkdownWrapping(unittest.TestCase):
 
     def test_bold_text_word_keeps_together_on_single_line(self):
         """Verify that an unbroken bold word fits cleanly on one line when threshold permits."""
-        res = wrap(75, 1, "**AAAAAAAAAA**")
+        res = wrap(75, 1, *Text.from_html("<b>AAAAAAAAAA</b>"))
         self.assertEqual(len(res), 1)       
         self.assertEqual(len(res[0]), 1)    
         self.assertEqual(res[0][0]['text'], "AAAAAAAAAA")
 
     def test_bold_text_word_preserves_single_line_on_tight_bounds(self):
         """Verify that an unsplittable single bold word remains on one line even if it exceeds the limit."""
-        res = wrap(64, 2, "**AAAAAAAAAA**")
+        res = wrap(64, 2, *Text.from_html("<b>AAAAAAAAAA</b>"))
         self.assertEqual(len(res), 1)       
         self.assertEqual(len(res[0]), 1)    
 
     def test_long_bold_string_fits_page_limits(self):
         """Verify long unbroken phrases do not split across lines prematurely."""
-        res = wrap(129, 2, "**AAAAAAAAAAAAAAAAAAAA**")
+        res = wrap(129, 2, *Text.from_html("<b>AAAAAAAAAAAAAAAAAAAA</b>"))
         self.assertEqual(len(res), 1)
         self.assertEqual(len(res[0]), 1)
 
     def test_bold_sign_text_fits_standard_sign_canvas(self):
         """Verify long bold phrases stay structurally bounded on standard line configurations."""
-        res = wrap(90, 1, "**AAAAAAAAAAAAA**")
+        res = wrap(90, 1, *Text.from_html("<b>AAAAAAAAAAAAA</b>"))
         self.assertEqual(len(res), 1)
         self.assertEqual(len(res[0]), 1)
         self.assertEqual(res[0][0]['text'], "AAAAAAAAAAAAA")
@@ -39,12 +39,12 @@ class TestPynecraftMarkdownWrapping(unittest.TestCase):
 
     def test_markdown_asterisks_activate_bold_attribute(self):
         """Verify markdown parsing successfully registers the bold key on the Text dictionary."""
-        res = wrap(100, 1, "**Hello**")
+        res = wrap(100, 1, *Text.from_html("<b>Hello</b>"))
         self.assertTrue(res[0][0].get('bold', False))
 
     def test_markdown_parser_strips_syntax_tags_from_text(self):
         """Verify layout generation strips formatting markdown syntax tokens from the final text string."""
-        res = wrap(100, 1, "**Hello**")
+        res = wrap(100, 1, *Text.from_html("<b>Hello</b>"))
         self.assertEqual(res[0][0]['text'], "Hello")
 
     def test_plain_text_defaults_to_false_bold_flag(self):
@@ -97,7 +97,7 @@ class TestPynecraftMarkdownWrapping(unittest.TestCase):
 
     def test_injected_spaces_inherit_parent_style_flags(self):
         """Verify interval spacings inside styled tags maintain local weight keys."""
-        res = wrap(100, 1, "**A B**")
+        res = wrap(100, 1, *Text.from_html("<b>A B</b>"))
         self.assertTrue(res[0][0].get('bold', False))
 
     # =========================================================================
@@ -157,7 +157,7 @@ class TestPynecraftMarkdownWrapping(unittest.TestCase):
         self.assertEqual(res[0][0]['text'], "Word")
 
     def test_bulk_single_bold_character(self):
-        res = wrap(114, 14, "**A**")
+        res = wrap(114, 14, *Text.from_html("<b>A</b>"))
         self.assertTrue(res[0][0].get('bold', False))
 
     def test_bulk_narrow_limit_with_multiple_newlines(self):
@@ -177,7 +177,7 @@ class TestPynecraftMarkdownWrapping(unittest.TestCase):
         self.assertEqual(len(res), 1)
 
     def test_bulk_long_bold_unbroken_string(self):
-        res = wrap(114, 14, "**BoldText**")
+        res = wrap(114, 14, *Text.from_html("<b>BoldText</b>"))
         self.assertTrue(res[0][0].get('bold', False))
 
     def test_bulk_sign_capacity_split(self):
@@ -206,7 +206,7 @@ class TestPynecraftMarkdownWrapping(unittest.TestCase):
         self.assertTrue(len(res) >= 1)
 
     def test_bulk_pure_bold_markdown_wrap(self):
-        res = wrap(100, 1, "**Styled**")
+        res = wrap(100, 1, *Text.from_html("<b>Styled</b>"))
         self.assertTrue(res[0][0].get('bold', False))
 
     def test_bulk_multi_line_phrase_within_bounds(self):
@@ -244,22 +244,22 @@ class TestPynecraftMarkdownWrapping(unittest.TestCase):
 
     def test_bulk_exact_four_character_bold_limit_match(self):
         """Four bold 'A's = 28.0px baseline width. Fits threshold easily as a single word."""
-        res = wrap(26, 1, "**AAAA**")
+        res = wrap(26, 1, *Text.from_html("<b>AAAA</b>"))
         self.assertEqual(len(res), 1)
 
     def test_bulk_four_character_bold_limit_overflow(self):
         """Four bold 'A's = 28.0px baseline width. Stays on line one as a single word."""
-        res = wrap(24, 2, "**AAAA**")
+        res = wrap(24, 2, *Text.from_html("<b>AAAA</b>"))
         self.assertEqual(len(res), 1)
 
     def test_bulk_multiple_spaces_inside_bold_span(self):
         """Five bold spaces = 20.0px. Spaces don't trigger the bold shift offset."""
-        res = wrap(20, 1, "**     **")
+        res = wrap(20, 1, *Text.from_html("<b>     </b>"))
         self.assertTrue(len(res) >= 0)
 
     def test_bulk_skinny_bold_characters_boundary_match(self):
         """Two bold 'i's = 6.0px baseline width. Fits a limit threshold of 5 as a single word."""
-        res = wrap(5, 1, "**ii**")
+        res = wrap(5, 1, *Text.from_html("<b>ii</b>"))
         self.assertEqual(len(res), 1)
 
 

@@ -124,7 +124,7 @@ class Sign(Block):
     def wrap_text(cls, *items: str | Text, wood=None, hanging=False) -> list[Sign]:
         """Create signs from text, wrapping across multiple signs as needed.
 
-        Strings support markdown: **bold**, *italic*, ***both***, # heading, [text]{color}.
+        Strings are plain text. Use Text.from_html() for formatted input.
         Returns one sign per page of wrapped text; each sign has at most 4 lines.
         """
         width = 60 if hanging else 90
@@ -346,7 +346,8 @@ class Book:
         cur_page = self._cur_page
         self.next_page()
         components = {'written_book_content': {
-            'author': self.author, 'title': self.title, 'pages': [{'raw': x} for x in self._pages[:]]}}
+            'author': self.author, 'title': self.title,
+            'pages': [{'raw': Text.text('').extra(*x)} for x in self._pages[:]]}}
         if self.display_name:
             components['lore'] = _to_list(self.display_name)
         self._cur_page = cur_page
