@@ -4218,7 +4218,24 @@ class Text(Nbt, TextHolder):
 
     @classmethod
     def from_html(cls, html: str) -> list[Text]:
-        """Returns a TextHolder node populated from some HTML."""
+        """Parse an HTML string into a list of Text components.
+
+        Supported tags:
+
+        - ``<b>`` — bold
+        - ``<i>`` — italic
+        - ``<u>`` — underlined
+        - ``<s>`` / ``<strike>`` — strikethrough
+        - ``<font color="name">`` — MC text color (e.g. ``dark_green``)
+        - ``<a href="url">`` — underlined text with an ``open_url`` click event
+        - ``<br>`` — hard line break (single newline)
+        - ``<p>`` — paragraph break (blank line, i.e. double newline)
+
+        Whitespace is collapsed as in HTML: runs of whitespace including newlines become a single
+        space, so triple-quoted strings work naturally.
+        Tags can be nested; formatting inherits from outer to inner.
+        Unrecognised tags are ignored and their text content is still included.
+        """
         parser = _ToText()
         parser.feed(html)
         parser.close()
