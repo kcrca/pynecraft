@@ -88,6 +88,19 @@ class TestWrap(unittest.TestCase):
                 self.assertFalse(line['text'].startswith(' '))
                 self.assertFalse(line['text'].endswith(' '))
 
+    def test_nbsp_preserved_through_from_html(self):
+        result = Text.from_html('hello&nbsp;world')
+        self.assertIn('\xa0', result[0]['text'])
+
+    def test_nbsp_not_split_in_wrap(self):
+        # \xa0 must stay as part of the word token, not be split as whitespace
+        result = wrap(200, 2, *Text.from_html('hello&nbsp;world'))
+        self.assertEqual('hello\xa0world', result[0][0]['text'])
+
+    def test_regular_spaces_still_collapse(self):
+        result = Text.from_html('a   b')
+        self.assertEqual('a b', result[0]['text'])
+
     def test_underlined_preserved(self):
         result = wrap(100, 2, *Text.from_html('<u>hello</u>'))
         self.assertTrue(result[0][0].get('underlined'))

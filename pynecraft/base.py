@@ -950,7 +950,7 @@ class _ToText(HTMLParser):
             self.attrs.remove(self.attr_for[tag])
 
     def handle_data(self, data):
-        data = re.sub(r'\s+', ' ', data)
+        data = re.sub(r'[^\S\xa0]+', ' ', data)
         if not data:
             return
         node = {'text': data}

@@ -147,7 +147,7 @@ def wrap(width: int, lines: int, *items: str | Text) -> list[list[Text]]:
     pending_newlines = 0
 
     for span in all_spans:
-        for token in re.split(r'(\n|\s)', span.text):
+        for token in re.split(r'(\n|[^\S\xa0])', span.text):
             if not token:
                 continue
             if token == '\n':

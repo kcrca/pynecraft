@@ -4233,6 +4233,8 @@ class Text(Nbt, TextHolder):
 
         Whitespace is collapsed as in HTML: runs of whitespace including newlines become a single
         space, so triple-quoted strings work naturally.
+        ``&nbsp;`` (U+00A0) is preserved and not collapsed — it renders 1px wider than a regular
+        space in MC and acts as a non-breaking space in ``wrap()``.
         Tags can be nested; formatting inherits from outer to inner.
         Unrecognised tags are ignored and their text content is still included.
         """
