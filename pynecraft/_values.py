@@ -26,7 +26,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.2-snapshot-7 jar data
+# Generated from Minecraft 26.3-snapshot-1 jar data
 
 wolves = ['ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
 trim_materials = [
@@ -679,6 +679,7 @@ BIRCH_FOREST = "birch_forest"
 CHERRY_GROVE = "cherry_grove"
 COLD_OCEAN = "cold_ocean"
 CRIMSON_FOREST = "crimson_forest"
+DAPPLED_FOREST = "dappled_forest"
 DARK_FOREST = "dark_forest"
 DEEP_COLD_OCEAN = "deep_cold_ocean"
 DEEP_DARK = "deep_dark"
@@ -731,13 +732,13 @@ WINDSWEPT_HILLS = "windswept_hills"
 WINDSWEPT_SAVANNA = "windswept_savanna"
 WOODED_BADLANDS = "wooded_badlands"
 BIOME_GROUP = [
-    BADLANDS, BAMBOO_JUNGLE, BASALT_DELTAS, BEACH, BIRCH_FOREST, CHERRY_GROVE, COLD_OCEAN, CRIMSON_FOREST, DARK_FOREST,
-    DEEP_COLD_OCEAN, DEEP_DARK, DEEP_FROZEN_OCEAN, DEEP_LUKEWARM_OCEAN, DEEP_OCEAN, "desert", DRIPSTONE_CAVES,
-    END_BARRENS, END_HIGHLANDS, END_MIDLANDS, ERODED_BADLANDS, FLOWER_FOREST, FOREST, FROZEN_OCEAN, FROZEN_PEAKS,
-    FROZEN_RIVER, GROVE, ICE_SPIKES, JAGGED_PEAKS, "jungle", LUKEWARM_OCEAN, LUSH_CAVES, MANGROVE_SWAMP, MEADOW,
-    MUSHROOM_FIELDS, NETHER_WASTES, OCEAN, OLD_GROWTH_BIRCH_FOREST, OLD_GROWTH_PINE_TAIGA, OLD_GROWTH_SPRUCE_TAIGA,
-    PALE_GARDEN, "plains", RIVER, "savanna", SAVANNA_PLATEAU, SMALL_END_ISLANDS, SNOWY_BEACH, SNOWY_PLAINS,
-    SNOWY_SLOPES, SNOWY_TAIGA, SOUL_SAND_VALLEY, SPARSE_JUNGLE, STONY_PEAKS, STONY_SHORE, SULFUR_CAVES,
+    BADLANDS, BAMBOO_JUNGLE, BASALT_DELTAS, BEACH, BIRCH_FOREST, CHERRY_GROVE, COLD_OCEAN, CRIMSON_FOREST,
+    DAPPLED_FOREST, DARK_FOREST, DEEP_COLD_OCEAN, DEEP_DARK, DEEP_FROZEN_OCEAN, DEEP_LUKEWARM_OCEAN, DEEP_OCEAN,
+    "desert", DRIPSTONE_CAVES, END_BARRENS, END_HIGHLANDS, END_MIDLANDS, ERODED_BADLANDS, FLOWER_FOREST, FOREST,
+    FROZEN_OCEAN, FROZEN_PEAKS, FROZEN_RIVER, GROVE, ICE_SPIKES, JAGGED_PEAKS, "jungle", LUKEWARM_OCEAN, LUSH_CAVES,
+    MANGROVE_SWAMP, MEADOW, MUSHROOM_FIELDS, NETHER_WASTES, OCEAN, OLD_GROWTH_BIRCH_FOREST, OLD_GROWTH_PINE_TAIGA,
+    OLD_GROWTH_SPRUCE_TAIGA, PALE_GARDEN, "plains", RIVER, "savanna", SAVANNA_PLATEAU, SMALL_END_ISLANDS, SNOWY_BEACH,
+    SNOWY_PLAINS, SNOWY_SLOPES, SNOWY_TAIGA, SOUL_SAND_VALLEY, SPARSE_JUNGLE, STONY_PEAKS, STONY_SHORE, SULFUR_CAVES,
     SUNFLOWER_PLAINS, "swamp", "taiga", "the_end", THE_VOID, WARM_OCEAN, WARPED_FOREST, WINDSWEPT_FOREST,
     WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_HILLS, WINDSWEPT_SAVANNA, WOODED_BADLANDS
 ]
@@ -752,6 +753,7 @@ biomes = {
     "CHERRY_GROVE": BiomeInfo("""Cherry Grove""", "cherry_grove", """Cherry Grove"""),
     "COLD_OCEAN": BiomeInfo("""Cold Ocean""", "cold_ocean", """Cold Ocean"""),
     "CRIMSON_FOREST": BiomeInfo("""Crimson Forest""", "crimson_forest", """Crimson Forest"""),
+    "DAPPLED_FOREST": BiomeInfo("""Dappled Forest""", "dappled_forest", """Dappled Forest"""),
     "DARK_FOREST": BiomeInfo("""Dark Forest""", "dark_forest", """Dark Forest"""),
     "DEEP_COLD_OCEAN": BiomeInfo("""Deep Cold Ocean""", "deep_cold_ocean", """Deep Cold Ocean"""),
     "DEEP_DARK": BiomeInfo("""Deep Dark""", "deep_dark", """Deep Dark"""),
@@ -1326,10 +1328,12 @@ NOTE = "note"
 NOXIOUS_GAS = "noxious_gas"
 NOXIOUS_GAS_CLOUD = "noxious_gas_cloud"
 OMINOUS_SPAWNING = "ominous_spawning"
+ORANGE_POPLAR_LEAVES = "orange_poplar_leaves"
 PALE_OAK_LEAVES = "pale_oak_leaves"
 PAUSE_MOB_GROWTH = "pause_mob_growth"
 POOF = "poof"
 PORTAL = "portal"
+RED_POPLAR_LEAVES = "red_poplar_leaves"
 RESET_MOB_GROWTH = "reset_mob_growth"
 REVERSE_PORTAL = "reverse_portal"
 SCRAPE = "scrape"
@@ -1366,6 +1370,7 @@ __particle_dups["husbandry/wax_on"] = "wax_on"
 WHITE_ASH = "white_ash"
 WHITE_SMOKE = "white_smoke"
 WITCH = "witch"
+YELLOW_POPLAR_LEAVES = "yellow_poplar_leaves"
 PARTICLE_GROUP = [
     ANGRY_VILLAGER, ASH, "block", BLOCK_CRUMBLE, "block_marker", BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP,
     CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, COPPER_FIRE_FLAME, CRIMSON_SPORE, CRIT,
@@ -1377,12 +1382,13 @@ PARTICLE_GROUP = [
     FISHING, "flame", FLASH, GEYSER, GEYSER_BASE, GEYSER_PLUME, GEYSER_POOF, GLOW, GLOW_SQUID_INK, GUST,
     GUST_EMITTER_LARGE, GUST_EMITTER_SMALL, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB,
     ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM,
-    NAUTILUS, NOTE, NOXIOUS_GAS, NOXIOUS_GAS_CLOUD, OMINOUS_SPAWNING, PALE_OAK_LEAVES, PAUSE_MOB_GROWTH, POOF, PORTAL,
-    "raid_omen", "rain", RESET_MOB_GROWTH, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK,
-    SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH,
-    SPORE_BLOSSOM_AIR, SQUID_INK, SULFUR_BUBBLES, SULFUR_CUBE_GOO, SWEEP_ATTACK, TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL,
-    "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION,
-    WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH
+    NAUTILUS, NOTE, NOXIOUS_GAS, NOXIOUS_GAS_CLOUD, OMINOUS_SPAWNING, ORANGE_POPLAR_LEAVES, PALE_OAK_LEAVES,
+    PAUSE_MOB_GROWTH, POOF, PORTAL, "raid_omen", "rain", RED_POPLAR_LEAVES, RESET_MOB_GROWTH, REVERSE_PORTAL, SCRAPE,
+    SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM,
+    SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SULFUR_BUBBLES, SULFUR_CUBE_GOO, SWEEP_ATTACK,
+    TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS,
+    UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH,
+    YELLOW_POPLAR_LEAVES
 ]
 
 ParticleInfo = namedtuple("Particle", ['name', 'id', 'desc'])
@@ -1469,12 +1475,14 @@ particles = {
     "NOXIOUS_GAS": ParticleInfo("""Noxious Gas""", "noxious_gas", None),
     "NOXIOUS_GAS_CLOUD": ParticleInfo("""Noxious Gas Cloud""", "noxious_gas_cloud", None),
     "OMINOUS_SPAWNING": ParticleInfo("""Ominous Spawning""", "ominous_spawning", None),
+    "ORANGE_POPLAR_LEAVES": ParticleInfo("""Orange Poplar Leaves""", "orange_poplar_leaves", None),
     "PALE_OAK_LEAVES": ParticleInfo("""Pale Oak Leaves""", "pale_oak_leaves", None),
     "PAUSE_MOB_GROWTH": ParticleInfo("""Pause Mob Growth""", "pause_mob_growth", None),
     "POOF": ParticleInfo("""Poof""", "poof", None),
     "PORTAL": ParticleInfo("""Portal""", "portal", None),
     "RAID_OMEN": ParticleInfo("""Raid Omen""", "raid_omen", None),
     "RAIN": ParticleInfo("""Rain""", "rain", None),
+    "RED_POPLAR_LEAVES": ParticleInfo("""Red Poplar Leaves""", "red_poplar_leaves", None),
     "RESET_MOB_GROWTH": ParticleInfo("""Reset Mob Growth""", "reset_mob_growth", None),
     "REVERSE_PORTAL": ParticleInfo("""Reverse Portal""", "reverse_portal", None),
     "SCRAPE": ParticleInfo("""Scrape""", "scrape", None),
@@ -1514,6 +1522,7 @@ particles = {
     "WHITE_ASH": ParticleInfo("""White Ash""", "white_ash", None),
     "WHITE_SMOKE": ParticleInfo("""White Smoke""", "white_smoke", None),
     "WITCH": ParticleInfo("""Witch""", "witch", None),
+    "YELLOW_POPLAR_LEAVES": ParticleInfo("""Yellow Poplar Leaves""", "yellow_poplar_leaves", None),
 }
 
 for __k in tuple(particles.keys()):

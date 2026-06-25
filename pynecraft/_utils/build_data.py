@@ -176,6 +176,15 @@ def _registry_stems(reg, key):
     return sorted(k.replace('minecraft:', '') for k in reg[key]['entries'])
 
 
+def _data_stems(name):
+    """Stems of a data-driven (datapack) registry, e.g. 'decorated_pot_pattern'.
+
+    Such registries are not listed in reports/registries.json; their entries are
+    emitted as data/minecraft/<name>/*.json files instead.
+    """
+    return sorted(f.stem for f in _get_data().glob(f'{name}/*.json'))
+
+
 def _key_from_name(name):
     normalized = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode()
     k = re.sub(r'[^\w\s]', '', normalized).upper().replace(' ', '_')
@@ -341,9 +350,8 @@ def _particles():
 
 def _pottery_sherds():
     lang = _lang()
-    reg = _registries()
     fields = {}
-    for stem in _registry_stems(reg, 'minecraft:decorated_pot_pattern'):
+    for stem in _data_stems('decorated_pot_pattern'):
         item_id = f'{stem}_pottery_sherd'
         name = lang.get(f'item.minecraft.{item_id}')
         if not name:

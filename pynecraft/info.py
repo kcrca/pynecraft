@@ -277,7 +277,7 @@ other_horses = (
     Entity('Zombie Horse'),
 )
 """The non-horse horses."""
-woods = ('Acacia', 'Bamboo', 'Birch', 'Cherry', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Pale Oak', 'Spruce')
+woods = ('Acacia', 'Bamboo', 'Birch', 'Cherry', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Pale Oak', 'Poplar', 'Spruce')
 """The kinds of wood."""
 stems = ('Warped', 'Crimson')
 """The kinds of stems."""
@@ -486,6 +486,14 @@ def weathering_property(weathering: str) -> str:
     """Returns the weathering as a property value, such as the weathering of a copper golem entity (unaffected,
     exposed, etc.)."""
     return f'{weathering.lower()}' if weathering else 'unaffected'
+
+
+def leaves_for(id: str, bamboo_leaves=None) -> tuple[str, ...]:
+    if id == 'poplar':
+        return 'red_poplar_leaves', 'orange_poplar_leaves', 'yellow_poplar_leaves'
+    if id == 'bamboo':
+        return (bamboo_leaves,) if bamboo_leaves is not None else ()
+    return (f'{id}_leaves',)
 
 
 mannequin_poses = ('standing', 'crouching', 'swimming', 'fall_flying', 'sleeping')

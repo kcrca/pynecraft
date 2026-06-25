@@ -81,6 +81,8 @@ Black Stained Glass
 Black Stained Glass Pane
 Black Terracotta
 Black Wool
+Black Wool Slab
+Black Wool Stairs
 Blackstone
 Blackstone Slab
 Blackstone Stairs
@@ -117,6 +119,8 @@ Blue Stained Glass
 Blue Stained Glass Pane
 Blue Terracotta
 Blue Wool
+Blue Wool Slab
+Blue Wool Stairs
 Bone Block
 Bookshelf
 Brain Coral
@@ -141,6 +145,8 @@ Brown Stained Glass
 Brown Stained Glass Pane
 Brown Terracotta
 Brown Wool
+Brown Wool Slab
+Brown Wool Stairs
 Bubble Coral
 Bubble Coral Block
 Bubble Coral Fan
@@ -274,6 +280,8 @@ Cyan Stained Glass
 Cyan Stained Glass Pane
 Cyan Terracotta
 Cyan Wool
+Cyan Wool Slab
+Cyan Wool Stairs
 Damaged Anvil
 Dandelion
 Dark Oak Button
@@ -408,6 +416,8 @@ Gray Stained Glass
 Gray Stained Glass Pane
 Gray Terracotta
 Gray Wool
+Gray Wool Slab
+Gray Wool Stairs
 Green Banner
 Green Bed
 Green Candle
@@ -420,6 +430,8 @@ Green Stained Glass
 Green Stained Glass Pane
 Green Terracotta
 Green Wool
+Green Wool Slab
+Green Wool Stairs
 Grindstone
 Hanging Roots
 Hay Bale / Hay Block
@@ -486,6 +498,8 @@ Light Blue Stained Glass
 Light Blue Stained Glass Pane
 Light Blue Terracotta
 Light Blue Wool
+Light Blue Wool Slab
+Light Blue Wool Stairs
 Light Gray Banner
 Light Gray Bed
 Light Gray Candle
@@ -498,6 +512,8 @@ Light Gray Stained Glass
 Light Gray Stained Glass Pane
 Light Gray Terracotta
 Light Gray Wool
+Light Gray Wool Slab
+Light Gray Wool Stairs
 Light Weighted Pressure Plate
 Lightning Rod
 Lilac
@@ -515,6 +531,8 @@ Lime Stained Glass
 Lime Stained Glass Pane
 Lime Terracotta
 Lime Wool
+Lime Wool Slab
+Lime Wool Stairs
 Lodestone
 Loom
 Magenta Banner
@@ -529,6 +547,8 @@ Magenta Stained Glass
 Magenta Stained Glass Pane
 Magenta Terracotta
 Magenta Wool
+Magenta Wool Slab
+Magenta Wool Stairs
 Magma Block
 Mangrove Button
 Mangrove Door
@@ -607,12 +627,15 @@ Orange Carpet
 Orange Concrete
 Orange Concrete Powder
 Orange Glazed Terracotta
+Orange Poplar Leaves
 Orange Shulker Box
 Orange Stained Glass
 Orange Stained Glass Pane
 Orange Terracotta
 Orange Tulip
 Orange Wool
+Orange Wool Slab
+Orange Wool Stairs
 Oxeye Daisy
 Oxidized Chiseled Copper
 Oxidized Copper
@@ -668,6 +691,8 @@ Pink Stained Glass Pane
 Pink Terracotta
 Pink Tulip
 Pink Wool
+Pink Wool Slab
+Pink Wool Stairs
 Piston
 Pitcher Plant
 Player Head
@@ -709,6 +734,22 @@ Polished Tuff
 Polished Tuff Slab
 Polished Tuff Stairs
 Polished Tuff Wall
+Poplar Button
+Poplar Door
+Poplar Fence
+Poplar Fence Gate
+Poplar Hanging Sign
+Poplar Leaves
+Poplar Log
+Poplar Planks
+Poplar Pressure Plate
+Poplar Sapling
+Poplar Shelf
+Poplar Sign
+Poplar Slab
+Poplar Stairs
+Poplar Trapdoor
+Poplar Wood
 Poppy
 Potatoes
 Potent Sulfur
@@ -734,6 +775,8 @@ Purple Stained Glass
 Purple Stained Glass Pane
 Purple Terracotta
 Purple Wool
+Purple Wool Slab
+Purple Wool Stairs
 Purpur Block
 Purpur Pillar
 Purpur Slab
@@ -756,17 +799,21 @@ Red Nether Brick Slab
 Red Nether Brick Stairs
 Red Nether Brick Wall
 Red Nether Bricks
+Red Poplar Leaves
 Red Sand
 Red Sandstone
 Red Sandstone Slab
 Red Sandstone Stairs
 Red Sandstone Wall
+Red Shrub
 Red Shulker Box
 Red Stained Glass
 Red Stained Glass Pane
 Red Terracotta
 Red Tulip
 Red Wool
+Red Wool Slab
+Red Wool Stairs
 Redstone Comparator / Comparator
 Redstone Lamp
 Redstone Ore
@@ -797,6 +844,7 @@ Sculk Vein
 Sea Lantern
 Sea Pickle
 Seagrass
+Shelf Mushroom
 Short Dry Grass
 Short Grass
 Shroomlight
@@ -875,6 +923,8 @@ Stripped Oak Log
 Stripped Oak Wood
 Stripped Pale Oak Log
 Stripped Pale Oak Wood
+Stripped Poplar Log
+Stripped Poplar Wood
 Stripped Spruce Log
 Stripped Spruce Wood
 Stripped Warped Hyphae
@@ -1036,6 +1086,8 @@ White Stained Glass Pane
 White Terracotta
 White Tulip
 White Wool
+White Wool Slab
+White Wool Stairs
 Wildflowers
 Wither Rose
 Wither Skeleton Skull
@@ -1046,9 +1098,12 @@ Yellow Carpet
 Yellow Concrete
 Yellow Concrete Powder
 Yellow Glazed Terracotta
+Yellow Poplar Leaves
 Yellow Shulker Box
 Yellow Stained Glass
 Yellow Stained Glass Pane
 Yellow Terracotta
 Yellow Wool
+Yellow Wool Slab
+Yellow Wool Stairs
 Zombie Head
