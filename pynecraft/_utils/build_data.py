@@ -209,6 +209,17 @@ def _emit_simple_list(var_name, items):
     _print_bracketed(f'{var_name} = [', ', '.join(f"'{i}'" for i in items), ']')
 
 
+def _emit_steppable(triples):
+    """Emit the aligned (block, stairs, slab) triples as the single source of truth."""
+    print()
+    print('# Aligned block/stairs/slab triples; every block has exactly one stair and one slab.')
+    print('SteppableInfo = namedtuple("Steppable", [\'block\', \'stairs\', \'slab\'])')
+    print('steppable = (')
+    for base, stairs, slab in triples:
+        print(f"    SteppableInfo('{base}', '{stairs}', '{slab}'),")
+    print(')')
+
+
 # ---- per-category data builders ----
 
 
@@ -410,6 +421,63 @@ def _paintings():
         key = _key_from_name(title)
         fields[key] = (stem, None, title, artist, size)
     return fields
+
+
+def _steppable():
+    """Aligned (base, stairs, slab) triples derived from the #stairs/#slabs block
+    tags plus crafting/stonecutter recipes.
+
+    A stair's/slab's source block is the single ingredient of its crafting_shaped
+    recipe; the four stonecutter-only stairs fall back to the stonecutter ingredient
+    matching the name (stem, stem+'s', or stem+'_block'). Every base block has exactly
+    one stair and one slab here; slab-only blocks (no stair) are excluded.
+    """
+    def tag_block(name, seen=None):
+        seen = seen if seen is not None else set()
+        members = set()
+        for f in _get_data().glob(f'tags/block/{name}.json'):
+            for v in _load(f)['values']:
+                v = v if isinstance(v, str) else v['id']
+                if v.startswith('#'):
+                    sub = v.split(':')[-1]
+                    if sub not in seen:
+                        seen.add(sub)
+                        members |= tag_block(sub, seen)
+                else:
+                    members.add(v.split(':')[-1])
+        return members
+
+    def base_map(members, suffix):
+        craft, cut = {}, {}
+        for f in _get_data().glob('recipe/*.json'):
+            r = _load(f)
+            rid = (r.get('result', {}).get('id') or '').split(':')[-1]
+            if rid not in members:
+                continue
+            if r.get('type') == 'minecraft:crafting_shaped':
+                items = {v.split(':')[-1] for v in r.get('key', {}).values() if isinstance(v, str)}
+                if len(items) == 1:
+                    craft.setdefault(rid, next(iter(items)))
+            elif r.get('type') == 'minecraft:stonecutting':
+                ing = r['ingredient']
+                ing = ing if isinstance(ing, str) else ing.get('item', '')
+                cut.setdefault(rid, set()).add(ing.split(':')[-1])
+        out = {}
+        for m in members:
+            if m in craft:
+                out[m] = craft[m]
+                continue
+            s = m[:-len(suffix)]
+            for w in (s, s + 's', s + '_block'):
+                if w in cut.get(m, ()):
+                    out[m] = w
+                    break
+        return out
+
+    base_to_stair = {b: s for s, b in base_map(tag_block('stairs'), '_stairs').items()}
+    base_to_slab = {b: s for s, b in base_map(tag_block('slabs'), '_slab').items()}
+    return [(b, base_to_stair[b], base_to_slab[b])
+            for b in sorted(base_to_stair) if b in base_to_slab]
 
 
 # ---- output helpers ----
@@ -663,6 +731,7 @@ if __name__ == '__main__':
             _emit_simple_list('wolves', _wolves())
             _emit_simple_list('trim_materials', _trim_materials())
             _emit_simple_list('trim_patterns', _trim_patterns())
+            _emit_steppable(_steppable())
 
             _section('TeamOption', 's', ['type'], _team_options, known,
                      added_values_fn=lambda v, extras: f', {_type_str(extras[0])}')
