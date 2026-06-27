@@ -700,8 +700,8 @@ class ClickEvent(Nbt):
         return command.strip()
 
     @classmethod
-    def run_command(cls, command: str | Command) -> ClickEvent:
-        command = cls._as_command(command)
+    def run_command(cls, command: StrOrArg | Command) -> ClickEvent:
+        command = cls._as_command(de_arg(command))
         # The '/' is optional for signs, but required everywhere else, so this is safest
         if command[0] != '/':
             command = '/' + command
