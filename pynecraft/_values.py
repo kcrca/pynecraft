@@ -29,6 +29,11 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 # Generated from Minecraft 26.3-snapshot-1 jar data
 
 wolves = ['ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
+cats = [
+    'all_black', 'black', 'british_shorthair', 'calico', 'jellie', 'persian', 'ragdoll', 'red', 'siamese', 'tabby',
+    'white'
+]
+climates = ['cold', 'temperate', 'warm']
 trim_materials = [
     'amethyst', 'copper', 'diamond', 'emerald', 'gold', 'iron', 'lapis', 'netherite', 'quartz', 'redstone', 'resin'
 ]

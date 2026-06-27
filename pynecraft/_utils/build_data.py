@@ -223,8 +223,9 @@ def _emit_steppable(triples):
 # ---- per-category data builders ----
 
 
-def _wolves():
-    return sorted(f.stem for f in _get_data().glob('wolf_variant/*.json'))
+def _variants(registry):
+    """Entry stems of a data-driven variant registry, e.g. 'wolf_variant' -> wolf breeds."""
+    return sorted(f.stem for f in _get_data().glob(f'{registry}/*.json'))
 
 
 def _trim_materials():
@@ -733,7 +734,10 @@ if __name__ == '__main__':
             print()
             print(f'# Generated from Minecraft {_version} jar data')
             print()
-            _emit_simple_list('wolves', _wolves())
+            _emit_simple_list('wolves', _variants('wolf_variant'))
+            _emit_simple_list('cats', _variants('cat_variant'))
+            # frog/cow/pig/chicken_variant are all the same cold/temperate/warm set
+            _emit_simple_list('climates', _variants('frog_variant'))
             _emit_simple_list('trim_materials', _trim_materials())
             _emit_simple_list('trim_patterns', _trim_patterns())
             _emit_steppable(_steppable())
