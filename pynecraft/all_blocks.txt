@@ -739,7 +739,6 @@ Poplar Door
 Poplar Fence
 Poplar Fence Gate
 Poplar Hanging Sign
-Poplar Leaves
 Poplar Log
 Poplar Planks
 Poplar Pressure Plate

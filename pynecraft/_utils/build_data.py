@@ -610,6 +610,9 @@ def _mobs():
 
 def _things(which, unholdable_re):
     lang = _lang()
+    # Restrict to ids that are actually registered; the lang file carries vestigial
+    # translation keys (e.g. block.minecraft.poplar_leaves) with no backing thing.
+    registered = set(_registry_stems(_registries(), f'minecraft:{which}'))
     full_prefix = f'{which}.minecraft.'
     holdable = set()
     things = {}
@@ -619,6 +622,8 @@ def _things(which, unholdable_re):
         parts = k.split('.')
         if len(parts) == 3 or (len(parts) > 3 and parts[3] == 'new'):
             id_ = parts[2]
+            if id_ not in registered:
+                continue
             name = to_name(id_)
             if not unholdable_re.search(name):
                 holdable.add(id_)
