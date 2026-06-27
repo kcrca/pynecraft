@@ -58,10 +58,16 @@ VILLAGER_BIOMES = (DESERT, JUNGLE, PLAINS, SAVANNA, SNOW, SWAMP, TAIGA)
 
 class Sign(Block):
     """A class that represents a sign. This class is a standing sign, the WallSign subclass is for wall signs."""
+
+    SIGN_LINE_PIXELS = 90
+    """The number of pixels used for sign line widths in `wrap`."""
+    HANGING_SIGN_LINE_PIXELS = 60
+    """The number of pixels used for hanging sign line widths in `wrap`."""
+
     default_wood = 'oak'
-    """If not specified in the constructor, this is the default wood for the sign."""
+    """If not specified in the constructor, the default wood for the sign. You can change this."""
     waxed = False
-    """Whether signs are waxed by default."""
+    """Whether signs are waxed by default. You can change this."""
 
     def __init__(self, text: SignMessages = (), /, commands: SignCommands = (), wood=None, state: Mapping = None,
                  nbt: NbtDef = None, hanging=False, front=None):
@@ -126,8 +132,9 @@ class Sign(Block):
 
         Strings are plain text. Use Text.from_html() for formatted input.
         Returns one sign per page of wrapped text; each sign has at most 4 lines.
+        The width of the sign is SIGN_LINE_PIXELS.
         """
-        width = 60 if hanging else 90
+        width = cls.HANGING_SIGN_LINE_PIXELS if hanging else cls.SIGN_LINE_PIXELS
         pages = wrap(width, 4, *items)
         result = []
         for page in pages:
@@ -263,6 +270,11 @@ class WallSign(Sign):
 class Book:
     """A class for a book."""
 
+    LINE_PIXEL_WIDTH = 114
+    """The number of pixels per line, used by `wrap`."""
+    LINES_PER_PAGE = 14
+    """The number of lines per page, used by `wrap`."""
+
     def __init__(self, title: str = None, author: str = None, display_name: TextDef | Tuple[TextDef, ...] = None):
         """Creates a book object."""
         self.title = title
@@ -307,7 +319,7 @@ class Book:
         """
         existing = list(self._cur_page)
         self._cur_page = TextList()
-        pages = wrap(114, 14, *existing, *items)
+        pages = wrap(self.LINE_PIXEL_WIDTH, self.LINES_PER_PAGE, *existing, *items)
         for i, page in enumerate(pages):
             if i > 0:
                 self.next_page()
