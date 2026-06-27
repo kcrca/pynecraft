@@ -740,6 +740,7 @@ if __name__ == '__main__':
             _emit_simple_list('climates', _variants('frog_variant'))
             _emit_simple_list('trim_materials', _trim_materials())
             _emit_simple_list('trim_patterns', _trim_patterns())
+            _emit_simple_list('map_decorations', _registry_stems(_registries(), 'minecraft:map_decoration_type'))
             _emit_steppable(_steppable())
 
             _section('TeamOption', 's', ['type'], _team_options, known,
