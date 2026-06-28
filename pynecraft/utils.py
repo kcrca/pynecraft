@@ -3,6 +3,10 @@ from typing import Tuple
 from pynecraft.commands import Commands, data, DataTarget, execute, Score, scoreboard, SUCCESS
 from pynecraft.info import DUMMY
 
+"""
+Basic utility functions for things minecraft makes hard that should be easy.
+"""
+
 PYNECRAFT = 'pynecraft'
 
 

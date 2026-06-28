@@ -9,6 +9,9 @@ from .commands import BlockDef, e, execute, fill, function, Selector
 from .function import Function
 from .simpler import WallSign
 
+"""
+Tools for creating and using menus built from signs.
+"""
 
 class Menu:
     """

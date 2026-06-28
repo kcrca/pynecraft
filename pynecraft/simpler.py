@@ -10,6 +10,10 @@ from .commands import a, as_biome, as_block, as_entity, as_text, Block, BlockDef
     SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList
 from .wrap import wrap
 
+"""
+Various tools for simplifying parts of minecraft that can be very much helped by, well, better tools.
+"""
+
 ARMORER = 'armorer'
 BUTCHER = 'butcher'
 CARTOGRAPHER = 'cartographer'

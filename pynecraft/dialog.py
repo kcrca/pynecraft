@@ -5,6 +5,10 @@ from .base import _in_group, Nbt, NbtDef, to_id
 from .commands import as_text, ClickEvent, TextDef
 from .simpler import _as_tuple, Item
 
+"""
+Tools for creating and using minecraft dialogs.
+"""
+
 PLAIN_MESSAGE = 'plain_message'
 ITEM = 'item'
 ELEMENT_TYPES = [PLAIN_MESSAGE, ITEM]
