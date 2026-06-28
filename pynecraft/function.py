@@ -476,7 +476,7 @@ class Loop(Function):
         self._looped = True
         return self
 
-    def cur(self) -> Commands:
+    def _cur_cmds(self) -> Commands:
         """Return commands for a "cur" function that will run the function without incrementing the score."""
         return lines(
             self.to_incr.set(0),

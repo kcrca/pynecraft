@@ -98,7 +98,7 @@ class TestFunctions(unittest.TestCase):
 
     def test_loop_cur(self):
         loop = Loop(('foo', 'obj')).loop(loop_func, range(1, 4))
-        cur = lines(loop.cur())
+        cur = lines(loop._cur_cmds())
         self.assertGreaterEqual(cur[0].find('_to_incr'), 0)
         self.assertTrue(cur[1].index(loop.name))
         self.assertGreaterEqual(cur[2].index('_to_incr'), 0)
