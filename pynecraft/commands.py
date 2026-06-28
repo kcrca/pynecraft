@@ -332,14 +332,6 @@ def as_criteria(criteria):
     return _in_group(SCORE_CRITERIA_GROUP, criteria)
 
 
-def as_click_action(cls, nbt: NbtDef, allow_none=True) -> ClickAction | None:
-    """Ensures the given NBT is a ClickAction object or None, converting if necessary."""
-    if isinstance(nbt, ClickAction) or (allow_none and nbt is None):
-        return nbt
-    action = ClickAction(nbt.pop('label'), nbt.pop('on_click', None), nbt.pop('tooltip', None), nbt.pop('width', None))
-    action.update(nbt)
-    return action
-
 NEAREST = 'nearest'
 FURTHEST = 'furthest'
 RANDOM = 'random'

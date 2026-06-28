@@ -1134,10 +1134,7 @@ class RelCoord:
         # noinspection PyTypeChecker
         return tuple(op(v1[i], v2[i]) for i in range(len(v1)))
 
-
-
 U = TypeVar('U', bound=RelCoord)
-
 
 class IntRelCoord(RelCoord):
     """A relative coordinate that has no fractional part."""
@@ -1157,7 +1154,7 @@ def r(*v: FloatOrArg | Iterable[FloatOrArg]) -> RelCoord | IntRelCoord | Tuple[R
                                                 Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
                                                 Tuple[RelCoord, ...]:
     """
-    Returns a single or tuple '~' relative coordinate(s) of its input value(s). If all values are integers,
+    Returns a single or tuple of '~' relative coordinate(s) of its input value(s). If all values are integers,
     the value(s) will be IntRelCoords.
     """
     return _rel_coord('~', r, tuple(v))
@@ -1171,7 +1168,7 @@ def d(*v: float | Iterable[float]) -> RelCoord | IntCoord | Tuple[RelCoord, RelC
                                       Tuple[IntRelCoord, IntRelCoord] | Tuple[RelCoord, RelCoord, RelCoord] | \
                                       Tuple[RelCoord, ...]:
     """
-    Returns a single or tuple '^' relative coordinate(s) of its input value(s). If all values are integers,
+    Returns a single or tuple of '^' relative coordinate(s) of its input value(s). If all values are integers,
     the value(s) will be IntRelCoords.
     """
     return _rel_coord('^', d, tuple(v))

@@ -1,12 +1,13 @@
 """
 Tools for creating and using minecraft dialogs.
 """
+from __future__ import annotations
 
 import string
 from typing import Iterable, Mapping, Self
 
 from .base import _in_group, Nbt, NbtDef, to_id
-from .commands import as_click_action, as_text, ClickEvent, TextDef
+from .commands import as_text, ClickEvent, TextDef
 from .simpler import _as_tuple, Item
 
 PLAIN_MESSAGE = 'plain_message'
@@ -35,6 +36,15 @@ CLOSE = 'close'
 NONE = 'none'
 WAIT_FOR_RESPONSE = 'wait_for_response'
 AFTER_ACTIONS = [CLOSE, NONE, WAIT_FOR_RESPONSE]
+
+
+def as_click_action(nbt: NbtDef, allow_none=True) -> ClickAction | None:
+    """Ensures the given NBT is a ClickAction object or None, converting if necessary."""
+    if isinstance(nbt, ClickAction) or (allow_none and nbt is None):
+        return nbt
+    action = ClickAction(nbt.pop('label'), nbt.pop('on_click', None), nbt.pop('tooltip', None), nbt.pop('width', None))
+    action.update(nbt)
+    return action
 
 
 class Element(Nbt):
