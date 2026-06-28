@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import shutil
 from collections import UserDict
 from json import JSONEncoder
 from re import Pattern
 from typing import List, MutableMapping, Self
-
-import math
 
 from .base import _in_group, _to_list, _to_tuple
 from .commands import *
@@ -123,6 +122,7 @@ class Function:
 
     @classmethod
     def load(cls, path: Path | str) -> Function:
+        """Loads the function from the file and returns it."""
         if isinstance(path, str):
             path = Path(path)
         if path.suffix != Function.SUFFIX:
@@ -279,6 +279,7 @@ class Loop(Function):
 
     @classmethod
     def test_controls(cls):
+        """Returns the `TestControls` object for this loop."""
         return Loop.TestControls()
 
     def __init__(self, score: ScoreName, name=None, base_name=None, iterate_at: int = 10):
@@ -492,9 +493,6 @@ class Loop(Function):
         self._adjuster = tuple(lines(adjuster))
         return self
 
-    def before(self, *cmds: Commands)->Loop:
-        self._setup.inser
-
 
 Version = Union[str, float, int, Iterable[int]]
 
@@ -522,6 +520,10 @@ def as_version(version: Version | None, default: Version = None) -> List[int] | 
 
 
 def version_cmp(ver1: Version | None, ver2: Version | None) -> int:
+    """
+    Returns a value less then, equal to, or greater than zero as the first version if less than, equal to,
+    or greater than the second.
+    """
     if ver1 is None or ver2 is None:
         if ver1 == ver2:
             return 0
@@ -569,6 +571,7 @@ class DataPack:
 
     @classmethod
     def path_for(cls, path: Path | str, name: str = None) -> tuple[Path, str]:
+        """Sets the path for this datapack, returning a Path object and name for the pack."""
         path = path if isinstance(path, Path) else Path(path)
         if not name:
             name = path.name
@@ -768,9 +771,11 @@ class DataPack:
         return self._get_json('structure', None, structure)
 
     def test_instance(self) -> dict[str, dict]:
+        """Returns the test instance."""
         return self._get_json('test_instance')
 
     def test_environment(self) -> dict[str, dict]:
+        """Returns the test environment."""
         return self._get_json('test_environment')
 
     def worldgen(self, worldgen_set: str) -> dict[str, dict]:
@@ -845,6 +850,7 @@ class FunctionSet:
 
     @property
     def pack(self):
+        """The DataPack associated with this set."""
         if self._pack:
             return self._pack
         elif self.parent:
@@ -857,6 +863,7 @@ class FunctionSet:
 
     @property
     def full_name(self):
+        """The full name of this set."""
         if self.parent:
             parent_name = self.parent.full_name
             if not parent_name.endswith(':'):

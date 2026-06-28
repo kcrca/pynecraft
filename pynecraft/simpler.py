@@ -1,3 +1,7 @@
+"""
+Various tools for simplifying parts of minecraft that can be very much helped by, well, better tools.
+"""
+
 from __future__ import annotations
 
 from typing import Callable, Mapping, MutableMapping, Sequence, Tuple, Union
@@ -9,10 +13,6 @@ from .commands import a, as_biome, as_block, as_entity, as_text, Block, BlockDef
     data, e, Entity, EntityDef, execute, fill, fillbiome, n, return_, scoreboard, setblock, SignCommand, SignCommands, \
     SignMessage, SignMessages, SomeMappings, Text, TextDef, TextList
 from .wrap import wrap
-
-"""
-Various tools for simplifying parts of minecraft that can be very much helped by, well, better tools.
-"""
 
 ARMORER = 'armorer'
 BUTCHER = 'butcher'
@@ -171,6 +171,7 @@ class Sign(Block):
 
     @classmethod
     def line_nbt(cls, text: SignMessage = None, command: SignCommand = None) -> Nbt:
+        """Returns the NBT needed for a single line on the sign."""
         orig_text = text
         if text is None:
             text = Text.text('')
@@ -189,6 +190,10 @@ class Sign(Block):
     @classmethod
     def change(cls, pos: Position, messages: SignMessages = None, commands: SignCommands = None,
                front=None, start=0, blanks=False, min_len: int = None) -> Commands:
+        """
+        Return commands that will change the sign to have the message and commands. If `blanks` is True, then messages
+        will be left alone if None.
+        """
         empty_msg = ('',) if blanks else (None,)
         if not messages:
             messages = empty_msg * (4 - start)
@@ -290,6 +295,7 @@ class Book:
 
     @property
     def display_name(self) -> Tuple[Text, ...] | None:
+        """The display name of the book."""
         return self._display_name
 
     @display_name.setter
@@ -405,6 +411,7 @@ class Display(Entity):
         return self
 
     def transform(self, transform: Transform) -> Display:
+        """Apply the given transformation to this entity."""
         self.merge_nbt({'transformation': transform.nbt()})
         return self
 
@@ -455,6 +462,7 @@ class TextDisplay(Display):
         self.text(text)
 
     def text(self, text) -> TextDisplay:
+        """Sets the text for this display object."""
         if isinstance(text, str):
             text = Text.text(text)
         if text is not None:
@@ -514,6 +522,7 @@ class Shield(Item):
         super().__init__('shield')
 
     def color(self, color: StrOrArg | None) -> Shield:
+        """Sets the shield base color."""
         if color:
             self.nbt['components']['base_color'] = de_arg(color)
         else:
@@ -603,6 +612,10 @@ class Region:
         yield f
 
     def fillbiome(self, biome: StrOrArg, replace: StrOrArg = None) -> Commands:
+        """
+        Returns a command to run `fillbiome` on this region. If a second biome is given, it will be the biomes to
+        replace.
+        """
         f = fillbiome(self.start, self.end, as_biome(biome))
         if replace:
             f = f.replace(as_biome(replace))
@@ -766,6 +779,7 @@ class ItemFrame(Entity):
         return self
 
     def fixed(self, value: bool) -> ItemFrame:
+        """Sets whether this frame if fixed."""
         self.nbt.set_or_clear('Fixed', value)
         return self
 
@@ -943,6 +957,7 @@ class Painting(Entity):
 
     @property
     def info(self) -> PaintingInfo:
+        """Returns the info for this painting."""
         return paintings[self.variant]
 
     def summon(self, pos: Position, nbt: NbtDef = None, facing: FacingDef = NORTH, lower_left=False) -> str:

@@ -1,13 +1,13 @@
+"""
+Tools for creating and using minecraft dialogs.
+"""
+
 import string
 from typing import Iterable, Mapping, Self
 
 from .base import _in_group, Nbt, NbtDef, to_id
-from .commands import as_text, ClickEvent, TextDef
+from .commands import as_click_action, as_text, ClickEvent, TextDef
 from .simpler import _as_tuple, Item
-
-"""
-Tools for creating and using minecraft dialogs.
-"""
 
 PLAIN_MESSAGE = 'plain_message'
 ITEM = 'item'
@@ -45,6 +45,7 @@ class Element(Nbt):
 
     @classmethod
     def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self | None:
+        """Returns the NBT as an element or None, converting it if necessary."""
         if isinstance(nbt, Element) or (allow_none and nbt is None):
             return nbt
         elem = Element(_in_group(ELEMENT_TYPES, nbt.pop('type')), nbt.pop('width', None))
@@ -83,6 +84,7 @@ def _default_from_label(key: str | None, label: TextDef) -> str:
 
 
 class Input(Nbt):
+    """Nbt that represents a dialog input object."""
     def __init__(self, type: str, label: str, key: str = None):
         super().__init__()
         self['type'] = _in_group(INPUT_TYPES, type)
@@ -91,121 +93,118 @@ class Input(Nbt):
 
     @classmethod
     def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self | None:
+        """Returns the NBT as an input or None, converting it if necessary."""
         if isinstance(nbt, Input) or (allow_none and nbt is None):
             return nbt
         input = Input(_in_group(INPUT_TYPES, nbt.pop('type')), nbt.pop('label'), nbt.pop('key', None))
         input.update(nbt)
         return input
 
+    @staticmethod
+    def boolean(label: str, initial: bool = None, key: str = None, *, on_true: str = None,
+                on_false: str = None) -> Input:
+        """Factory method for a boolean (checkbox) input component. Key is handled the same as with text()."""
+        input = Input(BOOLEAN, label, key)
+        input.set_if('on_true', on_true, 'on_false', on_false, 'initial', initial)
+        return input
 
-def boolean(label: str, initial: bool = None, key: str = None, *, on_true: str = None, on_false: str = None) -> Input:
-    """Factory method for a boolean (checkbox) input component. Key is handled the same as with text()."""
-    input = Input(BOOLEAN, label, key)
-    input.set_if('on_true', on_true, 'on_false', on_false, 'initial', initial)
-    return input
+    @staticmethod
+    def single_option(label: str, options: Iterable[NbtDef | str | int | float], key: str = None, *,
+                      initial: str | int | float = None, width: int = None, label_visible: bool = None,
+                      default_ids=True) -> Input:
+        """
+        Factory method for a single option input widget. Key is handled the same as with text().
 
+        If an option is a str or number, it becomes an option with the display being that value, but has no ID.
 
-def single_option(label: str, options: Iterable[NbtDef | str | int | float], key: str = None, *,
-                  initial: str | int | float = None, width: int = None, label_visible: bool = None,
-                  default_ids=True) -> Input:
-    """
-    Factory method for a single option input widget. Key is handled the same as with text().
+        If an option has no provided ID, it is an error unless default_ids is True, when the ID will be generated
+        by running to_id() on the display, after stripping punctuation. If there is no display, it will be "option_N"
+        where N is its index in the option list.
 
-    If an option is a str or number, it becomes an option with the display being that value, but has no ID.
+        :param label:
+        :param options:
+        :param key:
+        :param initial: The initial value. Formally you would identify an initial value by creating NBT with 'initial': True.
+                this parameter lets you set it by putting in the value here instead.
+        :param width:
+        :param label_visible:
+        :param default_ids:
+        """
 
-    If an option has no provided ID, it is an error unless default_ids is True, when the ID will be generated
-    by running to_id() on the display, after stripping punctuation. If there is no display, it will be "option_N"
-    where N is its index in the option list.
+        # Validate / transmogrify options
+        def to_nbt_opt(opt):
+            if isinstance(opt, (str, int, float)):
+                nbt = Nbt(display=str(opt), id=to_id(str(opt)))
+                if opt == initial:
+                    nbt['initial'] = True
+                return nbt
+            else:
+                return Nbt.as_nbt(opt)
 
-    :param label:
-    :param options:
-    :param key:
-    :param initial: The initial value. Formally you would identify an initial value by creating NBT with 'initial': True.
-            this parameter lets you set it by putting in the value here instead.
-    :param width:
-    :param label_visible:
-    :param default_ids:
-    """
-
-    # Validate / transmogrify options
-    def to_nbt_opt(opt):
-        if isinstance(opt, (str, int, float)):
-            nbt = Nbt(display=str(opt), id=to_id(str(opt)))
-            if opt == initial:
-                nbt['initial'] = True
-            return nbt
-        else:
-            return Nbt.as_nbt(opt)
-
-    options = tuple(map(to_nbt_opt, _as_tuple(options)))
-    if not len(options):
-        raise ValueError('options are required')
-    found = None
-    if isinstance(initial, (int, float)):
-        initial = str(initial)
-    for i, v in enumerate(options):
-        if 'id' not in v:
+        options = tuple(map(to_nbt_opt, _as_tuple(options)))
+        if not len(options):
+            raise ValueError('options are required')
+        found = None
+        if isinstance(initial, (int, float)):
+            initial = str(initial)
+        for i, v in enumerate(options):
+            if 'id' not in v:
+                try:
+                    if default_ids:
+                        v['id'] = _default_from_label(None, v['display'])
+                except KeyError:
+                    v['id'] = f'option_{i}'
+            elif not default_ids:
+                raise ValueError(f'id required for {v}')
             try:
-                if default_ids:
-                    v['id'] = _default_from_label(None, v['display'])
+                if 'initial' in v and v['initial']:
+                    if found:
+                        raise ValueError(f'only one option can be the initial one: {found, v['display']}')
+                    found = v['display']
             except KeyError:
-                v['id'] = f'option_{i}'
-        elif not default_ids:
-            raise ValueError(f'id required for {v}')
-        try:
-            if 'initial' in v and v['initial']:
-                if found:
-                    raise ValueError(f'only one option can be the initial one: {found, v['display']}')
-                found = v['display']
-        except KeyError:
-            pass
-    if len(set(map(lambda x: x['display'], options))) != len(options):
-        raise ValueError('Duplicate options')
+                pass
+        if len(set(map(lambda x: x['display'], options))) != len(options):
+            raise ValueError('Duplicate options')
 
-    # Build the widget
-    input = Input(SINGLE_OPTION, label, key)
-    input['options'] = options
-    input.set_if('width', width, 'label_visible', label_visible)
-    return input
+        # Build the widget
+        input = Input(SINGLE_OPTION, label, key)
+        input['options'] = options
+        input.set_if('width', width, 'label_visible', label_visible)
+        return input
 
+    @staticmethod
+    def number_range(label: str, start: int, end: int, step: int = None, key: str = None, *, initial: int = None,
+                     width: int = None, label_format: str = None) -> Input:
+        """Factory method for a number range component. Key is handled the same as with text()."""
+        input = Input(NUMBER_RANGE, label, key)
+        input['start'] = start
+        input['end'] = end
+        input.set_if('step', step, 'initial', initial, 'width', width, 'label_format', label_format)
+        return input
 
-def number_range(label: str, start: int, end: int, step: int = None, key: str = None, *, initial: int = None,
-                 width: int = None, label_format: str = None) -> Input:
-    """Factory method for a number range component. Key is handled the same as with text()."""
-    input = Input(NUMBER_RANGE, label, key)
-    input['start'] = start
-    input['end'] = end
-    input.set_if('step', step, 'initial', initial, 'width', width, 'label_format', label_format)
-    return input
+    @staticmethod
+    def text(label: str, initial: str = None, key: str = None, *, width: int = None, label_visible: bool = None,
+             max_length: int = None, multiline: NbtDef = None) -> Input:
+        """
+        Factory method for a text input component.
 
-
-def _as_inputs(inputs):
-    if isinstance(inputs, NbtDef):
-        inputs = (inputs,)
-    return tuple(map(lambda x: Input.from_nbt(x), inputs))
-
-
-def text(label: str, initial: str = None, key: str = None, *, width: int = None, label_visible: bool = None,
-         max_length: int = None, multiline: NbtDef = None) -> Input:
-    """
-    Factory method for a text input component.
-
-    :param label:
-    :param initial:
-    :param key: If not provided, the key will be generated invoking to_id on the label after stripping the punctuation.
-    :param width:
-    :param max_length:
-    :param label_visible:
-    :param multiline: An NBT with the optional fields 'height' and 'max_lines'.
-    """
-    input = Input(TEXT, label, key)
-    input.set_if('initial', initial, 'width', width, 'label_visible', label_visible, 'max_length', max_length)
-    if multiline:
-        input['multiline'] = Nbt.as_nbt(multiline)
-    return input
+        :param label:
+        :param initial:
+        :param key: If not provided, the key will be generated invoking to_id on the label after stripping the punctuation.
+        :param width:
+        :param max_length:
+        :param label_visible:
+        :param multiline: An NBT with the optional fields 'height' and 'max_lines'.
+        """
+        input = Input(TEXT, label, key)
+        input.set_if('initial', initial, 'width', width, 'label_visible', label_visible, 'max_length', max_length)
+        if multiline:
+            input['multiline'] = Nbt.as_nbt(multiline)
+        return input
 
 
 class SubmitType(Nbt):
+    """NBT that represents a submit type."""
     def __init__(self, type: str, id: str = None):
         super().__init__()
         self['type'] = _in_group(SUBMIT_TYPES, type)
@@ -213,58 +212,52 @@ class SubmitType(Nbt):
 
     @classmethod
     def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self | None:
+        """Returns a SubmitType or None, converting the input if needed."""
         if isinstance(nbt, SubmitType) or (allow_none and nbt is None):
             return nbt
         submit = SubmitType(_in_group(SUBMIT_TYPES, nbt.pop('type')))
         submit.update(nbt)
         return submit
 
+    @staticmethod
+    def command_template(template: str) -> SubmitType:
+        """Factory method for a command_template submit action, part of the full submit_action()."""
+        action = SubmitType(COMMAND_TEMPLATE)
+        action['template'] = template
+        return action
 
-def command_template(template: str) -> SubmitType:
-    """Factory method for a command_template submit action, part of the full submit_action()."""
-    action = SubmitType(COMMAND_TEMPLATE)
-    action['template'] = template
-    return action
+    @staticmethod
+    def custom_template(template: str, namespace_id: str) -> SubmitType:
+        """Factory method for a custom_template submit action, part of the full submit_action()."""
+        action = SubmitType(CUSTOM_TEMPLATE)
+        action['template'] = template
+        action['id'] = namespace_id
+        return action
 
+    @staticmethod
+    def custom_form(namespace_id: str) -> SubmitType:
+        """Factory method for a custom_form submit action, part of the full submit_action()."""
+        action = SubmitType(CUSTOM_FORM)
+        action['id'] = namespace_id
+        return action
 
-def custom_template(template: str, namespace_id: str) -> SubmitType:
-    """Factory method for a custom_template submit action, part of the full submit_action()."""
-    action = SubmitType(CUSTOM_TEMPLATE)
-    action['template'] = template
-    action['id'] = namespace_id
-    return action
-
-
-def custom_form(namespace_id: str) -> SubmitType:
-    """Factory method for a custom_form submit action, part of the full submit_action()."""
-    action = SubmitType(CUSTOM_FORM)
-    action['id'] = namespace_id
-    return action
-
-
-def submit_action(label: TextDef, on_submit: SubmitType = None, *, id: str = None, tooltip: str = None,
-                  width: int = None) -> Nbt:
-    """Factory method for a submit action"""
-    id = _default_from_label(id, label)
-    nbt = Nbt(label=label, id=id)
-    nbt.set_if('tooltip', tooltip, 'width', width, 'on_submit', SubmitType.from_nbt(on_submit))
-    return nbt
+    @staticmethod
+    def submit_action(label: TextDef, on_submit: SubmitType = None, *, id: str = None, tooltip: str = None,
+                      width: int = None) -> Nbt:
+        """Factory method for a submit action"""
+        id = _default_from_label(id, label)
+        nbt = Nbt(label=label, id=id)
+        nbt.set_if('tooltip', tooltip, 'width', width, 'on_submit', SubmitType.from_nbt(on_submit))
+        return nbt
 
 
 class ClickAction(Nbt):
+    """A click action NBT."""
     def __init__(self, label: TextDef, on_click: ClickEvent = None, tooltip: str = None, width: int = None):
         super().__init__()
         self['label'] = label
         self.set_if('on_click', on_click, 'tooltip', tooltip, 'width', width)
 
-    @classmethod
-    def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self | None:
-        if isinstance(nbt, ClickAction) or (allow_none and nbt is None):
-            return nbt
-        action = ClickAction(nbt.pop('label'), nbt.pop('on_click', None), nbt.pop('tooltip', None),
-                             nbt.pop('width', None))
-        action.update(nbt)
-        return action
 
 
 class Dialog(Nbt):
@@ -295,6 +288,7 @@ class Dialog(Nbt):
 
     @classmethod
     def from_nbt(cls, nbt: NbtDef, allow_none=True) -> Self:
+        """Returns a Dialog or None, converting the input if needed."""
         if isinstance(nbt, Dialog) or (allow_none and nbt is None):
             return nbt
         d = Dialog(nbt.pop('type'), nbt.pop('title'), nbt.pop('external_title', None))
@@ -320,70 +314,77 @@ class Dialog(Nbt):
         return self
 
     def body(self, *body: Element | NbtDef) -> Self:
+        """Add `body` to this dialog, returning self."""
         return self._seq('body', body)
 
     def inputs(self, *inputs: Input | NbtDef) -> Self:
+        """Add `inputs` to this dialog, returning self."""
         return self._seq('inputs', inputs)
 
     def actions(self, *actions: ClickAction | NbtDef) -> Self:
+        """Add `actions` to this dialog, returning self."""
         return self._seq('actions', actions)
 
     def pause(self, val: bool | None) -> Self:
+        """Add `pause` to this dialog, returning self."""
         return self._prim('pause', val)
 
     def after_action(self, val: str | None) -> Self:
+        """Add `after_action` to this dialog, returning self."""
         return self._prim('after_action', _in_group(AFTER_ACTIONS, val))
 
     def exit_action(self, val: ClickEvent | NbtDef | None) -> Self:
-        return self._prim('exit_action', ClickEvent.from_nbt(val) if isinstance(val, Mapping) else val)
+        """Add `exit_action` to this dialog, returning self."""
+        return self._prim('exit_action', ClickEvent.as_click_event(val) if isinstance(val, Mapping) else val)
 
     def can_close_with_escape(self, val: bool | None) -> Self:
+        """Add `can_close_with_escape` to this dialog, returning self."""
         return self._prim('can_close_with_escape', val)
 
+    @staticmethod
+    def notice(title: TextDef, *, click_action: NbtDef = None, external_title: TextDef = None) -> Dialog:
+        """Factory method for a notice dialog."""
+        return Dialog(NOTICE, title, external_title).set_if('action', as_click_action(click_action))
 
-def notice(title: TextDef, *, click_action: NbtDef = None, external_title: TextDef = None) -> Dialog:
-    """Factory method for a notice dialog."""
-    return Dialog(NOTICE, title, external_title).set_if('action', ClickAction.from_nbt(click_action))
+    @staticmethod
+    def confirmation(title: TextDef, yes_click_action: NbtDef, no_click_action: NbtDef, *,
+                     external_title: TextDef = None) -> Dialog:
+        """Factory method for a confirmation dialog."""
+        d = Dialog(CONFIRMATION, title, external_title)
+        d['yes'] = as_click_action(yes_click_action, False)
+        d['no'] = as_click_action(no_click_action, False)
+        return d
 
+    @staticmethod
+    def multi_action(title: TextDef, click_actions: NbtDef | Iterable[NbtDef], *, columns: int = None,
+                     exit_action: ClickAction | NbtDef = None, external_title: TextDef = None) -> Dialog:
+        """Factory method for a multi_action dialog."""
+        d = Dialog(MULTI_ACTION, title, external_title)
+        if isinstance(click_actions, Nbt):
+            click_actions = (click_actions,)
+        d.actions(*tuple(map(lambda x: as_click_action(x), click_actions)))
+        d.set_if('columns', columns)
+        d.set_if('exit_action', exit_action)
+        return d
 
-def confirmation(title: TextDef, yes_click_action: NbtDef, no_click_action: NbtDef, *,
-                 external_title: TextDef = None) -> Dialog:
-    """Factory method for a confirmation dialog."""
-    d = Dialog(CONFIRMATION, title, external_title)
-    d['yes'] = ClickAction.from_nbt(yes_click_action, False)
-    d['no'] = ClickAction.from_nbt(no_click_action, False)
-    return d
+    @staticmethod
+    def server_links(title: TextDef, *, on_click: ClickEvent = None, exit_action: ClickEvent = None,
+                     columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
+        """Factory method for a server_links dialog."""
+        d = Dialog(SERVER_LINKS, title, external_title)
+        d.set_if('on_click', on_click)
+        d.set_if('exit_action', exit_action)
+        d.set_if('columns', columns)
+        d.set_if('button_width', button_width)
+        return d
 
-
-def multi_action(title: TextDef, click_actions: NbtDef | Iterable[NbtDef], *, columns: int = None,
-                 exit_action: ClickAction | NbtDef = None, external_title: TextDef = None) -> Dialog:
-    """Factory method for a multi_action dialog."""
-    d = Dialog(MULTI_ACTION, title, external_title)
-    if isinstance(click_actions, Nbt):
-        click_actions = (click_actions,)
-    d.actions(*tuple(map(lambda x: ClickAction.from_nbt(x), click_actions)))
-    d.set_if('columns', columns)
-    d.set_if('exit_action', exit_action)
-    return d
-
-
-def server_links(title: TextDef, *, on_click: ClickEvent = None, exit_action: ClickEvent = None,
-                 columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
-    """Factory method for a server_links dialog."""
-    d = Dialog(SERVER_LINKS, title, external_title)
-    d.set_if('on_click', on_click)
-    d.set_if('exit_action', exit_action)
-    d.set_if('columns', columns)
-    d.set_if('button_width', button_width)
-    return d
-
-
-def dialog_list(title: TextDef, dialogs: NbtDef | Iterable[NbtDef], *, exit_action: ClickEvent = None,
-                columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
-    """Factory method for a dialog_list dialog."""
-    d = Dialog(DIALOG_LIST, title, external_title)
-    if isinstance(dialogs, NbtDef):
-        dialogs = (dialogs,)
-    d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), dialogs))
-    d.set_if('exit_action', exit_action, 'columns', columns, 'button_width', button_width)
-    return d
+    @staticmethod
+    def dialog_list(title: TextDef, dialogs: NbtDef | Iterable[NbtDef], *, exit_action: ClickEvent = None,
+                    columns: int = None, button_width: int = None, external_title: TextDef = None) -> Dialog:
+        """Factory method for a dialog_list dialog."""
+        d = Dialog(DIALOG_LIST, title, external_title)
+        if isinstance(dialogs, NbtDef):
+            dialogs = (dialogs,)
+        d['dialogs'] = tuple(map(lambda x: Nbt.as_nbt(x), dialogs))
+        d.set_if('exit_action', exit_action, 'columns', columns, 'button_width', button_width)
+        return d

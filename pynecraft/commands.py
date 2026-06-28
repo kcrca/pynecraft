@@ -59,6 +59,9 @@ def as_biome(biome: StrOrArg, allow_not: bool = False) -> str:
 
 
 def as_single(target: Target) -> TargetSpec | str | None:
+    """
+    Like `as_target()`, but also requires the target to be on that can only select a single entity.
+    """
     orig = target
     if target is None:
         return None
@@ -319,11 +322,23 @@ def as_slot(slot: StrOrArg | int | None) -> str | None:
 
 
 def as_criteria(criteria):
+    """
+    Returns the input as a score criteria. It must be `teamkill.*`, `killedByTeam.*`, or in the SCORE_CRITERIA_GROUP.
+    If it is not, a ValueError will be raised.
+    """
     if re.fullmatch(r'(teamkill|killedByTeam)\.[a-z_]+', criteria):
         return criteria
     from .info import SCORE_CRITERIA_GROUP
     return _in_group(SCORE_CRITERIA_GROUP, criteria)
 
+
+def as_click_action(cls, nbt: NbtDef, allow_none=True) -> ClickAction | None:
+    """Ensures the given NBT is a ClickAction object or None, converting if necessary."""
+    if isinstance(nbt, ClickAction) or (allow_none and nbt is None):
+        return nbt
+    action = ClickAction(nbt.pop('label'), nbt.pop('on_click', None), nbt.pop('tooltip', None), nbt.pop('width', None))
+    action.update(nbt)
+    return action
 
 NEAREST = 'nearest'
 FURTHEST = 'furthest'
@@ -643,6 +658,7 @@ T = TypeVar('T', bound=Command)
 
 
 class AdvancementCriteria(Command):
+    """Represents an advancement criteria."""
     def __init__(self, adv: StrOrArg, criteria: BoolOrArg | StrOrArg | tuple[StrOrArg, BoolOrArg]):
         super().__init__()
         adv = as_advancement(adv)
@@ -655,26 +671,32 @@ class AdvancementCriteria(Command):
 
 
 class HoverEvent(Nbt):
+    """Represents a hover event."""
     @classmethod
     def show_text(cls, txt: Text | str) -> HoverEvent:
+        """Returns a `show_text` hover event."""
         return cls({'action': 'show_text', 'value': txt})
 
     @classmethod
     def show_item(cls, id: str, count: int = None, tag: str = None) -> HoverEvent:
+        """Returns a `show_item` hover event."""
         event = cls({'action': 'show_item', 'id': as_resource(id)})
         event.set_if('count', count, 'tag', tag)
         return event
 
     @classmethod
     def show_entity(cls, type: str, uuid: StrOrArg, name: Text | str = None) -> HoverEvent:
+        """Returns a `show_entity` hover event."""
         event = cls({'action': 'show_entity', 'id': as_resource(type), 'uuid': as_uuid(uuid)})
         event.set_if('name', name)
         return event
 
 
 class ClickEvent(Nbt):
+    """Represents a click event."""
     @classmethod
-    def from_nbt(cls, nbt: NbtDef) -> ClickEvent:
+    def as_click_event(cls, nbt: NbtDef) -> ClickEvent:
+        """Returns the input as a ClickEvent."""
         if isinstance(nbt, ClickEvent):
             return nbt
         event = ClickEvent()
@@ -683,6 +705,7 @@ class ClickEvent(Nbt):
 
     @classmethod
     def open_url(cls, url: str) -> ClickEvent:
+        """Returns an `open_url` ClickEvent."""
         result = urlparse(url)
         if result.scheme not in ('http', 'https'):
             raise ValueError(f'URL must be http or https: {result.scheme}')
@@ -690,6 +713,7 @@ class ClickEvent(Nbt):
 
     @classmethod
     def open_file(cls, path: str) -> ClickEvent:
+        """Returns an `open_file` ClickEvent."""
         Path(path)
         return cls({'action': 'open_file', 'value': path})
 
@@ -701,6 +725,7 @@ class ClickEvent(Nbt):
 
     @classmethod
     def run_command(cls, command: StrOrArg | Command) -> ClickEvent:
+        """Returns a `run_command` ClickEvent."""
         command = cls._as_command(de_arg(command))
         # The '/' is optional for signs, but required everywhere else, so this is safest
         if command[0] != '/':
@@ -709,19 +734,23 @@ class ClickEvent(Nbt):
 
     @classmethod
     def suggest_command(cls, chat: str | Command) -> ClickEvent:
+        """Returns a `suggest_command` ClickEvent."""
         chat = cls._as_command(chat)
         return cls({'action': 'suggest_command', 'command': chat})
 
     @classmethod
     def change_page(cls, page: int) -> ClickEvent:
+        """Returns a `change_page` ClickEvent."""
         return cls({'action': 'change_page', 'page': page})
 
     @classmethod
     def copy_to_clipboard(cls, txt: str) -> ClickEvent:
+        """Returns a `copy_to_clipboard` ClickEvent."""
         return cls({'action': 'copy_to_clipboard', 'value': txt})
 
     @classmethod
     def custom(cls, id: StrOrArg, payload: StrOrArg = None) -> ClickEvent:
+        """Returns a `custom` ClickEvent."""
         action = {'action': 'custom', 'id': de_arg(id)}
         if payload:
             action['payload'] = de_arg(payload)
@@ -729,6 +758,7 @@ class ClickEvent(Nbt):
 
     @classmethod
     def show_dialog(cls, dialog: StrOrArg) -> ClickEvent:
+        """Returns a `show_dialog` ClickEvent."""
         return cls({'action': 'show_dialog', 'dialog': de_arg(dialog)})
 
 
@@ -736,6 +766,7 @@ class TargetSpec(Command, ABC):
     """Superclass of all target specification root classes."""
 
     def is_single(self):
+        """Returns True if this target specification can select only zero or one entity."""
         return False
 
 
@@ -873,7 +904,12 @@ def s():
 
 # noinspection PyProtectedMember
 def n():
+    """A target selector for ``@n``."""
     return Selector(Selector._create_key, '@n')
+
+
+nearest = n
+"""Equivalent to n()."""
 
 
 self = s
@@ -901,6 +937,7 @@ class Selector(TargetSpec):
         self._args = {}
 
     def is_single(self):
+        """Returns True if this selector can select only zero or one entity."""
         return self._single
 
     def __str__(self):
@@ -1095,10 +1132,12 @@ class Selector(TargetSpec):
 
 
 class DataTargetBase(Command):
+    """The abstract base class for data targets."""
     pass
 
 
 class BlockDataTarget(DataTargetBase):
+    """A data target that is a block, represented by a position."""
     def __init__(self, pos: Position | StrOrArg):
         super().__init__()
         self._add('block')
@@ -1109,12 +1148,14 @@ class BlockDataTarget(DataTargetBase):
 
 
 class EntityDataTarget(DataTargetBase):
+    """A data target that is an entity, represented by a selector."""
     def __init__(self, target: TargetSpec | StrOrArg, single=False):
         super().__init__()
         self._add('entity', (as_single if single else as_target)(target))
 
 
 class StorageDataTarget(DataTargetBase):
+    """A data target that is a storage location, represented by a name."""
     def __init__(self, store: StrOrArg):
         super().__init__()
         self._add('storage', as_resource_path(store))
@@ -2918,6 +2959,7 @@ def datapack() -> _DatapackMod:
 
 
 def debug() -> _DebugMod:
+    """Manages debug mode."""
     cmd = Command()
     cmd._add('$debug')
     return cmd._start(_DebugMod())
@@ -2992,6 +3034,7 @@ xp = experience
 
 
 def fetchprofile() -> _FetchProfileMod:
+    """Fetches the contents of a player profile from Minecraft servers."""
     cmd = Command()
     cmd._add('$fetchprofile')
     return cmd._start(_FetchProfileMod())
@@ -3005,6 +3048,7 @@ def fill(start_pos: Position, end_pos: Position, block: BlockDef) -> _FilterClau
 
 
 def fillbiome(start_pos: Position, end_pos: Position, biome: StrOrArg) -> _BiomeFilterClause:
+    """Fills a specified area with a specific biome."""
     cmd = Command()
     cmd._add('$fillbiome', *start_pos, *end_pos, as_biome(biome))
     return cmd._start(_BiomeFilterClause())
@@ -3092,6 +3136,7 @@ def item() -> _ItemMod:
 
 
 def jfr(action: StrOrArg) -> str:
+    """Starts and stops profiling with Java Flight Recorder."""
     cmd = Command()
     cmd._add('$jfr', _in_group(START_STOP, action))
     return str(cmd)
@@ -3236,6 +3281,7 @@ def ride(target: Target) -> _RideMod:
 
 
 def rotate(target: Target, rotation: tuple[FloatOrArg | RelCoord, FloatOrArg | RelCoord] = None) -> str | _RotateMod:
+    """Changes the rotation of an entity."""
     cmd = Command()
     cmd._add('$rotate', as_single(target))
     if rotation is not None:
@@ -3342,6 +3388,7 @@ def stopsound(target: Target, source: StrOrArg = None, sound: StrOrArg = None) -
 
 
 def stopwatch() -> _StopwatchMod:
+    """Allows manipulation of stopwatches to keep track of real time."""
     cmd = Command()
     cmd._add('$stopwatch')
     return cmd._start(_StopwatchMod())
@@ -3370,6 +3417,7 @@ def summon(entity: EntityDef, /, pos: Position = None, nbt: NbtDef | StrOrArg = 
 
 
 def swing(target: Target = None, which: str = None) -> str:
+    """Controls the swinging animation of entities' hands."""
     cmd = Command()
     cmd._add('$swing')
     # Allow "swing('offhand')" or "swing('mainhand')"
@@ -3490,6 +3538,7 @@ def test() -> _TestMod:
 
 
 def tick() -> _TickMod:
+    """Modifies the target tick rate of the game."""
     cmd = Command()
     cmd._add('$tick')
     return cmd._start(_TickMod())
@@ -3517,6 +3566,7 @@ def trigger(objective: StrOrArg):
 
 
 def waypoint():
+    """Manages waypoints displayed on the locator bar."""
     cmd = Command()
     cmd._add('$waypoint')
     return cmd._start(_WaypointMod())
@@ -3683,6 +3733,7 @@ class Block(Command):
 
     @classmethod
     def state_str(cls, nbt: NbtDef):
+        """Returns the nbt as a string for including in block contexts, such as `setblock ~ ~ ~ oak_log[axis=x]`."""
         nbt = Nbt.as_nbt(nbt)
         comma = ', ' if Nbt.use_spaces else ','
         return '[' + comma.join((k + '=' + cls._state_value(v)) for k, v in nbt.items()) + ']'
@@ -3721,11 +3772,12 @@ class Entity(Block):
         super().__init__(id, components, nbt, name=name)
 
     @property
-    def components(self):
-        """The object's name."""
+    def components(self) -> Nbt:
+        """The object's component state."""
         return self.state
 
     def merge_components(self, components: NbtDef) -> Entity:
+        """merge the NBT into the components."""
         super().merge_state(components)
         return self
 
@@ -3828,6 +3880,7 @@ class Particle(Command):
 
     @classmethod
     def block(cls, block: BlockDef, type: StrOrArg = BLOCK, state: Arg | NbtDef = None) -> Particle:
+        """Returns a `block` particle definition."""
         p = Particle(_in_group(BLOCK_PARTICLE_TYPES, type))
         if (is_arg(block) or isinstance(block, str)) and state is None:
             p.state['block_state'] = de_arg(block)
@@ -3846,6 +3899,7 @@ class Particle(Command):
 
     @classmethod
     def dust(cls, color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg, scale: FloatOrArg = 1) -> Particle:
+        """Returns a `dust` particle definition."""
         p = Particle('dust')
         p.state['color'] = cls._3_color(color)
         p.state['scale'] = de_int_arg(scale)
@@ -3855,6 +3909,7 @@ class Particle(Command):
     def dust_color_transition(cls, from_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg,
                               to_color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg] | Arg,
                               scale: FloatOrArg = 1) -> Particle:
+        """Returns a `dust_color_transition` particle definition."""
         p = Particle('dust_color_transition')
         p.state['from_color'] = cls._3_color(from_color)
         p.state['to_color'] = cls._3_color(to_color)
@@ -3863,12 +3918,14 @@ class Particle(Command):
 
     @classmethod
     def entity_effect(cls, color: Tuple[FloatOrArg, FloatOrArg, FloatOrArg, FloatOrArg] | IntOrArg) -> Particle:
+        """Returns a `entity_effect` particle definition."""
         p = Particle('entity_effect')
         p.state['color'] = cls._4_color(color)
         return p
 
     @classmethod
     def item(cls, item: EntityDef) -> Particle:
+        """Returns a `item` particle definition."""
         p = Particle('item')
         if is_arg(item) or isinstance(item, str):
             p.state['item'] = de_arg(item)
@@ -3879,18 +3936,21 @@ class Particle(Command):
 
     @classmethod
     def sculk_charge(cls, roll: FloatOrArg) -> Particle:
+        """Returns a `sculk_charge` particle definition."""
         p = Particle('sculk_charge')
         p.state['roll'] = de_float_arg(roll)
         return p
 
     @classmethod
     def shriek(cls, delay: FloatOrArg) -> Particle:
+        """Returns a `shriek` particle definition."""
         p = Particle('shriek')
         p.state['delay'] = de_float_arg(delay)
         return p
 
     @classmethod
     def vibration(cls, destination: Arg | NbtDef, arrival_in_ticks: IntOrArg) -> Particle:
+        """Returns a `vibration` particle definition."""
         p = Particle('vibration')
         if is_arg(destination):
             p.state['destination'] = de_arg(destination)
@@ -4292,6 +4352,7 @@ class Text(Nbt, TextHolder):
         return jt
 
     def content(self) -> dict:
+        """Returns this as a dictionary."""
         return dict(self)
 
     def extra(self, *extras: Text | StrOrArg) -> Text:
@@ -4362,6 +4423,7 @@ class Text(Nbt, TextHolder):
 
     @classmethod
     def as_text(cls, text: Mapping | str | Text) -> Mapping:
+        """Returns a Text object built from the given mapped values."""
         return as_text(text)
 
 

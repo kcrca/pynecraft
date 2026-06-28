@@ -1,3 +1,5 @@
+"""Implementation code for wrapping text into a given width."""
+
 from __future__ import annotations
 
 import re

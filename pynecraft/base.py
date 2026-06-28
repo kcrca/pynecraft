@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import copy
 import functools
+import math
 import re
 from abc import ABC, abstractmethod
 from collections import UserDict, UserList
@@ -17,7 +18,6 @@ from html.parser import HTMLParser
 from io import StringIO
 from typing import Any, Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
-import math
 import numpy as np
 from titlecase import titlecase
 
@@ -178,6 +178,7 @@ def de_arg(v: Any) -> Any:
 
 
 def is_arg(v: Any) -> bool:
+    """Returns True if the input is an argument, either an Arg object or a string that contains `$(...)`."""
     return isinstance(v, Arg) or (isinstance(v, str) and _arg_re.search(v))
 
 
@@ -573,6 +574,19 @@ def _as_array_type(elem_type):
 
 
 class Nbt(UserDict):
+    """A simple NBT handling class, that models NBT values as a python dictionary.
+
+    You can set the value of a key directly to any valid value. By default, the value of a key will be an Nbt object.
+
+    The string representation is particularly tricky. Most NBT is simple key/value pairs, where values are booleans,
+    ints, floats, strings, or more NBT. A few places use rich text (formerly JSON text). These keys (such as a sign's Text fields) must be
+    presented as rich text. Those keys are special-cased in this code. You can also put a Text value for a field
+    to have it treated as rich text.
+
+    No attempt is made to validate the NBT against expected values, such as whether a ``Rotation`` value is a list of
+    two floats or something else.
+    """
+
     MAX_LONG = 0x7fff_ffff_ffff_ffff
     MIN_LONG = -MAX_LONG - 1
     MAX_INT = 0x7fff_ffff
@@ -601,18 +615,6 @@ class Nbt(UserDict):
     MIN_DOUBLE_EXPONENT = -1022
     MAX_DOUBLE_EXPONENT = 1023
 
-    """A simple NBT handling class, that models NBT values as a python dictionary.
-
-    You can set the value of a key directly to any valid value. By default, the value of a key will be an Nbt object.
-
-    The string representation is particularly tricky. Most NBT is simple key/value pairs, where values are booleans,
-    ints, floats, strings, or more NBT. A few places use rich text (formerly JSON text). These keys (such as a sign's Text fields) must be
-    presented as rich text. Those keys are special-cased in this code. You can also put a Text value for a field
-    to have it treated as rich text.
-
-    No attempt is made to validate the NBT against expected values, such as whether a ``Rotation`` value is a list of
-    two floats or something else.
-    """
     use_spaces = True
     """Whether to put spaces after colons and commas."""
     sort_keys = True
@@ -682,7 +684,11 @@ class Nbt(UserDict):
         return self
 
     @classmethod
-    def to_int(cls, name) -> int:
+    def to_int(cls, name: str) -> int:
+        """
+        Convert a string to an int, as understood in minecraft commands. For example, it understands that `'17s`'
+        means a 16-bit two's-compliment integer with the value 17.
+        """
         lc_name = name.lower()
         m = re.fullmatch(r'([-+])?(0[xb])?([0-9a-f_]+)([su])?([bsil])?', lc_name)
         if not m:
@@ -723,6 +729,10 @@ class Nbt(UserDict):
 
     @classmethod
     def to_float(cls, name) -> float:
+        """
+        Convert a string to a float, as understood in minecraft commands. For example, it understands that `'17.3f`'
+        means a 32-bit float with the value 17.3.
+        """
         lc_name = name.lower()
         m = re.fullmatch(r'([-+]?(?:[0-9_]+)?\.?(?:[0-9_]+)?(?:e[-+]?[0-9]+)?)([df]?)', lc_name)
         if not m:
@@ -867,7 +877,7 @@ class Nbt(UserDict):
             sout.write(_quote(str(elem)))
 
     def merge(self, nbt: NbtDef | None) -> Nbt:
-        """Merge another Nbt into this one.
+        """Returns a new Nbt that is the result of merging this one with the `nbt` parameter.
 
         For simple key/value pairs with the same key, the value is replaced, absent keys are set from the other nbt.
         If the value is an Nbt, it is treated the same, recursively. Any mutable mapping (such as a typical dict) is
@@ -879,6 +889,11 @@ class Nbt(UserDict):
         return self._merge(self, nbt)
 
     def merge_into(self, nbt: NbtDef | None) -> Nbt:
+        """
+        Like `merge()`, but modifies this Nbt, returning it.
+        :param nbt: The Nbt to merge from.
+        :return: This Nbt with the merged results.
+        """
         return self._merge(self, nbt, self)
 
     def _merge(self, src1, src2, dst=None):
@@ -1119,14 +1134,6 @@ class RelCoord:
         # noinspection PyTypeChecker
         return tuple(op(v1[i], v2[i]) for i in range(len(v1)))
 
-    @staticmethod
-    def coords(coord: RelCoord | int | float, *coords: RelCoord | int | float):
-        if len(coords) == 0:
-            return str(coord)
-        s = f'({coord}'
-        for c in coords:
-            s += f', {c}'
-        return s + ')'
 
 
 U = TypeVar('U', bound=RelCoord)
@@ -1303,6 +1310,7 @@ class Facing:
 
     @property
     def sign_rotation(self):
+        """Returns this direction as would be represented in a `facing` field of a sign (not a wall sign)."""
         return self.h_number
 
     def __str__(self):
@@ -1345,6 +1353,7 @@ class Facing:
         return self.dx * scale, self.dy * scale, self.dz * scale
 
     def move(self, start: Tuple[Coord, Coord, Coord], distance: int) -> Tuple[Coord, Coord, Coord]:
+        """Return new coordinates moved from `start` by the given `delta` in this direction."""
         return (
             start[0] + distance * self.delta[0],
             start[1] + distance * self.delta[1],
@@ -1353,6 +1362,7 @@ class Facing:
 
     @property
     def block_delta(self) -> list[int]:
+        """How much to change x, y, and z to move one unit in this direction."""
         res = []
         for x in self.delta:
             res.append(_sign(x))
@@ -1459,6 +1469,7 @@ def as_duration(duration: DurationDef | None) -> TimeSpec | str | None:
 
 
 def is_number(v: Any) -> bool:
+    """Returns true if the argument is a number (not even a bool is a number)."""
     return isinstance(v, (float, int)) and not isinstance(v, bool)
 
 
@@ -1489,8 +1500,10 @@ def as_range(spec: Range) -> str:
 
 
 class Transform:
+    """Tool class for geometric transformations."""
     # This is overwritten later, but without this Pycharm doesn't know about this class variable
     IDENTITY = None
+    """The identity transformation."""
 
     class Matrix:
         def __init__(self,
@@ -1511,6 +1524,7 @@ class Transform:
             return self.value
 
     class Quaternion:
+        """Useful methods for generating and working with quaternions."""
         @staticmethod
         def _nbt_quat(quat):
             if isinstance(quat[1], tuple):
@@ -1529,6 +1543,7 @@ class Transform:
             self.translation = translation if translation else (0, 0, 0)
 
         def nbt(self) -> Nbt:
+            """Returns this quaternion represented in NBT."""
             return Nbt({'right_rotation': self._nbt_quat(self.right), 'scale': self.scale,
                         'left_rotation': self._nbt_quat(self.left), 'translation': self.translation})
 
@@ -1562,6 +1577,7 @@ class Transform:
         self.value = transform
 
     def nbt(self):
+        """Returns the transformation this represents as a quaternion in NBT."""
         return self.value.nbt()
 
     @staticmethod
@@ -1572,6 +1588,7 @@ class Transform:
                           tuple[float, float, float, float],
                           tuple[float, float, float, float],
                           tuple[float, float, float, float]]):
+        """Returns a transformation represented by the 4x4 matrix."""
         return Transform(Transform.Matrix(value))
 
     @staticmethod
@@ -1580,6 +1597,7 @@ class Transform:
                    left: tuple[float, float, float, float] | tuple[
                        float, tuple[float, float, float]] | FacingDef = None,
                    translation: tuple[float, float, float] = None):
+        """Returns a transformation represented by the given quaternion."""
         return Transform(Transform.Quaternion(right, scale, left, translation))
 
 

@@ -489,6 +489,11 @@ def weathering_property(weathering: str) -> str:
 
 
 def leaves_for(id: str, bamboo_leaves=None) -> tuple[str, ...]:
+    """
+    Returns the right "leaves" type for the given id. For most it is simply adding `_leaves` at the end (such as
+    `acacia` -> `acacia_leaves`. But for poplar there are red, orange, and yellow. Bamboo has no leaves, so you can
+    specify what to return for it.
+    """
     if id == 'poplar':
         return 'red_poplar_leaves', 'orange_poplar_leaves', 'yellow_poplar_leaves'
     if id == 'bamboo':
@@ -544,6 +549,9 @@ for __k in tuple(score_criteria.keys()):
 
 
 def as_score_criteria(*values: StrOrArg) -> str | tuple[str, ...]:
+    """
+    Checks if the argument is a valid score criteria specification, returning it if so, otherwise raising a VavlueError.
+    """
     if len(values) == 1:
         return _in_group(SCORE_CRITERIA_GROUP, values[0])
     return tuple(_in_group(SCORE_CRITERIA_GROUP, v) for v in values)

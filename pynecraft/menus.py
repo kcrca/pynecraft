@@ -1,3 +1,7 @@
+"""
+Tools for creating and using menus built from signs.
+"""
+
 from __future__ import annotations
 
 from typing import Callable, Iterable, Tuple
@@ -9,9 +13,6 @@ from .commands import BlockDef, e, execute, fill, function, Selector
 from .function import Function
 from .simpler import WallSign
 
-"""
-Tools for creating and using menus built from signs.
-"""
 
 class Menu:
     """
@@ -116,6 +117,7 @@ class Menu:
         _Placement(self, home, pos, as_facing(facing), self.dir).place()
 
     def end(self, pos: Position, facing: FacingDef) -> Position:
+        """Return the first block position starting at the given position in the given direction."""
         facing = as_facing(facing)
         dim = self._dim()
         return (pos[0] + (dim[0] - 1) * facing.dx,
