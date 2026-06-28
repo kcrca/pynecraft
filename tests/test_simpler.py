@@ -199,6 +199,12 @@ class TestSimpler(unittest.TestCase):
             self.assertEqual('a', signs[0].nbt['front_text']['messages'][0])
             self.assertEqual('e', signs[1].nbt['front_text']['messages'][0])
 
+            signs = Sign.wrap('a\n\nb\n\nc\n\nd\n\ne', start=2)
+            self.assertEqual(3, len(signs))
+            self.assertEqual('a', signs[0].nbt['front_text']['messages'][2])
+            self.assertEqual('c', signs[1].nbt['front_text']['messages'][2])
+            self.assertEqual('e', signs[2].nbt['front_text']['messages'][2])
+
             ws = WallSign.wrap('hello')
             self.assertIsInstance(ws[0], WallSign)
 

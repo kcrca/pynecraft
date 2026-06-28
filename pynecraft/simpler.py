@@ -131,7 +131,7 @@ class Sign(Block):
         return self
 
     @classmethod
-    def wrap(cls, *items: str | Text, wood=None, hanging=False) -> list[Sign]:
+    def wrap(cls, *items: str | Text, wood=None, hanging=False, start=0) -> list[Sign]:
         """Create signs from text, wrapping across multiple signs as needed.
 
         Strings are plain text. Use Text.from_html() for formatted input.
@@ -139,10 +139,12 @@ class Sign(Block):
         The width of the sign is SIGN_LINE_PIXELS.
         """
         width = cls.HANGING_SIGN_LINE_PIXELS if hanging else cls.SIGN_LINE_PIXELS
-        pages = wrap(width, 4, *items)
+        lines_per_page = 4 - start
+        pages = wrap(width, lines_per_page, *items)
         result = []
+        prefix = [''] * start
         for page in pages:
-            lines = page + [Text.text('') for _ in range(4 - len(page))]
+            lines = prefix + page + [Text.text('') for _ in range(lines_per_page - len(page))]
             result.append(cls(tuple(lines), wood=wood, hanging=hanging, front=True))
         return result
 
