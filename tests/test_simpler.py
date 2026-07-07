@@ -186,7 +186,8 @@ class TestSimpler(unittest.TestCase):
             signs = Sign.wrap('hello')
             self.assertEqual(1, len(signs))
             self.assertIsInstance(signs[0], Sign)
-            self.assertEqual({'front_text': {'messages': ['hello', '', '', '']}}, signs[0].nbt)
+            self.assertEqual({'front_text': {'messages': ['hello', '', '', '']},
+                              'back_text': {'messages': ['hello', '', '', '']}}, signs[0].nbt)
 
             signs = Sign.wrap(*Text.from_html('<b>bold</b>'))
             self.assertEqual({'text': 'bold', 'bold': True}, signs[0].nbt['front_text']['messages'][0])
@@ -201,9 +202,9 @@ class TestSimpler(unittest.TestCase):
 
             signs = Sign.wrap('a\n\nb\n\nc\n\nd\n\ne', start=2)
             self.assertEqual(3, len(signs))
-            self.assertEqual('a', signs[0].nbt['front_text']['messages'][2])
-            self.assertEqual('c', signs[1].nbt['front_text']['messages'][2])
-            self.assertEqual('e', signs[2].nbt['front_text']['messages'][2])
+            self.assertEqual(['', '', 'a', 'b'], signs[0].nbt['front_text']['messages'])
+            self.assertEqual(['', '', 'c', 'd'], signs[1].nbt['front_text']['messages'])
+            self.assertEqual(['', '', 'e', ''], signs[2].nbt['front_text']['messages'])
 
             ws = WallSign.wrap('hello')
             self.assertIsInstance(ws[0], WallSign)
