@@ -1037,6 +1037,12 @@ class TestCommands(unittest.TestCase):
                          playsound('m:s', 'm:a', s(), (1, r(2), d(3)), 1.2, 17.9,
                                    1.0))
 
+    def test_posteffect(self):
+        self.assertEqual('posteffect add @p shine', posteffect().add(p(), 'shine'))
+        self.assertEqual('posteffect remove @p shine', posteffect().remove(p(), 'shine'))
+        self.assertEqual('posteffect clear @p', posteffect().clear(p()))
+        self.assertEqual('posteffect list @p', posteffect().list(p()))
+
     def test_recipe(self):
         self.assertEqual('recipe give @s *', recipe(GIVE, s(), '*'))
         self.assertEqual('recipe give @s m:/a/b', recipe(GIVE, s(), 'm:/a/b'))

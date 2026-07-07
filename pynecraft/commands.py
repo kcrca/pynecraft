@@ -2224,6 +2224,28 @@ class _PlaceMod(Command):
         return str(self)
 
 
+class _PosteffectMod(Command):
+    @_fluent
+    def add(self, entity: Target, effect: str) -> str:
+        self._add('add', as_target(entity), effect)
+        return str(self)
+
+    @_fluent
+    def remove(self, player: Target, effect: str) -> str:
+        self._add('remove', as_target(player), effect)
+        return str(self)
+
+    @_fluent
+    def clear(self, player: EntityDef) -> str:
+        self._add('clear', as_target(player))
+        return str(self)
+
+    @_fluent
+    def list(self, player: EntityDef) -> str:
+        self._add('list', as_target(player))
+        return str(self)
+
+
 class _RideMod(Command):
     @_fluent
     def mount(self, target: Target) -> str:
@@ -3228,7 +3250,11 @@ def playsound(sound: str, source: str, target: Target = None, pos: Position = No
     return str(cmd)
 
 
-
+def posteffect() -> _PosteffectMod:
+    """Allows adding or removing "post effects" to players."""
+    cmd = Command()
+    cmd._add('$posteffect')
+    return cmd._start(_PosteffectMod())
 
 def random() -> _RandomMod:
     """Randomizing values and controlling random sequences."""
