@@ -291,6 +291,17 @@ small_flowers = ('Allium', 'Azure Bluet', 'Blue Orchid', 'Dandelion', 'Oxeye Dai
 tall_flowers = ('Lilac', 'Peony', 'Pitcher Plant', 'Rose Bush', 'Sunflower', 'Torchflower')
 """The tall flowers."""
 
+
+def _amethyst_key(b):
+    if b.endswith('_amethyst_bud'):
+        return 0, ('small', 'medium', 'large').index(b.split('_', 1)[0])
+    return 1, 0
+
+
+amethyst_buds = tuple(sorted(
+    (b for b in blocks_by_id if b.endswith('_amethyst_bud') or b == 'amethyst_cluster'), key=_amethyst_key))
+"""The amethyst growths that bud on the side of budding amethyst (buds + cluster), in growth order."""
+
 moon_phases = (
     (206000, 'Full'),
     (38000, 'Waning Gibbous'),
