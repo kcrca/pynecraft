@@ -72,6 +72,12 @@ class Sign(Block):
     """If not specified in the constructor, the default wood for the sign. You can change this."""
     waxed = False
     """Whether signs are waxed by default. You can change this."""
+    always_allow_op_features = False
+    """
+    Whether to always set the `allow_op_features` attribute to `True` even if there are no commands. This is useful if
+    you want to use `change()` to modify signs that may or may not have commands, because commands can be added to signs
+    that don't have them, and therefore don't have the property set.
+    """
 
     def __init__(self, text: SignMessages = (), /, commands: SignCommands = (), wood=None, state: Mapping = None,
                  nbt: NbtDef = None, hanging=False, front=None):
@@ -100,12 +106,18 @@ class Sign(Block):
         return self
 
     def messages(self, texts: SignMessages, commands: SignCommands = (), front: bool = None) -> Sign:
-        """Set the text for the front, back, or both if ``front`` is None."""
+        """
+        Set the text for the front, back, or both if ``front`` is None.
+
+        If there are any commands, `allow_op_features` will be set to `True`.
+        """
         messages = self.lines_nbt(texts, commands)
         if front or front is None:
             self.merge_nbt({'front_text': messages})
         if front is False or front is None:
             self.merge_nbt({'back_text': messages})
+        if any(x is not None for x in commands):
+            self.merge_nbt({'allow_op_features': True})
         return self
 
     def glowing(self, v: bool, front: bool = None) -> Sign:
@@ -195,6 +207,9 @@ class Sign(Block):
         """
         Return commands that will change the sign to have the message and commands. If `blanks` is True, then messages
         will be left alone if None.
+
+        This does not know the original sign's value of `allow_op_features`, so it does not set that, even if there are
+        commands.
         """
         empty_msg = ('',) if blanks else (None,)
         if not messages:

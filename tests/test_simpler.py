@@ -1,6 +1,7 @@
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from pynecraft.base import CYAN, EAST, N, SOUTH, SW
 from pynecraft.commands import *
@@ -13,7 +14,13 @@ from pynecraft.simpler import _str_values
 
 class TestSimpler(unittest.TestCase):
     def setUp(self):
+        # Set up temp paths in a standard way
         self.tmp_path = Path(tempfile.mkdtemp())
+
+        # Restore sign values after each function
+        patcher = patch.multiple(Sign, waxed=False, always_allow_op_features=False)
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def tearDown(self) -> None:
         shutil.rmtree(self.tmp_path)
@@ -126,93 +133,89 @@ class TestSimpler(unittest.TestCase):
             Sign.change((0, 0, 0), ('one', 'two'), start=2, blanks=True))
 
     def test_sign(self):
-        orig_waxed = Sign.waxed
-        Sign.waxed = False
-        try:
-            self.assertEqual(
-                {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']}},
-                Sign((None, 'hi')).nbt)
-            self.assertEqual(
-                {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']},
-                 'is_waxed': True}, Sign((None, 'hi'), nbt={'is_waxed': True}).nbt)
-            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
-                              'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                             Sign().messages((None, None, 'Both Sides')).nbt)
-            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
-                              'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                             Sign().messages((None, None, 'Both Sides'), front=None).nbt)
-            self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                             Sign().messages((None, None, 'Both Sides'), front=True).nbt)
-            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
-                             Sign().messages((None, None, 'Both Sides'), front=False).nbt)
-            self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
-                             Sign().front((None, None, 'Both Sides')).nbt)
-            self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
-                             Sign().back((None, None, 'Both Sides')).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']}},
+            Sign((None, 'hi')).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': ['', 'hi', '', '']}, 'back_text': {'messages': ['', 'hi', '', '']},
+             'is_waxed': True}, Sign((None, 'hi'), nbt={'is_waxed': True}).nbt)
+        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
+                          'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().messages((None, None, 'Both Sides')).nbt)
+        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']},
+                          'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().messages((None, None, 'Both Sides'), front=None).nbt)
+        self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().messages((None, None, 'Both Sides'), front=True).nbt)
+        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().messages((None, None, 'Both Sides'), front=False).nbt)
+        self.assertEqual({'front_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().front((None, None, 'Both Sides')).nbt)
+        self.assertEqual({'back_text': {'messages': ['', '', 'Both Sides', '']}},
+                         Sign().back((None, None, 'Both Sides')).nbt)
 
-            self.assertEqual({'front_text': {'color': 'blue'}, 'back_text': {'color': 'blue'}},
-                             Sign(()).color(BLUE).nbt)
-            self.assertEqual({'front_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=True).nbt)
-            self.assertEqual({'back_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=False).nbt)
-            self.assertEqual({}, Sign(()).color(None).nbt)
-            self.assertEqual({'front_text': {'has_glowing_text': True}, 'back_text': {'has_glowing_text': True}},
-                             Sign().glowing(True).nbt)
-            self.assertEqual({}, Sign(()).glowing(False).nbt)
-            self.assertEqual(
-                {'front_text': {'messages': ['hi', '', '', ''], 'color': 'blue'},
-                 'back_text': {'messages': ['hi', '', '', ''], 'color': 'blue'}},
-                Sign(('hi',)).color(BLUE, front=True).nbt)
-            self.assertEqual(
-                {'front_text': {'messages': ['hi', '', '', '']},
-                 'back_text': {'messages': ['hi', '', '', '']}},
-                Sign(('hi',)).color(BLUE, front=True).color(None, front=True).nbt)
-            self.assertEqual(
-                {'front_text': {'messages': ['hi', '', '', ''],
-                                'has_glowing_text': True},
-                 'back_text': {'messages': ['hi', '', '', ''],
-                               'has_glowing_text': True}},
-                Sign(('hi',)).glowing(True, front=True).nbt)
-            self.assertEqual(
-                {'front_text': {'messages': ['hi', '', '', '']},
-                 'back_text': {'messages': ['hi', '', '', '']}},
-                Sign(('hi',)).glowing(True, front=True).glowing(False, front=True).nbt)
-        finally:
-            Sign.waxed = orig_waxed
+        self.assertEqual({'front_text': {'color': 'blue'}, 'back_text': {'color': 'blue'}},
+                         Sign(()).color(BLUE).nbt)
+        self.assertEqual({'front_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=True).nbt)
+        self.assertEqual({'back_text': {'color': 'blue'}}, Sign(()).color(BLUE, front=False).nbt)
+        self.assertEqual({}, Sign(()).color(None).nbt)
+        self.assertEqual({'front_text': {'has_glowing_text': True}, 'back_text': {'has_glowing_text': True}},
+                         Sign().glowing(True).nbt)
+        self.assertEqual({}, Sign(()).glowing(False).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': ['hi', '', '', ''], 'color': 'blue'},
+             'back_text': {'messages': ['hi', '', '', ''], 'color': 'blue'}},
+            Sign(('hi',)).color(BLUE, front=True).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': ['hi', '', '', '']},
+             'back_text': {'messages': ['hi', '', '', '']}},
+            Sign(('hi',)).color(BLUE, front=True).color(None, front=True).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': ['hi', '', '', ''],
+                            'has_glowing_text': True},
+             'back_text': {'messages': ['hi', '', '', ''],
+                           'has_glowing_text': True}},
+            Sign(('hi',)).glowing(True, front=True).nbt)
+        self.assertEqual(
+            {'front_text': {'messages': ['hi', '', '', '']},
+             'back_text': {'messages': ['hi', '', '', '']}},
+            Sign(('hi',)).glowing(True, front=True).glowing(False, front=True).nbt)
+
+    def test_sign_commands(self):
+        Sign.always_allow_op_features = True
+        self.assertTrue(Sign(('a', 'b', 'c', 'd'), (say('hi'),)).nbt['allow_op_features'])
+        Sign.always_allow_op_features = False
+        self.assertNotHasAttr(Sign(('a', 'b', 'c', 'd'), (say('hi'),)).nbt, 'allow_op_features')
 
     def test_sign_from_text(self):
-        orig_waxed = Sign.waxed
-        Sign.waxed = False
-        try:
-            signs = Sign.wrap('hello')
-            self.assertEqual(1, len(signs))
-            self.assertIsInstance(signs[0], Sign)
-            self.assertEqual({'front_text': {'messages': ['hello', '', '', '']},
-                              'back_text': {'messages': ['hello', '', '', '']}}, signs[0].nbt)
+        signs = Sign.wrap('hello')
+        self.assertEqual(1, len(signs))
+        self.assertIsInstance(signs[0], Sign)
+        self.assertEqual({'front_text': {'messages': ['hello', '', '', '']},
+                          'back_text': {'messages': ['hello', '', '', '']}}, signs[0].nbt)
 
-            signs = Sign.wrap(*Text.from_html('<b>bold</b>'))
-            self.assertEqual({'text': 'bold', 'bold': True}, signs[0].nbt['front_text']['messages'][0])
+        signs = Sign.wrap(*Text.from_html('<b>bold</b>'))
+        self.assertEqual({'text': 'bold', 'bold': True}, signs[0].nbt['front_text']['messages'][0])
 
-            signs = Sign.wrap(*Text.from_html('<font color="red">hi</font>'))
-            self.assertEqual({'text': 'hi', 'color': 'red'}, signs[0].nbt['front_text']['messages'][0])
+        signs = Sign.wrap(*Text.from_html('<font color="red">hi</font>'))
+        self.assertEqual({'text': 'hi', 'color': 'red'}, signs[0].nbt['front_text']['messages'][0])
 
-            signs = Sign.wrap('a\n\nb\n\nc\n\nd\n\ne')
-            self.assertEqual(2, len(signs))
-            self.assertEqual('a', signs[0].nbt['front_text']['messages'][0])
-            self.assertEqual('e', signs[1].nbt['front_text']['messages'][0])
+        signs = Sign.wrap('a\n\nb\n\nc\n\nd\n\ne')
+        self.assertEqual(2, len(signs))
+        self.assertEqual('a', signs[0].nbt['front_text']['messages'][0])
+        self.assertEqual('e', signs[1].nbt['front_text']['messages'][0])
 
-            signs = Sign.wrap('a\n\nb\n\nc\n\nd\n\ne', start=2)
-            self.assertEqual(3, len(signs))
-            self.assertEqual(['', '', 'a', 'b'], signs[0].nbt['front_text']['messages'])
-            self.assertEqual(['', '', 'c', 'd'], signs[1].nbt['front_text']['messages'])
-            self.assertEqual(['', '', 'e', ''], signs[2].nbt['front_text']['messages'])
+        signs = Sign.wrap('a\n\nb\n\nc\n\nd\n\ne', start=2)
+        self.assertEqual(3, len(signs))
+        self.assertEqual(['', '', 'a', 'b'], signs[0].nbt['front_text']['messages'])
+        self.assertEqual(['', '', 'c', 'd'], signs[1].nbt['front_text']['messages'])
+        self.assertEqual(['', '', 'e', ''], signs[2].nbt['front_text']['messages'])
 
-            ws = WallSign.wrap('hello')
-            self.assertIsInstance(ws[0], WallSign)
+        ws = WallSign.wrap('hello')
+        self.assertIsInstance(ws[0], WallSign)
 
-            hanging = Sign.wrap('hello', hanging=True)
-            self.assertIn('hanging', hanging[0].name.lower())
-        finally:
-            Sign.waxed = orig_waxed
+        hanging = Sign.wrap('hello', hanging=True)
+        self.assertIn('hanging', hanging[0].name.lower())
 
     def test_book_page_non_bold_root(self):
         # MC treats raw:[A,B,...] as A being root, so bold A makes B inherit bold.
