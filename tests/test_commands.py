@@ -1198,6 +1198,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('swing @p offhand', str(swing(p(), 'offhand')))
         self.assertEqual('swing offhand', str(swing('offhand')))
         self.assertEqual('swing offhand', str(swing(None, 'offhand')))
+        self.assertEqual('swing offhand @p', str(swing(None, 'offhand')))
         with self.assertRaises(ValueError):
             swing('offhand', 'foo')
 

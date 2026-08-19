@@ -443,6 +443,10 @@ OFFHAND = 'offhand'
 HANDS = [MAINHAND, OFFHAND]
 """Valid hand names."""
 
+WHACK = 'whack'
+STAB = 'stab'
+SWING_ANIMATIONS = [WHACK, STAB]
+
 DISPLAY_NAME = 'displayname'
 RENDER_TYPE = 'rendertype'
 NUMBER_FORMAT = 'numberformat'
@@ -3434,25 +3438,12 @@ def summon(entity: EntityDef, /, pos: Position = None, nbt: NbtDef | StrOrArg = 
     return str(cmd)
 
 
-def swing(target: Target = None, which: str = None) -> str:
+def swing(target: Target = None, which: str = None, animation: str = None, duration: DurationDef = None) -> str:
     """Controls the swinging animation of entities' hands."""
     cmd = Command()
     cmd._add('$swing')
-    # Allow "swing('offhand')" or "swing('mainhand')"
-    if isinstance(target, str):
-        bad_cmd = False
-        try:
-            _in_group(HANDS, target)
-            if which is not None:
-                bad_cmd = True
-        except ValueError:
-            pass
-        if bad_cmd:
-            raise ValueError(f'swing("{target}") cannot be also have another hand')
-        which = target
-        target = None
-
-    cmd._add_opt(as_target(target), _in_group(HANDS, which))
+    cmd._add_opt(as_target(target), _in_group(HANDS, which), _in_group(SWING_ANIMATIONS, animation),
+                 as_duration(duration))
     return str(cmd)
 
 
