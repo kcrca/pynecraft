@@ -464,7 +464,7 @@ class BlockDisplay(Display):
 
     def __init__(self, block: BlockDef):
         block = as_block(block)
-        super().__init__('block_display', {'block_state': {'Name': block.id, 'Properties': _str_values(block.state)}})
+        super().__init__('block_display', {'block_state': {'name': block.id, 'properties': _str_values(block.state)}})
 
 
 class TextDisplay(Display):

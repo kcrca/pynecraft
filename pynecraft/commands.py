@@ -3903,7 +3903,7 @@ class Particle(Command):
                     block_state = de_arg(state)
                 else:
                     block_state.update(state)
-            p.state['block_state'] = {'Name': block.id, 'Properties': block_state}
+            p.state['block_state'] = {'id': block.id, 'properties': block_state}
         return p
 
     @classmethod

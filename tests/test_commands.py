@@ -961,9 +961,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('$(foo)', str(Particle(Arg('foo'))))
         self.assertEqual('block{block_state: stone}', str(Particle.block('stone')))
         self.assertEqual('block_marker{block_state: stone}', str(Particle.block('stone', 'block_marker')))
-        self.assertEqual('block{block_state: {Name: wheat, Properties: {age: 2}}}',
+        self.assertEqual('block{block_state: {id: wheat, properties: {age: 2}}}',
                          str(Particle.block('wheat', state={'age': 2})))
-        self.assertEqual('block{block_state: {Name: wheat, Properties: $(props)}}',
+        self.assertEqual('block{block_state: {id: wheat, properties: $(props)}}',
                          str(Particle.block('wheat', state=Arg('props'))))
         self.assertEqual('dust{color: [1.1f, 2.2f, 3.3f], scale: 4.4f}', str(Particle.dust((1.1, 2.2, 3.3), 4.4)))
         self.assertEqual('dust{color: $(c), scale: $(s)}', str(Particle.dust(Arg('c'), Arg('s'))))
@@ -1196,9 +1196,8 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('swing', str(swing()))
         self.assertEqual('swing @p', str(swing(p())))
         self.assertEqual('swing @p offhand', str(swing(p(), 'offhand')))
-        self.assertEqual('swing offhand', str(swing('offhand')))
-        self.assertEqual('swing offhand', str(swing(None, 'offhand')))
-        self.assertEqual('swing offhand @p', str(swing(None, 'offhand')))
+        self.assertEqual('swing @p offhand whack', str(swing(p(), 'offhand', 'whack')))
+        self.assertEqual('swing @p offhand whack 7s', str(swing(p(), 'offhand', 'whack', seconds(7))))
         with self.assertRaises(ValueError):
             swing('offhand', 'foo')
 
