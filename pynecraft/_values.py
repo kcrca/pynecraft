@@ -26,7 +26,7 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.3-snapshot-1 jar data
+# Generated from Minecraft 26.3-snapshot-9 jar data
 
 wolves = ['ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
 cats = [
@@ -42,11 +42,12 @@ trim_patterns = [
     'tide', 'vex', 'ward', 'wayfinder', 'wild'
 ]
 map_decorations = [
-    'banner_black', 'banner_blue', 'banner_brown', 'banner_cyan', 'banner_gray', 'banner_green', 'banner_light_blue',
-    'banner_light_gray', 'banner_lime', 'banner_magenta', 'banner_orange', 'banner_pink', 'banner_purple', 'banner_red',
-    'banner_white', 'banner_yellow', 'blue_marker', 'frame', 'jungle_temple', 'mansion', 'monument', 'player',
-    'player_off_limits', 'player_off_map', 'red_marker', 'red_x', 'swamp_hut', 'target_point', 'target_x',
-    'trial_chambers', 'village_desert', 'village_plains', 'village_savanna', 'village_snowy', 'village_taiga'
+    'abandoned_camp', 'ancient_city', 'banner_black', 'banner_blue', 'banner_brown', 'banner_cyan', 'banner_gray',
+    'banner_green', 'banner_light_blue', 'banner_light_gray', 'banner_lime', 'banner_magenta', 'banner_orange',
+    'banner_pink', 'banner_purple', 'banner_red', 'banner_white', 'banner_yellow', 'blue_marker', 'desert_pyramid',
+    'frame', 'jungle_temple', 'mansion', 'mineshaft', 'monument', 'ocean_ruin_warm', 'player', 'player_off_limits',
+    'player_off_map', 'red_marker', 'red_x', 'swamp_hut', 'target_point', 'target_x', 'trial_chambers',
+    'village_desert', 'village_plains', 'village_savanna', 'village_snowy', 'village_taiga'
 ]
 
 # Aligned block/stairs/slab triples; every block has exactly one stair and one slab.
@@ -57,10 +58,13 @@ steppable = (
     SteppableInfo('bamboo_mosaic', 'bamboo_mosaic_stairs', 'bamboo_mosaic_slab'),
     SteppableInfo('bamboo_planks', 'bamboo_stairs', 'bamboo_slab'),
     SteppableInfo('birch_planks', 'birch_stairs', 'birch_slab'),
+    SteppableInfo('black_concrete', 'black_concrete_stairs', 'black_concrete_slab'),
     SteppableInfo('black_wool', 'black_wool_stairs', 'black_wool_slab'),
     SteppableInfo('blackstone', 'blackstone_stairs', 'blackstone_slab'),
+    SteppableInfo('blue_concrete', 'blue_concrete_stairs', 'blue_concrete_slab'),
     SteppableInfo('blue_wool', 'blue_wool_stairs', 'blue_wool_slab'),
     SteppableInfo('bricks', 'brick_stairs', 'brick_slab'),
+    SteppableInfo('brown_concrete', 'brown_concrete_stairs', 'brown_concrete_slab'),
     SteppableInfo('brown_wool', 'brown_wool_stairs', 'brown_wool_slab'),
     SteppableInfo('cherry_planks', 'cherry_stairs', 'cherry_slab'),
     SteppableInfo('cinnabar', 'cinnabar_stairs', 'cinnabar_slab'),
@@ -69,6 +73,7 @@ steppable = (
     SteppableInfo('cobblestone', 'cobblestone_stairs', 'cobblestone_slab'),
     SteppableInfo('crimson_planks', 'crimson_stairs', 'crimson_slab'),
     SteppableInfo('cut_copper', 'cut_copper_stairs', 'cut_copper_slab'),
+    SteppableInfo('cyan_concrete', 'cyan_concrete_stairs', 'cyan_concrete_slab'),
     SteppableInfo('cyan_wool', 'cyan_wool_stairs', 'cyan_wool_slab'),
     SteppableInfo('dark_oak_planks', 'dark_oak_stairs', 'dark_oak_slab'),
     SteppableInfo('dark_prismarine', 'dark_prismarine_stairs', 'dark_prismarine_slab'),
@@ -78,12 +83,18 @@ steppable = (
     SteppableInfo('end_stone_bricks', 'end_stone_brick_stairs', 'end_stone_brick_slab'),
     SteppableInfo('exposed_cut_copper', 'exposed_cut_copper_stairs', 'exposed_cut_copper_slab'),
     SteppableInfo('granite', 'granite_stairs', 'granite_slab'),
+    SteppableInfo('gray_concrete', 'gray_concrete_stairs', 'gray_concrete_slab'),
     SteppableInfo('gray_wool', 'gray_wool_stairs', 'gray_wool_slab'),
+    SteppableInfo('green_concrete', 'green_concrete_stairs', 'green_concrete_slab'),
     SteppableInfo('green_wool', 'green_wool_stairs', 'green_wool_slab'),
     SteppableInfo('jungle_planks', 'jungle_stairs', 'jungle_slab'),
+    SteppableInfo('light_blue_concrete', 'light_blue_concrete_stairs', 'light_blue_concrete_slab'),
     SteppableInfo('light_blue_wool', 'light_blue_wool_stairs', 'light_blue_wool_slab'),
+    SteppableInfo('light_gray_concrete', 'light_gray_concrete_stairs', 'light_gray_concrete_slab'),
     SteppableInfo('light_gray_wool', 'light_gray_wool_stairs', 'light_gray_wool_slab'),
+    SteppableInfo('lime_concrete', 'lime_concrete_stairs', 'lime_concrete_slab'),
     SteppableInfo('lime_wool', 'lime_wool_stairs', 'lime_wool_slab'),
+    SteppableInfo('magenta_concrete', 'magenta_concrete_stairs', 'magenta_concrete_slab'),
     SteppableInfo('magenta_wool', 'magenta_wool_stairs', 'magenta_wool_slab'),
     SteppableInfo('mangrove_planks', 'mangrove_stairs', 'mangrove_slab'),
     SteppableInfo('mossy_cobblestone', 'mossy_cobblestone_stairs', 'mossy_cobblestone_slab'),
@@ -91,9 +102,11 @@ steppable = (
     SteppableInfo('mud_bricks', 'mud_brick_stairs', 'mud_brick_slab'),
     SteppableInfo('nether_bricks', 'nether_brick_stairs', 'nether_brick_slab'),
     SteppableInfo('oak_planks', 'oak_stairs', 'oak_slab'),
+    SteppableInfo('orange_concrete', 'orange_concrete_stairs', 'orange_concrete_slab'),
     SteppableInfo('orange_wool', 'orange_wool_stairs', 'orange_wool_slab'),
     SteppableInfo('oxidized_cut_copper', 'oxidized_cut_copper_stairs', 'oxidized_cut_copper_slab'),
     SteppableInfo('pale_oak_planks', 'pale_oak_stairs', 'pale_oak_slab'),
+    SteppableInfo('pink_concrete', 'pink_concrete_stairs', 'pink_concrete_slab'),
     SteppableInfo('pink_wool', 'pink_wool_stairs', 'pink_wool_slab'),
     SteppableInfo('polished_andesite', 'polished_andesite_stairs', 'polished_andesite_slab'),
     SteppableInfo('polished_blackstone', 'polished_blackstone_stairs', 'polished_blackstone_slab'),
@@ -107,9 +120,11 @@ steppable = (
     SteppableInfo('poplar_planks', 'poplar_stairs', 'poplar_slab'),
     SteppableInfo('prismarine', 'prismarine_stairs', 'prismarine_slab'),
     SteppableInfo('prismarine_bricks', 'prismarine_brick_stairs', 'prismarine_brick_slab'),
+    SteppableInfo('purple_concrete', 'purple_concrete_stairs', 'purple_concrete_slab'),
     SteppableInfo('purple_wool', 'purple_wool_stairs', 'purple_wool_slab'),
     SteppableInfo('purpur_block', 'purpur_stairs', 'purpur_slab'),
     SteppableInfo('quartz_block', 'quartz_stairs', 'quartz_slab'),
+    SteppableInfo('red_concrete', 'red_concrete_stairs', 'red_concrete_slab'),
     SteppableInfo('red_nether_bricks', 'red_nether_brick_stairs', 'red_nether_brick_slab'),
     SteppableInfo('red_sandstone', 'red_sandstone_stairs', 'red_sandstone_slab'),
     SteppableInfo('red_wool', 'red_wool_stairs', 'red_wool_slab'),
@@ -131,7 +146,9 @@ steppable = (
     SteppableInfo('waxed_oxidized_cut_copper', 'waxed_oxidized_cut_copper_stairs', 'waxed_oxidized_cut_copper_slab'),
     SteppableInfo('waxed_weathered_cut_copper', 'waxed_weathered_cut_copper_stairs', 'waxed_weathered_cut_copper_slab'),
     SteppableInfo('weathered_cut_copper', 'weathered_cut_copper_stairs', 'weathered_cut_copper_slab'),
+    SteppableInfo('white_concrete', 'white_concrete_stairs', 'white_concrete_slab'),
     SteppableInfo('white_wool', 'white_wool_stairs', 'white_wool_slab'),
+    SteppableInfo('yellow_concrete', 'yellow_concrete_stairs', 'yellow_concrete_slab'),
     SteppableInfo('yellow_wool', 'yellow_wool_stairs', 'yellow_wool_slab'),
 )
 
@@ -559,7 +576,7 @@ Note: Throwing away your only weapon is not a good idea."""
         """Ice Bucket Challenge""", "story/form_obsidian", """Obtain a block of Obsidian"""
     ),
     "INTO_FIRE": AdvancementInfo("""Into Fire""", "nether/obtain_blaze_rod", """Relieve a Blaze of its rod"""),
-    "ISNT_IT_IRON_PICK": AdvancementInfo("""Isn't It Iron Pick""", "story/iron_tools", """Upgrade your Pickaxe"""),
+    "ISNT_IT_IRON_PICK": AdvancementInfo("""Isn't It Iron Pick?""", "story/iron_tools", """Upgrade your Pickaxe"""),
     "ISNT_IT_SCUTE": AdvancementInfo(
         """Isn't It Scute?""", "adventure/brush_armadillo", """Get Armadillo Scutes from an Armadillo using a Brush"""
     ),

@@ -75,6 +75,8 @@ Black Candle
 Black Carpet
 Black Concrete
 Black Concrete Powder
+Black Concrete Slab
+Black Concrete Stairs
 Black Glazed Terracotta
 Black Shulker Box
 Black Stained Glass
@@ -111,6 +113,8 @@ Blue Candle
 Blue Carpet
 Blue Concrete
 Blue Concrete Powder
+Blue Concrete Slab
+Blue Concrete Stairs
 Blue Glazed Terracotta
 Blue Ice
 Blue Orchid
@@ -137,6 +141,8 @@ Brown Candle
 Brown Carpet
 Brown Concrete
 Brown Concrete Powder
+Brown Concrete Slab
+Brown Concrete Stairs
 Brown Glazed Terracotta
 Brown Mushroom
 Brown Mushroom Block
@@ -274,6 +280,8 @@ Cyan Candle
 Cyan Carpet
 Cyan Concrete
 Cyan Concrete Powder
+Cyan Concrete Slab
+Cyan Concrete Stairs
 Cyan Glazed Terracotta
 Cyan Shulker Box
 Cyan Stained Glass
@@ -410,6 +418,8 @@ Gray Candle
 Gray Carpet
 Gray Concrete
 Gray Concrete Powder
+Gray Concrete Slab
+Gray Concrete Stairs
 Gray Glazed Terracotta
 Gray Shulker Box
 Gray Stained Glass
@@ -424,6 +434,8 @@ Green Candle
 Green Carpet
 Green Concrete
 Green Concrete Powder
+Green Concrete Slab
+Green Concrete Stairs
 Green Glazed Terracotta
 Green Shulker Box
 Green Stained Glass
@@ -492,6 +504,8 @@ Light Blue Candle
 Light Blue Carpet
 Light Blue Concrete
 Light Blue Concrete Powder
+Light Blue Concrete Slab
+Light Blue Concrete Stairs
 Light Blue Glazed Terracotta
 Light Blue Shulker Box
 Light Blue Stained Glass
@@ -506,6 +520,8 @@ Light Gray Candle
 Light Gray Carpet
 Light Gray Concrete
 Light Gray Concrete Powder
+Light Gray Concrete Slab
+Light Gray Concrete Stairs
 Light Gray Glazed Terracotta
 Light Gray Shulker Box
 Light Gray Stained Glass
@@ -525,6 +541,8 @@ Lime Candle
 Lime Carpet
 Lime Concrete
 Lime Concrete Powder
+Lime Concrete Slab
+Lime Concrete Stairs
 Lime Glazed Terracotta
 Lime Shulker Box
 Lime Stained Glass
@@ -541,6 +559,8 @@ Magenta Candle
 Magenta Carpet
 Magenta Concrete
 Magenta Concrete Powder
+Magenta Concrete Slab
+Magenta Concrete Stairs
 Magenta Glazed Terracotta
 Magenta Shulker Box
 Magenta Stained Glass
@@ -626,6 +646,8 @@ Orange Candle
 Orange Carpet
 Orange Concrete
 Orange Concrete Powder
+Orange Concrete Slab
+Orange Concrete Stairs
 Orange Glazed Terracotta
 Orange Poplar Leaves
 Orange Shulker Box
@@ -683,6 +705,8 @@ Pink Candle
 Pink Carpet
 Pink Concrete
 Pink Concrete Powder
+Pink Concrete Slab
+Pink Concrete Stairs
 Pink Glazed Terracotta
 Pink Petals
 Pink Shulker Box
@@ -768,6 +792,8 @@ Purple Candle
 Purple Carpet
 Purple Concrete
 Purple Concrete Powder
+Purple Concrete Slab
+Purple Concrete Stairs
 Purple Glazed Terracotta
 Purple Shulker Box
 Purple Stained Glass
@@ -791,6 +817,8 @@ Red Candle
 Red Carpet
 Red Concrete
 Red Concrete Powder
+Red Concrete Slab
+Red Concrete Stairs
 Red Glazed Terracotta
 Red Mushroom
 Red Mushroom Block
@@ -904,6 +932,7 @@ Stone Pressure Plate
 Stone Slab
 Stone Stairs
 Stonecutter
+Straw Bed
 Stripped Acacia Log
 Stripped Acacia Wood
 Stripped Birch Log
@@ -1078,6 +1107,8 @@ White Candle
 White Carpet
 White Concrete
 White Concrete Powder
+White Concrete Slab
+White Concrete Stairs
 White Glazed Terracotta
 White Shulker Box
 White Stained Glass
@@ -1096,6 +1127,8 @@ Yellow Candle
 Yellow Carpet
 Yellow Concrete
 Yellow Concrete Powder
+Yellow Concrete Slab
+Yellow Concrete Stairs
 Yellow Glazed Terracotta
 Yellow Poplar Leaves
 Yellow Shulker Box

@@ -1,3 +1,4 @@
+Abandoned Camp Map
 Acacia Boat
 Acacia Boat with Chest / Acacia Chest Boat
 Allay Spawn Egg
@@ -22,6 +23,7 @@ Beetroot Soup
 Birch Boat
 Birch Boat with Chest / Birch Chest Boat
 Black Bundle
+Black Cushion
 Black Dye
 Black Harness
 Blade Pottery Sherd
@@ -29,6 +31,7 @@ Blaze Powder
 Blaze Rod
 Blaze Spawn Egg
 Blue Bundle
+Blue Cushion
 Blue Dye
 Blue Egg
 Blue Harness
@@ -48,6 +51,7 @@ Breeze Spawn Egg
 Brewer Pottery Sherd
 Brick
 Brown Bundle
+Brown Cushion
 Brown Dye
 Brown Egg
 Brown Harness
@@ -61,6 +65,9 @@ Bucket of Sulfur Cube / Sulfur Cube Bucket
 Bucket of Tadpole / Tadpole Bucket
 Bucket of Tropical Fish / Tropical Fish Bucket
 Bundle
+Buried Ancient City Map
+Buried Mineshaft Map
+Buried Treasure Map
 Burn Pottery Sherd
 Camel Husk Spawn Egg
 Camel Spawn Egg
@@ -112,12 +119,15 @@ Creeper Charge Banner Pattern / Creeper Banner Pattern
 Creeper Spawn Egg
 Crossbow
 Cyan Bundle
+Cyan Cushion
 Cyan Dye
 Cyan Harness
 Danger Pottery Sherd
 Dark Oak Boat
 Dark Oak Boat with Chest / Dark Oak Chest Boat
 Debug Stick
+Desert Pyramid Map
+Desert Village Map
 Diamond
 Diamond Axe
 Diamond Boots
@@ -200,9 +210,11 @@ Golden Shovel
 Golden Spear
 Golden Sword
 Gray Bundle
+Gray Cushion
 Gray Dye
 Gray Harness
 Green Bundle
+Green Cushion
 Green Dye
 Green Harness
 Guardian Spawn Egg
@@ -239,6 +251,7 @@ Iron Sword
 Item Frame
 Jungle Boat
 Jungle Boat with Chest / Jungle Chest Boat
+Jungle Explorer Map
 Knowledge Book
 Lapis Lazuli
 Lava Bucket
@@ -250,18 +263,22 @@ Leather Horse Armor
 Leather Pants / Leather Leggings
 Leather Tunic / Leather Chestplate
 Light Blue Bundle
+Light Blue Cushion
 Light Blue Dye
 Light Blue Harness
 Light Gray Bundle
+Light Gray Cushion
 Light Gray Dye
 Light Gray Harness
 Lime Bundle
+Lime Cushion
 Lime Dye
 Lime Harness
 Lingering Potion
 Llama Spawn Egg
 Mace
 Magenta Bundle
+Magenta Cushion
 Magenta Dye
 Magenta Harness
 Magma Cream
@@ -328,10 +345,12 @@ Netherite Sword
 Netherite Upgrade / Netherite Upgrade Smithing Template
 Oak Boat
 Oak Boat with Chest / Oak Chest Boat
+Ocean Explorer Map
 Ocelot Spawn Egg
 Ominous Bottle
 Ominous Trial Key
 Orange Bundle
+Orange Cushion
 Orange Dye
 Orange Harness
 Painting
@@ -348,9 +367,11 @@ Piglin Brute Spawn Egg
 Piglin Spawn Egg
 Pillager Spawn Egg
 Pink Bundle
+Pink Cushion
 Pink Dye
 Pink Harness
 Pitcher Pod
+Plains Village Map
 Plenty Pottery Sherd
 Poisonous Potato
 Polar Bear Spawn Egg
@@ -368,6 +389,7 @@ Pufferfish Spawn Egg
 Pumpkin Pie
 Pumpkin Seeds
 Purple Bundle
+Purple Cushion
 Purple Dye
 Purple Harness
 Rabbit Hide
@@ -388,6 +410,7 @@ Raw Rabbit / Rabbit
 Raw Salmon / Salmon
 Recovery Compass
 Red Bundle
+Red Cushion
 Red Dye
 Red Harness
 Redstone Dust / Redstone
@@ -397,6 +420,7 @@ Rib Armor Trim / Rib Armor Trim Smithing Template
 Rotten Flesh
 Saddle
 Salmon Spawn Egg
+Savanna Village Map
 Scrape Pottery Sherd
 Sentry Armor Trim / Sentry Armor Trim Smithing Template
 Shaper Armor Trim / Shaper Armor Trim Smithing Template
@@ -421,6 +445,7 @@ Snout Armor Trim / Snout Armor Trim Smithing Template
 Snout Banner Pattern / Piglin Banner Pattern
 Snow Golem Spawn Egg
 Snowball
+Snowy Village Map
 Spectral Arrow
 Spider Eye
 Spider Spawn Egg
@@ -438,20 +463,24 @@ Stone Pickaxe
 Stone Shovel
 Stone Spear
 Stone Sword
+Straw Bed
 Stray Spawn Egg
 Strider Spawn Egg
 String
 Sugar
 Sulfur Cube Spawn Egg
 Suspicious Stew
+Swamp Explorer Map
 Sweet Berries
 Tadpole Spawn Egg
+Taiga Village Map
 Thing Banner Pattern / Mojang Banner Pattern
 Tide Armor Trim / Tide Armor Trim Smithing Template
 Tipped Arrow
 Torchflower Seeds
 Totem of Undying
 Trader Llama Spawn Egg
+Trial Explorer Map
 Trial Key
 Trident
 Tropical Fish
@@ -466,12 +495,14 @@ Vindicator Spawn Egg
 Wandering Trader Spawn Egg
 Ward Armor Trim / Ward Armor Trim Smithing Template
 Warden Spawn Egg
+Warm Ocean Ruins Map
 Warped Fungus on a Stick
 Water Bucket
 Wayfinder Armor Trim / Wayfinder Armor Trim Smithing Template
 Wheat
 Wheat Seeds
 White Bundle
+White Cushion
 White Dye
 White Harness
 Wild Armor Trim / Wild Armor Trim Smithing Template
@@ -487,8 +518,10 @@ Wooden Pickaxe
 Wooden Shovel
 Wooden Spear
 Wooden Sword
+Woodland Explorer Map
 Written Book
 Yellow Bundle
+Yellow Cushion
 Yellow Dye
 Yellow Harness
 Zoglin Spawn Egg
