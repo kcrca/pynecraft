@@ -673,6 +673,15 @@ class TestCommands(unittest.TestCase):
         with self.assertRaises(ValueError):
             clone(r(1, 2, 3))
 
+    def test_compute(self):
+        self.assertEqual('compute default foo:bar', compute(DEFAULT, 'foo:bar'))
+        self.assertEqual('compute block ~1 ~2 ~3 foo:bar', compute(r(1, 2, 3), 'foo:bar'))
+        self.assertEqual('compute entity @s foo:bar', compute(s(), 'foo:bar'))
+        self.assertEqual('compute entity @s {}', compute(s(), {}))
+        self.assertEqual('compute entity @s {bar: 4, foo: 3}', compute(s(), {'foo': 3, 'bar': 4}))
+        self.assertEqual('compute entity @s foo:bar 7.5', compute(s(), 'foo:bar', 7.5))
+        self.assertEqual('$compute entity @s foo:bar $(s)', compute(s(), 'foo:bar', Arg('s')))
+
     def test_damage(self):
         self.assertEqual('damage @s 15', str(damage(s(), 15)))
         self.assertEqual('damage @s 15 a:b', str(damage(s(), 15, 'a:b')))

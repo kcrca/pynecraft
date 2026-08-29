@@ -1,6 +1,6 @@
 import unittest
 
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.base import EAST, NORTH, r, SOUTH, WEST
 from pynecraft.function import Function
 from pynecraft.menus import Menu, Submenu
 
@@ -23,7 +23,7 @@ class TestMenu(unittest.TestCase):
         menu.add('One')
         self.assertEqual((1, 1), menu._dim())
 
-    def test_nosubs_size(self):
+    def test_wnosubs_size(self):
         menu = Menu(func, action)
         menu.add(('One', 'Two', 'Three'))
         self.assertEqual((3, 1), menu._dim())

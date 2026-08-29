@@ -332,6 +332,8 @@ def as_criteria(criteria):
     return _in_group(SCORE_CRITERIA_GROUP, criteria)
 
 
+DEFAULT = 'default'  # Used in /compute
+
 NEAREST = 'nearest'
 FURTHEST = 'furthest'
 RANDOM = 'random'
@@ -2952,6 +2954,25 @@ def clone(start_pos: Position = None, end_pos: Position = None,
     cmd._add('$clone', *start_pos, *end_pos, *dest_pos)
     cmd._add_opt(config)
     return cmd._start(_CloneClause())
+
+
+def compute(data_target: DataTarget, provider: StrOrArg | NbtDef, scale: FloatOrArg = None) -> str:
+    cmd = Command()
+    if isinstance(data_target, StorageDataTarget):
+        raise ValueError('Cannot use a StorageDataTarget')
+    cmd._add('$compute')
+    if data_target == DEFAULT:
+        cmd._add(DEFAULT)
+    else:
+        cmd._add(data_single_str(data_target))
+    if is_arg(provider):
+        cmd._add(de_arg(provider))
+    elif isinstance(provider, NbtDef):
+        cmd._add_opt(Nbt.as_nbt(provider))
+    else:
+        cmd._add_opt(provider)
+    cmd._add_opt(de_arg(scale))
+    return str(cmd)
 
 
 def damage(target: Target, amount: IntOrArg, type: StrOrArg = None) -> _DamageMod:
