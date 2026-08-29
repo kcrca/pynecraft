@@ -6,7 +6,8 @@ from pynecraft import info
 from pynecraft.base import d, days, EAST, LT, NORTH, r, seconds, THE_NETHER, ticks, WEST
 from pynecraft.commands import *
 # noinspection PyProtectedMember
-from pynecraft.commands import _AttributeMod, _DataMod, _ExecuteMod, _IfClause, _ScoreboardObjectivesMod, \
+from pynecraft.commands import _AttributeMod, _DataMod, _DataSource, _ExecuteMod, _IfClause, \
+    _ScoreboardObjectivesMod, \
     _ScoreboardPlayersMod, _StoreClause, AdvancementCriteria
 from pynecraft.function import Function
 from pynecraft.info import *
@@ -857,6 +858,16 @@ class TestCommands(unittest.TestCase):
                          str(_DataMod().modify(p(), 'path').set().value(1.9)))
         with self.assertRaises(ValueError):
             _DataMod().modify(e().tag('foo'), 'path').append().from_(e().tag('foo'), 'path2')
+
+    def test_data_modify_compute(self):
+        self.assertEqual('compute default foo:bar', _DataSource().compute(DEFAULT, 'foo:bar'))
+        self.assertEqual('compute block ~1 ~2 ~3 foo:bar', _DataSource().compute(r(1, 2, 3), 'foo:bar'))
+        self.assertEqual('compute entity @s foo:bar', _DataSource().compute(s(), 'foo:bar'))
+        self.assertEqual('compute entity @s {}', _DataSource().compute(s(), {}))
+        self.assertEqual('compute entity @s {bar: 4, foo: 3}', _DataSource().compute(s(), {'foo': 3, 'bar': 4}))
+        self.assertEqual('compute entity @s foo:bar 7.5', _DataSource().compute(s(), 'foo:bar', 7.5))
+        self.assertEqual('compute entity @s foo:bar $(s)', _DataSource().compute(s(), 'foo:bar', Arg('s')))
+
 
     def test_datapack(self):
         self.assertEqual('datapack disable robin', str(datapack().disable('robin')))

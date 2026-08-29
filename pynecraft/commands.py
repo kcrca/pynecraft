@@ -1615,6 +1615,12 @@ class _CloneToDimMod(Command):
 
 class _DataSource(Command):
     @_fluent
+    def compute(self, data_target: DataTarget, provider: StrOrArg | NbtDef, scale: FloatOrArg = None) -> str:
+        self._add('compute')
+        _compute_clause(self, data_target, provider, scale)
+        return str(self)
+
+    @_fluent
     def from_(self, data_target: DataTarget, nbt_path: StrOrArg) -> str:
         self._add('from', data_single_str(data_target), as_nbt_path(nbt_path))
         return str(self)
@@ -2956,11 +2962,10 @@ def clone(start_pos: Position = None, end_pos: Position = None,
     return cmd._start(_CloneClause())
 
 
-def compute(data_target: DataTarget, provider: StrOrArg | NbtDef, scale: FloatOrArg = None) -> str:
-    cmd = Command()
+def _compute_clause(cmd: Command, data_target: DataTarget, provider: StrOrArg | NbtDef,
+                    scale: FloatOrArg = None) -> None:
     if isinstance(data_target, StorageDataTarget):
         raise ValueError('Cannot use a StorageDataTarget')
-    cmd._add('$compute')
     if data_target == DEFAULT:
         cmd._add(DEFAULT)
     else:
@@ -2972,6 +2977,11 @@ def compute(data_target: DataTarget, provider: StrOrArg | NbtDef, scale: FloatOr
     else:
         cmd._add_opt(provider)
     cmd._add_opt(de_arg(scale))
+
+def compute(data_target: DataTarget, provider: StrOrArg | NbtDef, scale: FloatOrArg = None) -> str:
+    cmd = Command()
+    cmd._add('$compute')
+    _compute_clause(cmd, data_target, provider, scale)
     return str(cmd)
 
 
