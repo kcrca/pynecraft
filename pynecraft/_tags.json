@@ -8875,6 +8875,12 @@
       "white_concrete_stairs",
       "yellow_concrete_stairs"
     ],
+    "conduit_effect_block": [
+      "dark_prismarine",
+      "prismarine",
+      "prismarine_bricks",
+      "sea_lantern"
+    ],
     "convertible_to_mud": [
       "coarse_dirt",
       "dirt",
@@ -13260,6 +13266,9 @@
       "weathered_cut_copper_stairs",
       "weathered_lightning_rod"
     ],
+    "nether_portal_frame": [
+      "obsidian"
+    ],
     "nylium": [
       "crimson_nylium",
       "warped_nylium"
@@ -13666,6 +13675,7 @@
       "red_tulip",
       "rose_bush",
       "seagrass",
+      "shelf_mushroom",
       "short_dry_grass",
       "short_grass",
       "spruce_leaves",
@@ -16617,7 +16627,20 @@
     ]
   },
   "fluid": {
+    "axolotl_tries_to_find": [
+      "water"
+    ],
     "bubble_column_can_occupy": [
+      "water"
+    ],
+    "dolphin_tries_to_find": [
+      "water"
+    ],
+    "entity_floatable": [
+      "flowing_water",
+      "water"
+    ],
+    "frog_tries_to_find_land_near": [
       "water"
     ],
     "lava": [
@@ -17145,19 +17168,19 @@
       "buried_ancient_city_map",
       "buried_mineshaft_map",
       "buried_treasure_map",
+      "buried_trial_chambers_map",
       "desert_pyramid_map",
       "desert_village_map",
       "filled_map",
-      "jungle_explorer_map",
-      "ocean_explorer_map",
+      "jungle_pyramid_map",
+      "ocean_monument_map",
       "plains_village_map",
       "savanna_village_map",
       "snowy_village_map",
-      "swamp_explorer_map",
+      "swamp_hut_map",
       "taiga_village_map",
-      "trial_explorer_map",
       "warm_ocean_ruins_map",
-      "woodland_explorer_map"
+      "woodland_mansion_map"
     ],
     "cluster_max_harvestables": [
       "copper_pickaxe",
@@ -20489,8 +20512,8 @@
     ],
     "cartographer/level_3": [
       "cartographer/3/compass_emerald",
-      "cartographer/3/emerald_and_compass_ocean_explorer_map",
-      "cartographer/3/emerald_and_compass_trial_chamber_map"
+      "cartographer/3/emerald_and_compass_buried_trial_chambers_map",
+      "cartographer/3/emerald_and_compass_ocean_monument_map"
     ],
     "cartographer/level_4": [
       "cartographer/4/emerald_black_banner",
@@ -21583,19 +21606,22 @@
     "structure/on_ancient_city_maps": [
       "ancient_city"
     ],
+    "structure/on_buried_trial_chambers_maps": [
+      "trial_chambers"
+    ],
     "structure/on_desert_pyramid_maps": [
       "desert_pyramid"
     ],
     "structure/on_desert_village_maps": [
       "village_desert"
     ],
-    "structure/on_jungle_explorer_maps": [
+    "structure/on_jungle_pyramid_maps": [
       "jungle_pyramid"
     ],
     "structure/on_mineshaft_maps": [
       "mineshaft"
     ],
-    "structure/on_ocean_explorer_maps": [
+    "structure/on_ocean_monument_maps": [
       "monument"
     ],
     "structure/on_ocean_ruin_warm_maps": [
@@ -21610,7 +21636,7 @@
     "structure/on_snowy_village_maps": [
       "village_snowy"
     ],
-    "structure/on_swamp_explorer_maps": [
+    "structure/on_swamp_hut_maps": [
       "swamp_hut"
     ],
     "structure/on_taiga_village_maps": [
@@ -21619,10 +21645,7 @@
     "structure/on_treasure_maps": [
       "buried_treasure"
     ],
-    "structure/on_trial_chambers_maps": [
-      "trial_chambers"
-    ],
-    "structure/on_woodland_explorer_maps": [
+    "structure/on_woodland_mansion_maps": [
       "mansion"
     ],
     "structure/ruined_portal": [
