@@ -675,13 +675,13 @@ class TestCommands(unittest.TestCase):
             clone(r(1, 2, 3))
 
     def test_compute(self):
-        self.assertEqual('compute default foo:bar', compute(DEFAULT, 'foo:bar'))
-        self.assertEqual('compute block ~1 ~2 ~3 foo:bar', compute(r(1, 2, 3), 'foo:bar'))
-        self.assertEqual('compute entity @s foo:bar', compute(s(), 'foo:bar'))
-        self.assertEqual('compute entity @s {}', compute(s(), {}))
-        self.assertEqual('compute entity @s {bar: 4, foo: 3}', compute(s(), {'foo': 3, 'bar': 4}))
-        self.assertEqual('compute entity @s foo:bar 7.5', compute(s(), 'foo:bar', 7.5))
-        self.assertEqual('$compute entity @s foo:bar $(s)', compute(s(), 'foo:bar', Arg('s')))
+        self.assertEqual('compute default integer foo:bar', compute(DEFAULT, INTEGER, 'foo:bar'))
+        self.assertEqual('compute block ~1 ~2 ~3 float foo:bar', compute(r(1, 2, 3), FLOAT, 'foo:bar'))
+        self.assertEqual('compute entity @s float foo:bar', compute(s(), FLOAT, 'foo:bar'))
+        self.assertEqual('compute entity @s float {}', compute(s(), FLOAT, {}))
+        self.assertEqual('compute entity @s float {bar: 4, foo: 3}', compute(s(), FLOAT, {'foo': 3, 'bar': 4}))
+        self.assertEqual('compute entity @s float foo:bar 7.5', compute(s(), FLOAT, 'foo:bar', 7.5))
+        self.assertEqual('$compute entity @s float foo:bar $(s)', compute(s(), FLOAT, 'foo:bar', Arg('s')))
 
     def test_damage(self):
         self.assertEqual('damage @s 15', str(damage(s(), 15)))
@@ -860,13 +860,14 @@ class TestCommands(unittest.TestCase):
             _DataMod().modify(e().tag('foo'), 'path').append().from_(e().tag('foo'), 'path2')
 
     def test_data_modify_compute(self):
-        self.assertEqual('compute default foo:bar', _DataSource().compute(DEFAULT, 'foo:bar'))
-        self.assertEqual('compute block ~1 ~2 ~3 foo:bar', _DataSource().compute(r(1, 2, 3), 'foo:bar'))
-        self.assertEqual('compute entity @s foo:bar', _DataSource().compute(s(), 'foo:bar'))
-        self.assertEqual('compute entity @s {}', _DataSource().compute(s(), {}))
-        self.assertEqual('compute entity @s {bar: 4, foo: 3}', _DataSource().compute(s(), {'foo': 3, 'bar': 4}))
-        self.assertEqual('compute entity @s foo:bar 7.5', _DataSource().compute(s(), 'foo:bar', 7.5))
-        self.assertEqual('compute entity @s foo:bar $(s)', _DataSource().compute(s(), 'foo:bar', Arg('s')))
+        self.assertEqual('compute default integer foo:bar', _DataSource().compute(DEFAULT, INTEGER, 'foo:bar'))
+        self.assertEqual('compute block ~1 ~2 ~3 float foo:bar', _DataSource().compute(r(1, 2, 3), FLOAT, 'foo:bar'))
+        self.assertEqual('compute entity @s float foo:bar', _DataSource().compute(s(), FLOAT, 'foo:bar'))
+        self.assertEqual('compute entity @s float {}', _DataSource().compute(s(), FLOAT, {}))
+        self.assertEqual('compute entity @s float {bar: 4, foo: 3}',
+                         _DataSource().compute(s(), FLOAT, {'foo': 3, 'bar': 4}))
+        self.assertEqual('compute entity @s float foo:bar 7.5', _DataSource().compute(s(), FLOAT, 'foo:bar', 7.5))
+        self.assertEqual('compute entity @s float foo:bar $(s)', _DataSource().compute(s(), FLOAT, 'foo:bar', Arg('s')))
 
 
     def test_datapack(self):

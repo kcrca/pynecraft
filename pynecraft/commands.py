@@ -460,6 +460,9 @@ INTEGER = 'integer'
 SCOREBOARD_RENDER_TYPES = [HEARTS, INTEGER]
 """Valid scoreboard render values."""
 
+COMPUTE_TYPE = [INTEGER, INT, FLOAT]
+"""Type of computation for /compute, etc."""
+
 LIST = 'list'
 SIDEBAR = 'sidebar'
 BELOW_NAME = 'below_name'
@@ -650,6 +653,25 @@ class Command:
     def _start(self, start: T) -> T:
         start._rep = self._rep + ' '
         return start
+
+    def _compute_clause(self, context: DataTarget, type: StrOrArg, provider: StrOrArg | NbtDef,
+                        scale: FloatOrArg = None) -> None:
+        if isinstance(context, StorageDataTarget):
+            raise ValueError('Cannot use a StorageDataTarget')
+        if context == DEFAULT:
+            self._add(DEFAULT)
+        else:
+            self._add(data_single_str(context))
+        if type == INT:
+            type = INTEGER
+        self._add(_in_group(COMPUTE_TYPE, type))
+        if is_arg(provider):
+            self._add(de_arg(provider))
+        elif isinstance(provider, NbtDef):
+            self._add_opt(Nbt.as_nbt(provider))
+        else:
+            self._add_opt(provider)
+        self._add_opt(de_arg(scale))
 
 
 T = TypeVar('T', bound=Command)
@@ -1615,9 +1637,10 @@ class _CloneToDimMod(Command):
 
 class _DataSource(Command):
     @_fluent
-    def compute(self, data_target: DataTarget, provider: StrOrArg | NbtDef, scale: FloatOrArg = None) -> str:
+    def compute(self, context: DataTarget, type: StrOrArg, provider: StrOrArg | NbtDef,
+                scale: FloatOrArg = None) -> str:
         self._add('compute')
-        _compute_clause(self, data_target, provider, scale)
+        self._compute_clause(context, type, provider, scale)
         return str(self)
 
     @_fluent
@@ -2962,26 +2985,10 @@ def clone(start_pos: Position = None, end_pos: Position = None,
     return cmd._start(_CloneClause())
 
 
-def _compute_clause(cmd: Command, data_target: DataTarget, provider: StrOrArg | NbtDef,
-                    scale: FloatOrArg = None) -> None:
-    if isinstance(data_target, StorageDataTarget):
-        raise ValueError('Cannot use a StorageDataTarget')
-    if data_target == DEFAULT:
-        cmd._add(DEFAULT)
-    else:
-        cmd._add(data_single_str(data_target))
-    if is_arg(provider):
-        cmd._add(de_arg(provider))
-    elif isinstance(provider, NbtDef):
-        cmd._add_opt(Nbt.as_nbt(provider))
-    else:
-        cmd._add_opt(provider)
-    cmd._add_opt(de_arg(scale))
-
-def compute(data_target: DataTarget, provider: StrOrArg | NbtDef, scale: FloatOrArg = None) -> str:
+def compute(context: DataTarget, type: StrOrArg, provider: StrOrArg | NbtDef, scale: FloatOrArg = None) -> str:
     cmd = Command()
     cmd._add('$compute')
-    _compute_clause(cmd, data_target, provider, scale)
+    cmd._compute_clause(context, type, provider, scale)
     return str(cmd)
 
 
@@ -3290,6 +3297,7 @@ def posteffect() -> _PosteffectMod:
     cmd = Command()
     cmd._add('$posteffect')
     return cmd._start(_PosteffectMod())
+
 
 def random() -> _RandomMod:
     """Randomizing values and controlling random sequences."""
