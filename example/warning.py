@@ -5,8 +5,8 @@ block, reminding them every second. It only warns players who have opted in, how
 
 import sys
 
-from pynecraft.base import TimeSpec, r
-from pynecraft.commands import REPLACE, Score, a, comment, execute, return_, s, schedule, tell
+from pynecraft.base import MATCHES, r, TimeSpec
+from pynecraft.commands import a, comment, execute, REPLACE, return_, s, schedule, Score, tell
 from pynecraft.function import BLOCK, DataPack, Function
 
 # Create the 'warning' datapack
@@ -20,12 +20,12 @@ halt = Score('halt', 'warning')  # whether to halt the process
 # The overall monitoring function
 monitor = Function('monitor').add(
     comment('Stop if we have been told to'),
-    execute().if_().score(halt).matches(1).run(return_()),
+    execute().if_().score(halt, MATCHES, 1).run(return_()),
     comment('Find players with scores, and warn them if needed'),
     execute().as_(a().scores({self_score.objective: (0, None)})).run(
         execute().at(s()).if_().block(r(0, -1, 0), '#warning:bad_blocks').run(
-            execute().if_().score(self_score).matches(0).run(tell(s(), 'Run away!')),
-            execute().if_().score(self_score).matches((1, None)).run(tell(s(), 'NOW!!!!')),
+            execute().if_().score(self_score, MATCHES, 0).run(tell(s(), 'Run away!')),
+            execute().if_().score(self_score, MATCHES, (1, None)).run(tell(s(), 'NOW!!!!')),
             self_score.add(1),  # adds 1 to the score, generates 'scoreboard players add @s warning 1'
         ),
         execute().at(s()).unless().block(r(0, -1, 0), '#warning:bad_blocks').run(self_score.set(0))

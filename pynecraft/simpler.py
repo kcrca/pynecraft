@@ -340,7 +340,7 @@ class Book:
     def wrap(self, *items: str | Text) -> Book:
         """Wrap items into the book, adding pages as needed.
 
-        Strings support markdown: **bold**, *italic*, ***both***, # heading, [text]{color}.
+        Strings support Markdown: **bold**, *italic*, ***both***, # heading, [text]{color}.
         Requires a signed book. Any text already on the current page is re-wrapped together
         with the new items so the page boundaries are recalculated correctly.
         """
