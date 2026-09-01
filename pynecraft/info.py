@@ -12,6 +12,10 @@ from typing import NamedTuple
 from titlecase import titlecase
 
 from ._values import *
+from .base import _in_group, AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE, \
+    DARK_RED, GOLD, GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, to_id, to_name, WHITE, YELLOW
+from .commands import Block, Entity
+from .simpler import as_color_num, Item
 
 wolves: list[str]
 """All wolf variant IDs."""
@@ -19,11 +23,6 @@ trim_materials: list[str]
 """All armor trim material IDs."""
 trim_patterns: list[str]
 """All armor trim pattern IDs."""
-
-from .base import _in_group, AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DARK_GRAY, DARK_GREEN, DARK_PURPLE, \
-    DARK_RED, GOLD, GRAY, GREEN, LIGHT_PURPLE, Nbt, NbtDef, RED, to_id, to_name, WHITE, YELLOW
-from .commands import Block, Entity
-from .simpler import as_color_num, Item
 
 patterns_standard_order: list[str] = [
     BASE, STRIPE_BOTTOM, STRIPE_TOP, STRIPE_LEFT, STRIPE_RIGHT, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_DOWNRIGHT,

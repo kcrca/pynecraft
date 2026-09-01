@@ -1134,7 +1134,9 @@ class RelCoord:
         # noinspection PyTypeChecker
         return tuple(op(v1[i], v2[i]) for i in range(len(v1)))
 
+
 U = TypeVar('U', bound=RelCoord)
+
 
 class IntRelCoord(RelCoord):
     """A relative coordinate that has no fractional part."""

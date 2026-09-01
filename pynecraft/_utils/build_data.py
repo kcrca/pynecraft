@@ -22,12 +22,12 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import unicodedata
 import zipfile
 from contextlib import redirect_stdout
 from pathlib import Path
 
 import requests
-import unicodedata
 
 from pynecraft.base import to_name
 
@@ -234,6 +234,7 @@ def _trim_materials():
 
 def _trim_patterns():
     return sorted(f.stem for f in _get_data().glob('trim_pattern/*.json'))
+
 
 def _team_options():
     d = _commands()

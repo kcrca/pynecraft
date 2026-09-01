@@ -315,7 +315,7 @@ class Loop(Function):
         self._looped = False
         self.to_incr = Score('_to_incr', score.objective)
         self._max_score = Score(self.score.target, f'{self.score.objective}_max')
-        self.pre =[]
+        self.pre = []
         self._setup = ()
         self._adjuster = ()
         self.before = []
