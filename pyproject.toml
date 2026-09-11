@@ -9,6 +9,12 @@ dependencies = [
   "titlecase",
 ]
 
+[project.optional-dependencies]
+# Only needed to run pynecraft/_utils/, which regenerates the data from Minecraft's jars.
+dev = [
+  "requests",
+]
+
 
 [tool.setuptools]
 packages = ["pynecraft"]

@@ -18,7 +18,6 @@ from html.parser import HTMLParser
 from io import StringIO
 from typing import Any, Callable, Iterable, List, Mapping, Optional, Sequence, Tuple, TypeVar, Union
 
-import numpy as np
 from titlecase import titlecase
 
 _jed_resource = r'a-zA-Z0-9_.-'
@@ -1561,14 +1560,14 @@ class Transform:
             roll = math.radians(facing.rotation[1])
             pitch = math.radians(-facing.rotation[0])
             yaw = 0
-            x = np.sin(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) - np.cos(roll / 2) * np.sin(pitch / 2) * np.sin(
-                yaw / 2)
-            y = np.cos(roll / 2) * np.sin(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.cos(pitch / 2) * np.sin(
-                yaw / 2)
-            z = np.cos(roll / 2) * np.cos(pitch / 2) * np.sin(yaw / 2) - np.sin(roll / 2) * np.sin(pitch / 2) * np.cos(
-                yaw / 2)
-            w = np.cos(roll / 2) * np.cos(pitch / 2) * np.cos(yaw / 2) + np.sin(roll / 2) * np.sin(pitch / 2) * np.sin(
-                yaw / 2)
+            x = (math.sin(roll / 2) * math.cos(pitch / 2) * math.cos(yaw / 2)
+                 - math.cos(roll / 2) * math.sin(pitch / 2) * math.sin(yaw / 2))
+            y = (math.cos(roll / 2) * math.sin(pitch / 2) * math.cos(yaw / 2)
+                 + math.sin(roll / 2) * math.cos(pitch / 2) * math.sin(yaw / 2))
+            z = (math.cos(roll / 2) * math.cos(pitch / 2) * math.sin(yaw / 2)
+                 - math.sin(roll / 2) * math.sin(pitch / 2) * math.cos(yaw / 2))
+            w = (math.cos(roll / 2) * math.cos(pitch / 2) * math.cos(yaw / 2)
+                 + math.sin(roll / 2) * math.sin(pitch / 2) * math.sin(yaw / 2))
             return x, y, z, w
 
     def __init__(self, transform: Matrix | Quaternion):
