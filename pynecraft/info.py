@@ -17,6 +17,10 @@ from .base import _in_group, AQUA, BLACK, BLUE, COLORS, DARK_AQUA, DARK_BLUE, DA
 from .commands import Block, Entity
 from .simpler import as_color_num, Item
 
+MC_VERSION: str
+"""The Minecraft version whose jar data this release of pynecraft was generated from."""
+DATA_PACK_VERSION: list[int]
+"""The datapack format version of that Minecraft release."""
 wolves: list[str]
 """All wolf variant IDs."""
 trim_materials: list[str]

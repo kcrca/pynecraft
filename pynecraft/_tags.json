@@ -18183,6 +18183,10 @@
     "frog_food": [
       "slime_ball"
     ],
+    "furnace_fuel_bottom_takeable": [
+      "bucket",
+      "water_bucket"
+    ],
     "furnace_minecart_fuel": [
       "charcoal",
       "coal"
@@ -21600,7 +21604,7 @@
     "structure/on_abandoned_camp_swamp": [
       "abandoned_camp_swamp"
     ],
-    "structure/on_abandoned_camp_windswept": [
+    "structure/on_abandoned_camp_windswept_forest": [
       "abandoned_camp_windswept_forest"
     ],
     "structure/on_ancient_city_maps": [

@@ -26,9 +26,8 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-# Generated from Minecraft 26.3-snapshot-10 jar data
-
-DATA_PACK_VERSION = [118]
+MC_VERSION = '26.3-rc-2'
+DATA_PACK_VERSION = [121]
 wolves = ['ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
 cats = [
     'all_black', 'black', 'british_shorthair', 'calico', 'jellie', 'persian', 'ragdoll', 'red', 'siamese', 'tabby',

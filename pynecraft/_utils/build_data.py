@@ -1,18 +1,23 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Rebuilds pynecraft/_values.py and all_*.txt files from Minecraft jar data.
 
 Usage: python build_data.py [version]
 
-If version is omitted, reads it from ~/clean/home/../mmc-pack.json.
-The client jar is expected at:
-  /Applications/MultiMC.app/Data/libraries/com/mojang/minecraft/{version}/minecraft-{version}-client.jar
+If version is omitted, it comes from the "version" key of the [minecraft] section of data.cfg; edit that to target a
+new version. Both the client and server jars for that version are downloaded from Mojang and cached in
+.pynecraft_cache, so no local Minecraft install is needed.
+
+multimc_version.py sets that config value from a local MultiMC install. That is a convenience for one setup; it is not
+required, and editing data.cfg by hand is the normal path.
 """
 
 from __future__ import annotations
 
+import configparser
 import datetime
+import functools
 import glob
 import hashlib
 import json
@@ -32,31 +37,33 @@ import requests
 from pynecraft.base import to_name
 
 _utils_dir = Path(__file__).parent
-_HOME_LINK = Path.home() / 'clean/home'
-_SERVER_JAR_PATTERN = Path.home() / 'clean/default_resourcepack/versions/{v}/server-{v}.jar'
-_CLIENT_JAR_PATTERN = Path('/Applications/MultiMC.app/Data/libraries/com/mojang/minecraft/{v}/minecraft-{v}-client.jar')
+_CONFIG_FILE = _utils_dir / 'data.cfg'
+_MANIFEST_URL = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json'
 
 
-def _mc_version() -> str:
-    pack = _HOME_LINK.resolve().parent / 'mmc-pack.json'
-    if pack.exists():
-        data = json.loads(pack.read_text())
-        for comp in data.get('components', []):
-            if comp.get('uid') == 'net.minecraft':
-                return comp['version']
-    raise FileNotFoundError(f'Cannot determine Minecraft version from {pack}')
+def _config_version() -> str:
+    config = configparser.ConfigParser()
+    if not config.read(_CONFIG_FILE):
+        raise FileNotFoundError(f'Cannot read {_CONFIG_FILE}')
+    return config['minecraft']['version']
+
+
+@functools.cache
+def _version_meta(version_id: str) -> dict:
+    """The Mojang metadata for one version, including the jar download URLs and their hashes."""
+    manifest = requests.get(_MANIFEST_URL).json()
+    version_entry = next((v for v in manifest['versions'] if v['id'] == version_id), None)
+    if not version_entry:
+        raise ValueError(f'Version {version_id} not found in Mojang manifest.')
+    return requests.get(version_entry['url']).json()
 
 
 class _McData:
     """Holds generated reports and lang data from a Minecraft jar run."""
 
     def __init__(self, version: str):
-        server_jar = self._get_cached_server_jar(version)
-        client_jar = Path(str(_CLIENT_JAR_PATTERN).replace('{v}', version))
-        if not server_jar.exists():
-            raise FileNotFoundError(f'Server jar not found: {server_jar}')
-        if not client_jar.exists():
-            raise FileNotFoundError(f'Client jar not found: {client_jar}')
+        server_jar = self._get_cached_jar(version, 'server')
+        client_jar = self._get_cached_jar(version, 'client')
         self._tmp = tempfile.mkdtemp(prefix='pynecraft_build_')
         tmp = Path(self._tmp)
         shutil.copy2(server_jar, tmp)
@@ -85,37 +92,29 @@ class _McData:
         self._generated = tmp
 
     @staticmethod
-    def _get_cached_server_jar(version_id):
-        # 1. Use the correct Mojang API endpoint
-        manifest_url = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json'
-        manifest = requests.get(manifest_url).json()
-
-        version_entry = next((v for v in manifest['versions'] if v['id'] == version_id), None)
-        if not version_entry:
-            raise ValueError(f'Version {version_id} not found in Mojang manifest.')
-
-        version_meta = requests.get(version_entry['url']).json()
-
-        server_data = version_meta['downloads']['server']
-        server_url = server_data['url']
-        expected_sha1 = server_data['sha1']
+    def _get_cached_jar(version_id: str, which: str) -> Path:
+        """Returns the path to the cached 'client' or 'server' jar, downloading it from Mojang if need be."""
+        download = _version_meta(version_id)['downloads'][which]
+        expected_sha1 = download['sha1']
 
         cache_dir = _utils_dir / '.pynecraft_cache'
         cache_dir.mkdir(exist_ok=True)
-        jar_path = cache_dir / f'server-{version_id}.jar'
+        jar_path = cache_dir / f'{which}-{version_id}.jar'
 
-        if jar_path.exists():
-            file_hash = hashlib.sha1(jar_path.read_bytes()).hexdigest()
-            if file_hash == expected_sha1:
-                print(f'Using cached JAR: {jar_path.name}')
-                return jar_path
+        if jar_path.exists() and hashlib.sha1(jar_path.read_bytes()).hexdigest() == expected_sha1:
+            print(f'Using cached JAR: {jar_path.name}')
+            return jar_path
 
-        print(f'Downloading server JAR for {version_id}...')
-        response = requests.get(server_url, stream=True)
+        print(f'Downloading {which} JAR for {version_id}...')
+        response = requests.get(download['url'], stream=True)
         response.raise_for_status()
         with open(jar_path, 'wb') as out_file:
             # noinspection PyTypeChecker
             shutil.copyfileobj(response.raw, out_file)
+        actual_sha1 = hashlib.sha1(jar_path.read_bytes()).hexdigest()
+        if actual_sha1 != expected_sha1:
+            jar_path.unlink()
+            raise ValueError(f'Bad sha1 for {which} jar {version_id}: expected {expected_sha1}, got {actual_sha1}')
         return jar_path
 
     def load(self, *parts) -> dict:
@@ -742,7 +741,7 @@ def _build_font_data():
 
 
 if __name__ == '__main__':
-    _version = sys.argv[1] if len(sys.argv) > 1 else _mc_version()
+    _version = sys.argv[1] if len(sys.argv) > 1 else _config_version()
     _data = _McData(_version)
 
     known = {}
@@ -768,8 +767,7 @@ if __name__ == '__main__':
 
         with redirect_stdout(out):
             print()
-            print(f'# Generated from Minecraft {_version} jar data')
-            print()
+            print(f"MC_VERSION = '{_version}'")
             print(f'DATA_PACK_VERSION = {_get_data().data_pack_version}')
             _emit_simple_list('wolves', _variants('wolf_variant'))
             _emit_simple_list('cats', _variants('cat_variant'))
