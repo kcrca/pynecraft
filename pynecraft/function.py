@@ -13,6 +13,7 @@ from typing import List, MutableMapping, Self
 
 from .base import _in_group, _to_list, _to_tuple
 from .commands import *
+from .info import DATA_PACK_VERSION
 
 FLUID = 'fluid'
 ITEM = 'item'
@@ -537,9 +538,6 @@ def version_cmp(ver1: Version | None, ver2: Version | None) -> int:
         if v1 != v2:
             return v2 - v1
     return len(ver2) - len(ver1)
-
-
-DATA_PACK_VERSION = as_version(119.0)
 
 
 class DataPack:

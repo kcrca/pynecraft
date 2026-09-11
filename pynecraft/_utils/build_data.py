@@ -72,11 +72,15 @@ class _McData:
         _entity_loot_base = 'data/minecraft/loot_table/entities/'
         with zipfile.ZipFile(client_jar) as zf:
             lang_bytes = zf.read('assets/minecraft/lang/en_us.json')
+            version_info = json.loads(zf.read('version.json'))
             self.entity_loot_stems = {
                 Path(n).stem for n in zf.namelist()
                 if n.startswith(_entity_loot_base) and n.endswith('.json') and n.count('/') == 4
             }
         self.lang: dict = json.loads(lang_bytes)
+        pack = version_info['pack_version']
+        self.data_pack_version = ([pack['data_major']] if pack['data_minor'] == 0
+                                  else [pack['data_major'], pack['data_minor']])
 
         self._generated = tmp
 
@@ -766,6 +770,7 @@ if __name__ == '__main__':
             print()
             print(f'# Generated from Minecraft {_version} jar data')
             print()
+            print(f'DATA_PACK_VERSION = {_get_data().data_pack_version}')
             _emit_simple_list('wolves', _variants('wolf_variant'))
             _emit_simple_list('cats', _variants('cat_variant'))
             # frog/cow/pig/chicken_variant are all the same cold/temperate/warm set
