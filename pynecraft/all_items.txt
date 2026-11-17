@@ -182,6 +182,7 @@ Flower Charge Banner Pattern / Flower Banner Pattern
 Fox Spawn Egg
 Friend Pottery Sherd
 Frog Spawn Egg
+Frostbite Spawn Egg
 Ghast Spawn Egg
 Ghast Tear
 Glass Bottle
@@ -233,6 +234,7 @@ Horse Spawn Egg
 Host Armor Trim / Host Armor Trim Smithing Template
 Howl Pottery Sherd
 Husk Spawn Egg
+Ice Ball
 Ink Sac
 Iron Axe
 Iron Boots
@@ -310,6 +312,7 @@ Music Disc Chirp
 Music Disc Creator
 Music Disc Creator Music Box
 Music Disc Far
+Music Disc Flurry
 Music Disc Lava Chicken
 Music Disc Mall
 Music Disc Mellohi

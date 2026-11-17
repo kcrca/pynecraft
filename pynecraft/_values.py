@@ -26,8 +26,8 @@ def _as_things(group: list, dups: dict, *values: StrOrArg) -> str | Tuple[str, .
 
 # Generated values:
 
-MC_VERSION = '26.3-rc-2'
-DATA_PACK_VERSION = [121]
+MC_VERSION = '26.4-snapshot-8'
+DATA_PACK_VERSION = [127]
 wolves = ['ashen', 'black', 'chestnut', 'pale', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
 cats = [
     'all_black', 'black', 'british_shorthair', 'calico', 'jellie', 'persian', 'ragdoll', 'red', 'siamese', 'tabby',
@@ -66,6 +66,7 @@ steppable = (
     SteppableInfo('bricks', 'brick_stairs', 'brick_slab'),
     SteppableInfo('brown_concrete', 'brown_concrete_stairs', 'brown_concrete_slab'),
     SteppableInfo('brown_wool', 'brown_wool_stairs', 'brown_wool_slab'),
+    SteppableInfo('calcite', 'calcite_stairs', 'calcite_slab'),
     SteppableInfo('cherry_planks', 'cherry_stairs', 'cherry_slab'),
     SteppableInfo('cinnabar', 'cinnabar_stairs', 'cinnabar_slab'),
     SteppableInfo('cinnabar_bricks', 'cinnabar_brick_stairs', 'cinnabar_brick_slab'),
@@ -105,12 +106,15 @@ steppable = (
     SteppableInfo('orange_concrete', 'orange_concrete_stairs', 'orange_concrete_slab'),
     SteppableInfo('orange_wool', 'orange_wool_stairs', 'orange_wool_slab'),
     SteppableInfo('oxidized_cut_copper', 'oxidized_cut_copper_stairs', 'oxidized_cut_copper_slab'),
+    SteppableInfo('packed_ice_bricks', 'packed_ice_brick_stairs', 'packed_ice_brick_slab'),
     SteppableInfo('pale_oak_planks', 'pale_oak_stairs', 'pale_oak_slab'),
     SteppableInfo('pink_concrete', 'pink_concrete_stairs', 'pink_concrete_slab'),
     SteppableInfo('pink_wool', 'pink_wool_stairs', 'pink_wool_slab'),
     SteppableInfo('polished_andesite', 'polished_andesite_stairs', 'polished_andesite_slab'),
     SteppableInfo('polished_blackstone', 'polished_blackstone_stairs', 'polished_blackstone_slab'),
     SteppableInfo('polished_blackstone_bricks', 'polished_blackstone_brick_stairs', 'polished_blackstone_brick_slab'),
+    SteppableInfo('polished_calcite', 'polished_calcite_stairs', 'polished_calcite_slab'),
+    SteppableInfo('polished_calcite_bricks', 'polished_calcite_brick_stairs', 'polished_calcite_brick_slab'),
     SteppableInfo('polished_cinnabar', 'polished_cinnabar_stairs', 'polished_cinnabar_slab'),
     SteppableInfo('polished_deepslate', 'polished_deepslate_stairs', 'polished_deepslate_slab'),
     SteppableInfo('polished_diorite', 'polished_diorite_stairs', 'polished_diorite_slab'),
@@ -133,6 +137,7 @@ steppable = (
     SteppableInfo('smooth_quartz', 'smooth_quartz_stairs', 'smooth_quartz_slab'),
     SteppableInfo('smooth_red_sandstone', 'smooth_red_sandstone_stairs', 'smooth_red_sandstone_slab'),
     SteppableInfo('smooth_sandstone', 'smooth_sandstone_stairs', 'smooth_sandstone_slab'),
+    SteppableInfo('snow_bricks', 'snow_brick_stairs', 'snow_brick_slab'),
     SteppableInfo('spruce_planks', 'spruce_stairs', 'spruce_slab'),
     SteppableInfo('stone', 'stone_stairs', 'stone_slab'),
     SteppableInfo('stone_bricks', 'stone_brick_stairs', 'stone_brick_slab'),
@@ -375,8 +380,8 @@ MONSTER_HUNTER = "adventure/kill_a_mob"
 __advancement_dups["nether"] = "nether/root"
 NOT_QUITE_NINE_LIVES = "nether/charge_respawn_anchor"
 NOT_TODAY_THANK_YOU = "story/deflect_arrow"
-OH_SHINY = "nether/distract_piglin"
 OL_BETSY = "adventure/ol_betsy"
+OOOH_SHINY = "nether/distract_piglin"
 OVEROVERKILL = "adventure/overoverkill"
 PLANTING_THE_PAST = "husbandry/plant_any_sniffer_seed"
 POSTMORTAL = "adventure/totem_of_undying"
@@ -418,7 +423,7 @@ THOSE_WERE_THE_DAYS = "nether/find_bastion"
 TOTAL_BEELOCATION = "husbandry/silk_touch_nest"
 TWO_BIRDS_ONE_ARROW = "adventure/two_birds_one_arrow"
 TWO_BY_TWO = "husbandry/bred_all_animals"
-UH_OH = "husbandry/uh_oh"
+UHOH = "husbandry/uh_oh"
 UNDER_LOCK_AND_KEY = "adventure/under_lock_and_key"
 UNEASY_ALLIANCE = "nether/uneasy_alliance"
 VERY_VERY_FRIGHTENING = "adventure/very_very_frightening"
@@ -429,6 +434,7 @@ WAX_ON = "husbandry/wax_on"
 WE_NEED_TO_GO_DEEPER = "story/enter_the_nether"
 WHATEVER_FLOATS_YOUR_GOAT = "husbandry/ride_a_boat_with_a_goat"
 WHAT_A_DEAL = "adventure/trade"
+WHAT_GOES_AROUND_COMES_AROUND = "adventure/what_goes_around_comes_around"
 WHEN_THE_SQUAD_HOPS_INTO_TOWN = "husbandry/leash_all_frog_variants"
 WHOS_THE_PILLAGER_NOW = "adventure/whos_the_pillager_now"
 WHO_IS_CUTTING_ONIONS = "nether/obtain_crying_obsidian"
@@ -448,18 +454,18 @@ ADVANCEMENT_GROUP = [
     HIDDEN_IN_THE_DEPTHS, HIRED_HELP, HOT_STUFF, HOT_TOURIST_DESTINATIONS, HOW_DID_WE_GET_HERE, "husbandry/root",
     ICE_BUCKET_CHALLENGE, INTO_FIRE, ISNT_IT_IRON_PICK, ISNT_IT_SCUTE, IS_IT_A_BALLOON, IS_IT_A_BIRD, IS_IT_A_PLANE,
     IT_SPREADS, LIGHTEN_UP, LIGHT_AS_A_RABBIT, LITTLE_SNIFFS, LOCAL_BREWERY, MINECRAFT, MINECRAFT_TRIALS_EDITION,
-    MOB_KABOB, MONSTERS_HUNTED, MONSTER_HUNTER, "nether/root", NOT_QUITE_NINE_LIVES, NOT_TODAY_THANK_YOU, OH_SHINY,
-    OL_BETSY, OVEROVERKILL, PLANTING_THE_PAST, POSTMORTAL, REMOTE_GETAWAY, RESPECTING_THE_REMNANTS, RETURN_TO_SENDER,
+    MOB_KABOB, MONSTERS_HUNTED, MONSTER_HUNTER, "nether/root", NOT_QUITE_NINE_LIVES, NOT_TODAY_THANK_YOU, OL_BETSY,
+    OOOH_SHINY, OVEROVERKILL, PLANTING_THE_PAST, POSTMORTAL, REMOTE_GETAWAY, RESPECTING_THE_REMNANTS, RETURN_TO_SENDER,
     REVAULTING, SERIOUS_DEDICATION, SHEAR_BRILLIANCE, SKYS_THE_LIMIT, SMELLS_INTERESTING, SMITHING_WITH_STYLE,
     SNEAK_100, SNIPER_DUEL, SOUND_OF_MUSIC, SPOOKY_SCARY_SKELETON, STAR_TRADER, STAY_HYDRATED, STICKY_SITUATION,
     STONE_AGE, SUBSPACE_BUBBLE, SUIT_UP, SURGE_PROTECTOR, SWEET_DREAMS, TACTICAL_FISHING, TAKE_AIM,
     THE_CITY_AT_THE_END_OF_THE_GAME, THE_CUTEST_PREDATOR, "end/root", THE_END_AGAIN, THE_END_STORY,
     THE_HEALING_POWER_OF_FRIENDSHIP, THE_NEXT_GENERATION, THE_PARROTS_AND_THE_BATS, THE_POWER_OF_BOOKS, THE_WHOLE_PACK,
-    THIS_BOAT_HAS_LEGS, THOSE_WERE_THE_DAYS, TOTAL_BEELOCATION, TWO_BIRDS_ONE_ARROW, TWO_BY_TWO, UH_OH,
+    THIS_BOAT_HAS_LEGS, THOSE_WERE_THE_DAYS, TOTAL_BEELOCATION, TWO_BIRDS_ONE_ARROW, TWO_BY_TWO, UHOH,
     UNDER_LOCK_AND_KEY, UNEASY_ALLIANCE, VERY_VERY_FRIGHTENING, VOLUNTARY_EXILE, WAR_PIGS, WAX_OFF, WAX_ON,
-    WE_NEED_TO_GO_DEEPER, WHATEVER_FLOATS_YOUR_GOAT, WHAT_A_DEAL, WHEN_THE_SQUAD_HOPS_INTO_TOWN, WHOS_THE_PILLAGER_NOW,
-    WHO_IS_CUTTING_ONIONS, WHO_NEEDS_ROCKETS, WITHERING_HEIGHTS, WITH_OUR_POWERS_COMBINED, YOUVE_GOT_A_FRIEND_IN_ME,
-    YOU_NEED_A_MINT, ZOMBIE_DOCTOR
+    WE_NEED_TO_GO_DEEPER, WHATEVER_FLOATS_YOUR_GOAT, WHAT_A_DEAL, WHAT_GOES_AROUND_COMES_AROUND,
+    WHEN_THE_SQUAD_HOPS_INTO_TOWN, WHOS_THE_PILLAGER_NOW, WHO_IS_CUTTING_ONIONS, WHO_NEEDS_ROCKETS, WITHERING_HEIGHTS,
+    WITH_OUR_POWERS_COMBINED, YOUVE_GOT_A_FRIEND_IN_ME, YOU_NEED_A_MINT, ZOMBIE_DOCTOR
 ]
 
 AdvancementInfo = namedtuple("Advancement", ['name', 'id', 'desc'])
@@ -618,8 +624,8 @@ Note: Throwing away your only weapon is not a good idea."""
     "NOT_TODAY_THANK_YOU": AdvancementInfo(
         """Not Today, Thank You""", "story/deflect_arrow", """Deflect a projectile with a Shield"""
     ),
-    "OH_SHINY": AdvancementInfo("""Oh Shiny""", "nether/distract_piglin", """Distract Piglins with gold"""),
     "OL_BETSY": AdvancementInfo("""Ol' Betsy""", "adventure/ol_betsy", """Shoot a Crossbow"""),
+    "OOOH_SHINY": AdvancementInfo("""Oooh, Shiny!""", "nether/distract_piglin", """Distract Piglins with gold"""),
     "OVEROVERKILL": AdvancementInfo(
         """Over-Overkill""", "adventure/overoverkill", """Deal 50 hearts of damage in a single hit using the Mace"""
     ),
@@ -723,7 +729,7 @@ Note: Throwing away your only weapon is not a good idea."""
         """Two Birds, One Arrow""", "adventure/two_birds_one_arrow", """Kill two Phantoms with a piercing Arrow"""
     ),
     "TWO_BY_TWO": AdvancementInfo("""Two by Two""", "husbandry/bred_all_animals", """Breed all the animals!"""),
-    "UH_OH": AdvancementInfo("""Uh Oh""", "husbandry/uh_oh", """Have a Sulfur Cube absorb a TNT block"""),
+    "UHOH": AdvancementInfo("""Uh-Oh""", "husbandry/uh_oh", """Have a Sulfur Cube absorb a TNT block"""),
     "UNDER_LOCK_AND_KEY": AdvancementInfo(
         """Under Lock and Key""", "adventure/under_lock_and_key", """Unlock a Vault with a Trial Key"""
     ),
@@ -747,6 +753,9 @@ Maybe consider staying away from villages for the time being..."""
         """Whatever Floats Your Goat!""", "husbandry/ride_a_boat_with_a_goat", """Get in a Boat and float with a Goat"""
     ),
     "WHAT_A_DEAL": AdvancementInfo("""What a Deal!""", "adventure/trade", """Successfully trade with a Villager"""),
+    "WHAT_GOES_AROUND_COMES_AROUND": AdvancementInfo(
+        """What Goes Around Comes Around""", "adventure/what_goes_around_comes_around", """Kill a Frostbite using an Ice Ball"""
+    ),
     "WHEN_THE_SQUAD_HOPS_INTO_TOWN": AdvancementInfo(
         """When the Squad Hops into Town""", "husbandry/leash_all_frog_variants", """Get each Frog variant on a Lead"""
     ),
@@ -812,6 +821,7 @@ FROZEN_OCEAN = "frozen_ocean"
 FROZEN_PEAKS = "frozen_peaks"
 FROZEN_RIVER = "frozen_river"
 GROVE = "grove"
+ICE_CAVES = "ice_caves"
 ICE_SPIKES = "ice_spikes"
 JAGGED_PEAKS = "jagged_peaks"
 LUKEWARM_OCEAN = "lukewarm_ocean"
@@ -850,12 +860,12 @@ BIOME_GROUP = [
     BADLANDS, BAMBOO_JUNGLE, BASALT_DELTAS, BEACH, BIRCH_FOREST, CHERRY_GROVE, COLD_OCEAN, CRIMSON_FOREST,
     DAPPLED_FOREST, DARK_FOREST, DEEP_COLD_OCEAN, DEEP_DARK, DEEP_FROZEN_OCEAN, DEEP_LUKEWARM_OCEAN, DEEP_OCEAN,
     "desert", DRIPSTONE_CAVES, END_BARRENS, END_HIGHLANDS, END_MIDLANDS, ERODED_BADLANDS, FLOWER_FOREST, FOREST,
-    FROZEN_OCEAN, FROZEN_PEAKS, FROZEN_RIVER, GROVE, ICE_SPIKES, JAGGED_PEAKS, "jungle", LUKEWARM_OCEAN, LUSH_CAVES,
-    MANGROVE_SWAMP, MEADOW, MUSHROOM_FIELDS, NETHER_WASTES, OCEAN, OLD_GROWTH_BIRCH_FOREST, OLD_GROWTH_PINE_TAIGA,
-    OLD_GROWTH_SPRUCE_TAIGA, PALE_GARDEN, "plains", RIVER, "savanna", SAVANNA_PLATEAU, SMALL_END_ISLANDS, SNOWY_BEACH,
-    SNOWY_PLAINS, SNOWY_SLOPES, SNOWY_TAIGA, SOUL_SAND_VALLEY, SPARSE_JUNGLE, STONY_PEAKS, STONY_SHORE, SULFUR_CAVES,
-    SUNFLOWER_PLAINS, "swamp", "taiga", "the_end", THE_VOID, WARM_OCEAN, WARPED_FOREST, WINDSWEPT_FOREST,
-    WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_HILLS, WINDSWEPT_SAVANNA, WOODED_BADLANDS
+    FROZEN_OCEAN, FROZEN_PEAKS, FROZEN_RIVER, GROVE, ICE_CAVES, ICE_SPIKES, JAGGED_PEAKS, "jungle", LUKEWARM_OCEAN,
+    LUSH_CAVES, MANGROVE_SWAMP, MEADOW, MUSHROOM_FIELDS, NETHER_WASTES, OCEAN, OLD_GROWTH_BIRCH_FOREST,
+    OLD_GROWTH_PINE_TAIGA, OLD_GROWTH_SPRUCE_TAIGA, PALE_GARDEN, "plains", RIVER, "savanna", SAVANNA_PLATEAU,
+    SMALL_END_ISLANDS, SNOWY_BEACH, SNOWY_PLAINS, SNOWY_SLOPES, SNOWY_TAIGA, SOUL_SAND_VALLEY, SPARSE_JUNGLE,
+    STONY_PEAKS, STONY_SHORE, SULFUR_CAVES, SUNFLOWER_PLAINS, "swamp", "taiga", "the_end", THE_VOID, WARM_OCEAN,
+    WARPED_FOREST, WINDSWEPT_FOREST, WINDSWEPT_GRAVELLY_HILLS, WINDSWEPT_HILLS, WINDSWEPT_SAVANNA, WOODED_BADLANDS
 ]
 
 BiomeInfo = namedtuple("Biome", ['name', 'id', 'desc'])
@@ -887,6 +897,7 @@ biomes = {
     "FROZEN_PEAKS": BiomeInfo("""Frozen Peaks""", "frozen_peaks", """Frozen Peaks"""),
     "FROZEN_RIVER": BiomeInfo("""Frozen River""", "frozen_river", """Frozen River"""),
     "GROVE": BiomeInfo("""Grove""", "grove", """Grove"""),
+    "ICE_CAVES": BiomeInfo("""Ice Caves""", "ice_caves", """Ice Caves"""),
     "ICE_SPIKES": BiomeInfo("""Ice Spikes""", "ice_spikes", """Ice Spikes"""),
     "JAGGED_PEAKS": BiomeInfo("""Jagged Peaks""", "jagged_peaks", """Jagged Peaks"""),
     "JUNGLE": BiomeInfo("""Jungle""", "jungle", """Jungle"""),
@@ -958,6 +969,7 @@ CONDUIT_POWER = "conduit_power"
 DARKNESS = "darkness"
 DOLPHINS_GRACE = "dolphins_grace"
 FIRE_RESISTANCE = "fire_resistance"
+FREEZING = "freezing"
 GLOWING = "glowing"
 HASTE = "haste"
 HEALTH_BOOST = "health_boost"
@@ -991,7 +1003,7 @@ WIND_CHARGED = "wind_charged"
 WITHER = "wither"
 EFFECT_GROUP = [
     ABSORPTION, BAD_LUCK, BAD_OMEN, BLINDNESS, BREATH_OF_THE_NAUTILUS, CONDUIT_POWER, DARKNESS, DOLPHINS_GRACE,
-    FIRE_RESISTANCE, GLOWING, HASTE, HEALTH_BOOST, "hero_of_the_village", HUNGER, INFESTED, INSTANT_DAMAGE,
+    FIRE_RESISTANCE, FREEZING, GLOWING, HASTE, HEALTH_BOOST, "hero_of_the_village", HUNGER, INFESTED, INSTANT_DAMAGE,
     INSTANT_HEALTH, INVISIBILITY, JUMP_BOOST, LEVITATION, LUCK, MINING_FATIGUE, NAUSEA, NIGHT_VISION, OOZING, POISON,
     RAID_OMEN, REGENERATION, RESISTANCE, SATURATION, SLOWNESS, SLOW_FALLING, SPEED, STRENGTH, TRIAL_OMEN,
     WATER_BREATHING, WEAKNESS, WEAVING, WIND_CHARGED, WITHER
@@ -1008,6 +1020,7 @@ effects = {
     "DARKNESS": EffectInfo("""Darkness""", "darkness", None),
     "DOLPHINS_GRACE": EffectInfo("""Dolphin's Grace""", "dolphins_grace", None),
     "FIRE_RESISTANCE": EffectInfo("""Fire Resistance""", "fire_resistance", None),
+    "FREEZING": EffectInfo("""Freezing""", "freezing", None),
     "GLOWING": EffectInfo("""Glowing""", "glowing", None),
     "HASTE": EffectInfo("""Haste""", "haste", None),
     "HEALTH_BOOST": EffectInfo("""Health Boost""", "health_boost", None),
@@ -1431,7 +1444,6 @@ HEART = "heart"
 INSTANT_EFFECT = "instant_effect"
 ITEM_COBWEB = "item_cobweb"
 ITEM_SLIME = "item_slime"
-ITEM_SNOWBALL = "item_snowball"
 LANDING_HONEY = "landing_honey"
 LANDING_LAVA = "landing_lava"
 LANDING_OBSIDIAN_TEAR = "landing_obsidian_tear"
@@ -1494,13 +1506,13 @@ PARTICLE_GROUP = [
     DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT,
     EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, "falling_dust", FALLING_HONEY,
     FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREFLY, FIREWORK,
-    FISHING, "flame", FLASH, GEYSER, GEYSER_BASE, GEYSER_PLUME, GEYSER_POOF, GLOW, GLOW_SQUID_INK, GUST,
+    FISHING, "flame", FLASH, "freezing", GEYSER, GEYSER_BASE, GEYSER_PLUME, GEYSER_POOF, GLOW, GLOW_SQUID_INK, GUST,
     GUST_EMITTER_LARGE, GUST_EMITTER_SMALL, HAPPY_VILLAGER, HEART, "infested", INSTANT_EFFECT, "item", ITEM_COBWEB,
-    ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM,
-    NAUTILUS, NOTE, NOXIOUS_GAS, NOXIOUS_GAS_CLOUD, OMINOUS_SPAWNING, ORANGE_POPLAR_LEAVES, PALE_OAK_LEAVES,
-    PAUSE_MOB_GROWTH, POOF, PORTAL, "raid_omen", "rain", RED_POPLAR_LEAVES, RESET_MOB_GROWTH, REVERSE_PORTAL, SCRAPE,
-    SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM,
-    SOUL, SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SULFUR_BUBBLES, SULFUR_CUBE_GOO, SWEEP_ATTACK,
+    ITEM_SLIME, LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE,
+    NOXIOUS_GAS, NOXIOUS_GAS_CLOUD, OMINOUS_SPAWNING, ORANGE_POPLAR_LEAVES, PALE_OAK_LEAVES, PAUSE_MOB_GROWTH, POOF,
+    PORTAL, "raid_omen", "rain", RED_POPLAR_LEAVES, RESET_MOB_GROWTH, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE,
+    SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SONIC_BOOM, SOUL,
+    SOUL_FIRE_FLAME, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SULFUR_BUBBLES, SULFUR_CUBE_GOO, SWEEP_ATTACK,
     TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, "trial_omen", TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS,
     UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_SPORE, "wax_off", "wax_on", WHITE_ASH, WHITE_SMOKE, WITCH,
     YELLOW_POPLAR_LEAVES
@@ -1562,6 +1574,7 @@ particles = {
     "FISHING": ParticleInfo("""Fishing""", "fishing", None),
     "FLAME": ParticleInfo("""Flame""", "flame", None),
     "FLASH": ParticleInfo("""Flash""", "flash", None),
+    "FREEZING": ParticleInfo("""Freezing""", "freezing", None),
     "GEYSER": ParticleInfo("""Geyser""", "geyser", None),
     "GEYSER_BASE": ParticleInfo("""Geyser Base""", "geyser_base", None),
     "GEYSER_PLUME": ParticleInfo("""Geyser Plume""", "geyser_plume", None),
@@ -1578,7 +1591,6 @@ particles = {
     "ITEM": ParticleInfo("""Item""", "item", None),
     "ITEM_COBWEB": ParticleInfo("""Item Cobweb""", "item_cobweb", None),
     "ITEM_SLIME": ParticleInfo("""Item Slime""", "item_slime", None),
-    "ITEM_SNOWBALL": ParticleInfo("""Item Snowball""", "item_snowball", None),
     "LANDING_HONEY": ParticleInfo("""Landing Honey""", "landing_honey", None),
     "LANDING_LAVA": ParticleInfo("""Landing Lava""", "landing_lava", None),
     "LANDING_OBSIDIAN_TEAR": ParticleInfo("""Landing Obsidian Tear""", "landing_obsidian_tear", None),
@@ -1731,6 +1743,7 @@ CREATOR_MUSIC_BOX = "music_disc_creator_music_box"
 ELEVEN = "music_disc_11"
 FAR = "music_disc_far"
 FIVE = "music_disc_5"
+FLURRY = "music_disc_flurry"
 LAVA_CHICKEN = "music_disc_lava_chicken"
 MALL = "music_disc_mall"
 MELLOHI = "music_disc_mellohi"
@@ -1745,8 +1758,8 @@ THIRTEEN = "music_disc_13"
 WAIT = "music_disc_wait"
 WARD = "music_disc_ward"
 DISC_GROUP = [
-    BLOCKS, BOUNCE, CAT, CHIRP, CREATOR, CREATOR_MUSIC_BOX, ELEVEN, FAR, FIVE, LAVA_CHICKEN, MALL, MELLOHI, OTHERSIDE,
-    PIGSTEP, PRECIPICE, RELIC, STAL, STRAD, TEARS, THIRTEEN, WAIT, WARD
+    BLOCKS, BOUNCE, CAT, CHIRP, CREATOR, CREATOR_MUSIC_BOX, ELEVEN, FAR, FIVE, FLURRY, LAVA_CHICKEN, MALL, MELLOHI,
+    OTHERSIDE, PIGSTEP, PRECIPICE, RELIC, STAL, STRAD, TEARS, THIRTEEN, WAIT, WARD
 ]
 
 DiscInfo = namedtuple("Disc", ['name', 'id', 'desc', 'composer'])
@@ -1760,6 +1773,7 @@ discs = {
     "ELEVEN": DiscInfo("""eleven""", "music_disc_11", None, "C418"),
     "FAR": DiscInfo("""far""", "music_disc_far", None, "C418"),
     "FIVE": DiscInfo("""five""", "music_disc_5", None, "Samuel Åberg"),
+    "FLURRY": DiscInfo("""Flurry""", "music_disc_flurry", None, "Hyper Potions"),
     "LAVA_CHICKEN": DiscInfo("""Lava Chicken""", "music_disc_lava_chicken", None, "Hyper Potions"),
     "MALL": DiscInfo("""mall""", "music_disc_mall", None, "C418"),
     "MELLOHI": DiscInfo("""mellohi""", "music_disc_mellohi", None, "C418"),

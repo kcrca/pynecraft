@@ -239,6 +239,10 @@ def _trim_patterns():
     return sorted(f.stem for f in _get_data().glob('trim_pattern/*.json'))
 
 
+def _arg_types(children: dict) -> list[str]:
+    return [v['argument']['type'] for v in children.values() if v.get('type') == 'argument']
+
+
 def _team_options():
     d = _commands()
     opts = d['children']['team']['children']['modify']['children']['team']['children']
@@ -247,9 +251,9 @@ def _team_options():
         opt = opts[opt_name]
         children = opt.get('children', {})
         literal_keys = sorted(k for k, v in children.items() if v.get('type') == 'literal')
-        arg_parsers = [v.get('parser') for v in children.values() if v.get('type') == 'argument']
-        if arg_parsers:
-            if 'brigadier:bool' in arg_parsers:
+        arg_types = _arg_types(children)
+        if arg_types:
+            if 'minecraft:bool' in arg_types:
                 opt_type = bool
             else:
                 opt_type = 'Nbt'
@@ -346,8 +350,7 @@ def _gamerules():
         camel = _snake_to_camel(snake)
         desc = lang.get(f'gamerule.{camel}.description', lang.get(f'gamerule.{camel}', ''))
         children = gr_children[snake].get('children', {})
-        parsers = [v.get('parser') for v in children.values() if v.get('type') == 'argument']
-        rule_type = 'int' if 'brigadier:integer' in parsers else 'bool'
+        rule_type = 'int' if 'minecraft:integer' in _arg_types(children) else 'bool'
         name = _camel_to_name(camel)
         key = _key_from_name(name)
         fields[key] = (snake, desc, name, rule_type)

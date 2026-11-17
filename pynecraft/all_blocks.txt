@@ -135,6 +135,7 @@ Brick Slab
 Brick Stairs
 Brick Wall
 Bricks
+Brittle Ice
 Brown Banner
 Brown Bed
 Brown Candle
@@ -162,6 +163,10 @@ Cactus
 Cactus Flower
 Cake
 Calcite
+Calcite Pillar
+Calcite Slab
+Calcite Stairs
+Calcite Wall
 Calibrated Sculk Sensor
 Campfire
 Candle
@@ -193,11 +198,13 @@ Chiseled Cinnabar
 Chiseled Copper
 Chiseled Deepslate
 Chiseled Nether Bricks
+Chiseled Packed Ice
 Chiseled Polished Blackstone
 Chiseled Quartz Block
 Chiseled Red Sandstone
 Chiseled Resin Bricks
 Chiseled Sandstone
+Chiseled Soulshale
 Chiseled Stone Bricks
 Chiseled Sulfur
 Chiseled Tuff
@@ -456,6 +463,8 @@ Horn Coral
 Horn Coral Block
 Horn Coral Fan
 Ice
+Ice Crystal
+Icicle
 Infested Chiseled Stone Bricks
 Infested Cobblestone
 Infested Cracked Stone Bricks
@@ -675,6 +684,10 @@ Oxidized Cut Copper Slab
 Oxidized Cut Copper Stairs
 Oxidized Lightning Rod
 Packed Ice
+Packed Ice Brick Slab
+Packed Ice Brick Stairs
+Packed Ice Brick Wall
+Packed Ice Bricks
 Packed Mud
 Pale Hanging Moss
 Pale Moss Block
@@ -736,6 +749,14 @@ Polished Blackstone Pressure Plate
 Polished Blackstone Slab
 Polished Blackstone Stairs
 Polished Blackstone Wall
+Polished Calcite
+Polished Calcite Brick Slab
+Polished Calcite Brick Stairs
+Polished Calcite Brick Wall
+Polished Calcite Bricks
+Polished Calcite Slab
+Polished Calcite Stairs
+Polished Calcite Wall
 Polished Cinnabar
 Polished Cinnabar Slab
 Polished Cinnabar Stairs
@@ -897,6 +918,10 @@ Smooth Stone Slab
 Sniffer Egg
 Snow
 Snow Block
+Snow Brick Slab
+Snow Brick Stairs
+Snow Brick Wall
+Snow Bricks
 Soul Campfire
 Soul Fire
 Soul Lantern
