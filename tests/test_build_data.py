@@ -1,8 +1,9 @@
+import json
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from pynecraft._utils import build_data
-from pynecraft._values import game_rules, team_options
+from pynecraft._values import game_rules, sulfur_cube_archetypes, team_options
 
 
 def _arg(arg_type: str, **extra) -> dict:
@@ -41,6 +42,22 @@ class TestBuildData(unittest.TestCase):
         self.assertEqual('Random tick speed rate', rules['RANDOM_TICK_SPEED'][1])
         self.assertEqual('bool', rules['KEEP_INVENTORY'][3])
 
+    def test_sulfur_cube_archetypes(self):
+        data = MagicMock()
+        files = []
+        for name, items in (('bouncy', '#minecraft:sulfur_cube_archetype/bouncy'), ('hot', 'minecraft:magma_block'),
+                            ('mixed', ['minecraft:tnt', '#minecraft:wool'])):
+            f = MagicMock(stem=name)
+            f.read_text.return_value = json.dumps({'items': items})
+            files.append(f)
+        data.glob.return_value = files
+        tags = {'item': {'sulfur_cube_archetype/bouncy': ['oak_planks', 'oak_log'], 'wool': ['red_wool']}}
+        with patch.object(build_data, '_get_data', return_value=data), \
+                patch.object(build_data, '_build_tags', return_value=tags):
+            archetypes = build_data._sulfur_cube_archetypes()
+        self.assertEqual({'bouncy': ['oak_log', 'oak_planks'], 'hot': ['magma_block'], 'mixed': ['red_wool', 'tnt']},
+                         archetypes)
+
     def test_team_options(self):
         commands = _tree('team modify team', {
             'friendlyFire': _literal(allowed=_arg('minecraft:bool')),
@@ -59,3 +76,6 @@ class TestBuildData(unittest.TestCase):
         self.assertIs(int, game_rules['random_tick_speed'].rule_type)
         self.assertIs(bool, game_rules['keep_inventory'].rule_type)
         self.assertIs(bool, team_options['friendlyFire'].type)
+        self.assertEqual(['tnt'], sulfur_cube_archetypes['explosive'])
+        self.assertIn('oak_planks', sulfur_cube_archetypes['bouncy'])
+        self.assertIn('oak_log', sulfur_cube_archetypes['bouncy'])

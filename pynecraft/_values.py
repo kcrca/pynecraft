@@ -34,6 +34,96 @@ cats = [
     'white'
 ]
 climates = ['cold', 'temperate', 'warm']
+sulfur_cube_archetypes = {
+    'bouncy': [
+        'acacia_log', 'acacia_planks', 'acacia_wood', 'bamboo_block', 'bamboo_mosaic', 'bamboo_planks', 'birch_log',
+        'birch_planks', 'birch_wood', 'cherry_log', 'cherry_planks', 'cherry_wood', 'crimson_hyphae', 'crimson_planks',
+        'crimson_stem', 'dark_oak_log', 'dark_oak_planks', 'dark_oak_wood', 'jungle_log', 'jungle_planks',
+        'jungle_wood', 'mangrove_log', 'mangrove_planks', 'mangrove_wood', 'oak_log', 'oak_planks', 'oak_wood',
+        'pale_oak_log', 'pale_oak_planks', 'pale_oak_wood', 'poplar_log', 'poplar_planks', 'poplar_wood', 'spruce_log',
+        'spruce_planks', 'spruce_wood', 'stripped_acacia_log', 'stripped_acacia_wood', 'stripped_bamboo_block',
+        'stripped_birch_log', 'stripped_birch_wood', 'stripped_cherry_log', 'stripped_cherry_wood',
+        'stripped_crimson_hyphae', 'stripped_crimson_stem', 'stripped_dark_oak_log', 'stripped_dark_oak_wood',
+        'stripped_jungle_log', 'stripped_jungle_wood', 'stripped_mangrove_log', 'stripped_mangrove_wood',
+        'stripped_oak_log', 'stripped_oak_wood', 'stripped_pale_oak_log', 'stripped_pale_oak_wood',
+        'stripped_poplar_log', 'stripped_poplar_wood', 'stripped_spruce_log', 'stripped_spruce_wood',
+        'stripped_warped_hyphae', 'stripped_warped_stem', 'warped_hyphae', 'warped_planks', 'warped_stem'
+    ],
+    'cold': ['blue_ice'],
+    'explosive': ['tnt'],
+    'fast_flat': [
+        'brain_coral_block', 'bubble_coral_block', 'carved_pumpkin', 'chiseled_resin_bricks', 'dead_brain_coral_block',
+        'dead_bubble_coral_block', 'dead_fire_coral_block', 'dead_horn_coral_block', 'dead_tube_coral_block',
+        'dried_kelp_block', 'fire_coral_block', 'hay_block', 'horn_coral_block', 'jack_o_lantern', 'melon',
+        'moss_block', 'ochre_froglight', 'pale_moss_block', 'pearlescent_froglight', 'pumpkin', 'resin_block',
+        'resin_bricks', 'sponge', 'tube_coral_block', 'verdant_froglight', 'wet_sponge'
+    ],
+    'fast_sliding': ['chiseled_packed_ice', 'packed_ice', 'packed_ice_bricks', 'snow_block', 'snow_bricks'],
+    'high_resistance': ['soul_sand', 'soul_soil'],
+    'hot': ['magma_block'],
+    'light': [
+        'black_wool', 'blue_wool', 'brown_wool', 'cyan_wool', 'gray_wool', 'green_wool', 'light_blue_wool',
+        'light_gray_wool', 'lime_wool', 'magenta_wool', 'orange_wool', 'pink_wool', 'purple_wool', 'red_wool',
+        'white_wool', 'yellow_wool'
+    ],
+    'regular': [
+        'black_concrete_powder', 'blue_concrete_powder', 'bone_block', 'brown_concrete_powder', 'clay', 'coal_block',
+        'coarse_dirt', 'cyan_concrete_powder', 'dirt', 'grass_block', 'gray_concrete_powder', 'green_concrete_powder',
+        'light_blue_concrete_powder', 'light_gray_concrete_powder', 'lime_concrete_powder', 'magenta_concrete_powder',
+        'mud', 'muddy_mangrove_roots', 'orange_concrete_powder', 'packed_mud', 'pink_concrete_powder', 'podzol',
+        'purple_concrete_powder', 'red_concrete_powder', 'rooted_dirt', 'white_concrete_powder',
+        'yellow_concrete_powder'
+    ],
+    'slow_bouncy': [
+        'amethyst_block', 'andesite', 'basalt', 'black_concrete', 'black_glazed_terracotta', 'black_terracotta',
+        'blackstone', 'blue_concrete', 'blue_glazed_terracotta', 'blue_terracotta', 'bricks', 'brown_concrete',
+        'brown_glazed_terracotta', 'brown_terracotta', 'calcite', 'calcite_pillar', 'chiseled_cinnabar',
+        'chiseled_deepslate', 'chiseled_nether_bricks', 'chiseled_polished_blackstone', 'chiseled_quartz_block',
+        'chiseled_red_sandstone', 'chiseled_sandstone', 'chiseled_soulshale', 'chiseled_stone_bricks',
+        'chiseled_sulfur', 'chiseled_tuff', 'chiseled_tuff_bricks', 'cinnabar', 'cinnabar_bricks', 'coal_ore',
+        'cobbled_deepslate', 'cobblestone', 'cracked_deepslate_bricks', 'cracked_deepslate_tiles',
+        'cracked_nether_bricks', 'cracked_polished_blackstone_bricks', 'cracked_stone_bricks', 'crimson_nylium',
+        'crying_obsidian', 'cut_red_sandstone', 'cut_sandstone', 'cyan_concrete', 'cyan_glazed_terracotta',
+        'cyan_terracotta', 'dark_prismarine', 'deepslate', 'deepslate_bricks', 'deepslate_coal_ore',
+        'deepslate_diamond_ore', 'deepslate_emerald_ore', 'deepslate_lapis_ore', 'deepslate_redstone_ore',
+        'deepslate_tiles', 'diamond_block', 'diamond_ore', 'diorite', 'dripstone_block', 'emerald_block', 'emerald_ore',
+        'end_stone', 'end_stone_bricks', 'gilded_blackstone', 'glowstone', 'granite', 'gray_concrete',
+        'gray_glazed_terracotta', 'gray_terracotta', 'green_concrete', 'green_glazed_terracotta', 'green_terracotta',
+        'lapis_block', 'lapis_ore', 'light_blue_concrete', 'light_blue_glazed_terracotta', 'light_blue_terracotta',
+        'light_gray_concrete', 'light_gray_glazed_terracotta', 'light_gray_terracotta', 'lime_concrete',
+        'lime_glazed_terracotta', 'lime_terracotta', 'magenta_concrete', 'magenta_glazed_terracotta',
+        'magenta_terracotta', 'mossy_cobblestone', 'mossy_stone_bricks', 'mud_bricks', 'nether_bricks',
+        'nether_quartz_ore', 'netherrack', 'observer', 'obsidian', 'orange_concrete', 'orange_glazed_terracotta',
+        'orange_terracotta', 'pink_concrete', 'pink_glazed_terracotta', 'pink_terracotta', 'polished_andesite',
+        'polished_basalt', 'polished_blackstone', 'polished_blackstone_bricks', 'polished_calcite',
+        'polished_calcite_bricks', 'polished_cinnabar', 'polished_deepslate', 'polished_diorite', 'polished_granite',
+        'polished_sulfur', 'polished_tuff', 'prismarine', 'prismarine_bricks', 'purple_concrete',
+        'purple_glazed_terracotta', 'purple_terracotta', 'purpur_block', 'purpur_pillar', 'quartz_block',
+        'quartz_bricks', 'quartz_pillar', 'red_concrete', 'red_glazed_terracotta', 'red_nether_bricks', 'red_sandstone',
+        'red_terracotta', 'redstone_lamp', 'redstone_ore', 'sandstone', 'sea_lantern', 'smooth_basalt', 'smooth_quartz',
+        'smooth_red_sandstone', 'smooth_sandstone', 'smooth_stone', 'stone', 'stone_bricks', 'sulfur', 'sulfur_bricks',
+        'terracotta', 'tuff', 'tuff_bricks', 'warped_nylium', 'white_concrete', 'white_glazed_terracotta',
+        'white_terracotta', 'yellow_concrete', 'yellow_glazed_terracotta', 'yellow_terracotta'
+    ],
+    'slow_flat': [
+        'ancient_debris', 'chiseled_copper', 'copper_block', 'copper_bulb', 'copper_ore', 'cut_copper',
+        'deepslate_copper_ore', 'deepslate_gold_ore', 'deepslate_iron_ore', 'exposed_chiseled_copper', 'exposed_copper',
+        'exposed_copper_bulb', 'exposed_cut_copper', 'gold_block', 'gold_ore', 'iron_block', 'iron_ore',
+        'nether_gold_ore', 'netherite_block', 'oxidized_chiseled_copper', 'oxidized_copper', 'oxidized_copper_bulb',
+        'oxidized_cut_copper', 'raw_copper_block', 'raw_gold_block', 'raw_iron_block', 'waxed_chiseled_copper',
+        'waxed_copper_block', 'waxed_copper_bulb', 'waxed_cut_copper', 'waxed_exposed_chiseled_copper',
+        'waxed_exposed_copper', 'waxed_exposed_copper_bulb', 'waxed_exposed_cut_copper',
+        'waxed_oxidized_chiseled_copper', 'waxed_oxidized_copper', 'waxed_oxidized_copper_bulb',
+        'waxed_oxidized_cut_copper', 'waxed_weathered_chiseled_copper', 'waxed_weathered_copper',
+        'waxed_weathered_copper_bulb', 'waxed_weathered_cut_copper', 'weathered_chiseled_copper', 'weathered_copper',
+        'weathered_copper_bulb', 'weathered_cut_copper'
+    ],
+    'slow_sliding': [
+        'brown_mushroom_block', 'mushroom_stem', 'mycelium', 'nether_wart_block', 'red_mushroom_block', 'shroomlight',
+        'warped_wart_block'
+    ],
+    'sticky': ['honeycomb_block'],
+}
 trim_materials = [
     'amethyst', 'copper', 'diamond', 'emerald', 'gold', 'iron', 'lapis', 'netherite', 'quartz', 'redstone', 'resin'
 ]

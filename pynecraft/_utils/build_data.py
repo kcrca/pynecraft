@@ -212,6 +212,13 @@ def _emit_simple_list(var_name, items):
     _print_bracketed(f'{var_name} = [', ', '.join(f"'{i}'" for i in items), ']')
 
 
+def _emit_archetypes(archetypes):
+    print('sulfur_cube_archetypes = {')
+    for name, blocks in archetypes.items():
+        _print_bracketed(f"    '{name}': [", ', '.join(f"'{b}'" for b in blocks), '],', inner_indent=8)
+    print('}')
+
+
 def _emit_steppable(triples):
     """Emit the aligned (block, stairs, slab) triples as the single source of truth."""
     print()
@@ -241,6 +248,22 @@ def _trim_patterns():
 
 def _arg_types(children: dict) -> list[str]:
     return [v['argument']['type'] for v in children.values() if v.get('type') == 'argument']
+
+
+def _sulfur_cube_archetypes() -> dict[str, list[str]]:
+    """Each sulfur cube archetype mapped to the sorted IDs of the blocks that give it."""
+    item_tags = _build_tags().get('item', {})
+    archetypes = {}
+    for f in _get_data().glob('sulfur_cube_archetype/*.json'):
+        items = json.loads(f.read_text())['items']
+        blocks = set()
+        for item in [items] if isinstance(items, str) else items:
+            if item.startswith('#'):
+                blocks.update(item_tags[item[1:].split(':')[-1]])
+            else:
+                blocks.add(item.split(':')[-1])
+        archetypes[f.stem] = sorted(blocks)
+    return archetypes
 
 
 def _team_options():
@@ -643,6 +666,7 @@ def _things(which, unholdable_re):
     return lines
 
 
+@functools.cache
 def _build_tags() -> dict:
     tag_root = _get_data().generated / 'data/minecraft/tags'
     if not tag_root.exists():
@@ -776,6 +800,7 @@ if __name__ == '__main__':
             _emit_simple_list('cats', _variants('cat_variant'))
             # frog/cow/pig/chicken_variant are all the same cold/temperate/warm set
             _emit_simple_list('climates', _variants('frog_variant'))
+            _emit_archetypes(_sulfur_cube_archetypes())
             _emit_simple_list('trim_materials', _trim_materials())
             _emit_simple_list('trim_patterns', _trim_patterns())
             _emit_simple_list('map_decorations', _registry_stems(_registries(), 'minecraft:map_decoration_type'))

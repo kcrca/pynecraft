@@ -23,6 +23,8 @@ DATA_PACK_VERSION: list[int]
 """The datapack format version of that Minecraft release."""
 wolves: list[str]
 """All wolf variant IDs."""
+sulfur_cube_archetypes: dict[str, list[str]]
+"""Each sulfur cube archetype ID mapped to the IDs of the blocks that give it."""
 trim_materials: list[str]
 """All armor trim material IDs."""
 trim_patterns: list[str]
