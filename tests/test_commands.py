@@ -376,8 +376,12 @@ class TestCommands(unittest.TestCase):
         self.assertEqual(Score('$(k)', '$(t)'), as_score((Arg('k'), Arg('t'))))
 
     def test_target_pos(self):
-        self.assertEqual('@a[x=1,y=2,z=3]', str(a().pos((1, 2, 3))))
-        self.assertEqual('@a[x=$(x),y=$(y),z=$(z)]', str(a().pos((Arg('x'), Arg('y'), Arg('z')))))
+        self.assertEqual('@a[x=1, y=2, z=3]', str(a().pos((1, 2, 3))))
+        self.assertEqual('@a[x=$(x), y=$(y), z=$(z)]', str(a().pos((Arg('x'), Arg('y'), Arg('z')))))
+        self.assertEqual('@a[x=1, y=2, z=3]', str(a().x(1).y(2).z(3)))
+        self.assertEqual('@a[x=1]', str(a().x(1)))
+        self.assertEqual('@a[y=1]', str(a().y(1)))
+        self.assertEqual('@a[z=1]', str(a().z(1)))
         with self.assertRaises(KeyError):
             a().pos((1, 2, 3)).pos((4, 5, 6))
 
@@ -392,8 +396,12 @@ class TestCommands(unittest.TestCase):
             a().distance(3).distance(4)
 
     def test_target_delta(self):
-        self.assertEqual('@a[dx=1,dy=2,dz=3]', str(a().volume((1, 2, 3))))
-        self.assertEqual('@a[dx=$(x),dy=$(y),dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
+        self.assertEqual('@a[dx=1, dy=2, dz=3]', str(a().volume((1, 2, 3))))
+        self.assertEqual('@a[dx=$(x), dy=$(y), dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
+        self.assertEqual('@a[dx=1, dy=2, dz=3]', str(a().dx(1).dy(2).dz(3)))
+        self.assertEqual('@a[dx=1]', str(a().dx(1)))
+        self.assertEqual('@a[dy=1]', str(a().dy(1)))
+        self.assertEqual('@a[dz=1]', str(a().dz(1)))
         with self.assertRaises(KeyError):
             a().volume((1, 2, 3)).volume((4, 5, 6))
 
@@ -554,10 +562,9 @@ class TestCommands(unittest.TestCase):
 
     def test_target_chainability(self):
         self.assertEqual(
-            '@a[x=1,y=2,z=3, distance=..15.5, dx=4.4,dy=5.5,dz=6.6, scores={}, tag=one, team=slug, '
-            'sort=arbitrary, limit=15, level=3..15, gamemode=survival, name=Robin, x_rotation=9, '
-            'y_rotation=..24, type=cougar, nbt={hi: there}, advancements={husbandry/plant_seed=true}, '
-            'predicate=nada]',
+            '@a[x=1, y=2, z=3, distance=..15.5, dx=4.4, dy=5.5, dz=6.6, scores={}, tag=one, team=slug, sort=arbitrary, '
+            'limit=15, level=3..15, gamemode=survival, name=Robin, x_rotation=9, y_rotation=..24, type=cougar, '
+            'nbt={hi: there}, advancements={husbandry/plant_seed=true}, predicate=nada]',
             str(a().pos((1, 2, 3)).distance((None, 15.5)).volume((4.4, 5.5, 6.6)).scores({}).tag("one").team(
                 'slug').sort(
                 ARBITRARY).limit(15).level((3, 15)).gamemode(SURVIVAL).name('Robin').x_rotation(9).y_rotation(
@@ -1747,7 +1754,7 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[advancements={k$(c)=v$(b)}]', str(a().advancements(
             AdvancementCriteria('k$(c)', 'v$(b)'))))
 
-        self.assertEqual('@a[dx=$(x),dy=$(y),dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
+        self.assertEqual('@a[dx=$(x), dy=$(y), dz=$(z)]', str(a().volume((Arg('x'), Arg('y'), Arg('z')))))
         self.assertEqual('@a[scores={$(x)=$(xv),$(y)=$(yv)}]',
                          str(a().scores({Arg('x'): Arg('xv'), Arg('y'): Arg('yv')})))
         self.assertEqual('@a[tag=$(t1)]', str(a().tag(Arg('t1'))))
@@ -1757,9 +1764,9 @@ class TestCommands(unittest.TestCase):
         self.assertEqual('@a[tag=!$(t1), tag=!$(t2)]', str(a().not_tag(Arg('t1'), Arg('t2'))))
         self.assertEqual('@a[tag=!$(t1), tag=$(t2)]', str(a().not_tag(Arg('t1')).tag(Arg('t2'))))
         self.assertEqual(
-            '@a[x=$(x),y=$(y),z=$(z), distance=$(d), dx=$(dx),dy=$(dy),dz=$(dz), scores={$(s)=$(v)}, tag=$(t), '
-            'team=$(tm), sort=$(so), limit=$(li), level=$(lvl), gamemode=$(gm), name=$(n), x_rotation=$(xr), '
-            'y_rotation=$(yr), type=$(ty), advancements={$(adv)=$(vadv)}, predicate=$(p)]',
+            '@a[x=$(x), y=$(y), z=$(z), distance=$(d), dx=$(dx), dy=$(dy), dz=$(dz), scores={$(s)=$(v)}, tag=$(t),'
+            ' team=$(tm), sort=$(so), limit=$(li), level=$(lvl), gamemode=$(gm), name=$(n), x_rotation=$(xr),'
+            ' y_rotation=$(yr), type=$(ty), advancements={$(adv)=$(vadv)}, predicate=$(p)]',
             str(a().pos((Arg('x'), Arg('y'), Arg('z'))).distance(Arg('d')).volume(
                 (Arg('dx'), Arg('dy'), Arg('dz'))).scores({Arg('s'): Arg('v')}).tag(Arg('t')).team(Arg('tm')).sort(
                 Arg('so')).limit(Arg('li')).level(Arg('lvl')).gamemode(Arg('gm')).name(Arg('n')).x_rotation(

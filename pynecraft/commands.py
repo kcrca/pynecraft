@@ -1007,7 +1007,30 @@ class Selector(TargetSpec):
     @_fluent
     def pos(self, pos: Position) -> Selector:
         """Add an x,y,z position to the selector."""
-        return self._unique_arg('pos', f'x={pos[0]},y={pos[1]},z={pos[2]}')
+        x, y, z = pos
+        ret = self
+        if x is not None:
+            ret = ret.x(x)
+        if y:
+            ret = ret.y(y)
+        if z:
+            ret = ret.z(z)
+        return ret
+
+    @_fluent
+    def x(self, x: FloatOrArg) -> Selector:
+        """Add an x position."""
+        return self._unique_arg('x', de_float_arg(x))
+
+    @_fluent
+    def y(self, y: FloatOrArg) -> Selector:
+        """Add a y position."""
+        return self._unique_arg('y', de_float_arg(y))
+
+    @_fluent
+    def z(self, z: FloatOrArg) -> Selector:
+        """Add a z position."""
+        return self._unique_arg('z', de_float_arg(z))
 
     @_fluent
     def literal(self, string: str):
@@ -1024,7 +1047,28 @@ class Selector(TargetSpec):
     def volume(self, deltas: Tuple[FloatOrArg, FloatOrArg, FloatOrArg]) -> Selector:
         """Add a volume to the selector. Must have three values in the list or tuple."""
         dx, dy, dz = deltas
-        return self._unique_arg('delta', f'dx={_float(dx)},dy={_float(dy)},dz={_float(dz)}')
+        ret = self
+        if dx is not None:
+            ret = ret.dx(dx)
+        if dy is not None:
+            ret = ret.dy(dy)
+        if dz is not None:
+            ret = ret.dz(dz)
+        return ret
+
+    @_fluent
+    def dx(self, x: FloatOrArg) -> Selector:
+        """Add an x volume check."""
+        return self._unique_arg('dx', de_float_arg(x))
+
+    @_fluent
+    def dy(self, y: FloatOrArg) -> Selector:
+        """Add a y volume check."""
+        return self._unique_arg('dy', de_float_arg(y))
+
+    def dz(self, z: FloatOrArg) -> Selector:
+        """Add a z volume check."""
+        return self._unique_arg('dz', de_float_arg(z))
 
     @_fluent
     def scores(self, score_specs: Mapping) -> Selector:
